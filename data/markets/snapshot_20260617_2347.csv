@@ -1,0 +1,21 @@
+question,yes_price,no_price,spread,volume_24h,volume_total,liquidity,days_left,focus_match,market_id,end_date
+Will there be no change in Fed interest rates after the July 2026 meeting?,0.795,0.205,0.0,536849.39,2292916.37,266029.09,40.7,True,1654958,2026-07-29
+Will the Fed increase interest rates by 25 bps after the July 2026 meeting?,0.196,0.804,0.0,343154.67,4621011.4,190613.79,40.7,True,1654959,2026-07-29
+Will the Fed decrease interest rates by 25 bps after the July 2026 meeting?,0.0135,0.9865,0.0,260314.6,1538593.61,158315.14,40.7,True,1654957,2026-07-29
+Will China invade Taiwan by end of 2026?,0.0625,0.9375,0.0,255286.1,35192992.47,691735.34,195.7,True,567621,2026-12-31
+Fed rate hike in 2026?,0.515,0.485,0.0,184805.81,2260607.86,103268.99,173.7,True,908713,2026-12-09
+China x Taiwan military clash before 2027?,0.09,0.91,0.0,178330.04,2208781.43,49476.61,195.7,True,677407,2026-12-31
+Strait of Hormuz traffic returns to normal by end of June?,0.195,0.805,0.0,1156512.71,25778855.78,387296.72,11.7,False,1971905,2026-06-30
+"Israel x Iran permanent peace deal by June 30, 2026?",0.0825,0.9175,0.0,935023.05,7264999.08,297529.91,11.7,False,2002564,2026-06-30
+ Iran agrees to end enrichment of uranium by June 30?,0.48,0.52,0.0,790443.37,4945396.09,102953.52,11.7,False,1370652,2026-06-30
+Will Trump agree to withdraw troops from the Iranian region by June 30?,0.865,0.135,0.0,544638.53,1087973.3,73570.11,11.7,False,2371796,2026-06-30
+Israel closes its airspace by June 30?,0.0605,0.9395,0.0,457640.15,3105530.97,105760.43,11.7,False,2241674,2026-06-30
+Will the next diplomatic US-Iran meeting be in Switzerland?,0.7715,0.2285,0.0,292614.65,1485249.03,27744.92,11.7,False,1961527,2026-06-30
+Will Trump agree to Iranian transit fees in the Strait of Hormuz by June 30?,0.0565,0.9435,0.0,258294.41,1086695.59,115731.49,11.7,False,2321467,2026-06-30
+Will Trump agree to Iranian enrichment of uranium by June 30?,0.1025,0.8975,0.0,224275.14,1267824.0,91957.52,11.7,False,2321465,2026-06-30
+"Israel withdraws from Lebanon by June 30, 2026?",0.0275,0.9725,0.0,219831.66,1556453.02,169201.05,11.7,False,2002609,2026-06-30
+"US x Iran diplomatic meeting by June 21, 2026?",0.8595,0.1405,0.0,211124.94,996326.76,12062.29,2.7,False,2413560,2026-06-21
+Will Avigdor Lieberman be the next Prime Minister of Israel?,0.046,0.954,0.0,194389.06,1528828.76,68115.27,195.7,False,682710,2026-12-31
+Strait of Hormuz traffic returns to normal by July 15?,0.395,0.605,0.0,160926.3,902716.81,171210.62,26.7,False,2535468,2026-07-15
+Iran agrees to unrestricted shipping through Hormuz by June 30?,0.065,0.935,0.0,158665.2,665823.17,136408.26,11.7,False,2370154,2026-06-30
+Will Türkiye win on 2026-06-19?,0.465,0.535,0.0,156929.33,237678.85,610076.11,1.8,False,1897127,2026-06-20
