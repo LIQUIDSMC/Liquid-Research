@@ -1,6 +1,17 @@
+cat > .gitignore << 'EOF'
 venv/
 __pycache__/
 *.pyc
 .env
-data/raw/
 .DS_Store
+data/raw/*
+data/markets/*
+data/trades/*
+data/wallets/*
+logs/*
+!data/raw/.gitkeep
+!data/markets/.gitkeep
+!data/trades/.gitkeep
+!data/wallets/.gitkeep
+!logs/.gitkeep
+EOF
