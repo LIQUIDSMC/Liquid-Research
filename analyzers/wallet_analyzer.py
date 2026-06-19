@@ -47,10 +47,10 @@ console = Console()
 DATA_API_TRADES = "https://data-api.polymarket.com/trades"
 
 # Manually seeded wallet for Stage 1/2 testing.
-SEEDED_WALLET_ADDRESS = "0xd28a3f0e8d6c3d5c6f0c75b73451fe266d35fc48"
-SEEDED_WALLET_NAME = "poRussky"
+SEEDED_WALLET_ADDRESS = "0x9c13cd45bc3cb9cdee51c2be029486d74f2f4b42"
+SEEDED_WALLET_NAME = "DiscoveryCandidate01"
 
-TRADE_LIMIT = 50
+TRADE_LIMIT = 200
 
 OUTPUT_PATH = "data/wallets/wallet_test_run.csv"
 
