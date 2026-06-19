@@ -144,7 +144,7 @@ def process_markets(raw_markets):
             "liquidity": round(liquidity, 2),
             "days_left": round(days_left, 1),
             "focus_match": is_focus_market(question),
-            "market_id": m.get("id") or m.get("conditionId") or "",
+            "market_id": m.get("conditionId") or "",
             "end_date": end_date[:10] if end_date else "",
         })
 
