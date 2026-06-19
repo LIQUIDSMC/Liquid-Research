@@ -1,10 +1,26 @@
 """
 Liquid Research — Market Classifier (Phase 2 Infrastructure)
 
-Classifies markets into categories and duration types so that
-wallet research and scanner logic never mix incompatible market
-types (e.g. 5-minute crypto gambling markets vs long-horizon
-Fed rate prediction markets).
+Classifies markets into categories so that wallet research and
+scanner logic never mix incompatible market types (e.g. 5-minute
+crypto gambling markets vs long-horizon Fed rate prediction markets).
+
+CATEGORY TIER SYSTEM:
+Categories are organized into three tiers, reflecting project
+philosophy that category importance should be discovered through
+data, not assumed upfront:
+
+  - Active Research:  currently studied for wallet/scanner research
+  - Research Queue:    tracked and tagged, but not yet actively
+                        sampled for wallet discovery
+  - Excluded:           does not align with long-horizon prediction
+                        skill research (sports, ultra-short crypto,
+                        entertainment, celebrity/gossip markets)
+
+This tier list is expected to evolve. It is not a final taxonomy —
+it is a starting lens. Future hypothesis testing may reveal that
+other signals (hold time, price range, volume tier) matter more
+than category itself.
 
 No wallet. No auth. No private key. Pure data transformation only.
 This module does not call any API — it only classifies data
@@ -14,11 +30,35 @@ Usage (standalone test):
     python3 analyzers/market_classifier.py
 """
 
+import re
 import pandas as pd
 from rich.console import Console
 from rich.table import Table
 
 console = Console()
+
+# ── Config: Category Tiers ───────────────────────────────────────────────────
+
+CATEGORY_TIERS = {
+    # Active Research — currently studied for wallet/scanner research
+    "Macro/Economic": "Active Research",
+    "Political": "Active Research",
+    "Geopolitical": "Active Research",
+    "Crypto Long-Duration": "Active Research",
+
+    # Research Queue — tagged and tracked, not yet actively sampled
+    "Corporate Events": "Research Queue",
+    "Regulatory Decisions": "Research Queue",
+    "Legal/Court Cases": "Research Queue",
+    "Product Launches": "Research Queue",
+    "Other/Unknown": "Research Queue",
+
+    # Excluded — does not align with long-horizon prediction skill
+    "Sports": "Excluded",
+    "Crypto Ultra-Short": "Excluded",
+    "Entertainment": "Excluded",
+    "Celebrity/Gossip": "Excluded",
+}
 
 # ── Config: Keyword Lists ──────────────────────────────────────────────────
 # Order matters. Categories are checked top to bottom. The first match wins.
@@ -36,16 +76,50 @@ SPORTS_KEYWORDS = [
     "fifa", "lakers", "coach",
 ]
 
+ENTERTAINMENT_KEYWORDS = [
+    "oscar", "grammy", "emmy", "box office", "album", "movie",
+    "tv show", "netflix series", "billboard chart",
+]
+
+CELEBRITY_KEYWORDS = [
+    "kardashian", "celebrity breakup", "celebrity divorce",
+    "celebrity dating", "influencer drama",
+]
+
 CRYPTO_KEYWORDS = [
     "bitcoin", "btc", "ethereum", "eth", "solana", "crypto",
     "altcoin", "stablecoin", "defi",
 ]
 
-GEOPOLITICAL_KEYWORDS = [
+CORPORATE_KEYWORDS = [
+    "earnings", "ipo", "merger", "acquisition", "ceo resigns",
+    "ceo steps down", "stock split", "bankruptcy filing", "layoffs",
+]
+
+REGULATORY_KEYWORDS = [
+    "fda approval", "fcc ruling", "sec ruling", "antitrust",
+    "regulatory approval", "ban approved", "license revoked",
+]
+
+LEGAL_KEYWORDS = [
+    "supreme court ruling", "verdict", "lawsuit", "indictment",
+    "convicted", "acquitted", "trial begins", "appeal denied",
+]
+
+PRODUCT_LAUNCH_KEYWORDS = [
+    "product launch", "release date", "unveils", "new model",
+    "ships in", "pre-order",
+]
+
+GEOPOLITICAL_CONFLICT_KEYWORDS = [
     "invade", "invasion", "war", "sanctions", "military", "troops",
-    "ceasefire", "peace deal", "nato", "china", "taiwan", "russia",
-    "ukraine", "iran", "israel", "middle east", "strait of hormuz",
-    "withdraw", "airspace", "diplomatic",
+    "ceasefire", "peace deal", "withdraw", "airspace", "diplomatic",
+    "strait of hormuz",
+]
+
+GEOPOLITICAL_REGION_KEYWORDS = [
+    "nato", "china", "taiwan", "russia", "ukraine", "iran", "israel",
+    "middle east",
 ]
 
 POLITICAL_KEYWORDS = [
@@ -70,12 +144,32 @@ MEDIUM_DURATION_MAX_DAYS = 60
 INCLUSION_POLICY = {
     "Crypto Ultra-Short": False,
     "Sports": False,
+    "Entertainment": False,
+    "Celebrity/Gossip": False,
     "Other/Unknown": "Review",
     "Macro/Economic": True,
     "Political": True,
     "Geopolitical": True,
     "Crypto Long-Duration": True,
+    "Corporate Events": True,
+    "Regulatory Decisions": True,
+    "Legal/Court Cases": True,
+    "Product Launches": True,
 }
+
+
+# ── Helper: Word-Boundary Keyword Matching ───────────────────────────────────
+
+def _contains_keyword(text: str, keyword: str) -> bool:
+    """
+    Check if a keyword appears in text as a whole word (or phrase),
+    not as a substring inside another word.
+
+    Example: "nfl" should match "NFL Draft" but NOT match inside
+    "inflation". This is the fix for the original substring bug.
+    """
+    pattern = r"\b" + re.escape(keyword) + r"\b"
+    return re.search(pattern, text) is not None
 
 
 # ── Function 1 ─────────────────────────────────────────────────────────────
@@ -97,37 +191,6 @@ def detect_ultra_short(slug: str) -> bool:
 
 
 # ── Function 2 ─────────────────────────────────────────────────────────────
-
-import re
-
-
-def _contains_keyword(text: str, keyword: str) -> bool:
-    """
-    Check if a keyword appears in text as a whole word (or phrase),
-    not as a substring inside another word.
-
-    Example: "nfl" should match "NFL Draft" but NOT match inside
-    "inflation".
-    """
-    pattern = r"\b" + re.escape(keyword) + r"\b"
-    return re.search(pattern, text) is not None
-
-
-# Country/region names that need an accompanying conflict-style
-# keyword before they count as Geopolitical. On their own, country
-# names are too broad — they appear in ordinary political questions
-# too (e.g. "next Prime Minister of Israel").
-GEOPOLITICAL_CONFLICT_KEYWORDS = [
-    "invade", "invasion", "war", "sanctions", "military", "troops",
-    "ceasefire", "peace deal", "withdraw", "airspace", "diplomatic",
-    "strait of hormuz",
-]
-
-GEOPOLITICAL_REGION_KEYWORDS = [
-    "nato", "china", "taiwan", "russia", "ukraine", "iran", "israel",
-    "middle east",
-]
-
 
 def classify_category(title: str, slug: str) -> tuple[str, str]:
     """
@@ -154,29 +217,59 @@ def classify_category(title: str, slug: str) -> tuple[str, str]:
         if _contains_keyword(combined, kw):
             return ("Sports", f"matched sports keyword '{kw}'")
 
-    # Priority 3 — Crypto Long-Duration (crypto keyword, no ultra-short slug)
+    # Priority 3 — Entertainment
+    for kw in ENTERTAINMENT_KEYWORDS:
+        if _contains_keyword(combined, kw):
+            return ("Entertainment", f"matched entertainment keyword '{kw}'")
+
+    # Priority 4 — Celebrity/Gossip
+    for kw in CELEBRITY_KEYWORDS:
+        if _contains_keyword(combined, kw):
+            return ("Celebrity/Gossip", f"matched celebrity/gossip keyword '{kw}'")
+
+    # Priority 5 — Crypto Long-Duration (crypto keyword, no ultra-short slug)
     for kw in CRYPTO_KEYWORDS:
         if _contains_keyword(combined, kw):
             return ("Crypto Long-Duration", f"matched crypto keyword '{kw}'")
 
-    # Priority 4 — Geopolitical (conflict keyword required — a bare
+    # Priority 6 — Corporate Events
+    for kw in CORPORATE_KEYWORDS:
+        if _contains_keyword(combined, kw):
+            return ("Corporate Events", f"matched corporate keyword '{kw}'")
+
+    # Priority 7 — Regulatory Decisions
+    for kw in REGULATORY_KEYWORDS:
+        if _contains_keyword(combined, kw):
+            return ("Regulatory Decisions", f"matched regulatory keyword '{kw}'")
+
+    # Priority 8 — Legal/Court Cases
+    for kw in LEGAL_KEYWORDS:
+        if _contains_keyword(combined, kw):
+            return ("Legal/Court Cases", f"matched legal keyword '{kw}'")
+
+    # Priority 9 — Product Launches
+    for kw in PRODUCT_LAUNCH_KEYWORDS:
+        if _contains_keyword(combined, kw):
+            return ("Product Launches", f"matched product launch keyword '{kw}'")
+
+    # Priority 10 — Geopolitical (conflict keyword required — a bare
     # country/region name like "israel" is not enough on its own,
     # since that also shows up in ordinary political questions)
     for conflict_kw in GEOPOLITICAL_CONFLICT_KEYWORDS:
         if _contains_keyword(combined, conflict_kw):
             return ("Geopolitical", f"matched geopolitical conflict keyword '{conflict_kw}'")
 
-    # Priority 5 — Political
+    # Priority 11 — Political
     for kw in POLITICAL_KEYWORDS:
         if _contains_keyword(combined, kw):
             return ("Political", f"matched political keyword '{kw}'")
 
-    # Priority 6 — Macro/Economic
+    # Priority 12 — Macro/Economic
     for kw in MACRO_KEYWORDS:
         if _contains_keyword(combined, kw):
             return ("Macro/Economic", f"matched macro keyword '{kw}'")
 
-    # Priority 7 — Geopolitical region name alone, with no conflict
+    # Priority 13 — Geopolitical region name alone, with no conflict
     # keyword and no political/macro match either. Lower priority
     # than Political/Macro on purpose.
     for region_kw in GEOPOLITICAL_REGION_KEYWORDS:
@@ -189,13 +282,13 @@ def classify_category(title: str, slug: str) -> tuple[str, str]:
 
 # ── Function 3 ─────────────────────────────────────────────────────────────
 
-def determine_duration_type(slug: str, days_left: float) -> str:
+def determine_duration_type(slug: str, days_left) -> str:
     """
     Assign a duration bucket independent of category.
 
     Receives:
         slug (str): the market's URL slug
-        days_left (float): days remaining until resolution
+        days_left (float or None): days remaining until resolution
 
     Returns:
         str: one of 'Ultra-Short', 'Short', 'Medium', 'Long'
@@ -221,12 +314,27 @@ def get_research_inclusion(category: str):
     Look up whether a category should be included in wallet research.
 
     Receives:
-        category (str): one of the seven defined categories
+        category (str): one of the defined categories
 
     Returns:
         bool or str: True, False, or "Review"
     """
     return INCLUSION_POLICY.get(category, "Review")
+
+
+# ── Function 4b (NEW) ────────────────────────────────────────────────────────
+
+def get_category_tier(category: str) -> str:
+    """
+    Look up which tier a category belongs to.
+
+    Receives:
+        category (str): one of the defined categories
+
+    Returns:
+        str: "Active Research", "Research Queue", or "Excluded"
+    """
+    return CATEGORY_TIERS.get(category, "Research Queue")
 
 
 # ── Function 5 ─────────────────────────────────────────────────────────────
@@ -241,14 +349,16 @@ def classify_market(market: dict) -> dict:
 
     Returns:
         dict: matches the standard output schema:
-              market_title, market_slug, category, duration_type,
-              include_in_wallet_research, classification_reason
+              market_title, market_slug, category, category_tier,
+              duration_type, include_in_wallet_research,
+              classification_reason
     """
     title = market.get("title") or market.get("question") or "Unknown"
     slug = market.get("slug") or ""
     days_left = market.get("days_left")  # may be None if not provided
 
     category, reason = classify_category(title, slug)
+    category_tier = get_category_tier(category)
     duration_type = determine_duration_type(slug, days_left)
     include = get_research_inclusion(category)
 
@@ -256,6 +366,7 @@ def classify_market(market: dict) -> dict:
         "market_title": title,
         "market_slug": slug,
         "category": category,
+        "category_tier": category_tier,
         "duration_type": duration_type,
         "include_in_wallet_research": include,
         "classification_reason": reason,
@@ -331,23 +442,44 @@ EXAMPLE_MARKETS = [
         "slug": "inflation-q3-2026",
         "days_left": 75,
     },
+    {
+        "title": "Will the FDA approve the new weight loss drug by Q3 2026?",
+        "slug": "fda-approval-weightloss-q3-2026",
+        "days_left": 90,
+    },
+    {
+        "title": "Will Apple announce a new product launch event in September?",
+        "slug": "apple-product-launch-sept",
+        "days_left": 85,
+    },
+    {
+        "title": "Will the Supreme Court ruling on tariffs come before August?",
+        "slug": "supreme-court-ruling-tariffs",
+        "days_left": 50,
+    },
+    {
+        "title": "Will Tesla report a CEO resigns announcement this quarter?",
+        "slug": "tesla-ceo-resigns-q3",
+        "days_left": 60,
+    },
 ]
 
 
 def run_test():
-    """Run the classifier against the 10 known example markets and print results."""
+    """Run the classifier against known example markets and print results."""
     console.print("\n[bold cyan]Liquid Research — Market Classifier Test[/bold cyan]")
-    console.print("[dim]Testing classifier against 10 known example markets...[/dim]\n")
+    console.print(f"[dim]Testing classifier against {len(EXAMPLE_MARKETS)} known example markets...[/dim]\n")
 
     results_df = classify_markets_batch(EXAMPLE_MARKETS)
 
     table = Table(show_lines=True)
     table.add_column("#", width=3)
-    table.add_column("Market Title", max_width=40)
+    table.add_column("Market Title", max_width=32)
     table.add_column("Category", style="cyan")
+    table.add_column("Tier", style="magenta")
     table.add_column("Duration", style="yellow")
     table.add_column("Include", justify="center")
-    table.add_column("Reason", style="dim", max_width=35)
+    table.add_column("Reason", style="dim", max_width=30)
 
     for i, row in results_df.iterrows():
         include_val = row["include_in_wallet_research"]
@@ -358,12 +490,21 @@ def run_test():
         else:
             include_display = "[yellow]Review[/yellow]"
 
-        title_short = row["market_title"][:38] + ("..." if len(row["market_title"]) > 38 else "")
+        tier = row["category_tier"]
+        if tier == "Active Research":
+            tier_display = "[green]Active[/green]"
+        elif tier == "Research Queue":
+            tier_display = "[yellow]Queue[/yellow]"
+        else:
+            tier_display = "[red]Excluded[/red]"
+
+        title_short = row["market_title"][:30] + ("..." if len(row["market_title"]) > 30 else "")
 
         table.add_row(
             str(i + 1),
             title_short,
             row["category"],
+            tier_display,
             row["duration_type"],
             include_display,
             row["classification_reason"],
@@ -373,6 +514,7 @@ def run_test():
 
     total = len(results_df)
     category_counts = results_df["category"].value_counts().to_dict()
+    tier_counts = results_df["category_tier"].value_counts().to_dict()
     excluded = (results_df["include_in_wallet_research"] == False).sum()
     review = (results_df["include_in_wallet_research"] == "Review").sum()
 
@@ -380,6 +522,10 @@ def run_test():
 
     category_summary = ", ".join(f"{cat} ({count})" for cat, count in category_counts.items())
     console.print(f"Categories found: {category_summary}")
+
+    tier_summary = ", ".join(f"{tier} ({count})" for tier, count in tier_counts.items())
+    console.print(f"Tiers found: {tier_summary}")
+
     console.print(f"Excluded from wallet research: [red]{excluded}[/red]")
     console.print(f"Flagged for review: [yellow]{review}[/yellow]\n")
 
