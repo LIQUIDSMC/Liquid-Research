@@ -219,18 +219,29 @@ def evaluate_trade_outcome(trade: dict, market_resolution: dict) -> dict:
     NEVER guesses. If the market is open, unconfirmed, or partial,
     trade_won is explicitly None — never forced to True or False.
 
+    Always attaches resolution_confidence and winning_outcome onto
+    the returned trade dict, regardless of outcome, so downstream
+    code (e.g. wallet_analyzer.py) can break unscored trades down
+    by WHY they're unscored (Open vs Unconfirmed vs Partial), not
+    just lump them into one unexplained bucket.
+
     Receives:
         trade (dict): must contain 'outcome', 'price', 'size'
         market_resolution (dict): output of determine_winning_outcome()
 
     Returns:
-        dict: original trade fields plus trade_won and trade_pnl
+        dict: original trade fields plus trade_won, trade_pnl,
+              resolution_confidence, and winning_outcome
     """
     enriched_trade = dict(trade)
 
     confidence = market_resolution.get("resolution_confidence")
     winning_outcome = market_resolution.get("winning_outcome")
     trader_outcome = trade.get("outcome")
+
+    # Always attach these, regardless of which branch we take below.
+    enriched_trade["resolution_confidence"] = confidence
+    enriched_trade["winning_outcome"] = winning_outcome
 
     if confidence != "Confirmed" or winning_outcome is None:
         enriched_trade["trade_won"] = None
@@ -253,6 +264,8 @@ def evaluate_trade_outcome(trade: dict, market_resolution: dict) -> dict:
         enriched_trade["trade_pnl"] = round(-1 * price * size, 4)
 
     return enriched_trade
+
+
 
 
 # ── Function 4 ─────────────────────────────────────────────────────────────

@@ -1,15 +1,27 @@
 """
-Liquid Research — Wallet Analyzer (Phase 3, Stage 1)
-
-Proves the wallet research pipeline works end-to-end using ONE
-manually seeded wallet address. No leaderboard. No scoring system.
-No win rate or P&L calculation yet (requires market resolution
-lookup, which is not built in this version).
+Liquid Research — Wallet Analyzer (Phase 3, Stage 2)
 
 Pipeline:
 wallet address -> pull trades -> classify each trade's market ->
 exclude Crypto Ultra-Short and Sports -> flag Other/Unknown as Review
--> summarize wallet stats
+-> resolve ELIGIBLE trades only -> calculate real win rate and P&L
+
+IMPORTANT — NO-PERFORMANCE-FILTERING PHILOSOPHY:
+This module never filters out a wallet for being unprofitable.
+Winning and losing wallets are both kept in the dataset. Future
+hypothesis testing requires comparing winners against losers, so
+no wallet is ever dropped based on its win rate or P&L.
+
+SCOPE NOTE ON EXCLUDED/REVIEW TRADES:
+Crypto Ultra-Short and Sports trades (excluded), and Other/Unknown
+trades (review), are counted and displayed, but are NOT resolved
+for win/loss in this version — resolving them would spend API calls
+on data not currently used for research performance stats. This is
+a SCOPE DECISION FOR NOW, not a permanent judgment that excluded/
+review trades are worthless. A future version may resolve them
+separately for wallet BEHAVIOR analysis (e.g. "does this wallet's
+ultra-short activity correlate with their long-duration skill?").
+That is out of scope here, but the door is intentionally left open.
 
 No wallet connection. No private key. No execution. Read-only.
 
@@ -24,9 +36,9 @@ from rich.table import Table
 import os
 import sys
 
-# Allow importing market_classifier.py from the analyzers folder
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from market_classifier import classify_market
+from market_resolution import resolve_trades_batch
 
 console = Console()
 
@@ -34,8 +46,7 @@ console = Console()
 
 DATA_API_TRADES = "https://data-api.polymarket.com/trades"
 
-# Manually seeded wallet for Stage 1 testing.
-# This is the wallet ('poRussky') seen in our earlier API sanity check.
+# Manually seeded wallet for Stage 1/2 testing.
 SEEDED_WALLET_ADDRESS = "0xd28a3f0e8d6c3d5c6f0c75b73451fe266d35fc48"
 SEEDED_WALLET_NAME = "poRussky"
 
@@ -72,8 +83,7 @@ def fetch_wallet_trades(wallet_address: str, limit: int = 50) -> list:
 def classify_trade(trade: dict) -> dict:
     """
     Enrich one raw trade with classification data from
-    market_classifier.py. Does not modify the classifier itself —
-    just reuses it.
+    market_classifier.py.
 
     Receives:
         trade (dict): one raw trade record from the Data API
@@ -85,16 +95,12 @@ def classify_trade(trade: dict) -> dict:
     market_input = {
         "title": trade.get("title", "Unknown"),
         "slug": trade.get("slug", ""),
-        # days_left is not available from a trade record in this
-        # version — duration classification will rely on the
-        # slug-based ultra-short check only. This limitation is
-        # documented, not hidden.
         "days_left": None,
     }
 
     classification = classify_market(market_input)
 
-    enriched_trade = dict(trade)  # copy original trade fields
+    enriched_trade = dict(trade)
     enriched_trade.update(classification)
     return enriched_trade
 
@@ -108,8 +114,7 @@ def filter_research_eligible_trades(classified_trades: list) -> dict:
     IMPORTANT: include_in_wallet_research can be True, False, or
     the string "Review". We NEVER use a bare `if value:` check here,
     because the string "Review" is truthy in Python and would be
-    silently treated as True by a careless check. Every comparison
-    below is explicit.
+    silently treated as True by a careless check.
 
     Receives:
         classified_trades (list[dict]): output of classify_trade(),
@@ -132,9 +137,6 @@ def filter_research_eligible_trades(classified_trades: list) -> dict:
         elif status == "Review":
             review.append(trade)
         else:
-            # Defensive fallback — should not happen, but if an
-            # unexpected value ever appears, treat it as Review
-            # rather than silently dropping or including it.
             review.append(trade)
 
     return {
@@ -146,37 +148,41 @@ def filter_research_eligible_trades(classified_trades: list) -> dict:
 
 # ── Function 4 ─────────────────────────────────────────────────────────────
 
-def calculate_wallet_stats(wallet_address: str, eligible_trades: list,
+def calculate_wallet_stats(wallet_address: str, resolved_eligible_trades: list,
                             total_pulled: int, excluded_count: int,
                             review_count: int) -> dict:
     """
     Compute summary statistics for a wallet using ONLY
-    research-eligible trades.
+    research-eligible trades, with real win rate and P&L calculated
+    from resolved (Confirmed) trades only.
 
-    Does NOT calculate win rate or P&L. That requires knowing
-    whether each market resolved Yes or No, which is not available
-    from a raw trade record. This is a deliberate limitation of
-    this version, not an oversight.
+    NO-PERFORMANCE-FILTERING RULE: this function never decides
+    whether a wallet is "good enough" to keep. It only describes
+    the wallet's stats. A wallet with a 10% win rate is reported
+    exactly as faithfully as one with a 90% win rate.
 
     Receives:
         wallet_address (str)
-        eligible_trades (list[dict]): only the "eligible" bucket
+        resolved_eligible_trades (list[dict]): eligible trades after
+            being passed through resolve_trades_batch(). Each trade
+            has trade_won (True/False/None) and trade_pnl.
         total_pulled (int): total trades pulled before filtering
         excluded_count (int): count of excluded trades
         review_count (int): count of review trades
 
     Returns:
-        dict: wallet summary stats
+        dict: wallet summary stats, including resolution breakdown
+              and real performance numbers
     """
-    categories = sorted(set(t.get("category", "Unknown") for t in eligible_trades))
+    categories = sorted(set(t.get("category", "Unknown") for t in resolved_eligible_trades))
 
-    if eligible_trades:
-        sizes = [float(t.get("size", 0)) for t in eligible_trades]
+    if resolved_eligible_trades:
+        sizes = [float(t.get("size", 0)) for t in resolved_eligible_trades]
         avg_trade_size = sum(sizes) / len(sizes)
     else:
         avg_trade_size = 0.0
 
-    eligible_count = len(eligible_trades)
+    eligible_count = len(resolved_eligible_trades)
 
     if eligible_count >= 250:
         confidence_tier = "High"
@@ -187,6 +193,39 @@ def calculate_wallet_stats(wallet_address: str, eligible_trades: list,
     else:
         confidence_tier = "Low"
 
+    # Split eligible trades by resolution outcome. trade_won is
+    # True, False, or None (None = not yet scored, for any reason).
+    scored_trades = [t for t in resolved_eligible_trades if t.get("trade_won") is not None]
+    unscored_trades = [t for t in resolved_eligible_trades if t.get("trade_won") is None]
+
+    # Break down WHY unscored trades are unscored, using the
+    # resolution_confidence that resolve_trades_batch() attaches
+    # via evaluate_trade_outcome(). Trades that were never resolved
+    # (e.g. confidence wasn't "Confirmed") don't carry a confidence
+    # field directly on the trade dict in this version, so we infer
+    # state from trade_pnl/trade_won being None plus checking if the
+    # underlying resolution info is available. For now we count them
+    # as a single "unscored" bucket; finer breakdown (Open vs
+    # Unconfirmed vs Partial) requires the trade to retain the
+    # resolution_confidence value, which we add explicitly below.
+    open_count = sum(1 for t in unscored_trades if t.get("resolution_confidence") == "Open")
+    unconfirmed_count = sum(1 for t in unscored_trades if t.get("resolution_confidence") == "Unconfirmed")
+    partial_count = sum(1 for t in unscored_trades if t.get("resolution_confidence") == "Partial")
+    unknown_unscored_count = len(unscored_trades) - open_count - unconfirmed_count - partial_count
+
+    scored_count = len(scored_trades)
+
+    if scored_count > 0:
+        wins = sum(1 for t in scored_trades if t.get("trade_won") is True)
+        win_rate = round(wins / scored_count, 4)
+        losses = scored_count - wins
+        total_pnl = round(sum(t.get("trade_pnl", 0) or 0 for t in scored_trades), 4)
+    else:
+        wins = 0
+        losses = 0
+        win_rate = None  # never 0% when there's nothing to measure
+        total_pnl = 0.0
+
     return {
         "wallet_address": wallet_address,
         "total_trades_pulled": total_pulled,
@@ -196,6 +235,15 @@ def calculate_wallet_stats(wallet_address: str, eligible_trades: list,
         "categories_traded": ", ".join(categories) if categories else "None",
         "avg_trade_size": round(avg_trade_size, 4),
         "confidence_tier": confidence_tier,
+        "scored_trades": scored_count,
+        "open_trades": open_count,
+        "unconfirmed_trades": unconfirmed_count,
+        "partial_trades": partial_count,
+        "unscored_other": unknown_unscored_count,
+        "wins": wins,
+        "losses": losses,
+        "win_rate": win_rate,
+        "total_pnl": total_pnl,
     }
 
 
@@ -203,7 +251,8 @@ def calculate_wallet_stats(wallet_address: str, eligible_trades: list,
 
 def run_wallet_analysis(wallet_address: str, limit: int = TRADE_LIMIT) -> dict:
     """
-    Orchestrator. Runs the full pipeline for one wallet.
+    Orchestrator. Runs the full pipeline for one wallet, including
+    resolution of eligible trades for real win rate and P&L.
 
     Receives:
         wallet_address (str)
@@ -216,9 +265,14 @@ def run_wallet_analysis(wallet_address: str, limit: int = TRADE_LIMIT) -> dict:
     classified_trades = [classify_trade(t) for t in raw_trades]
     buckets = filter_research_eligible_trades(classified_trades)
 
+    # Only eligible trades get resolved. Excluded and Review trades
+    # are counted and shown elsewhere, but not resolved in this
+    # version (see module docstring SCOPE NOTE).
+    resolved_eligible_trades = resolve_trades_batch(buckets["eligible"])
+
     wallet_stats = calculate_wallet_stats(
         wallet_address=wallet_address,
-        eligible_trades=buckets["eligible"],
+        resolved_eligible_trades=resolved_eligible_trades,
         total_pulled=len(raw_trades),
         excluded_count=len(buckets["excluded"]),
         review_count=len(buckets["review"]),
@@ -227,6 +281,7 @@ def run_wallet_analysis(wallet_address: str, limit: int = TRADE_LIMIT) -> dict:
     return {
         "wallet_stats": wallet_stats,
         "classified_trades": classified_trades,
+        "resolved_eligible_trades": resolved_eligible_trades,
     }
 
 
@@ -270,7 +325,8 @@ def print_trade_table(classified_trades: list, max_rows: int = 15):
 
 
 def print_wallet_summary(stats: dict, wallet_name: str):
-    """Print the final wallet summary block."""
+    """Print the final wallet summary block, including real
+    resolution breakdown and performance numbers."""
     console.print("\n[bold cyan]═══ Wallet Summary ═══[/bold cyan]")
     console.print(f"Wallet: {stats['wallet_address']} ({wallet_name})")
     console.print(f"Total trades pulled:           {stats['total_trades_pulled']}")
@@ -278,18 +334,42 @@ def print_wallet_summary(stats: dict, wallet_name: str):
     console.print(f"Excluded (ultra-short/sports): [red]{stats['excluded_trades']}[/red]")
     console.print(f"Flagged for review:            [yellow]{stats['review_trades']}[/yellow]")
     console.print(f"Categories traded (eligible):  {stats['categories_traded']}")
-    console.print(f"Avg trade size (eligible):     {stats['avg_trade_size']}")
-    console.print(f"Confidence tier:                {stats['confidence_tier']}")
-    console.print(
-        "\n[bold yellow]⚠ Note:[/bold yellow] Win rate and P&L not yet calculated.\n"
-        "   Requires market resolution lookup — not implemented in this version.\n"
-    )
+
+    console.print("\n[bold]── Resolution Breakdown (eligible trades only) ──[/bold]")
+    console.print(f"Confirmed/scored:               [green]{stats['scored_trades']}[/green]")
+    console.print(f"Open (not yet resolved):        [yellow]{stats['open_trades']}[/yellow]")
+    console.print(f"Unconfirmed (dirty data):       [red]{stats['unconfirmed_trades']}[/red]")
+    console.print(f"Partial (50/50):                [magenta]{stats['partial_trades']}[/magenta]")
+    if stats["unscored_other"] > 0:
+        console.print(f"Unscored (other/unresolved):    [dim]{stats['unscored_other']}[/dim]")
+
+    console.print("\n[bold]── Performance (scored trades only) ──[/bold]")
+    if stats["win_rate"] is None:
+        console.print("Win rate:                       [dim]None (no scored trades yet)[/dim]")
+    else:
+        win_pct = stats["win_rate"] * 100
+        console.print(
+            f"Win rate:                       {win_pct:.1f}%  "
+            f"({stats['wins']}W / {stats['losses']}L)"
+        )
+    console.print(f"Total P&L:                      ${stats['total_pnl']}")
+    console.print(f"Avg trade size (eligible):      {stats['avg_trade_size']}")
+    console.print(f"Confidence tier:                 {stats['confidence_tier']}")
+
+    pending = stats["open_trades"] + stats["unconfirmed_trades"] + stats["partial_trades"] + stats["unscored_other"]
+    if pending > 0:
+        console.print(
+            f"\n[dim]Note: {pending} eligible trade(s) excluded from performance "
+            f"calculation (not yet resolved or unclear). This is expected and "
+            f"does not indicate an error.[/dim]"
+        )
+    console.print()
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
-    console.print("\n[bold cyan]Liquid Research — Wallet Analyzer Test (Single Seeded Wallet)[/bold cyan]")
+    console.print("\n[bold cyan]Liquid Research — Wallet Analyzer (Stage 2: Real Performance)[/bold cyan]")
     console.print("[dim]Testing pipeline against one known wallet address...[/dim]\n")
     console.print(f"Wallet: {SEEDED_WALLET_ADDRESS} ({SEEDED_WALLET_NAME})")
     console.print("Fetching trades...\n")
@@ -308,3 +388,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
