@@ -28,8 +28,8 @@ ENDPOINTS = [
         "params": {},
     },
     {
-        "name": "Data API — Markets",
-        "url": "https://data-api.polymarket.com/markets",
+        "name": "Data API — Trades",
+        "url": "https://data-api.polymarket.com/trades",
         "params": {"limit": 1},
     },
 ]
