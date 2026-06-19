@@ -156,7 +156,8 @@ def fetch_trades_for_market(condition_id: str, limit: int = TRADES_PER_MARKET) -
 
 # ── Function 5 ─────────────────────────────────────────────────────────────
 
-def extract_wallets_from_trades(trades: list, market_title: str, category: str) -> dict:
+def extract_wallets_from_trades(trades: list, market_title: str, category: str,
+                                 condition_id: str) -> dict:
     """
     Pull every proxyWallet out of one market's trade batch.
 
@@ -164,10 +165,14 @@ def extract_wallets_from_trades(trades: list, market_title: str, category: str) 
         trades (list[dict]): trades for one market
         market_title (str): that market's title
         category (str): that market's classified category
+        condition_id (str): that market's conditionId — needed so
+            downstream wallet analysis can later pull THIS wallet's
+            trades from THIS specific market (Mode 2, future patch)
 
     Returns:
         dict: keyed by wallet_address, each value containing
-              market_title, category, and trade_count for THIS batch
+              market_title, category, condition_id, and trade_count
+              for THIS batch
     """
     wallets = {}
     for trade in trades:
@@ -179,6 +184,7 @@ def extract_wallets_from_trades(trades: list, market_title: str, category: str) 
             wallets[wallet] = {
                 "market_title": market_title,
                 "category": category,
+                "condition_id": condition_id,
                 "trade_count": 0,
             }
         wallets[wallet]["trade_count"] += 1
@@ -186,13 +192,15 @@ def extract_wallets_from_trades(trades: list, market_title: str, category: str) 
     return wallets
 
 
+
 # ── Function 6 ─────────────────────────────────────────────────────────────
 
 def collapse_wallet_discoveries(all_discoveries: list) -> dict:
     """
     Merge per-market discovery results into ONE row per unique
-    wallet, accumulating categories_touched, markets_touched, and
-    sample_trade_count across every market that wallet appeared in.
+    wallet, accumulating categories_touched, markets_touched,
+    sample_trade_count, AND discovered_condition_ids across every
+    market that wallet appeared in.
 
     Receives:
         all_discoveries (list[dict]): a list of per-market discovery
@@ -210,6 +218,7 @@ def collapse_wallet_discoveries(all_discoveries: list) -> dict:
                 collapsed[wallet] = {
                     "wallet_address": wallet,
                     "categories_touched": set(),
+                    "discovered_condition_ids": set(),
                     "markets_touched": 0,
                     "sample_trade_count": 0,
                     "first_discovered_market": info["market_title"],
@@ -217,10 +226,12 @@ def collapse_wallet_discoveries(all_discoveries: list) -> dict:
                 }
 
             collapsed[wallet]["categories_touched"].add(info["category"])
+            collapsed[wallet]["discovered_condition_ids"].add(info["condition_id"])
             collapsed[wallet]["markets_touched"] += 1
             collapsed[wallet]["sample_trade_count"] += info["trade_count"]
 
     return collapsed
+
 
 
 # ── Function 7 ─────────────────────────────────────────────────────────────
@@ -254,14 +265,14 @@ def run_wallet_discovery(trades_per_market: int = TRADES_PER_MARKET) -> tuple:
     total_trades_sampled = 0
 
     for i, row in active_research_markets.iterrows():
-        condition_id = row.get("market_id", "")
+        condition_id = str(row.get("market_id", ""))
         title = row.get("question", row.get("market_title", "Unknown"))
         category = row.get("category", "Unknown")
 
         trades = fetch_trades_for_market(condition_id, limit=trades_per_market)
         total_trades_sampled += len(trades)
 
-        market_wallets = extract_wallets_from_trades(trades, title, category)
+        market_wallets = extract_wallets_from_trades(trades, title, category, condition_id)
         all_discoveries.append(market_wallets)
 
         title_short = title[:50] + ("..." if len(title) > 50 else "")
@@ -274,6 +285,7 @@ def run_wallet_discovery(trades_per_market: int = TRADES_PER_MARKET) -> tuple:
         final_rows.append({
             "wallet_address": info["wallet_address"],
             "categories_touched": ", ".join(sorted(info["categories_touched"])),
+            "discovered_condition_ids": "|".join(sorted(info["discovered_condition_ids"])),
             "markets_touched": info["markets_touched"],
             "sample_trade_count": info["sample_trade_count"],
             "first_discovered_market": info["first_discovered_market"],
@@ -320,13 +332,16 @@ def print_discovery_summary(result_df: pd.DataFrame, stats: dict):
     table.add_column("Wallet Address", max_width=44)
     table.add_column("Categories Touched", max_width=30)
     table.add_column("Markets", justify="right")
+    table.add_column("ConditionIds", justify="right")
     table.add_column("Trades", justify="right")
 
     for _, row in result_df.head(10).iterrows():
+        condition_id_count = len(row["discovered_condition_ids"].split("|")) if row["discovered_condition_ids"] else 0
         table.add_row(
             row["wallet_address"],
             row["categories_touched"],
             str(row["markets_touched"]),
+            str(condition_id_count),
             str(row["sample_trade_count"]),
         )
 
