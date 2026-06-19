@@ -27,20 +27,64 @@ from rich.table import Table
 console = Console()
 
 GAMMA_API_MARKETS = "https://gamma-api.polymarket.com/markets"
+GAMMA_API_MARKET_BY_SLUG = "https://gamma-api.polymarket.com/markets/slug"
 
 
 # ── Function 1 ─────────────────────────────────────────────────────────────
+
+def fetch_market_by_slug(slug: str) -> dict:
+    """
+    Fetch one market's full record from the Gamma API using its slug.
+
+    This is the CONFIRMED WORKING lookup method, per official
+    Polymarket documentation: the slug is part of the URL path,
+    not a query parameter (e.g. /markets/slug/{slug}, NOT
+    /markets?slug={slug}).
+
+    Receives:
+        slug (str): the market's URL slug
+
+    Returns:
+        dict: the raw market record, or an empty dict on failure
+              or if not found
+    """
+    if not slug:
+        return {}
+
+    url = f"{GAMMA_API_MARKET_BY_SLUG}/{slug}"
+    try:
+        response = requests.get(url, timeout=15)
+        if response.status_code == 404:
+            return {}
+        response.raise_for_status()
+        result = response.json()
+        if isinstance(result, dict):
+            return result
+        return {}
+    except requests.RequestException as e:
+        console.print(f"[red]API error while fetching market by slug: {e}[/red]")
+        return {}
+
 
 def fetch_market_by_condition_id(condition_id: str) -> dict:
     """
     Fetch one market's full record from the Gamma API using its
     conditionId.
 
+    NOTE: The Gamma API's /markets endpoint does not reliably filter
+    by condition_id as a query parameter (confirmed via live testing
+    — it silently ignores unrecognized parameters and returns
+    unrelated default results rather than an error). This function
+    is kept for interface compatibility, but callers should prefer
+    fetch_market_by_slug() when a slug is available, since that is
+    the confirmed-working lookup method per official documentation.
+
     Receives:
         condition_id (str): the market's condition ID
 
     Returns:
         dict: the raw market record, or an empty dict on failure
+              or if not found
     """
     params = {"condition_ids": condition_id}
     try:
@@ -48,11 +92,18 @@ def fetch_market_by_condition_id(condition_id: str) -> dict:
         response.raise_for_status()
         results = response.json()
         if isinstance(results, list) and len(results) > 0:
-            return results[0]
+            # Defensive check: confirm the returned market actually
+            # matches the condition_id we asked for, since this
+            # endpoint has been observed returning unrelated markets
+            # when given an unrecognized parameter.
+            for market in results:
+                if market.get("conditionId") == condition_id:
+                    return market
         return {}
     except requests.RequestException as e:
         console.print(f"[red]API error while fetching market: {e}[/red]")
         return {}
+
 
 
 # ── Helper: Safely Parse outcomes / outcomePrices ────────────────────────────
