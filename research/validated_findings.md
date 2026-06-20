@@ -41,3 +41,11 @@ How it was verified: Direct test case caught the bug before it reached productio
 Date verified: 2026-06-18
 Evidence: market_classifier.py, commit ef1f272.
 Affects: market_classifier.py
+
+
+
+Finding: Gamma API ?condition_ids= lookup works correctly when given a real, correct conditionId.
+How it was verified: Looked up 0x8bf1c1536ecb1c08fe13c6b71e8ab1f58bf3461c4cb79f5f1679f869a06aef86 directly; the API returned the correct Fed July 2026 market with matching conditionId, slug, and question.
+Date verified: 2026-06-19
+Evidence: diagnostics/find_resolved_market.py investigation, direct curl confirmation.
+Affects: Corrects an earlier finding — previous failures using this parameter were caused by bad/stale numeric IDs as input, not by the parameter itself being invalid.

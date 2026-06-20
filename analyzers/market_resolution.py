@@ -272,31 +272,48 @@ def evaluate_trade_outcome(trade: dict, market_resolution: dict) -> dict:
 
 def resolve_trades_batch(trades: list) -> list:
     """
-    Resolve a batch of trades, caching market resolution lookups by
-    conditionId so the same market is never fetched twice.
+    Resolve a batch of trades, caching market resolution lookups so
+    the same market is never fetched twice.
+
+    Uses fetch_market_by_slug() as the PRIMARY lookup method, since
+    fetch_market_by_condition_id() has been observed to intermittently
+    return empty results even for a correct, verified conditionId
+    (confirmed via direct testing on 2026-06-19: the same conditionId
+    returned a full market via slug lookup but zero results via the
+    condition_ids query parameter, repeatedly, across three separate
+    attempts). Falls back to conditionId lookup only if a trade has
+    no slug field at all.
 
     Receives:
-        trades (list[dict]): trade records, each must include
-                              'conditionId'
+        trades (list[dict]): trade records. Each should include
+                              'slug' (preferred) and/or 'conditionId'
+                              (fallback only).
 
     Returns:
-        list[dict]: trades enriched with trade_won and trade_pnl
+        list[dict]: trades enriched with trade_won, trade_pnl,
+                     resolution_confidence, and winning_outcome
     """
     resolution_cache = {}
     resolved_trades = []
 
     for trade in trades:
+        slug = trade.get("slug")
         condition_id = trade.get("conditionId") or trade.get("condition_id")
+        cache_key = slug or condition_id
 
-        if condition_id not in resolution_cache:
-            market = fetch_market_by_condition_id(condition_id)
-            resolution_cache[condition_id] = determine_winning_outcome(market)
+        if cache_key not in resolution_cache:
+            if slug:
+                market = fetch_market_by_slug(slug)
+            else:
+                market = fetch_market_by_condition_id(condition_id)
+            resolution_cache[cache_key] = determine_winning_outcome(market)
 
-        market_resolution = resolution_cache[condition_id]
+        market_resolution = resolution_cache[cache_key]
         resolved_trade = evaluate_trade_outcome(trade, market_resolution)
         resolved_trades.append(resolved_trade)
 
     return resolved_trades
+
 
 
 # ── Standalone Test Block ────────────────────────────────────────────────────
