@@ -49,3 +49,18 @@ How it was verified: Looked up 0x8bf1c1536ecb1c08fe13c6b71e8ab1f58bf3461c4cb79f5
 Date verified: 2026-06-19
 Evidence: diagnostics/find_resolved_market.py investigation, direct curl confirmation.
 Affects: Corrects an earlier finding — previous failures using this parameter were caused by bad/stale numeric IDs as input, not by the parameter itself being invalid.
+
+
+
+
+Finding: fetch_market_by_condition_id() in market_resolution.py is unreliable, even when given a correct, verified conditionId. It returns an empty result intermittently, while fetch_market_by_slug() on the exact same market returns correctly every time.
+How it was verified: Direct isolated testing on 2026-06-19 — the same conditionId for a known-resolved market (Czechia World Cup match) returned a full market record via slug lookup but zero results via the condition_ids query parameter, repeatedly, across three separate attempts at different times.
+Date verified: 2026-06-19
+Evidence: diagnostics/validate_resolved_trade.py — after switching resolve_trades_batch() to slug-first lookup, 20/20 real trades from this market correctly scored as Confirmed, with manually verified correct win/loss and P&L.
+Affects: market_resolution.py (resolve_trades_batch), and retroactively wallet_analyzer.py Mode 1 and Mode 2, which likely produced false "Open" results for some trades prior to this fix.
+
+Finding: Phase 3 end-to-end validation achieved. The full pipeline (fetch real trades → classify → resolve against a known-closed market → score win/loss → calculate P&L) produces correct, verifiable results.
+How it was verified: 20 real trades pulled from a known-resolved market (Czechia vs South Africa World Cup match, winning outcome "No"). All 18 "No" trades scored as wins, both "Yes" trades scored as losses, P&L signs matched expected direction, and one trade was manually walked through in plain English and matched the code's output exactly.
+Date verified: 2026-06-19
+Evidence: diagnostics/validate_resolved_trade.py output, this session.
+Affects: Confirms market_resolution.py, wallet_analyzer.py Mode 1/Mode 2, market_classifier.py all work correctly together as one verified pipeline.

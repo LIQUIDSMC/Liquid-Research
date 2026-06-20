@@ -130,7 +130,7 @@ Layer 6 — Paper Trading         simulator/
 - Word-boundary keyword matching (fixed nfl/inflation bug)
 - include_in_wallet_research logic (True/False/Review)
 
-### PHASE 3 — Wallet Research 🔄 IN PROGRESS
+### PHASE 3 — Wallet Research ✅ COMPLETE
 Goal:
 Study trader behavior using public Data API.
 Not copy-trading. Research only.
@@ -142,18 +142,20 @@ Completed:
   filter, resolve, real win rate/P&L
 - wallet_discovery.py — sources candidate wallets from Active
   Research markets, not leaderboard (684 wallets discovered)
-
-Remaining:
-- Patch B: wallet_analyzer.py Mode 2 (Discovered Market Context)
-- Run full pipeline against a real discovered candidate to
-  produce first genuine scored win rate
+- wallet_analyzer.py Mode 2 (Discovered Market Context) — analyzes
+  a wallet only within the markets that caused its discovery
+- Critical bug fixed: resolve_trades_batch() now uses slug-based
+  lookup as primary method instead of unreliable conditionId query
+- Validation run: 20/20 real trades from a known-resolved market
+  correctly scored, manually verified against real-world outcome
 
 Done when:
-- Mode 2 implemented and labeled clearly in output
-- At least one discovered wallet analyzed successfully
-- At least one confirmed market resolved correctly
-- Win rate and P&L generated from confirmed outcomes only
-- Results manually verified against raw trade history
+- Mode 2 implemented and labeled clearly in output ✅
+- At least one discovered wallet analyzed successfully ✅
+- At least one confirmed market resolved correctly ✅
+- Win rate and P&L generated from confirmed outcomes only ✅
+- Results manually verified against raw trade history ✅
+
 
 ### PHASE 4 — Scanner Engine 🔲 NOT STARTED
 Goal:

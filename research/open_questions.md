@@ -17,7 +17,7 @@ What data would be needed: A meaningful sample of wallets with both resolved tra
 Date raised: 2026-06-19
 
 ---
-
+i
 Question: Are repetitive micro-orders, bot-like, identical size and price patterns, predictive of anything, profitability, a specific strategy, or just noise?
 Why it matters: Several discovered wallets show this pattern. Worth knowing whether it is a distinct, study-able behavior or irrelevant clutter to filter out.
 What data would be needed: Resolved trade outcomes for several wallets exhibiting this pattern, compared against wallets with varied order behavior.
