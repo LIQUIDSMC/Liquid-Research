@@ -1,29 +1,35 @@
 """
-Liquid Research — Wallet Analyzer (Phase 3, Stage 2)
+Liquid Research — Wallet Analyzer (Phase 3, Patch B)
 
-Pipeline:
-wallet address -> pull trades -> classify each trade's market ->
-exclude Crypto Ultra-Short and Sports -> flag Other/Unknown as Review
--> resolve ELIGIBLE trades only -> calculate real win rate and P&L
+Two modes:
 
-IMPORTANT — NO-PERFORMANCE-FILTERING PHILOSOPHY:
+MODE 1 — Recent Global Activity
+    Pulls a wallet's most recent N trades, regardless of category
+    or discovery context. Answers: "what has this wallet done
+    lately, in general?"
+
+MODE 2 — Discovered Market Context
+    Pulls a wallet's trades ONLY from the specific markets that
+    caused it to be discovered during wallet_discovery.py sampling.
+    Answers: "how did this wallet perform specifically in the
+    Active Research markets that made it a candidate?"
+
+Both modes run the same classify -> filter -> resolve -> summarize
+pipeline. Output is always clearly labeled with which mode produced
+it, since the two modes answer genuinely different questions and
+must never be confused with each other.
+
+NO-PERFORMANCE-FILTERING PHILOSOPHY (unchanged from Stage 1/2):
 This module never filters out a wallet for being unprofitable.
-Winning and losing wallets are both kept in the dataset. Future
-hypothesis testing requires comparing winners against losers, so
-no wallet is ever dropped based on its win rate or P&L.
+Winning and losing wallets are both kept in the dataset.
 
-SCOPE NOTE ON EXCLUDED/REVIEW TRADES:
-Crypto Ultra-Short and Sports trades (excluded), and Other/Unknown
-trades (review), are counted and displayed, but are NOT resolved
-for win/loss in this version — resolving them would spend API calls
-on data not currently used for research performance stats. This is
-a SCOPE DECISION FOR NOW, not a permanent judgment that excluded/
-review trades are worthless. A future version may resolve them
-separately for wallet BEHAVIOR analysis (e.g. "does this wallet's
-ultra-short activity correlate with their long-duration skill?").
-That is out of scope here, but the door is intentionally left open.
+SCOPE NOTE: Crypto Ultra-Short and Sports trades (excluded), and
+Other/Unknown trades (review), are counted and displayed, but are
+NOT resolved for win/loss in this version. This is a scope decision
+for now, not a permanent judgment.
 
-No wallet connection. No private key. No execution. Read-only.
+No wallet connection. No private key. No execution. No scoring.
+No rankings. No leaderboard. No dashboard. Read-only.
 
 Usage:
     python3 analyzers/wallet_analyzer.py
@@ -45,28 +51,36 @@ console = Console()
 # ── Config ────────────────────────────────────────────────────────────────────
 
 DATA_API_TRADES = "https://data-api.polymarket.com/trades"
-
-# Manually seeded wallet for Stage 1/2 testing.
-SEEDED_WALLET_ADDRESS = "0x9c13cd45bc3cb9cdee51c2be029486d74f2f4b42"
-SEEDED_WALLET_NAME = "DiscoveryCandidate01"
-
-TRADE_LIMIT = 200
-
+CANDIDATE_WALLETS_PATH = "data/wallets/candidate_wallets.csv"
 OUTPUT_PATH = "data/wallets/wallet_test_run.csv"
 
+# Mode 1 config (unchanged from Stage 1/2)
+SEEDED_WALLET_ADDRESS = "0xca1f9b9d67d947c8007d9814e8f9d6045cccd282"
+SEEDED_WALLET_NAME = "KickstandBot"
+TRADE_LIMIT = 200
 
-# ── Function 1 ─────────────────────────────────────────────────────────────
+# Mode 2 config — manually selected, per architecture decision to
+# avoid automatic selection in this first version
+MODE2_WALLET_ADDRESS = "0x1abf0a579401ebf4c44f919755ad20b6ae23f38d"
+MODE2_TRADES_PER_MARKET = 50
+
+# Which mode to run. Set to "mode1" or "mode2".
+ACTIVE_MODE = "mode2"
+
+
+# ── Function: Mode 1 trade fetch (unchanged) ─────────────────────────────────
 
 def fetch_wallet_trades(wallet_address: str, limit: int = 50) -> list:
     """
-    Pull trade history for one wallet from the public Data API.
+    Pull a wallet's most recent N trades, regardless of market.
+    MODE 1 ONLY.
 
     Receives:
-        wallet_address (str): the wallet's address
-        limit (int): max number of trades to pull
+        wallet_address (str)
+        limit (int)
 
     Returns:
-        list[dict]: raw trade records, or an empty list on failure
+        list[dict]: raw trade records, or empty list on failure
     """
     params = {"user": wallet_address, "limit": limit}
     try:
@@ -78,50 +92,126 @@ def fetch_wallet_trades(wallet_address: str, limit: int = 50) -> list:
         return []
 
 
-# ── Function 2 ─────────────────────────────────────────────────────────────
+# ── Function: Mode 2 candidate wallet loading ────────────────────────────────
+
+def load_candidate_wallets() -> pd.DataFrame:
+    """
+    Load data/wallets/candidate_wallets.csv. MODE 2 ONLY.
+
+    Receives:
+        Nothing — reads from the filesystem directly.
+
+    Returns:
+        pd.DataFrame: the candidate wallet table, or an empty
+                       DataFrame with a console warning if the
+                       file doesn't exist.
+    """
+    if not os.path.exists(CANDIDATE_WALLETS_PATH):
+        console.print(
+            f"[red]No candidate wallet file found at {CANDIDATE_WALLETS_PATH}. "
+            f"Run analyzers/wallet_discovery.py first.[/red]"
+        )
+        return pd.DataFrame()
+
+    return pd.read_csv(CANDIDATE_WALLETS_PATH)
+
+
+def get_wallet_discovery_info(wallet_address: str) -> dict:
+    """
+    Find one wallet's row in candidate_wallets.csv and parse its
+    discovered_condition_ids back into a list. MODE 2 ONLY.
+
+    Receives:
+        wallet_address (str)
+
+    Returns:
+        dict: {
+            "found": bool,
+            "condition_ids": list[str],
+            "categories_touched": str,
+            "markets_touched": int
+        }
+    """
+    candidates_df = load_candidate_wallets()
+
+    if candidates_df.empty:
+        return {"found": False, "condition_ids": [], "categories_touched": "", "markets_touched": 0}
+
+    matching_rows = candidates_df[candidates_df["wallet_address"] == wallet_address]
+
+    if matching_rows.empty:
+        return {"found": False, "condition_ids": [], "categories_touched": "", "markets_touched": 0}
+
+    row = matching_rows.iloc[0]
+    raw_ids = row.get("discovered_condition_ids", "")
+    condition_ids = raw_ids.split("|") if isinstance(raw_ids, str) and raw_ids else []
+
+    return {
+        "found": True,
+        "condition_ids": condition_ids,
+        "categories_touched": row.get("categories_touched", ""),
+        "markets_touched": int(row.get("markets_touched", 0)),
+    }
+
+
+# ── Function: Mode 2 trade fetch ─────────────────────────────────────────────
+
+def fetch_wallet_trades_for_markets(wallet_address: str, condition_ids: list,
+                                     limit_per_market: int = MODE2_TRADES_PER_MARKET) -> list:
+    """
+    Pull a wallet's trades ONLY from the specific markets in
+    condition_ids, using the CONFIRMED working combined filter:
+    ?user={wallet}&market={conditionId}. MODE 2 ONLY.
+
+    Receives:
+        wallet_address (str)
+        condition_ids (list[str]): markets to pull trades from
+        limit_per_market (int)
+
+    Returns:
+        list[dict]: combined trades across all given markets
+    """
+    all_trades = []
+
+    for i, condition_id in enumerate(condition_ids):
+        params = {"user": wallet_address, "market": condition_id, "limit": limit_per_market}
+        try:
+            response = requests.get(DATA_API_TRADES, params=params, timeout=15)
+            response.raise_for_status()
+            market_trades = response.json()
+        except requests.RequestException as e:
+            console.print(f"[red]API error fetching market {condition_id}: {e}[/red]")
+            market_trades = []
+
+        console.print(f"  [{i+1}/{len(condition_ids)}] {condition_id[:12]}...  →  {len(market_trades)} trades")
+        all_trades.extend(market_trades)
+
+    return all_trades
+
+
+# ── Shared pipeline functions (used by both modes) ───────────────────────────
 
 def classify_trade(trade: dict) -> dict:
     """
     Enrich one raw trade with classification data from
-    market_classifier.py.
-
-    Receives:
-        trade (dict): one raw trade record from the Data API
-
-    Returns:
-        dict: original trade fields plus category, duration_type,
-              include_in_wallet_research, classification_reason
+    market_classifier.py. Used by both modes.
     """
     market_input = {
         "title": trade.get("title", "Unknown"),
         "slug": trade.get("slug", ""),
         "days_left": None,
     }
-
     classification = classify_market(market_input)
-
     enriched_trade = dict(trade)
     enriched_trade.update(classification)
     return enriched_trade
 
 
-# ── Function 3 ─────────────────────────────────────────────────────────────
-
 def filter_research_eligible_trades(classified_trades: list) -> dict:
     """
-    Split classified trades into three explicit buckets.
-
-    IMPORTANT: include_in_wallet_research can be True, False, or
-    the string "Review". We NEVER use a bare `if value:` check here,
-    because the string "Review" is truthy in Python and would be
-    silently treated as True by a careless check.
-
-    Receives:
-        classified_trades (list[dict]): output of classify_trade(),
-                                          run across all trades
-
-    Returns:
-        dict with three keys: "eligible", "excluded", "review"
+    Split classified trades into eligible / excluded / review.
+    Used by both modes. NEVER uses a bare `if value:` check on
+    include_in_wallet_research, since "Review" is truthy in Python.
     """
     eligible = []
     excluded = []
@@ -139,40 +229,15 @@ def filter_research_eligible_trades(classified_trades: list) -> dict:
         else:
             review.append(trade)
 
-    return {
-        "eligible": eligible,
-        "excluded": excluded,
-        "review": review,
-    }
+    return {"eligible": eligible, "excluded": excluded, "review": review}
 
-
-# ── Function 4 ─────────────────────────────────────────────────────────────
 
 def calculate_wallet_stats(wallet_address: str, resolved_eligible_trades: list,
                             total_pulled: int, excluded_count: int,
                             review_count: int) -> dict:
     """
-    Compute summary statistics for a wallet using ONLY
-    research-eligible trades, with real win rate and P&L calculated
-    from resolved (Confirmed) trades only.
-
-    NO-PERFORMANCE-FILTERING RULE: this function never decides
-    whether a wallet is "good enough" to keep. It only describes
-    the wallet's stats. A wallet with a 10% win rate is reported
-    exactly as faithfully as one with a 90% win rate.
-
-    Receives:
-        wallet_address (str)
-        resolved_eligible_trades (list[dict]): eligible trades after
-            being passed through resolve_trades_batch(). Each trade
-            has trade_won (True/False/None) and trade_pnl.
-        total_pulled (int): total trades pulled before filtering
-        excluded_count (int): count of excluded trades
-        review_count (int): count of review trades
-
-    Returns:
-        dict: wallet summary stats, including resolution breakdown
-              and real performance numbers
+    Compute summary statistics using ONLY research-eligible trades.
+    Used by both modes. Never filters wallets by performance.
     """
     categories = sorted(set(t.get("category", "Unknown") for t in resolved_eligible_trades))
 
@@ -193,21 +258,9 @@ def calculate_wallet_stats(wallet_address: str, resolved_eligible_trades: list,
     else:
         confidence_tier = "Low"
 
-    # Split eligible trades by resolution outcome. trade_won is
-    # True, False, or None (None = not yet scored, for any reason).
     scored_trades = [t for t in resolved_eligible_trades if t.get("trade_won") is not None]
     unscored_trades = [t for t in resolved_eligible_trades if t.get("trade_won") is None]
 
-    # Break down WHY unscored trades are unscored, using the
-    # resolution_confidence that resolve_trades_batch() attaches
-    # via evaluate_trade_outcome(). Trades that were never resolved
-    # (e.g. confidence wasn't "Confirmed") don't carry a confidence
-    # field directly on the trade dict in this version, so we infer
-    # state from trade_pnl/trade_won being None plus checking if the
-    # underlying resolution info is available. For now we count them
-    # as a single "unscored" bucket; finer breakdown (Open vs
-    # Unconfirmed vs Partial) requires the trade to retain the
-    # resolution_confidence value, which we add explicitly below.
     open_count = sum(1 for t in unscored_trades if t.get("resolution_confidence") == "Open")
     unconfirmed_count = sum(1 for t in unscored_trades if t.get("resolution_confidence") == "Unconfirmed")
     partial_count = sum(1 for t in unscored_trades if t.get("resolution_confidence") == "Partial")
@@ -223,7 +276,7 @@ def calculate_wallet_stats(wallet_address: str, resolved_eligible_trades: list,
     else:
         wins = 0
         losses = 0
-        win_rate = None  # never 0% when there's nothing to measure
+        win_rate = None
         total_pnl = 0.0
 
     return {
@@ -247,27 +300,15 @@ def calculate_wallet_stats(wallet_address: str, resolved_eligible_trades: list,
     }
 
 
-# ── Function 5 ─────────────────────────────────────────────────────────────
+# ── Orchestrators (one per mode) ──────────────────────────────────────────────
 
-def run_wallet_analysis(wallet_address: str, limit: int = TRADE_LIMIT) -> dict:
+def run_wallet_analysis_mode1(wallet_address: str, limit: int = TRADE_LIMIT) -> dict:
     """
-    Orchestrator. Runs the full pipeline for one wallet, including
-    resolution of eligible trades for real win rate and P&L.
-
-    Receives:
-        wallet_address (str)
-        limit (int): max trades to pull
-
-    Returns:
-        dict with "wallet_stats" and "classified_trades"
+    MODE 1 orchestrator: recent global activity.
     """
     raw_trades = fetch_wallet_trades(wallet_address, limit=limit)
     classified_trades = [classify_trade(t) for t in raw_trades]
     buckets = filter_research_eligible_trades(classified_trades)
-
-    # Only eligible trades get resolved. Excluded and Review trades
-    # are counted and shown elsewhere, but not resolved in this
-    # version (see module docstring SCOPE NOTE).
     resolved_eligible_trades = resolve_trades_batch(buckets["eligible"])
 
     wallet_stats = calculate_wallet_stats(
@@ -277,18 +318,90 @@ def run_wallet_analysis(wallet_address: str, limit: int = TRADE_LIMIT) -> dict:
         excluded_count=len(buckets["excluded"]),
         review_count=len(buckets["review"]),
     )
+    wallet_stats["analysis_mode"] = "Mode 1: Recent Global Activity"
 
     return {
         "wallet_stats": wallet_stats,
         "classified_trades": classified_trades,
-        "resolved_eligible_trades": resolved_eligible_trades,
+        "discovery_info": None,
+    }
+
+
+def run_wallet_analysis_mode2(wallet_address: str) -> dict:
+    """
+    MODE 2 orchestrator: discovered market context.
+
+    Pulls trades ONLY from the markets that caused this wallet to
+    be discovered, using the confirmed user+market combined filter.
+    """
+    discovery_info = get_wallet_discovery_info(wallet_address)
+
+    if not discovery_info["found"]:
+        console.print(
+            f"[red]Wallet {wallet_address} not found in "
+            f"{CANDIDATE_WALLETS_PATH}. Run wallet_discovery.py first, "
+            f"or check the address.[/red]"
+        )
+        return {"wallet_stats": None, "classified_trades": [], "discovery_info": discovery_info}
+
+    condition_ids = discovery_info["condition_ids"]
+    console.print(f"Found wallet with {len(condition_ids)} discovered conditionIds.\n")
+    console.print("Fetching trades for each discovered market...")
+
+    raw_trades = fetch_wallet_trades_for_markets(wallet_address, condition_ids)
+
+    classified_trades = [classify_trade(t) for t in raw_trades]
+    buckets = filter_research_eligible_trades(classified_trades)
+    resolved_eligible_trades = resolve_trades_batch(buckets["eligible"])
+
+    wallet_stats = calculate_wallet_stats(
+        wallet_address=wallet_address,
+        resolved_eligible_trades=resolved_eligible_trades,
+        total_pulled=len(raw_trades),
+        excluded_count=len(buckets["excluded"]),
+        review_count=len(buckets["review"]),
+    )
+    wallet_stats["analysis_mode"] = "Mode 2: Discovered Market Context"
+
+    return {
+        "wallet_stats": wallet_stats,
+        "classified_trades": classified_trades,
+        "discovery_info": discovery_info,
     }
 
 
 # ── Display ───────────────────────────────────────────────────────────────────
 
+def print_mode_header(mode: str, wallet_address: str, wallet_name: str = "",
+                       discovery_info: dict = None):
+    """
+    Print an unmissable header stating which mode produced this
+    output. Critical for preventing the exact confusion that
+    motivated Patch B in the first place.
+    """
+    console.print("\n[bold cyan]Liquid Research — Wallet Analyzer[/bold cyan]")
+
+    if mode == "mode1":
+        console.print("[bold]═══ Mode 1: Recent Global Activity ═══[/bold]")
+        console.print(f"Wallet: {wallet_address} ({wallet_name})")
+        console.print(
+            "[dim]Analyzing the wallet's most recent trades, regardless "
+            "of category or discovery context.[/dim]\n"
+        )
+    else:
+        console.print("[bold]═══ Mode 2: Discovered Market Context ═══[/bold]")
+        console.print(f"Wallet: {wallet_address}")
+        n_markets = discovery_info["markets_touched"] if discovery_info else "?"
+        console.print(
+            f"[dim]Analyzing trades ONLY from the {n_markets} market(s) that "
+            f"caused this wallet to be discovered during Active Research "
+            f"sampling. This does NOT include the wallet's other trading "
+            f"activity.[/dim]\n"
+        )
+
+
 def print_trade_table(classified_trades: list, max_rows: int = 15):
-    """Print a table of classified trades to the terminal."""
+    """Print a table of classified trades. Used by both modes."""
     if not classified_trades:
         console.print("[yellow]No trades to display.[/yellow]")
         return
@@ -324,11 +437,10 @@ def print_trade_table(classified_trades: list, max_rows: int = 15):
         console.print(f"[dim]...and {len(classified_trades) - max_rows} more trades not shown[/dim]")
 
 
-def print_wallet_summary(stats: dict, wallet_name: str):
-    """Print the final wallet summary block, including real
-    resolution breakdown and performance numbers."""
+def print_wallet_summary(stats: dict):
+    """Print the final wallet summary block. Used by both modes."""
     console.print("\n[bold cyan]═══ Wallet Summary ═══[/bold cyan]")
-    console.print(f"Wallet: {stats['wallet_address']} ({wallet_name})")
+    console.print(f"Wallet: {stats['wallet_address']}")
     console.print(f"Total trades pulled:           {stats['total_trades_pulled']}")
     console.print(f"Research-eligible trades:      [green]{stats['research_eligible_trades']}[/green]")
     console.print(f"Excluded (ultra-short/sports): [red]{stats['excluded_trades']}[/red]")
@@ -355,6 +467,7 @@ def print_wallet_summary(stats: dict, wallet_name: str):
     console.print(f"Total P&L:                      ${stats['total_pnl']}")
     console.print(f"Avg trade size (eligible):      {stats['avg_trade_size']}")
     console.print(f"Confidence tier:                 {stats['confidence_tier']}")
+    console.print(f"Analysis mode:                   {stats['analysis_mode']}")
 
     pending = stats["open_trades"] + stats["unconfirmed_trades"] + stats["partial_trades"] + stats["unscored_other"]
     if pending > 0:
@@ -369,23 +482,25 @@ def print_wallet_summary(stats: dict, wallet_name: str):
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
-    console.print("\n[bold cyan]Liquid Research — Wallet Analyzer (Stage 2: Real Performance)[/bold cyan]")
-    console.print("[dim]Testing pipeline against one known wallet address...[/dim]\n")
-    console.print(f"Wallet: {SEEDED_WALLET_ADDRESS} ({SEEDED_WALLET_NAME})")
-    console.print("Fetching trades...\n")
+    if ACTIVE_MODE == "mode1":
+        print_mode_header("mode1", SEEDED_WALLET_ADDRESS, SEEDED_WALLET_NAME)
+        result = run_wallet_analysis_mode1(SEEDED_WALLET_ADDRESS, limit=TRADE_LIMIT)
+    else:
+        print_mode_header("mode2", MODE2_WALLET_ADDRESS)
+        result = run_wallet_analysis_mode2(MODE2_WALLET_ADDRESS)
 
-    result = run_wallet_analysis(SEEDED_WALLET_ADDRESS, limit=TRADE_LIMIT)
+    if result["wallet_stats"] is None:
+        return
 
     print_trade_table(result["classified_trades"])
-    print_wallet_summary(result["wallet_stats"], SEEDED_WALLET_NAME)
+    print_wallet_summary(result["wallet_stats"])
 
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
     stats_df = pd.DataFrame([result["wallet_stats"]])
     stats_df.to_csv(OUTPUT_PATH, index=False)
 
-    console.print(f"[dim]Saved → {OUTPUT_PATH}[/dim]\n")
+    console.print(f"[dim]Saved → {OUTPUT_PATH} (analysis_mode = {result['wallet_stats']['analysis_mode']})[/dim]\n")
 
 
 if __name__ == "__main__":
     main()
-
