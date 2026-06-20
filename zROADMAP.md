@@ -8,6 +8,30 @@ This is a research platform. Not a trading bot. Not an execution engine.
 
 ---
 
+## Research Integrity Principles
+
+Research quality is more important than development speed.
+
+Rules:
+- Never trust a single API field without verification.
+- Validate assumptions using live responses whenever possible.
+- Prefer verification over convenience.
+- Treat dramatic improvements as potential bugs until proven otherwise.
+- Investigate unexpected outputs before calling them signal.
+- Spot-check results against real-world examples.
+- Avoid silent failures whenever possible.
+- Fail loudly when data appears invalid.
+- Manual verification is required before declaring a phase complete.
+
+Recent lesson:
+A discovery run appeared successful but was later found to be using
+Polymarket numeric market IDs instead of conditionId hashes. The issue
+produced believable output while hiding a critical bug. This project
+should assume that plausible-looking results can still be wrong until
+verified.
+
+---
+
 ## Phase Exit Checklist
 
 Before moving from one phase to the next, answer these honestly.
@@ -41,6 +65,16 @@ If the answer is "no" or "unclear," stay in the current phase.
    Confirm tests pass, confirm output was manually sanity-checked
    against at least one known real-world case, not just internal
    consistency.
+
+7. **Were outputs manually validated against external reality?**
+   Do not rely solely on internal consistency. Verify at least one
+   result against a live API response, known market, known wallet,
+   or known real-world example.
+
+8. **Could this result be explained by a bug rather than signal?**
+   Treat dramatic improvements, suspiciously clean outputs,
+   unexpected jumps, or surprising discoveries as potential bugs
+   until verified.
 
 ---
 
@@ -116,8 +150,10 @@ Remaining:
 
 Done when:
 - Mode 2 implemented and labeled clearly in output
-- At least one candidate wallet produces real Confirmed/scored
-  trades with a real win rate and P&L
+- At least one discovered wallet analyzed successfully
+- At least one confirmed market resolved correctly
+- Win rate and P&L generated from confirmed outcomes only
+- Results manually verified against raw trade history
 
 ### PHASE 4 — Scanner Engine 🔲 NOT STARTED
 Goal:
@@ -180,3 +216,53 @@ LOCKED. Do not begin until:
 - Results show positive expectancy vs random market selection
 - Legal pathway for live trading is explicitly confirmed
 - Explicit human approval is given — this is never automatic
+
+---
+
+## Backlog — Future Engineering Work (Not Yet Started)
+
+This section is future work only. Completed patches are NOT
+recorded here — git commit history is the source of truth for
+what has already been built. Items are removed from this list
+once implemented, not marked "done" in place.
+
+### High Priority
+
+**Resolution Cache**
+Goal: Avoid repeatedly resolving the same market across large
+wallet batches.
+
+Done when:
+- Market resolutions cached locally
+- Duplicate API calls reduced
+- Cache behavior documented
+- Cache invalidation strategy documented
+
+**ConditionId Validation Layer**
+Goal: Prevent malformed identifiers from contaminating discovery
+or analysis.
+
+Done when:
+- ConditionIds validated before query execution
+- Invalid IDs fail loudly
+- Legacy pre-fix snapshot data detected automatically
+
+**Combined Filter Stress Testing**
+Goal: Validate user+market filtering under larger workloads.
+
+Done when:
+- Multiple wallets tested
+- Multiple markets tested
+- Higher trade counts tested
+- Pagination behavior verified
+- Truncation and duplication checks completed
+
+### Medium Priority
+
+**Discovery Classification Improvements**
+Goal: Improve classification quality during wallet discovery.
+
+Potential improvements:
+- Pass slug information into classifiers
+- Improve ultra-short market detection
+- Reduce classification edge cases
