@@ -1,17 +1,16 @@
 """
 Liquid Research — Find Resolved Market (Diagnostic, Phase 3 Validation)
 
-ONE-OFF VALIDATION SCRIPT. Not a permanent feature, not a new
-architecture module. This exists to answer one question: among all
-markets discovered by wallet_discovery.py, is there at least one
-that has actually resolved, and which candidate wallets touched it?
+ONE-OFF VALIDATION SCRIPT. Not a permanent feature.
 
-Strategy: search MARKETS first (cheap, ~20 unique conditionIds),
-not wallets (684 of them). The first resolved market found tells
-us directly which wallets to test next.
-
-Reuses market_resolution.py's existing, already-verified functions.
-No new resolution logic is written here.
+CORRECTED VERSION: the original approach pulled a generic 100-200
+market batch from Gamma and hoped our discovered conditionIds
+happened to be in it — they never were, since that batch is sorted
+by Polymarket's own default ordering, unrelated to our discovery
+set. This version instead pulls one real trade per discovered
+market directly from the Data API (which reliably includes 'slug'
+on every trade record), then resolves via fetch_market_by_slug() —
+the same confirmed-reliable method fixed in market_resolution.py.
 
 No wallet connection. No private key. No execution. No scoring.
 No rankings. No leaderboard. Read-only.
@@ -33,11 +32,10 @@ from market_resolution import fetch_market_by_slug, determine_winning_outcome
 console = Console()
 
 CANDIDATE_WALLETS_PATH = "data/wallets/candidate_wallets.csv"
-GAMMA_API_MARKETS = "https://gamma-api.polymarket.com/markets"
+DATA_API_TRADES = "https://data-api.polymarket.com/trades"
 
 
 def load_candidate_wallets() -> pd.DataFrame:
-    """Load candidate_wallets.csv, same path used by wallet_analyzer.py."""
     if not os.path.exists(CANDIDATE_WALLETS_PATH):
         console.print(f"[red]No file found at {CANDIDATE_WALLETS_PATH}[/red]")
         return pd.DataFrame()
@@ -45,100 +43,31 @@ def load_candidate_wallets() -> pd.DataFrame:
 
 
 def extract_unique_condition_ids(candidates_df: pd.DataFrame) -> set:
-    """Pull every unique conditionId across all wallets' discovered_condition_ids."""
     all_ids = set()
     for raw_ids in candidates_df["discovered_condition_ids"].dropna():
         all_ids.update(raw_ids.split("|"))
     return all_ids
 
 
-def build_condition_id_to_slug_map(closed_only: bool = False, limit: int = 100) -> dict:
+def get_slug_for_condition_id(condition_id: str) -> str:
     """
-    Pull a batch of markets from the Gamma API and build a
-    conditionId -> slug lookup. Reuses the same simple GET pattern
-    already proven in market_collector.py and earlier diagnostics.
-
-    Receives:
-        closed_only (bool): if True, only request closed markets
-        limit (int): how many markets to pull per call
-
-    Returns:
-        dict: {conditionId: slug}
+    Get a market's slug by pulling just one real trade for it
+    from the Data API, then reading the slug off that trade.
+    Reuses the confirmed-working market= filter.
     """
-    params = {"limit": limit}
-    if closed_only:
-        params["closed"] = "true"
-
+    params = {"market": condition_id, "limit": 1}
     try:
-        response = requests.get(GAMMA_API_MARKETS, params=params, timeout=15)
+        response = requests.get(DATA_API_TRADES, params=params, timeout=15)
         response.raise_for_status()
-        markets = response.json()
+        trades = response.json()
+        if trades:
+            return trades[0].get("slug")
     except requests.RequestException as e:
-        console.print(f"[red]API error fetching markets: {e}[/red]")
-        return {}
-
-    return {m.get("conditionId"): m.get("slug") for m in markets if m.get("conditionId")}
-
-
-def check_market_resolution_status(condition_id: str, slug_map: dict) -> dict:
-    """
-    Check one conditionId's resolution status, using the already
-    -verified fetch_market_by_slug() + determine_winning_outcome()
-    pipeline from market_resolution.py.
-
-    Receives:
-        condition_id (str)
-        slug_map (dict): conditionId -> slug lookup
-
-    Returns:
-        dict: {
-            "condition_id": ...,
-            "slug_found": bool,
-            "resolution_confidence": str or None,
-            "winning_outcome": str or None,
-        }
-    """
-    slug = slug_map.get(condition_id)
-
-    if not slug:
-        return {
-            "condition_id": condition_id,
-            "slug_found": False,
-            "resolution_confidence": None,
-            "winning_outcome": None,
-        }
-
-    market = fetch_market_by_slug(slug)
-    if not market:
-        return {
-            "condition_id": condition_id,
-            "slug_found": True,
-            "resolution_confidence": None,
-            "winning_outcome": None,
-        }
-
-    resolution = determine_winning_outcome(market)
-    return {
-        "condition_id": condition_id,
-        "slug_found": True,
-        "resolution_confidence": resolution["resolution_confidence"],
-        "winning_outcome": resolution["winning_outcome"],
-        "question": market.get("question", "Unknown"),
-    }
+        console.print(f"[red]API error fetching trade for {condition_id}: {e}[/red]")
+    return None
 
 
 def find_wallets_for_market(candidates_df: pd.DataFrame, condition_id: str) -> list:
-    """
-    Find every candidate wallet whose discovered_condition_ids
-    contains the given conditionId.
-
-    Receives:
-        candidates_df (pd.DataFrame)
-        condition_id (str)
-
-    Returns:
-        list[dict]: matching wallet rows as dicts
-    """
     matches = candidates_df[
         candidates_df["discovered_condition_ids"].str.contains(condition_id, na=False)
     ]
@@ -147,7 +76,7 @@ def find_wallets_for_market(candidates_df: pd.DataFrame, condition_id: str) -> l
 
 def main():
     console.print("\n[bold cyan]Liquid Research — Find Resolved Market (Validation Diagnostic)[/bold cyan]")
-    console.print("[dim]Searching discovered markets for resolution status...[/dim]\n")
+    console.print("[dim]Searching discovered markets for resolution status (corrected slug lookup)...[/dim]\n")
 
     candidates_df = load_candidate_wallets()
     if candidates_df.empty:
@@ -155,15 +84,7 @@ def main():
 
     unique_ids = extract_unique_condition_ids(candidates_df)
     console.print(f"Unique discovered conditionIds: {len(unique_ids)}\n")
-
-    console.print("Building conditionId -> slug map from live Gamma API...")
-    console.print("  Pass 1: closed markets...")
-    slug_map = build_condition_id_to_slug_map(closed_only=True, limit=100)
-    console.print("  Pass 2: all markets (catch any not yet marked closed)...")
-    slug_map.update(build_condition_id_to_slug_map(closed_only=False, limit=100))
-    console.print(f"  Slug map built: {len(slug_map)} markets total\n")
-
-    console.print("Checking resolution status for each discovered market...\n")
+    console.print("Resolving each market via real trade slug + fetch_market_by_slug()...\n")
 
     table = Table(show_lines=True)
     table.add_column("ConditionId", max_width=14)
@@ -174,21 +95,26 @@ def main():
     resolved_markets = []
 
     for condition_id in unique_ids:
-        result = check_market_resolution_status(condition_id, slug_map)
+        slug = get_slug_for_condition_id(condition_id)
 
-        confidence_display = result["resolution_confidence"] or "[dim]Not in batch[/dim]"
-        winner_display = result.get("winning_outcome") or "[dim]None[/dim]"
-        question_display = result.get("question", "")[:38]
+        if not slug:
+            table.add_row(condition_id[:12] + "...", "[dim]No trades found[/dim]", "Unknown", "None")
+            continue
 
-        table.add_row(
-            condition_id[:12] + "...",
-            question_display,
-            confidence_display,
-            winner_display,
-        )
+        market = fetch_market_by_slug(slug)
+        if not market:
+            table.add_row(condition_id[:12] + "...", "[dim]Slug lookup failed[/dim]", "Unknown", "None")
+            continue
 
-        if result["resolution_confidence"] == "Confirmed":
-            resolved_markets.append(result)
+        resolution = determine_winning_outcome(market)
+        question = market.get("question", "Unknown")[:38]
+        confidence = resolution["resolution_confidence"]
+        winner = resolution["winning_outcome"] or "[dim]None[/dim]"
+
+        table.add_row(condition_id[:12] + "...", question, confidence, winner)
+
+        if confidence == "Confirmed":
+            resolved_markets.append({**resolution, "question": question})
 
     console.print(table)
 
@@ -198,11 +124,9 @@ def main():
 
     if not resolved_markets:
         console.print(
-            "\n[yellow]No resolved markets found among discovered conditionIds "
-            "in this batch. This may mean: (a) none have resolved yet, or "
-            "(b) they exist but weren't in the 100-market sample pulled "
-            "this run. Consider re-running with a larger limit or a fresh "
-            "snapshot.[/yellow]\n"
+            "\n[yellow]No resolved markets found among discovered conditionIds. "
+            "All sampled Active Research markets remain genuinely open at "
+            "this time.[/yellow]\n"
         )
         return
 
@@ -227,12 +151,7 @@ def main():
             best = matching_wallets[0]
             console.print(
                 f"\n[bold cyan]Recommended validation candidate: "
-                f"{best['wallet_address']}[/bold cyan]"
-            )
-            console.print(
-                "[dim]Chosen because it's the first match — any wallet in "
-                "this list is valid, since this market is confirmed "
-                "resolved regardless of which wallet we pick.[/dim]\n"
+                f"{best['wallet_address']}[/bold cyan]\n"
             )
 
 

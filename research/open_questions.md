@@ -48,6 +48,14 @@ older resolved markets. Better approach identified: search markets
 for resolution status first, then find which discovered wallets
 touched that specific market, rather than picking a wallet first.
 Status: Open
+Update (2026-06-20): Re-ran find_resolved_market.py after fixing
+the slug-lookup bug in market_resolution.py. With the bug fixed,
+the script now correctly resolves every market's real question
+and status (previously showed false "Not in batch" for all 20).
+Result confirmed honestly: all 20 discovered markets are still
+genuinely Open. This is real-world timing, not a tooling gap.
+Status: Confirmed — answer is "not enough time has passed yet,"
+not a code issue.
 Date raised: 2026-06-19
 
 
