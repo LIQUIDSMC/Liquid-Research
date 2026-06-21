@@ -60,3 +60,20 @@ Date raised: 2026-06-19
 
 
 
+---
+
+Question: Does clob_client.py's outcome_index=0 default correctly represent the primary outcome across all market types, including genuinely multi-outcome (3+) markets?
+Why it matters: All three validation tests used the default index 0, which happened to be "Yes" in each case. Behavior for index 1, 2+ is implemented but has never actually been exercised against real data.
+Current evidence: get_market_clob_data() accepts outcome_index as a parameter and uses it correctly in code, but only the default value has been tested.
+Potential test: Run clob_client.py against a market with 3+ outcomes (e.g. a World Cup group winner market with multiple named outcomes) using outcome_index=1 or 2.
+Status: Open
+
+---
+
+Question: How does clob_client.py behave under CLOB API rate limiting (HTTP 429)?
+Why it matters: fetch_official_endpoints() and fetch_order_book() catch generic request exceptions but do not specifically detect or handle 429 responses with backoff/retry logic. Untested under real rate-limit conditions since only ~15 total calls were made across 3 markets in testing so far.
+Current evidence: No 429 response has been observed yet. Behavior under this condition is unverified.
+Potential test: Run clob_client.py against a larger batch of markets (10+) in quick succession and observe whether any 429s occur and how they're currently handled.
+Status: Open
+
+
