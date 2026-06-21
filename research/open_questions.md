@@ -58,8 +58,6 @@ Status: Confirmed — answer is "not enough time has passed yet,"
 not a code issue.
 Date raised: 2026-06-19
 
-
-
 ---
 
 Question: Does clob_client.py's outcome_index=0 default correctly represent the primary outcome across all market types, including genuinely multi-outcome (3+) markets?
@@ -76,4 +74,10 @@ Current evidence: No 429 response has been observed yet. Behavior under this con
 Potential test: Run clob_client.py against a larger batch of markets (10+) in quick succession and observe whether any 429s occur and how they're currently handled.
 Status: Open
 
+---
 
+Question: Are the 0.05/0.95 thresholds in filters.py's _is_near_extreme_price() the right cutoffs for flagging "near 0 or 1" pricing in spread quality labels?
+Why it matters: These thresholds were chosen by inspection, not derived from data. Only one real data point (Ivory Coast, midpoint 0.0055) has confirmed the logic fires correctly. No data point yet confirms where it should NOT fire (e.g. is a market at midpoint 0.10 "near extreme" or not?).
+Current evidence: Single confirmed case at midpoint 0.0055. Function exists and runs without error, but the specific cutoff values are a judgment call, not a validated finding.
+Potential test: Run label_spread_quality() against more markets across a range of midpoints (0.05, 0.10, 0.15, 0.20...) to see whether 0.05/0.95 actually separates "structurally elevated spread_pct" cases from normal ones, or whether the boundary should move.
+Status: Open

@@ -110,6 +110,87 @@ def evaluate_empty_book_filter(clob_data: dict) -> dict:
     return {"passed": True, "filter": "empty_book", "reason": None}
 
 
+# ── Spread Quality Label (Patch 3) ───────────────────────────────────────────
+# Labels spread quality for scanner visibility. Does NOT kill or rank markets.
+# Bands are deliberately generous, since spread_pct alone is known to be
+# structurally elevated for low/high-probability markets (see
+# research/api_discoveries.md and Patch 3 architecture review). A "wide" or
+# "extreme" label does not mean a market should be excluded — it is
+# informational only, pending future price-aware threshold work.
+
+SPREAD_LABEL_BANDS = [
+    ("excellent", 0, 3),
+    ("acceptable", 3, 10),
+    ("wide", 10, 25),
+    ("extreme", 25, float("inf")),
+]
+
+
+def _is_near_extreme_price(midpoint) -> bool:
+    """
+    Helper: returns True if a market's midpoint sits close to 0 or 1,
+    where spread_pct is structurally elevated even for healthy markets.
+    Used only to enrich the reason text — never used to change the label
+    band itself.
+    """
+    if midpoint is None:
+        return False
+    return midpoint <= 0.05 or midpoint >= 0.95
+
+
+def label_spread_quality(clob_data: dict) -> dict:
+    """
+    Label a market's spread quality for scanner visibility. Does NOT
+    kill or rank markets — informational only.
+
+    Receives:
+        clob_data (dict): output of clob_client.get_market_clob_data()
+
+    Returns:
+        dict: {
+            "label": str,           # excellent / acceptable / wide / extreme / unknown
+            "spread_pct": float or None,
+            "reason": str           # human-readable context
+        }
+    """
+    if not clob_data:
+        return {
+            "label": "unknown",
+            "spread_pct": None,
+            "reason": "No CLOB data available",
+        }
+
+    spread_pct = clob_data.get("spread_pct")
+    midpoint = clob_data.get("midpoint")
+
+    if spread_pct is None:
+        status = clob_data.get("status", "unknown")
+        return {
+            "label": "unknown",
+            "spread_pct": None,
+            "reason": f"spread_pct unavailable (CLOB status: {status})",
+        }
+
+    label = "extreme"  # fallback if somehow no band matches (e.g. negative spread_pct)
+    for band_label, low, high in SPREAD_LABEL_BANDS:
+        if low <= spread_pct < high:
+            label = band_label
+            break
+
+
+    near_extreme = _is_near_extreme_price(midpoint)
+    if near_extreme:
+        reason = (
+            f"spread is {spread_pct}% of midpoint; market price ({midpoint}) "
+            f"is near 0 or 1, which structurally elevates spread_pct even for "
+            f"healthy markets — this is NOT necessarily a liquidity problem"
+        )
+    else:
+        reason = f"spread is {spread_pct}% of midpoint"
+
+    return {"label": label, "spread_pct": spread_pct, "reason": reason}
+
+
 # ── Standalone Test Harness ───────────────────────────────────────────────────
 
 TEST_SLUGS = [
@@ -135,6 +216,7 @@ def main():
     for slug in TEST_SLUGS:
         clob_data = get_market_clob_data(slug)
         result = evaluate_empty_book_filter(clob_data)
+        spread_label = label_spread_quality(clob_data)
 
         result_display = "[green]PASS[/green]" if result["passed"] else "[red]FAIL[/red]"
         reason_display = result["reason"] or "[dim]—[/dim]"
@@ -149,7 +231,27 @@ def main():
         )
 
     console.print(table)
+
+    console.print("\n[bold]── Spread Quality Labels (informational only — not a filter) ──[/bold]\n")
+    spread_table = Table(show_lines=True)
+    spread_table.add_column("Slug", max_width=28)
+    spread_table.add_column("Spread %")
+    spread_table.add_column("Label")
+    spread_table.add_column("Reason", max_width=50)
+
+    for slug in TEST_SLUGS:
+        clob_data = get_market_clob_data(slug)
+        spread_label = label_spread_quality(clob_data)
+        spread_table.add_row(
+            slug[:26],
+            str(spread_label["spread_pct"]),
+            spread_label["label"],
+            spread_label["reason"],
+        )
+
+    console.print(spread_table)
     console.print()
+
 
 
 if __name__ == "__main__":
