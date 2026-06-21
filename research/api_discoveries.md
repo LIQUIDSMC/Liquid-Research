@@ -25,8 +25,10 @@ Status: Unreviewed / Reviewing / Rejected / Archived / Experiment / Promoted
 - /price?side=SELL was observed to match the correctly parsed best ASK, in both tests.
 - /price?side=BUY was observed to match the correctly parsed best BID, in both tests.
 
-**Limitation:** Only two markets were tested, and both were negRisk=True. A non-negRisk market has not yet been tested. This finding should not be treated as confirmed platform-wide behavior until tested against additional market types, including a non-negRisk market and a closed/illiquid market with a populated book.
+**Limitation:** Three markets tested total — two negRisk=True (Fed rate decision, Ivory Coast World Cup), one negRisk=False (Strait of Hormuz traffic). All three showed identical sort order and identical official-endpoint matching behavior, regardless of negRisk status. This suggests the behavior is not negRisk-dependent, but remains based on a small sample (three active, currently-open markets). Not yet tested: a closed market with a populated book (all closed markets tested so far had empty books), and markets with more than two outcomes beyond the World Cup case already covered.
+
 
 Date verified: 2026-06-20
-Evidence: diagnostics/clob_book_structure.py, two-market run, this session.
+Evidence: diagnostics/clob_book_structure.py, three-market run (one negRisk=False added), this session.
+
 Affects: Any future CLOB-based scanner logic. Manual book parsing must scan for max/min by value, never assume position.

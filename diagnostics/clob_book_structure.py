@@ -28,7 +28,9 @@ CLOB_BASE = "https://clob.polymarket.com"
 SLUGS_TO_TEST = [
     "will-there-be-no-change-in-fed-interest-rates-after-the-july-2026-meeting",
     "will-ivory-coast-win-the-2026-fifa-world-cup",
+    "strait-of-hormuz-traffic-returns-to-normal-by-end-of-june",
 ]
+
 
 
 def fetch_market_by_slug(slug: str) -> dict:
