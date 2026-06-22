@@ -11,6 +11,8 @@ Verified? Yes / No (link verification if yes)
 Relevance: (which module(s) affected)
 Status: Unreviewed / Reviewing / Rejected / Archived / Experiment / Promoted
 
+## Current Entries
+
 ---
 
 **Discovery:** In the two markets tested, the raw /book endpoint's bid and ask lists were sorted in opposite directions. Bids were sorted ASCENDING (worst to best); asks were sorted DESCENDING (worst to best). Index 0 in each list was therefore the WORST price on that side, not the best.
