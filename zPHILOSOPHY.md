@@ -277,12 +277,18 @@ The user should never have to guess:
 
 ## Project Status
 
+Phase 0 — Planning ✅ COMPLETE
 Phase 1 — Data Collection ✅ COMPLETE
-Phase 2 — Data Validation 🔄 IN PROGRESS
-Phase 3 — Wallet Research 🔲 NOT STARTED
-Phase 4 — Scanner Improvements 🔲 NOT STARTED
+Phase 2 — Market Classification ✅ COMPLETE
+Phase 3 — Wallet Research ✅ COMPLETE
+Phase 4 — Scanner Engine ✅ COMPLETE
 Phase 5 — Paper Trading 🔲 NOT STARTED
 Phase 6 — Performance Analysis 🔲 NOT STARTED
 Phase 7 — Dashboard 🔲 NOT STARTED
 Phase 8 — Alerts 🔲 NOT STARTED
 Phase 9 — Execution 🔒 LOCKED
+
+Note: this section is kept in sync with zROADMAP.md's own Phase
+Status section, which is the authoritative, commit-by-commit
+record. If the two ever disagree, zROADMAP.md should be treated
+as correct and this section updated to match — not the reverse.

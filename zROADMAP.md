@@ -157,21 +157,52 @@ Done when:
 - Results manually verified against raw trade history ✅
 
 
-### PHASE 4 — Scanner Engine 🔲 NOT STARTED
+### PHASE 4 — Scanner Engine ✅ COMPLETE
 Goal:
 Expand kill filters. Add order book depth checks. Add real
 spread from CLOB API. Score surviving markets.
 
-Files to build:
-- scanner/scanner.py
-- scanner/filters.py
-- scanner/scorer.py
+Completed (five patches):
+- Patch 1: scanner/clob_client.py — order book retrieval, correct
+  bid/ask parsing (bids ascending, asks descending — validated
+  against three structurally different markets)
+- Patch 2: scanner/filters.py — empty-book kill filter, returns
+  explainable pass/fail dict with specific reason
+- Patch 3: scanner/filters.py — spread quality labels (excellent/
+  acceptable/wide/extreme/unknown), informational only, not a
+  kill filter, deliberately generous to avoid penalizing low/high-
+  probability markets with structurally elevated spread_pct
+- Patch 4: collectors/market_collector.py — added slug field to
+  snapshot CSVs, eliminating dependency on unreliable conditionId
+  lookup for scanner use
+- Patch 5: scanner/scorer.py + scanner/scanner.py — full
+  orchestration: reads snapshot, fetches CLOB data via slug,
+  applies filters, computes tradeability_score, ranks top 10,
+  saves results to data/scanner/. Live-verified against 21 real
+  markets; a latent NaN-propagation bug was found in code review
+  and fixed before commit.
+
+Verification:
+- 21/21 markets scanned successfully with real CLOB data
+- Zero markets killed in this run — explained, not assumed: Phase
+  1's existing Gamma-side filters already remove thin/illiquid
+  markets before CLOB scoring reaches them, so the empty-book
+  filter currently has nothing left to catch on this snapshot
+- Independent CSV verification matched terminal output exactly
+- No conditionId fallback logic anywhere in the scanner
 
 Done when:
-- Terminal prints scanned / killed / passed summary
-- Every killed market has a documented reason
-- Every passed market has a score
-- Top 10 opportunities ranked and explained
+- Terminal prints scanned / killed / passed summary ✅
+- Every killed market has a documented reason ✅
+- Every passed market has a score ✅
+- Top 10 opportunities ranked and explained ✅
+
+Deferred to future backlog (not required for Phase 4 completion):
+- Depth-near-inside-market as a ranking signal
+- Order Book Imbalance / micro-price (logged in Research Vault,
+  flagged as testable with existing clob_client.py — not yet
+  promoted to roadmap status)
+
 
 ### PHASE 5 — Paper Trading Simulator 🔲 NOT STARTED
 Goal:
