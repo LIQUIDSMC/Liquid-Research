@@ -1,4 +1,3 @@
-cat > .gitignore << 'EOF'
 venv/
 __pycache__/
 *.pyc
@@ -8,10 +7,13 @@ data/raw/*
 data/markets/*
 data/trades/*
 data/wallets/*
+data/scanner/*
+data/simulator/*
 logs/*
 !data/raw/.gitkeep
 !data/markets/.gitkeep
 !data/trades/.gitkeep
 !data/wallets/.gitkeep
+!data/scanner/.gitkeep
+!data/simulator/.gitkeep
 !logs/.gitkeep
-EOF
