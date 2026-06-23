@@ -204,20 +204,25 @@ Deferred to future backlog (not required for Phase 4 completion):
   promoted to roadmap status)
 
 
-### PHASE 5 — Paper Trading Simulator 🔲 NOT STARTED
-Goal:
-Simulate entries and exits against real market data.
-Track fake bankroll. Never use real money.
+### PHASE 5 — Research Improvements 🔄 IN PROGRESS
 
-Files to build:
-- simulator/paper_trader.py
-- simulator/risk_sizer.py
-- simulator/exit_logic.py
+Goal:
+Remove Top-5 selection bias and capture metadata required for
+category and score-bucket analysis, before the dataset scales.
+
+Tasks:
+- Convert paper_trader.py from Top 5 to All Passing Markets
+- Capture category and category_tier per trade
+- Capture scanner_run_id per trade
+- Capture liquidity, volume_24h, spread_label per trade
+- Track market recurrence (same market_id appearing across runs)
 
 Done when:
-- 100 simulated trades logged
-- Win rate, avg win, avg loss, max drawdown tracked
-- Every trade has entry reason, exit reason, confidence score
+- paper_trader.py creates one entry per passing market, not just Top 5
+- Every new trade record includes category, category_tier,
+  scanner_run_id, liquidity, volume_24h, spread_label
+- Recurrence of the same market_id across multiple trades is
+  detectable from stored data
 
 ### PHASE 6 — Exit Logic Research 🔲 NOT STARTED
 Goal:
@@ -299,3 +304,18 @@ Potential improvements:
 - Pass slug information into classifiers
 - Improve ultra-short market detection
 - Reduce classification edge cases
+
+### Research Backlog (Deferred, Not Started)
+
+**Sports Research Framework**
+Goal: Sports markets currently pass through scanner and paper
+trading but are excluded from wallet research. Decide whether
+sports deserves its own analysis framework given this asymmetry,
+or whether it should be reclassified consistently across all
+three systems.
+
+**Crypto Ultra-Short Research Framework**
+Goal: Crypto Ultra-Short markets remain excluded from research
+entirely. Revisit whether a dedicated framework (different
+resolution speed, different metadata needs) would be worth
+building, or whether exclusion should remain permanent.
