@@ -1,6 +1,6 @@
 # Liquid Research — Mission Control
 
-Last updated: 2026-06-23
+Last updated: 2026-06-24
 (Updated during weekly review — see DAILY_OPERATIONS.md)
 
 ## Phase Status
@@ -10,46 +10,44 @@ Phase 5: v1 complete (paper_trader.py + paper_resolver.py),
          done; classifier redesign pending)
 
 ## Dataset Status
-Total paper trades: 34
-Open: 25
-Closed: 9
+Total paper trades: 39
+Open: 26
+Closed: 13
 
-## Category Breakdown (all trades, 2026-06-23)
-Other/Unknown: 13 (38%)
-Geopolitical: 10
+## Category Breakdown (closed trades ONLY, 2026-06-24)
+Other/Unknown: 6
 Sports: 4
-Crypto Long-Duration: 1
-Macro/Economic: 1
-Political: 0
+Missing category / legacy pre-patch rows: 3  ⚠️ trade_ids 1-5
+  predate the metadata patch (2026-06-23) and have NaN category.
+  Silently excluded from value_counts()-based analysis unless
+  explicitly accounted for — see Technical Debt below.
 
-## Category Breakdown (closed trades ONLY, 2026-06-23)
-⚠️ CRITICAL FINDING: 9/9 closed trades (100%) are Other/Unknown.
-This is NOT a partial gap — it currently blocks ALL category-
-performance analysis entirely, since there is not yet a single
-classified, resolved trade to compare. Likely explanation: short-
-duration markets (political tenure questions, single sports
-matches with named players/teams) resolve fastest and happen to
-be exactly the proper-noun-heavy questions the classifier
-misses. Longer-duration Active Research markets (Fed decisions,
-multi-year conflict questions) are still open. This pattern
-should be re-checked as more trades close — if it persists, it
-suggests resolution speed and classification failure may be
-correlated, which would be a second real finding beyond the
-classifier gap itself. See Technical Debt below.
+Progress since 2026-06-23: previously 9/9 closed trades (100%)
+were Other/Unknown. Today, 4 Sports trades resolved correctly.
+Verified root cause: these markets' SLUGS contain "mlb" (e.g.
+mlb-bos-col-2026-06-23), which analyzers/market_classifier.py
+catches by searching title+slug combined — but
+collectors/market_collector.py's Phase 1 filter only checks
+question text, so these same markets bypassed intended Phase 1
+sports exclusion (see zROADMAP.md "Sports Filter Desync / Slug-
+Blind Collector Check"). Still 0 trades exist for Political,
+Macro/Economic, Geopolitical, or Crypto Long-Duration —
+cross-category comparison remains unanswerable.
 
 ## Score Bucket Breakdown (closed trades)
 90-100: <n>
 75-90: <n>
 Below 75: <n>
 
-## Performance (closed trades only — calculated from paper_trades.csv, 2026-06-23)
-⚠️ Not statistically reliable at n=9. Treat as directional
-awareness only, not evidence.
-Win rate: 88.9% (8W / 1L)
-Total realized P&L: $89.57
-Average win: $23.70
-Average loss: -$100.00 (n=1 — single data point, not a real average yet)
-Expectancy: $9.95/trade
+## Performance (closed trades only — calculated from paper_trades.csv, 2026-06-24)
+⚠️ NOT statistically reliable at n=13. A 92.3% win rate this
+early is expected small-sample variance, NOT evidence of edge.
+Treat with extra skepticism, not extra confidence — a streak this
+clean this early is exactly the kind of result the project's
+Research Integrity Principles warn about.
+Win rate: 92.3% (12W / 1L)
+Total realized P&L: $195.82
+Expectancy: $15.06/trade
 Max drawdown: not yet meaningful at this volume
 
 ## Category Performance
@@ -103,6 +101,25 @@ backlog item "Classifier Architecture: Metadata-First Redesign."
 Sports markets pass scanner + paper trading but are excluded from
 wallet research. Crypto Ultra-Short excluded everywhere. Both
 flagged in zROADMAP.md research backlog, not yet addressed.
+
+**Sports filter desync (team-vs-team gap) — discovered 2026-06-24**
+market_collector.py and market_classifier.py maintain separate,
+unsynchronized SPORTS_KEYWORDS lists. Neither contains "vs." MLB
+markets reached paper trading despite Phase 1's intent to exclude
+sports. See zROADMAP.md backlog item "Sports Filter Desync /
+Team-vs-Team Gap."
+
+**Collector spread field misnamed — discovered 2026-06-24**
+collectors/market_collector.py's spread field is a price-sum
+integrity check (Yes+No deviation from 1.0), NOT a bid/ask
+liquidity spread, despite sharing a name with scanner.py's real
+spread_pct. Risk of future misinterpretation. See zROADMAP.md
+backlog item "Misleading Collector Spread Field."
+
+**Legacy rows missing category metadata — discovered 2026-06-24**
+trade_ids 1-5 predate the category metadata patch and have NaN
+category, silently excluded from category.value_counts() analysis.
+See zROADMAP.md backlog item "Legacy Missing Category Metadata."
 
 ## Future Category Analysis Section (placeholder, populate once unblocked)
 Political:        win rate __  expectancy __

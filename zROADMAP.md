@@ -308,8 +308,6 @@ Done when:
 - Pagination behavior verified
 - Truncation and duplication checks completed
 
-### High Priority
-
 **Classifier Architecture: Metadata-First Redesign**
 (Formerly "Discovery Classification Improvements" — expanded and
 renamed following a concrete finding during Phase 5 Research
@@ -370,3 +368,98 @@ Goal: Crypto Ultra-Short markets remain excluded from research
 entirely. Revisit whether a dedicated framework (different
 resolution speed, different metadata needs) would be worth
 building, or whether exclusion should remain permanent.
+
+**Sports Filter Desync / Slug-Blind Collector Check**
+Goal: Ensure sports markets are reliably excluded at Phase 1,
+matching the project's intended design.
+
+Problem: Sports are intended to be excluded early in the
+pipeline, but MLB markets (e.g. "Texas Rangers vs. Miami
+Marlins") reached paper trading on 2026-06-23 and 2026-06-24.
+
+Root cause (verified, not assumed): collectors/market_collector.py's
+is_sports_market() checks ONLY the question text. The literal
+question "Boston Red Sox vs. Colorado Rockies" contains no word
+from SPORTS_KEYWORDS. analyzers/market_classifier.py's
+classify_category() correctly classified the same markets as
+Sports because it searches title AND slug combined — the slug
+"mlb-bos-col-2026-06-23" contains the literal substring "mlb",
+which IS in SPORTS_KEYWORDS. The classifier already solves this
+correctly; the collector's filter simply never checks the slug.
+
+Impact: Sports markets with proper-noun-only question text but a
+league-abbreviated slug bypass Phase 1's intended exclusion,
+reaching paper trading despite the project's explicit design
+intent (Sports excluded from wallet research, included in scanner/
+paper trading per existing zROADMAP.md decisions — but this
+specific case was meant to be excluded entirely at Phase 1, not
+just allowed through to scanner/paper trading).
+
+Done when:
+- collectors/market_collector.py's is_sports_market() checks slug
+  text in addition to question text, matching the pattern already
+  used correctly in analyzers/market_classifier.py
+- Verified against real data that MLB-style matchup markets are
+  now correctly excluded at Phase 1
+- Consider whether the two files should share one function instead
+  of maintaining parallel SPORTS_KEYWORDS lists and matching logic
+---
+
+**Misleading Collector Spread Field**
+Goal: Stop the collector's spread field from implying it
+represents a real bid/ask liquidity spread.
+
+Problem: collectors/market_collector.py's spread field showed
+0.000 for nearly every passing market on 2026-06-23/24, while
+scanner/scanner.py's spread_pct showed real, varied values
+(1.30%-6.90%) for the same markets.
+
+Root cause: These are NOT the same measurement. Collector's
+spread = abs(1.0 - yes_price - no_price), a price-sum integrity
+check confirming Yes+No prices sum close to 1.0 (used to kill
+markets with broken/stale Gamma pricing). Scanner's spread_pct is
+the real CLOB-derived bid/ask tradeability spread (Phase 4,
+validated).
+
+Impact: The shared name "spread" is misleading and risks future
+incorrect interpretation — someone could reasonably assume
+collector spread reflects liquidity/tradeability when it does not.
+
+Done when:
+- collectors/market_collector.py's spread field is renamed to
+  something accurate (e.g. price_sum_deviation)
+- Documentation/code comments clarify that scanner/scanner.py's
+  spread_pct remains the only trustworthy tradeability/liquidity
+  spread measurement in the project
+
+---
+
+**Legacy Missing Category Metadata (trade_ids 1-5)**
+Goal: Decide how to handle paper trades created before the
+category metadata patch (Phase 5 Research Improvements,
+2026-06-23).
+
+Problem: trade_ids 1-5 in data/simulator/paper_trades.csv have
+NaN for category, category_tier, scanner_run_id, spread_label,
+liquidity, volume_24h, and recurrence_count, since these fields
+did not exist when they were created.
+
+Impact: These rows are silently excluded from any
+category.value_counts()-based analysis (pandas excludes NaN by
+default), understating closed-trade totals in category breakdowns
+without an explicit error. Discovered 2026-06-24 during a
+category audit (39 total trades, but category breakdown summed
+to only 34 before this gap was found).
+
+Decision needed: Either (a) backfill these 5 rows' category
+metadata via a one-time script using their existing
+question/slug data, or (b) explicitly document them as permanent
+legacy exclusions from category analysis.
+
+Done when:
+- A decision is made and documented (backfill vs. permanent
+  exclusion)
+- If backfilled: all 39 rows have complete metadata
+- If excluded: MISSION_CONTROL.md and any future category
+  analysis explicitly accounts for legacy rows rather than
+  silently undercounting
