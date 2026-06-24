@@ -204,25 +204,38 @@ Deferred to future backlog (not required for Phase 4 completion):
   promoted to roadmap status)
 
 
-### PHASE 5 — Research Improvements 🔄 IN PROGRESS
+### PHASE 5 — Research Improvements ✅ COMPLETE (2026-06-23)
 
 Goal:
 Remove Top-5 selection bias and capture metadata required for
 category and score-bucket analysis, before the dataset scales.
 
-Tasks:
-- Convert paper_trader.py from Top 5 to All Passing Markets
-- Capture category and category_tier per trade
-- Capture scanner_run_id per trade
-- Capture liquidity, volume_24h, spread_label per trade
-- Track market recurrence (same market_id appearing across runs)
+Completed:
+- paper_trader.py converted from Top 5 to All Passing Markets —
+  verified live: 19 new trades created in one run vs. 5 previously
+- Every new trade record now includes category, category_tier,
+  scanner_run_id, liquidity, volume_24h, spread_label,
+  recurrence_count
+- Category classification reuses analyzers/market_classifier.py
+  directly (no duplicated logic) — this surfaced the classifier
+  finding now tracked under "Classifier Architecture:
+  Metadata-First Redesign" in the backlog
+- research/DAILY_OPERATIONS.md and research/MISSION_CONTROL.md
+  created as the operating procedure and single-source-of-truth
+  scorecard for ongoing data collection
 
 Done when:
-- paper_trader.py creates one entry per passing market, not just Top 5
+- paper_trader.py creates one entry per passing market, not just Top 5 ✅
 - Every new trade record includes category, category_tier,
-  scanner_run_id, liquidity, volume_24h, spread_label
+  scanner_run_id, liquidity, volume_24h, spread_label ✅
 - Recurrence of the same market_id across multiple trades is
-  detectable from stored data
+  detectable from stored data ✅
+
+Known follow-up (not blocking, tracked in backlog):
+- Category breakdown currently shows ~42% Other/Unknown due to
+  classifier proper-noun gap — category-performance analysis
+  remains blocked until this is addressed (see Classifier
+  Architecture backlog item)
 
 ### PHASE 6 — Exit Logic Research 🔲 NOT STARTED
 Goal:
@@ -295,15 +308,53 @@ Done when:
 - Pagination behavior verified
 - Truncation and duplication checks completed
 
-### Medium Priority
+### High Priority
 
-**Discovery Classification Improvements**
-Goal: Improve classification quality during wallet discovery.
+**Classifier Architecture: Metadata-First Redesign**
+(Formerly "Discovery Classification Improvements" — expanded and
+renamed following a concrete finding during Phase 5 Research
+Improvements, 2026-06-23.)
 
-Potential improvements:
-- Pass slug information into classifiers
-- Improve ultra-short market detection
-- Reduce classification edge cases
+Goal: Reduce category misclassification, which directly threatens
+the project's category-performance research goal (comparing win
+rate/expectancy across Political, Macro/Economic, Geopolitical,
+Crypto Long-Duration, and Sports categories).
+
+Finding that motivated this:
+market_classifier.py currently uses keyword matching only.
+Markets phrased with proper nouns instead of generic category
+terms are systematically misclassified into Other/Unknown —
+observed at 10/24 (42%) of paper trades in one real dataset.
+Examples: "Starmer out by..." (no generic political keyword
+present), "Will Germany win on [date]?" (no generic sports
+keyword present — country/team names aren't in SPORTS_KEYWORDS).
+
+Likely better source of truth, not yet verified in code:
+Gamma API market responses include an `events` array, and events
+often include a `series` field (e.g. a Fed rate market's event
+ticker is "fed-decision-in-july-181" with series ticker "fomc").
+This is platform-assigned metadata, not inferred from title text —
+potentially far more reliable than keyword matching, but requires
+direct verification of availability/consistency across market
+types before being trusted as primary.
+
+Proposed approach (tiered fallback, not single-method matching):
+1. Primary: check events/series metadata if present and reliable
+2. Secondary: keyword matching (current approach) as fallback
+3. Tertiary: explicit "Unclassified — needs review" rather than
+   silently defaulting to "Other/Unknown" as if it were a real,
+   intentional category
+
+Done when:
+- Gamma events/series metadata reliability is empirically verified
+  (not assumed) across a sample of market types
+- Classification approach is redesigned per the tiered fallback
+  above, OR a documented decision is made that keyword-only
+  matching is sufficient with specific improvements
+- Other/Unknown rate is measurably reduced on a real dataset
+  (baseline: 42% as observed 2026-06-23)
+- Category-performance research (in MISSION_CONTROL.md) is
+  unblocked as a result
 
 ### Research Backlog (Deferred, Not Started)
 
