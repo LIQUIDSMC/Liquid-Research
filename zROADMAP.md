@@ -494,7 +494,7 @@ Done when:
 
 ---
 
-**Legacy Missing Category Metadata (trade_ids 1-5)**
+**✅Legacy Missing Category Metadata (trade_ids 1-5) — ✅RESOLVED 2026-06-24✅**
 Goal: Decide how to handle paper trades created before the
 category metadata patch (Phase 5 Research Improvements,
 2026-06-23).
@@ -511,15 +511,16 @@ without an explicit error. Discovered 2026-06-24 during a
 category audit (39 total trades, but category breakdown summed
 to only 34 before this gap was found).
 
-Decision needed: Either (a) backfill these 5 rows' category
-metadata via a one-time script using their existing
-question/slug data, or (b) explicitly document them as permanent
-legacy exclusions from category analysis.
+Resolution: Backfilled via simulator/backfill_2026_06_24_legacy_metadata.py,
+using the original scanner_run_20260621_2155.csv (confirmed still
+present with complete data for all 5 markets). All protected
+fields (trade_pnl, trade_won, winning_outcome, resolution_date,
+exit_reason) independently verified byte-for-byte unchanged after
+the write. The script's own automated verification initially
+reported false positives due to a NaN-vs-NaN string-comparison
+quirk; manual pd.isna() checks confirmed zero real mismatches.
 
 Done when:
 - A decision is made and documented (backfill vs. permanent
-  exclusion)
-- If backfilled: all 39 rows have complete metadata
-- If excluded: MISSION_CONTROL.md and any future category
-  analysis explicitly accounts for legacy rows rather than
-  silently undercounting
+  exclusion) ✅ (backfilled)
+- If backfilled: all 39 rows have complete metadata ✅
