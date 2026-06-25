@@ -73,7 +73,7 @@ SPORTS_KEYWORDS = [
     "baseball", "hockey", "tennis", "golf", "ufc", "mma", "boxing",
     "world cup", "super bowl", "championship", "playoffs", "game",
     "match", "tournament", "season", "team", "player", "score",
-    "fifa", "lakers", "coach",
+    "fifa", "lakers", "coach", "wta", "atp", "fifwc",
 ]
 
 ENTERTAINMENT_KEYWORDS = [
@@ -118,8 +118,8 @@ GEOPOLITICAL_CONFLICT_KEYWORDS = [
 ]
 
 GEOPOLITICAL_REGION_KEYWORDS = [
-    "nato", "china", "taiwan", "russia", "ukraine", "iran", "israel",
-    "middle east",
+    "nato", "china", "chinese", "taiwan", "russia", "russian",
+    "ukraine", "iran", "iranian", "israel", "israeli", "middle east",
 ]
 
 POLITICAL_KEYWORDS = [

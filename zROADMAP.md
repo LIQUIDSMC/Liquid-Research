@@ -343,6 +343,18 @@ Proposed approach (tiered fallback, not single-method matching):
    silently defaulting to "Other/Unknown" as if it were a real,
    intentional category
 
+Interim hygiene patch (2026-06-25, NOT a substitute for the full
+redesign above): added missing sports league/slug terms ("wta",
+"atp", "fifwc") and adjectival geopolitical forms ("iranian",
+"israeli", "russian", "chinese") to existing keyword lists.
+Measured result on real dataset: Other/Unknown reduced from 21 to
+8 trades (62%). Remaining 8 trades are genuine proper-noun cases
+(politician surnames, named individuals with no topical keyword)
+that keyword matching alone cannot solve — these require the
+events/series metadata approach below, or are permanently
+unsolvable by text-matching alone. This interim patch does NOT
+close this backlog item; the metadata-first redesign remains open.
+
 Done when:
 - Gamma events/series metadata reliability is empirically verified
   (not assumed) across a sample of market types
@@ -417,7 +429,7 @@ Done when:
 
 ---
 
-**FIFWC Slug Prefix Not Recognized as Sports**
+**✅FIFWC Slug Prefix Not Recognized as Sports — ✅RESOLVED 2026-06-25✅**
 Goal: Recognize "fifwc"-prefixed slugs (individual FIFA World Cup
 match markets) as Sports, matching the existing recognition of
 the literal phrase "world cup" in tournament-winner market titles.
@@ -425,19 +437,22 @@ the literal phrase "world cup" in tournament-winner market titles.
 Discovered: 2026-06-24, during verification testing of the Sports
 Filter Desync fix above. Confirmed via direct testing to be
 pre-existing in BOTH the old collector logic and the current
-classifier — not a regression introduced by that fix. A real
-single-match market ("Will Germany win on 2026-06-25?", slug
-"fifwc-ger-jpn-2026-06-25-ger") is not recognized as Sports by
-either system, since neither system's keyword list contains
-"fifwc" — only the literal phrase "world cup" or "fifa" are
-recognized, and this particular slug/title combination contains
-neither.
+classifier — not a regression introduced by that fix.
+
+Resolution: "wta", "atp", and "fifwc" added to SPORTS_KEYWORDS in
+analyzers/market_classifier.py, as part of a narrow classifier
+hygiene patch (see "Classifier Architecture" entry below for
+context). Verified against real markets: World Cup match,
+tennis (WTA and ATP) markets now correctly classify as Sports.
+Measured impact on real dataset: contributed to a 21->8 reduction
+in Other/Unknown trades (62% reduction), alongside the adjectival
+geopolitical fix below.
 
 Done when:
 - SPORTS_KEYWORDS (in analyzers/market_classifier.py) includes
-  "fifwc" or an equivalent pattern
+  "fifwc" or an equivalent pattern ✅
 - Verified against a real fifwc-prefixed market that it's now
-  correctly classified as Sports
+  correctly classified as Sports ✅
 
 ---
 
