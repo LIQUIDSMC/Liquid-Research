@@ -30,7 +30,9 @@ winning_outcome="Miami Marlins", trade_won=True, P&L=$15.61,
 matches formula exactly). Other/Unknown's raw count continues
 growing daily (15 -> 21), confirming the classifier proper-noun
 gap remains the highest-leverage unresolved issue blocking full
-category-performance analysis.
+category-performance analysis. Political, Macro/Economic, and
+Crypto Long-Duration now all have at least some representation,
+unlike 2026-06-23/24 when they had zero.
 
 ## Score Bucket Breakdown (closed trades)
 90-100: <n>
@@ -38,13 +40,17 @@ category-performance analysis.
 Below 75: <n>
 
 ## Performance (closed trades only — calculated from paper_trades.csv, 2026-06-25)
-⚠️ NOT statistically reliable at n=14. Treat with skepticism, not confidence.
+⚠️ NOT statistically reliable at n=14. A 92.9% win rate this
+early is expected small-sample variance, NOT evidence of edge.
 Win rate: 92.9% (13W / 1L)
+Total realized P&L: $211.43
+Expectancy: $15.10/trade
+Max drawdown: not yet meaningful at this volume
 
 ## Category Performance
-BLOCKED — currently 0 categories have ANY closed trades to
-analyze (100% of closed trades are Other/Unknown as of
-2026-06-23). This is more severe than originally anticipated.
+BLOCKED. As of 2026-06-25, several categories now have at least
+one closed trade (Sports: several, others: still very few), but
+none have anywhere near enough volume for meaningful comparison.
 Remains blocked until: (a) ≥20-30 closed trades per category, AND
 (b) classifier redesign reduces Other/Unknown rate substantially.
 
@@ -56,11 +62,9 @@ independently once volume allows.
 ## Primary Research Question
 "Does higher tradeability_score produce better paper-trade
 outcomes than lower-score markets?"
-Status: Insufficient data (9 closed trades). Encouraging sign:
-2026-06-23's scanner run achieved real score diversity (72.3 to
-99.7) vs. the first dataset's narrow 99+ clustering — All-Passing
-migration working as intended for sample diversity. Still far
-below the 30-trade first-look threshold.
+Status: Insufficient data (14 closed trades). Still far below the
+30-trade first-look threshold. All-Passing migration continues
+working as intended for score diversity.
 
 ## Research Milestones
 - [ ] 30 resolved trades — first directional look (median split)
@@ -93,19 +97,21 @@ Sports markets pass scanner + paper trading but are excluded from
 wallet research. Crypto Ultra-Short excluded everywhere. Both
 flagged in zROADMAP.md research backlog, not yet addressed.
 
-**Sports filter desync (team-vs-team gap) — discovered 2026-06-24**
-market_collector.py and market_classifier.py maintain separate,
-unsynchronized SPORTS_KEYWORDS lists. Neither contains "vs." MLB
-markets reached paper trading despite Phase 1's intent to exclude
-sports. See zROADMAP.md backlog item "Sports Filter Desync /
-Team-vs-Team Gap."
+**Sports filter desync — RESOLVED 2026-06-24, verified in production 2026-06-25**
+Fixed via shared classify_market() reuse in collectors/market_collector.py.
+"Texas Rangers vs. Miami Marlins" resolved 2026-06-25 as a
+correctly-classified, correctly-scored Sports trade, confirming
+the fix works end-to-end. See zROADMAP.md "Sports Filter Desync /
+Slug-Blind Collector Check." Note: a separate, smaller gap was
+found during verification — "fifwc"-prefixed slugs (individual
+World Cup match markets) are still not recognized as Sports by
+either system. Tracked separately as "FIFWC Slug Prefix Not
+Recognized as Sports" in zROADMAP.md.
 
-**Collector spread field misnamed — discovered 2026-06-24**
-collectors/market_collector.py's spread field is a price-sum
-integrity check (Yes+No deviation from 1.0), NOT a bid/ask
-liquidity spread, despite sharing a name with scanner.py's real
-spread_pct. Risk of future misinterpretation. See zROADMAP.md
-backlog item "Misleading Collector Spread Field."
+**Collector spread field misnamed — RESOLVED 2026-06-24**
+Renamed to price_sum_deviation throughout (variable, CSV column,
+table header, kill-reason message). Verified via live collector
+run. See zROADMAP.md "Misleading Collector Spread Field."
 
 **Legacy rows missing category metadata — RESOLVED 2026-06-24**
 trade_ids 1-5 predated the category metadata patch and had NaN
