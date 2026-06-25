@@ -107,7 +107,7 @@ def process_markets(raw_markets):
 
         yes_price = parse_price(outcome_prices[0]) if len(outcome_prices) > 0 else 0.0
         no_price = parse_price(outcome_prices[1]) if len(outcome_prices) > 1 else 0.0
-        spread = round(abs(1.0 - yes_price - no_price), 4)
+        price_sum_deviation = round(abs(1.0 - yes_price - no_price), 4)
         liquidity = float(m.get("liquidity") or 0)
 
         if is_sports_market(question):
@@ -130,15 +130,15 @@ def process_markets(raw_markets):
             kill_log.append({"question": question[:80], "kill_reason": f"EXTREME PRICE — yes={yes_price:.2f} (no edge)"})
             continue
 
-        if spread > 0.10:
-            kill_log.append({"question": question[:80], "kill_reason": f"WIDE SPREAD — {spread:.3f} (over 10%)"})
+        if price_sum_deviation > 0.10:
+            kill_log.append({"question": question[:80], "kill_reason": f"PRICE SUM DEVIATION — {price_sum_deviation:.3f} (over 10%, Yes+No pricing looks broken/stale)"})
             continue
 
         passed.append({
             "question": question[:100],
             "yes_price": round(yes_price, 4),
             "no_price": round(no_price, 4),
-            "spread": spread,
+            "price_sum_deviation": price_sum_deviation,
             "volume_24h": round(volume_24h, 2),
             "volume_total": round(volume_total, 2),
             "liquidity": round(liquidity, 2),
@@ -176,7 +176,7 @@ def print_results(passed_df, kill_df, total_fetched):
     table.add_column("#", style="dim", width=3)
     table.add_column("Market Question", style="white", max_width=52)
     table.add_column("YES", justify="right", style="green")
-    table.add_column("Spread", justify="right", style="yellow")
+    table.add_column("Price Sum Dev", justify="right", style="yellow")
     table.add_column("Vol 24h", justify="right", style="cyan")
     table.add_column("Days", justify="right")
     table.add_column("Focus", justify="center")
@@ -186,7 +186,7 @@ def print_results(passed_df, kill_df, total_fetched):
             str(i + 1),
             row["question"],
             f"{row['yes_price']:.3f}",
-            f"{row['spread']:.3f}",
+            f"{row['price_sum_deviation']:.3f}",
             f"${row['volume_24h']:,.0f}",
             f"{row['days_left']:.0f}d",
             "[green]✓[/green]" if row["focus_match"] else "·",

@@ -405,7 +405,7 @@ Done when:
   of maintaining parallel SPORTS_KEYWORDS lists and matching logic
 ---
 
-**Misleading Collector Spread Field**
+**✅Misleading Collector Spread Field — ✅RESOLVED 2026-06-24✅**
 Goal: Stop the collector's spread field from implying it
 represents a real bid/ask liquidity spread.
 
@@ -425,12 +425,21 @@ Impact: The shared name "spread" is misleading and risks future
 incorrect interpretation — someone could reasonably assume
 collector spread reflects liquidity/tradeability when it does not.
 
+Resolution: collectors/market_collector.py's spread field renamed
+to price_sum_deviation throughout (variable, kill-reason message,
+CSV column, console table header "Price Sum Dev"). Verified
+end-to-end via a live collector run (100 fetched, 79 killed, 21
+passed) — new snapshot CSV confirmed to contain
+price_sum_deviation as the column name. scanner/scanner.py's
+spread_pct remains the only trustworthy tradeability/liquidity
+spread measurement in the project.
+
 Done when:
 - collectors/market_collector.py's spread field is renamed to
-  something accurate (e.g. price_sum_deviation)
+  something accurate (e.g. price_sum_deviation) ✅
 - Documentation/code comments clarify that scanner/scanner.py's
   spread_pct remains the only trustworthy tradeability/liquidity
-  spread measurement in the project
+  spread measurement in the project ✅
 
 ---
 
