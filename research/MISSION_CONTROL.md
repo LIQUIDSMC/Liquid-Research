@@ -1,6 +1,6 @@
 # Liquid Research — Mission Control
 
-Last updated: 2026-06-24
+updated: 2026-06-25
 (Updated during weekly review — see DAILY_OPERATIONS.md)
 
 ## Phase Status
@@ -10,45 +10,36 @@ Phase 5: v1 complete (paper_trader.py + paper_resolver.py),
          done; classifier redesign pending)
 
 ## Dataset Status
-Total paper trades: 39
-Open: 26
-Closed: 13
+Total paper trades: 45
+Open: 31
+Closed: 14
 
-## Category Breakdown (closed trades ONLY, 2026-06-24)
-Other/Unknown: 6
-Sports: 4
-Missing category / legacy pre-patch rows: 3  ⚠️ trade_ids 1-5
-  predate the metadata patch (2026-06-23) and have NaN category.
-  Silently excluded from value_counts()-based analysis unless
-  explicitly accounted for — see Technical Debt below.
+## Category Breakdown (all trades, 2026-06-25)
+Other/Unknown: 21 (47%)
+Geopolitical: 12
+Sports: 5
+Macro/Economic: 3
+Crypto Long-Duration: 3
+Political: 1
 
-Progress since 2026-06-23: previously 9/9 closed trades (100%)
-were Other/Unknown. Today, 4 Sports trades resolved correctly.
-Verified root cause: these markets' SLUGS contain "mlb" (e.g.
-mlb-bos-col-2026-06-23), which analyzers/market_classifier.py
-catches by searching title+slug combined — but
-collectors/market_collector.py's Phase 1 filter only checks
-question text, so these same markets bypassed intended Phase 1
-sports exclusion (see zROADMAP.md "Sports Filter Desync / Slug-
-Blind Collector Check"). Still 0 trades exist for Political,
-Macro/Economic, Geopolitical, or Crypto Long-Duration —
-cross-category comparison remains unanswerable.
+Note: Sports filter desync fix (resolved 2026-06-24) confirmed
+working in production — "Texas Rangers vs. Miami Marlins" (the
+exact market that exposed the original bug) resolved today as a
+correctly-classified Sports trade, manually verified (side=No,
+winning_outcome="Miami Marlins", trade_won=True, P&L=$15.61,
+matches formula exactly). Other/Unknown's raw count continues
+growing daily (15 -> 21), confirming the classifier proper-noun
+gap remains the highest-leverage unresolved issue blocking full
+category-performance analysis.
 
 ## Score Bucket Breakdown (closed trades)
 90-100: <n>
 75-90: <n>
 Below 75: <n>
 
-## Performance (closed trades only — calculated from paper_trades.csv, 2026-06-24)
-⚠️ NOT statistically reliable at n=13. A 92.3% win rate this
-early is expected small-sample variance, NOT evidence of edge.
-Treat with extra skepticism, not extra confidence — a streak this
-clean this early is exactly the kind of result the project's
-Research Integrity Principles warn about.
-Win rate: 92.3% (12W / 1L)
-Total realized P&L: $195.82
-Expectancy: $15.06/trade
-Max drawdown: not yet meaningful at this volume
+## Performance (closed trades only — calculated from paper_trades.csv, 2026-06-25)
+⚠️ NOT statistically reliable at n=14. Treat with skepticism, not confidence.
+Win rate: 92.9% (13W / 1L)
 
 ## Category Performance
 BLOCKED — currently 0 categories have ANY closed trades to
