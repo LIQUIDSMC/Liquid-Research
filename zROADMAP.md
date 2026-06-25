@@ -369,7 +369,7 @@ entirely. Revisit whether a dedicated framework (different
 resolution speed, different metadata needs) would be worth
 building, or whether exclusion should remain permanent.
 
-**Sports Filter Desync / Slug-Blind Collector Check**
+**✅Sports Filter Desync / Slug-Blind Collector Check✅ — RESOLVED 2026-06-24✅**
 Goal: Ensure sports markets are reliably excluded at Phase 1,
 matching the project's intended design.
 
@@ -395,14 +395,50 @@ paper trading per existing zROADMAP.md decisions — but this
 specific case was meant to be excluded entirely at Phase 1, not
 just allowed through to scanner/paper trading).
 
+Resolution: collectors/market_collector.py's is_sports_market()
+now calls analyzers/market_classifier.py's classify_market()
+directly instead of maintaining a locally duplicated keyword
+list. Verified via live collector run (100 fetched, 79 killed, 21
+passed) — real World Cup tournament-winner markets correctly
+killed with reason "matched via shared classifier." Verified via
+direct isolated test: a real MLB team-vs-team market (slug
+containing "mlb") is now correctly killed; a real non-sports
+market (China/Taiwan) produces no false positive.
+
 Done when:
 - collectors/market_collector.py's is_sports_market() checks slug
   text in addition to question text, matching the pattern already
-  used correctly in analyzers/market_classifier.py
+  used correctly in analyzers/market_classifier.py ✅
 - Verified against real data that MLB-style matchup markets are
-  now correctly excluded at Phase 1
+  now correctly excluded at Phase 1 ✅
 - Consider whether the two files should share one function instead
-  of maintaining parallel SPORTS_KEYWORDS lists and matching logic
+  of maintaining parallel SPORTS_KEYWORDS lists and matching logic ✅
+  (resolved via shared classify_market() reuse)
+
+---
+
+**FIFWC Slug Prefix Not Recognized as Sports**
+Goal: Recognize "fifwc"-prefixed slugs (individual FIFA World Cup
+match markets) as Sports, matching the existing recognition of
+the literal phrase "world cup" in tournament-winner market titles.
+
+Discovered: 2026-06-24, during verification testing of the Sports
+Filter Desync fix above. Confirmed via direct testing to be
+pre-existing in BOTH the old collector logic and the current
+classifier — not a regression introduced by that fix. A real
+single-match market ("Will Germany win on 2026-06-25?", slug
+"fifwc-ger-jpn-2026-06-25-ger") is not recognized as Sports by
+either system, since neither system's keyword list contains
+"fifwc" — only the literal phrase "world cup" or "fifa" are
+recognized, and this particular slug/title combination contains
+neither.
+
+Done when:
+- SPORTS_KEYWORDS (in analyzers/market_classifier.py) includes
+  "fifwc" or an equivalent pattern
+- Verified against a real fifwc-prefixed market that it's now
+  correctly classified as Sports
+
 ---
 
 **✅Misleading Collector Spread Field — ✅RESOLVED 2026-06-24✅**

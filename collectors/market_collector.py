@@ -11,6 +11,10 @@ from rich.console import Console
 from rich.table import Table
 import os
 import json
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "analyzers"))
+from market_classifier import classify_market
 
 console = Console()
 
@@ -58,9 +62,41 @@ def fetch_markets(limit=MAX_RESULTS, offset=0):
         console.print(f"[red]API error: {e}[/red]")
         return []
 
-def is_sports_market(question):
-    q = question.lower()
-    return any(kw in q for kw in SPORTS_KEYWORDS)
+def is_sports_market(question, slug=None, days_left=None):
+    """
+    Determines whether a market is Sports, using the shared
+    classify_market() function from analyzers/market_classifier.py
+    rather than a locally duplicated keyword list. This was the
+    root cause of the original desync: market_classifier.py checks
+    title+slug combined, while this function previously checked
+    question text only, missing markets like "Texas Rangers vs.
+    Miami Marlins" whose slug (e.g. "mlb-tex-mia-2026-06-24")
+    contains a sports keyword but whose question text does not.
+
+    Fails safe: if classification raises an unexpected error,
+    this returns False (does not kill the market) rather than
+    crashing the collector — a misclassified market reaching the
+    next filter stage is a much smaller problem than the entire
+    collector run failing.
+
+    Receives:
+        question (str): the market question/title
+        slug (str or None): the market's URL slug
+        days_left (float or None): days until resolution
+
+    Returns:
+        bool: True if classify_market() returns category "Sports"
+    """
+    try:
+        classification = classify_market({
+            "title": question,
+            "slug": slug or "",
+            "days_left": days_left,
+        })
+        return classification.get("category") == "Sports"
+    except Exception as e:
+        console.print(f"[yellow]Warning: classify_market() failed during sports check ({e}). Market not killed as a precaution.[/yellow]")
+        return False
 
 def is_focus_market(question):
     q = question.lower()
@@ -110,8 +146,8 @@ def process_markets(raw_markets):
         price_sum_deviation = round(abs(1.0 - yes_price - no_price), 4)
         liquidity = float(m.get("liquidity") or 0)
 
-        if is_sports_market(question):
-            kill_log.append({"question": question[:80], "kill_reason": "SPORTS — excluded category"})
+        if is_sports_market(question, slug=m.get("slug"), days_left=days_left):
+            kill_log.append({"question": question[:80], "kill_reason": "SPORTS — excluded category (matched via shared classifier)"})
             continue
 
         if not passes_volume_filter(volume_24h, volume_total):
