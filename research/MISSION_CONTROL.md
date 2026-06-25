@@ -116,10 +116,20 @@ liquidity spread, despite sharing a name with scanner.py's real
 spread_pct. Risk of future misinterpretation. See zROADMAP.md
 backlog item "Misleading Collector Spread Field."
 
-**Legacy rows missing category metadata — discovered 2026-06-24**
-trade_ids 1-5 predate the category metadata patch and have NaN
+**Legacy rows missing category metadata — RESOLVED 2026-06-24**
+trade_ids 1-5 predated the category metadata patch and had NaN
 category, silently excluded from category.value_counts() analysis.
-See zROADMAP.md backlog item "Legacy Missing Category Metadata."
+Backfilled via simulator/backfill_2026_06_24_legacy_metadata.py
+using the original scanner_run_20260621_2155.csv (confirmed still
+present with complete data for all 5 markets). All protected
+fields (P&L, resolution, status, etc.) independently verified
+byte-for-byte unchanged after the write. Note: the backfill
+script's own automated verification initially reported false
+positives on NaN comparisons for unrelated open trades, due to a
+NaN-vs-NaN string-comparison quirk in the script — confirmed via
+direct pd.isna() checks that zero real mismatches existed. This
+was a bug in the verification script's comparison logic, not in
+the backfill itself.
 
 ## Future Category Analysis Section (placeholder, populate once unblocked)
 Political:        win rate __  expectancy __
