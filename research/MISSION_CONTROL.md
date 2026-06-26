@@ -1,6 +1,6 @@
 # Liquid Research — Mission Control
 
-updated: 2026-06-25
+Last updated: 2026-06-26
 (Updated during weekly review — see DAILY_OPERATIONS.md)
 
 ## Phase Status
@@ -10,41 +10,57 @@ Phase 5: v1 complete (paper_trader.py + paper_resolver.py),
          done; classifier redesign pending)
 
 ## Dataset Status
-Total paper trades: 45
-Open: 31
-Closed: 14
+Total paper trades: 48
+Open: 30
+Closed: 18
 
-## Category Breakdown (all trades, 2026-06-25)
-Other/Unknown: 21 (47%)
-Geopolitical: 12
-Sports: 5
+## Category Breakdown (all trades, 2026-06-26)
+Other/Unknown: 21 (44%)
+Geopolitical: 13
+Sports: 7
+Crypto Long-Duration: 4
 Macro/Economic: 3
-Crypto Long-Duration: 3
-Political: 1
+Political: 2
 
-Note: Sports filter desync fix (resolved 2026-06-24) confirmed
-working in production — "Texas Rangers vs. Miami Marlins" (the
-exact market that exposed the original bug) resolved today as a
-correctly-classified Sports trade, manually verified (side=No,
-winning_outcome="Miami Marlins", trade_won=True, P&L=$15.61,
-matches formula exactly). Other/Unknown's raw count continues
-growing daily (15 -> 21), confirming the classifier proper-noun
-gap remains the highest-leverage unresolved issue blocking full
-category-performance analysis. Political, Macro/Economic, and
-Crypto Long-Duration now all have at least some representation,
-unlike 2026-06-23/24 when they had zero.
+Note: Classifier hygiene patch (2026-06-25: added "wta", "atp",
+"fifwc", adjectival geopolitical forms) reduced Other/Unknown from
+21 to 8 unique markets at the time — but two trades created
+EARLIER on 2026-06-25, before the patch landed that same day
+("Will United States win on 2026-06-25?", "Will Japan win on
+2026-06-25?", both fifwc-prefixed slugs), were stamped with the
+old Other/Unknown classification before the fix took effect.
+Manually corrected 2026-06-26 via direct reclassification —
+verified trade_won/trade_pnl/winning_outcome unchanged, only
+category/category_tier updated. This is why Other/Unknown's raw
+count still shows 21 today despite the patch's real effectiveness
+— it reflects a mix of genuinely-unsolvable proper-noun cases plus
+ongoing natural growth from new daily snapshots, not a sign the
+fix failed.
 
 ## Score Bucket Breakdown (closed trades)
 90-100: <n>
 75-90: <n>
 Below 75: <n>
 
-## Performance (closed trades only — calculated from paper_trades.csv, 2026-06-25)
-⚠️ NOT statistically reliable at n=14. A 92.9% win rate this
-early is expected small-sample variance, NOT evidence of edge.
-Win rate: 92.9% (13W / 1L)
-Total realized P&L: $211.43
-Expectancy: $15.10/trade
+## Performance (closed trades only — calculated from paper_trades.csv, 2026-06-26)
+⚠️ NOT statistically reliable at n=18. Still far below the
+30-trade first-look threshold.
+
+IMPORTANT FINDING (2026-06-26): Total P&L turned NEGATIVE for the
+first time, despite a still-high 77.8% win rate. Two new losses
+today (-$100 each, both near-coin-flip entries at ~0.505 price)
+outweighed the cumulative small wins from favored-entry trades.
+This is the exact asymmetry the project anticipated early on: wins
+on heavily-favored entries are small (a few dollars), while losses
+are always the full $100 stake. A high win rate does NOT guarantee
+positive expectancy if win sizes are small relative to loss sizes.
+Treat this as a real, useful early signal to watch as volume
+grows — NOT as evidence the system is broken or that
+tradeability_score is bad, since 18 trades is still noise.
+
+Win rate: 77.8% (14W / 4L)
+Total realized P&L: -$76.84
+Expectancy: -$4.27/trade
 Max drawdown: not yet meaningful at this volume
 
 ## Category Performance
@@ -62,9 +78,11 @@ independently once volume allows.
 ## Primary Research Question
 "Does higher tradeability_score produce better paper-trade
 outcomes than lower-score markets?"
-Status: Insufficient data (14 closed trades). Still far below the
+Status: Insufficient data (18 closed trades). Still far below the
 30-trade first-look threshold. All-Passing migration continues
-working as intended for score diversity.
+working as intended for score diversity. Negative expectancy
+emerging at this small sample is itself a data point worth
+tracking as volume grows, not evidence of an answer yet.
 
 ## Research Milestones
 - [ ] 30 resolved trades — first directional look (median split)
@@ -81,16 +99,23 @@ current data collection actually speaks to]
 
 ## Technical Debt (tracked here until resolved)
 
-**Classifier proper-noun gap (HIGH PRIORITY)**
-market_classifier.py uses keyword matching only. Markets using
-proper nouns instead of generic terms (politician surnames,
-country/team names in sports-style questions) are systematically
-misclassified into Other/Unknown. Observed: 10/24 trades (42%)
-in current dataset. This directly threatens the category-
-performance research goal. Better source of truth likely exists:
-Gamma's events/series metadata (platform-assigned, not inferred)
-— needs direct verification before redesign. See zROADMAP.md
-backlog item "Classifier Architecture: Metadata-First Redesign."
+**Classifier proper-noun gap — PARTIALLY ADDRESSED 2026-06-25, REFRAMED AS DECISION 2026-06-25**
+Keyword hygiene patch (wta/atp/fifwc + adjectival geo forms)
+reduced Other/Unknown from 21 to 8 unique markets. Gamma
+events/series metadata investigated as a further fix — found NOT
+viable (series absent on all 6 tested remaining markets, events
+helped only 1/6 cases). Decision: remaining proper-noun cases
+(Starmer, Mojtaba Khamenei, etc.) accepted as Other/Unknown for
+now — see zROADMAP.md "Proper-Noun Classification Limitation /
+External-Knowledge Decision" and research/validated_findings.md.
+
+**FIFWC pre-patch trades manually corrected — RESOLVED 2026-06-26**
+Two trades (USA, Japan World Cup matches) were created on
+2026-06-25 before that day's classifier patch landed, leaving them
+stamped with stale Other/Unknown classification despite having
+fifwc-prefixed slugs the patch now correctly catches. Manually
+reclassified; trade_won/trade_pnl/winning_outcome verified
+unchanged before and after.
 
 **Sports/Crypto Ultra-Short asymmetry**
 Sports markets pass scanner + paper trading but are excluded from
