@@ -308,63 +308,72 @@ Done when:
 - Pagination behavior verified
 - Truncation and duplication checks completed
 
-**Classifier Architecture: Metadata-First Redesign**
-(Formerly "Discovery Classification Improvements" — expanded and
-renamed following a concrete finding during Phase 5 Research
-Improvements, 2026-06-23.)
+**Proper-Noun Classification Limitation / External-Knowledge Decision**
+(Formerly "Discovery Classification Improvements," then
+"Classifier Architecture: Metadata-First Redesign" — reframed
+2026-06-25 following an evidence-based investigation that did not
+support the metadata-first hypothesis.)
 
-Goal: Reduce category misclassification, which directly threatens
-the project's category-performance research goal (comparing win
-rate/expectancy across Political, Macro/Economic, Geopolitical,
-Crypto Long-Duration, and Sports categories).
+Goal: Decide how (or whether) to handle markets whose questions
+reference specific named individuals or unique one-off scenarios
+with no generic category keyword anywhere in the title, slug, or
+available metadata — a limitation of text-pattern matching itself,
+not a bug in the current implementation.
 
-Finding that motivated this:
-market_classifier.py currently uses keyword matching only.
-Markets phrased with proper nouns instead of generic category
-terms are systematically misclassified into Other/Unknown —
-observed at 10/24 (42%) of paper trades in one real dataset.
-Examples: "Starmer out by..." (no generic political keyword
-present), "Will Germany win on [date]?" (no generic sports
-keyword present — country/team names aren't in SPORTS_KEYWORDS).
+Original finding (2026-06-23):
+market_classifier.py uses keyword matching only. Markets phrased
+with proper nouns instead of generic category terms were
+systematically misclassified into Other/Unknown — observed at
+10/24 (42%) of paper trades in one real dataset.
 
-Likely better source of truth, not yet verified in code:
-Gamma API market responses include an `events` array, and events
-often include a `series` field (e.g. a Fed rate market's event
-ticker is "fed-decision-in-july-181" with series ticker "fomc").
-This is platform-assigned metadata, not inferred from title text —
-potentially far more reliable than keyword matching, but requires
-direct verification of availability/consistency across market
-types before being trusted as primary.
+Interim hygiene patch (2026-06-25): added missing sports
+league/slug terms ("wta", "atp", "fifwc") and adjectival
+geopolitical forms ("iranian", "israeli", "russian", "chinese").
+Measured result: Other/Unknown reduced from 21 to 8 trades (62%)
+on the real dataset (39 trades at the time of fix, before
+recurrence dedup; 6 unique markets remained affected).
 
-Proposed approach (tiered fallback, not single-method matching):
-1. Primary: check events/series metadata if present and reliable
-2. Secondary: keyword matching (current approach) as fallback
-3. Tertiary: explicit "Unclassified — needs review" rather than
-   silently defaulting to "Other/Unknown" as if it were a real,
-   intentional category
+Gamma events/series metadata investigation (2026-06-25):
+Tested directly against all 6 remaining unique Other/Unknown
+markets at the time (3 Starmer variants sharing one event, Mojtaba
+Khamenei, US/aliens, Cole Young/MLB award). Findings:
+- `series` field was ABSENT on every single tested market — the
+  original hypothesis's most promising piece (e.g. "fomc" series
+  on Fed markets) had zero supporting evidence in this sample.
+- `events` was present on all 6, but 5 of 6 were templated
+  restatements of the question itself, adding no new
+  classification signal (e.g. Starmer's event title is literally
+  "Starmer out by...?").
+- Only 1 of 6 (Cole Young / AL Platinum Glove) was genuinely
+  helped — its event title explicitly said "MLB," information not
+  present in the question or slug.
+- Estimated real-world impact of appending event text to the
+  classifier's searchable string: ~17% of currently-remaining
+  cases (1 of 6), not the broad improvement originally
+  hypothesized.
 
-Interim hygiene patch (2026-06-25, NOT a substitute for the full
-redesign above): added missing sports league/slug terms ("wta",
-"atp", "fifwc") and adjectival geopolitical forms ("iranian",
-"israeli", "russian", "chinese") to existing keyword lists.
-Measured result on real dataset: Other/Unknown reduced from 21 to
-8 trades (62%). Remaining 8 trades are genuine proper-noun cases
-(politician surnames, named individuals with no topical keyword)
-that keyword matching alone cannot solve — these require the
-events/series metadata approach below, or are permanently
-unsolvable by text-matching alone. This interim patch does NOT
-close this backlog item; the metadata-first redesign remains open.
+Decision (2026-06-25): Do NOT implement event-text append. Do NOT
+build a tiered metadata-first architecture. Do NOT add a
+name-to-category lookup table at this time. The measured impact
+does not justify the added complexity or new data dependency. The
+remaining proper-noun cases (Starmer, Mojtaba Khamenei, aliens,
+and any future similar market) are not solvable by any text-based
+method available to this project — they require either a
+maintained name-to-category lookup table (ongoing maintenance
+burden) or genuinely external knowledge sources, both of which are
+separate, larger decisions beyond a classifier patch.
+
+Status: Open as a DECISION item, not an implementation item.
+Revisit only if: (a) a maintained lookup table becomes worth the
+ongoing effort, (b) Other/Unknown volume grows large enough to
+justify the investment, or (c) a fundamentally different data
+source becomes available that wasn't tested here.
 
 Done when:
-- Gamma events/series metadata reliability is empirically verified
-  (not assumed) across a sample of market types
-- Classification approach is redesigned per the tiered fallback
-  above, OR a documented decision is made that keyword-only
-  matching is sufficient with specific improvements
-- Other/Unknown rate is measurably reduced on a real dataset
-  (baseline: 42% as observed 2026-06-23)
-- Category-performance research (in MISSION_CONTROL.md) is
-  unblocked as a result
+- A explicit decision is made (and has been made, 2026-06-25):
+  accept remaining proper-noun cases as Other/Unknown for now ✅
+- Finding is logged in research/validated_findings.md for future
+  reference ✅
 
 ### Research Backlog (Deferred, Not Started)
 

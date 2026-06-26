@@ -64,3 +64,11 @@ How it was verified: 20 real trades pulled from a known-resolved market (Czechia
 Date verified: 2026-06-19
 Evidence: diagnostics/validate_resolved_trade.py output, this session.
 Affects: Confirms market_resolution.py, wallet_analyzer.py Mode 1/Mode 2, market_classifier.py all work correctly together as one verified pipeline.
+
+---
+
+Finding: Gamma API event/series metadata is sometimes additive for market classification, but usually redundant with the question title — not a reliable general-purpose fix for proper-noun classification gaps.
+How it was verified: Tested directly against all 6 remaining unique Other/Unknown markets after the 2026-06-25 keyword hygiene patch (3 Starmer variants, Mojtaba Khamenei, US/aliens, Cole Young/MLB award). The `series` field was absent on every single market tested — zero evidence supporting the original hypothesis that platform-assigned series metadata (e.g. "fomc") would be a reliable primary classification signal. The `events` field was present on all 6, but 5 of 6 were templated restatements of the question text itself, adding no new information (e.g. Starmer's event title is literally "Starmer out by...?"). Only 1 of 6 (Cole Young) was genuinely helped — its event title explicitly stated "MLB," information absent from both the question and slug.
+Date verified: 2026-06-25
+Evidence: Direct live queries against analyzers/market_resolution.py's fetch_market_by_slug() for all 6 real markets, this session.
+Affects: Closes the "Classifier Architecture: Metadata-First Redesign" backlog item's original optimistic hypothesis. Reframed in zROADMAP.md as "Proper-Noun Classification Limitation / External-Knowledge Decision" — remaining proper-noun cases (Starmer, Mojtaba Khamenei, aliens-type questions) require either a maintained name-to-category lookup table or genuinely external knowledge sources to resolve; neither is implemented at this time, by deliberate decision rather than oversight.
