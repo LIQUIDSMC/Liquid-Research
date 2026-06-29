@@ -1,6 +1,6 @@
 # Liquid Research — Mission Control
 
-Last updated: 2026-06-27
+Last updated: 2026-06-29
 (Updated during weekly review — see DAILY_OPERATIONS.md)
 
 ## Phase Status
@@ -10,65 +10,50 @@ Phase 5: v1 complete (paper_trader.py + paper_resolver.py),
          done; classifier redesign pending)
 
 ## Dataset Status
-Total paper trades: 49
-Open: 28
-Closed: 21
+Total paper trades: 54
+Open: 32
+Closed: 22
 
-## Category Breakdown (all trades, 2026-06-27)
-Other/Unknown: 19 (39%)
-Geopolitical: 14
-Sports: 7
-Crypto Long-Duration: 4
+## Category Breakdown (all trades, 2026-06-29)
+Sports: 18
+Geopolitical: 17
+Other/Unknown: 8
+Crypto Long-Duration: 5
 Macro/Economic: 3
-Political: 2
+Political: 3
 
-Note: Classifier hygiene patch (2026-06-25: added "wta", "atp",
-"fifwc", adjectival geopolitical forms) reduced Other/Unknown from
-21 to 8 unique markets at the time — but two trades created
-EARLIER on 2026-06-25, before the patch landed that same day
-("Will United States win on 2026-06-25?", "Will Japan win on
-2026-06-25?", both fifwc-prefixed slugs), were stamped with the
-old Other/Unknown classification before the fix took effect.
-Manually corrected 2026-06-26 via direct reclassification —
-verified trade_won/trade_pnl/winning_outcome unchanged, only
-category/category_tier updated. Other/Unknown's raw count was 21
-as of 2026-06-26 and has since dropped to 19 (2026-06-27) as new
-snapshots bring in more correctly-classifiable markets. The
-remaining count reflects a mix of genuinely-unsolvable proper-noun
-cases plus ongoing natural daily turnover, not a sign the fix
-failed.
+IMPORTANT FIX (2026-06-29): Discovered that 13 of 21 Other/Unknown
+trades were stale-classification leftovers — created before a
+classifier hygiene patch landed, never retroactively corrected
+(same root cause as the 2026-06-26 USA/Japan fix, just at larger
+scale). Ran a full dataset-wide reclassification: every trade
+still marked Other/Unknown was re-checked against the CURRENT
+classifier; 13 changed (mostly to Sports, 2 to Geopolitical).
+Verified ALL protected fields (trade_won, trade_pnl,
+winning_outcome, resolution_date, exit_reason, status,
+entry_price, position_size) byte-for-byte unchanged before/after.
+Real, current Other/Unknown count is 8, not 21 — this number had
+been silently overstated since classifier patches began. Going
+forward, consider re-running this dataset-wide reclassification
+check periodically, since this same staleness will recur after
+any future classifier patch unless trades are corrected at the
+time of the patch, not just newly-created ones.
 
 ## Score Bucket Breakdown (closed trades)
 90-100: <n>
 75-90: <n>
 Below 75: <n>
 
-## Performance (closed trades only — calculated from paper_trades.csv, 2026-06-27)
-⚠️ NOT statistically reliable at n=18. Still far below the
-30-trade first-look threshold.
+## Performance (closed trades only — calculated from paper_trades.csv, 2026-06-29)
+⚠️ NOT statistically reliable at n=22. 8 trades from the 30-trade
+first-look threshold. P&L has swung negative -> positive ->
+negative again over the past several days, purely from
+small-sample variance — concrete, repeated evidence that no
+conclusion should be drawn from any single day's swing.
 
-IMPORTANT FINDING (2026-06-26): Total P&L turned NEGATIVE for the
-first time, despite a still-high 77.8% win rate. Two new losses
-today (-$100 each, both near-coin-flip entries at ~0.505 price)
-outweighed the cumulative small wins from favored-entry trades.
-This is the exact asymmetry the project anticipated early on: wins
-on heavily-favored entries are small (a few dollars), while losses
-are always the full $100 stake. A high win rate does NOT guarantee
-positive expectancy if win sizes are small relative to loss sizes.
-Treat this as a real, useful early signal to watch as volume
-grows — NOT as evidence the system is broken or that
-tradeability_score is bad, since 18 trades is still noise.
-
-2026-06-27 update: 3 new closures, all wins (Norway, France, Cabo
-Verde World Cup matches), all manually verified by hand against
-the P&L formula. P&L swung back positive. Treat this swing with
-the same skepticism as yesterday's negative swing — neither is
-meaningful yet at n=21. Approaching the 30-trade first-look
-threshold (9 trades away).
-
-Win rate: 81.0% (17W / 4L)
-Total realized P&L: $78.44
-Expectancy: $3.74/trade
+Win rate: 77.3% (17W / 5L)
+Total realized P&L: -$21.56
+Expectancy: -$0.98/trade
 Max drawdown: not yet meaningful at this volume
 
 ## Category Performance
@@ -86,11 +71,11 @@ independently once volume allows.
 ## Primary Research Question
 "Does higher tradeability_score produce better paper-trade
 outcomes than lower-score markets?"
-Status: Insufficient data (21 closed trades). 9 trades away from
-the 30-trade first-look threshold. P&L has swung both negative and
-positive within the past 2 days alone (-$76.84 -> $78.44) purely
-from small-sample variance — concrete evidence that no conclusion
-should be drawn from either swing individually.
+Status: Insufficient data (22 closed trades). 8 trades from the
+30-trade first-look threshold. Category data quality significantly
+improved today (see Category Breakdown) — once 30 is reached, the
+category-performance comparison may finally be worth attempting
+given Sports (18) and Geopolitical (17) now have real volume.
 
 ## Research Milestones
 - [ ] 30 resolved trades — first directional look (median split)
