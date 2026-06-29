@@ -74,6 +74,7 @@ SPORTS_KEYWORDS = [
     "world cup", "super bowl", "championship", "playoffs", "game",
     "match", "tournament", "season", "team", "player", "score",
     "fifa", "lakers", "coach", "wta", "atp", "fifwc",
+    "cricket", "t20", "odi", "ipl",
 ]
 
 ENTERTAINMENT_KEYWORDS = [

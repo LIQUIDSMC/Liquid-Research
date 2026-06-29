@@ -463,6 +463,21 @@ Done when:
 - Verified against a real fifwc-prefixed market that it's now
   correctly classified as Sports ✅
 
+Follow-up patch (2026-06-28): a live market ("T20 Series Ireland
+vs India") exposed a new gap — cricket was not covered by any
+existing keyword. Added "cricket", "t20", "odi", "ipl" to
+SPORTS_KEYWORDS, mirroring the existing pattern (one generic sport
+name + the highest-value, lowest-collision-risk league/format
+abbreviations). Deliberately did NOT add every cricket league
+(BBL, PSL, CPL, "the hundred") — evaluated and excluded as
+diminishing-return additions not yet evidenced by real data; will
+add individually if/when they actually appear in live markets,
+not preemptively. Verified: T20 market now correctly classifies
+as Sports; Fed market false-positive check unaffected. This is
+intended to be the final sports-classifier hygiene pass — further
+one-off sports terms should be added only when a real live market
+exposes a genuine gap, not speculatively.
+
 ---
 
 **✅Misleading Collector Spread Field — ✅RESOLVED 2026-06-24✅**
