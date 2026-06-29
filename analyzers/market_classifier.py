@@ -75,6 +75,8 @@ SPORTS_KEYWORDS = [
     "match", "tournament", "season", "team", "player", "score",
     "fifa", "lakers", "coach", "wta", "atp", "fifwc",
     "cricket", "t20", "odi", "ipl",
+    "gold glove", "platinum glove", "cy young", "heisman",
+    "ballon d'or", "silver slugger",
 ]
 
 ENTERTAINMENT_KEYWORDS = [
