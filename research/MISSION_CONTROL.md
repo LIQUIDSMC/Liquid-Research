@@ -1,6 +1,6 @@
 # Liquid Research — Mission Control
 
-Last updated: 2026-06-29
+Last updated: 2026-07-01
 (Updated during weekly review — see DAILY_OPERATIONS.md)
 
 ## Phase Status
@@ -10,17 +10,30 @@ Phase 5: v1 complete (paper_trader.py + paper_resolver.py),
          done; classifier redesign pending)
 
 ## Dataset Status
-Total paper trades: 54
-Open: 32
-Closed: 22
+Total paper trades: 58
+Open: 28
+Closed: 30 ✅ FIRST MILESTONE REACHED
 
-## Category Breakdown (all trades, 2026-06-29)
+## Category Breakdown (all trades, 2026-07-01)
 Sports: 18
-Geopolitical: 17
-Other/Unknown: 8
+Geopolitical: 18
+Other/Unknown: 11
 Crypto Long-Duration: 5
 Macro/Economic: 3
 Political: 3
+
+## Category Breakdown (closed trades only, 2026-07-01)
+Sports: 17
+Other/Unknown: 6
+Geopolitical: 5
+Crypto Long-Duration: 2
+Macro/Economic: 0
+Political: 0
+
+Note: Two new LeBron James NBA trades (trade_ids 57, 58) landed
+as Other/Unknown — pure proper-noun titles with no sports keyword
+in title or slug. Accepted per the standing proper-noun decision.
+Not patching team names into the classifier.
 
 IMPORTANT FIX (2026-06-29): Discovered that 13 of 21 Other/Unknown
 trades were stale-classification leftovers — created before a
@@ -44,16 +57,14 @@ time of the patch, not just newly-created ones.
 75-90: <n>
 Below 75: <n>
 
-## Performance (closed trades only — calculated from paper_trades.csv, 2026-06-29)
-⚠️ NOT statistically reliable at n=22. 8 trades from the 30-trade
-first-look threshold. P&L has swung negative -> positive ->
-negative again over the past several days, purely from
-small-sample variance — concrete, repeated evidence that no
-conclusion should be drawn from any single day's swing.
+## Performance (closed trades only — calculated from paper_trades.csv, 2026-07-01)
+⚠️ 30-trade first-look milestone reached. These numbers are now
+worth examining directionally, but remain far from conclusive.
+Do not over-interpret — this is a first look, not a verdict.
 
-Win rate: 77.3% (17W / 5L)
-Total realized P&L: -$21.56
-Expectancy: -$0.98/trade
+Win rate: 83.3% (25W / 5L)
+Total realized P&L: $86.60
+Expectancy: $2.89/trade
 Max drawdown: not yet meaningful at this volume
 
 ## Category Performance
@@ -71,15 +82,17 @@ independently once volume allows.
 ## Primary Research Question
 "Does higher tradeability_score produce better paper-trade
 outcomes than lower-score markets?"
-Status: Insufficient data (22 closed trades). 8 trades from the
-30-trade first-look threshold. Category data quality significantly
-improved today (see Category Breakdown) — once 30 is reached, the
-category-performance comparison may finally be worth attempting
-given Sports (18) and Geopolitical (17) now have real volume.
+Status: 30-trade milestone reached 2026-07-01. First directional
+look is now appropriate — see next session for median-split
+analysis. Do not draw conclusions from today's numbers alone;
+the analysis requires intentional examination, not a quick read.
 
 ## Research Milestones
-- [ ] 30 resolved trades — first directional look (median split)
+- [x] 30 resolved trades — first directional look ✅ 2026-07-01
 - [ ] 100 resolved trades — bucket comparisons become meaningful
+- [ ] ≥30 closed trades per category — category edge analysis:
+      which categories produce highest expectancy? Does
+      tradeability_score behave differently by category?
 - [ ] 250 resolved trades — confidence building, repeat checks
 - [ ] 500 resolved trades — threshold discussions become serious
 
@@ -119,12 +132,11 @@ flagged in zROADMAP.md research backlog, not yet addressed.
 Fixed via shared classify_market() reuse in collectors/market_collector.py.
 "Texas Rangers vs. Miami Marlins" resolved 2026-06-25 as a
 correctly-classified, correctly-scored Sports trade, confirming
-the fix works end-to-end. See zROADMAP.md "Sports Filter Desync /
-Slug-Blind Collector Check." Note: a separate, smaller gap was
-found during verification — "fifwc"-prefixed slugs (individual
-World Cup match markets) are still not recognized as Sports by
-either system. Tracked separately as "FIFWC Slug Prefix Not
-Recognized as Sports" in zROADMAP.md.
+the fix works end-to-end. The separate "fifwc"-prefixed slug gap
+discovered during verification was subsequently resolved via the
+classifier hygiene patch (2026-06-25): "wta", "atp", "fifwc",
+"cricket", "t20", "odi", "ipl" and sports awards terms added to
+SPORTS_KEYWORDS. All known sports classification gaps resolved.
 
 **Collector spread field misnamed — RESOLVED 2026-06-24**
 Renamed to price_sum_deviation throughout (variable, CSV column,

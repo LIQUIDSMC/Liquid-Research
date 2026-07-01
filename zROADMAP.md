@@ -108,6 +108,31 @@ Layer 6 — Paper Trading         simulator/
 
 ---
 
+## Long-Term Product Direction
+
+Liquid Research should never depend on a single "magic indicator."
+The long-term design philosophy is:
+
+- Every signal must earn its place through independent validation
+  before it is ever combined with others.
+- Signals are researched individually first. Combination comes
+  later, only after each component has demonstrated standalone
+  value.
+- Any future confidence framework should emerge from evidence,
+  not be assumed upfront.
+- This is a philosophy, not an implementation plan. No formulas,
+  no weights, no architecture decisions are implied here.
+
+Potential signals currently under investigation or planned:
+  Tradeability Score (active)
+  Category Edge (pending volume)
+  Resolution Speed Signal (pending volume)
+  Category-Aware Wallet Intelligence (Phase 3 extension)
+  Cross-Market Intelligence (requires external infrastructure)
+  Future signals not yet discovered
+
+---
+
 ## Phase Status
 
 ### PHASE 0 — Planning ✅ COMPLETE
@@ -270,6 +295,79 @@ LOCKED. Do not begin until:
 
 ---
 
+### Research Backlog (Ordered by Realistic Execution Priority)
+
+**Phase 3 Extension — Category-Aware Wallet Research**
+Goal: Return to the existing wallet_discovery.py and
+wallet_analyzer.py infrastructure built in Phase 3, now equipped
+with the category metadata that didn't exist when Phase 3 was
+originally built. Identify whether certain wallets specialize by
+category, whether specialists outperform generalists, and whether
+following historically profitable participants adds measurable
+value over consensus pricing.
+
+This is NOT a new build. The infrastructure already exists.
+The opportunity comes from category metadata that is now reliable
+enough to support category-level wallet analysis. Most immediately
+actionable research direction in this backlog.
+
+---
+
+**Resolution Speed Research**
+Goal: Investigate whether market duration at entry (days_left)
+affects tradeability score correlation with outcomes, expectancy,
+or win rate. Short-duration markets (1-7 days) and long-duration
+markets (30-180+ days) may behave differently in ways the current
+scoring model doesn't capture.
+
+Entirely self-contained — no external infrastructure required.
+days_left at entry is already captured in paper_trades.csv.
+Testable once enough closed trades exist across different duration
+buckets. Low infrastructure cost when ready.
+
+---
+
+**Sports Research Framework**
+Goal: Sports markets currently pass through scanner and paper
+trading but are excluded from wallet research. Decide whether
+sports deserves its own analysis framework given this asymmetry,
+or whether it should be reclassified consistently across all
+three systems.
+
+---
+
+**Crypto Ultra-Short Research Framework**
+Goal: Crypto Ultra-Short markets remain excluded from research
+entirely. Revisit whether a dedicated framework (different
+resolution speed, different metadata needs) would be worth
+building, or whether exclusion should remain permanent.
+
+---
+
+**Cross-Market Intelligence Research**
+Goal: Investigate whether external markets (sportsbooks, betting
+exchanges, other prediction markets) contain information that may
+eventually improve Liquid Research's decision-making, either as
+a standalone signal or as an input to a future confidence
+framework.
+
+Honest limitations:
+- External markets don't always price identical products or use
+  identical resolution criteria to Polymarket — comparisons are
+  structurally messier than they appear.
+- Different participant types, pricing mechanics, and liquidity
+  profiles make direct comparison non-trivial.
+- Requires external data infrastructure (paid odds API, reliable
+  historical data) that does not currently exist in this project.
+- Cannot be meaningfully tested until internal signals are
+  independently validated first.
+
+This is a long-term research direction only. Do not prioritize
+before the internal pipeline has demonstrated stable, repeatable
+signal.
+
+---
+
 ## Backlog — Future Engineering Work (Not Yet Started)
 
 This section is future work only. Completed patches are NOT
@@ -374,19 +472,4 @@ Done when:
   accept remaining proper-noun cases as Other/Unknown for now ✅
 - Finding is logged in research/validated_findings.md for future
   reference ✅
-
-### Research Backlog (Deferred, Not Started)
-
-**Sports Research Framework**
-Goal: Sports markets currently pass through scanner and paper
-trading but are excluded from wallet research. Decide whether
-sports deserves its own analysis framework given this asymmetry,
-or whether it should be reclassified consistently across all
-three systems.
-
-**Crypto Ultra-Short Research Framework**
-Goal: Crypto Ultra-Short markets remain excluded from research
-entirely. Revisit whether a dedicated framework (different
-resolution speed, different metadata needs) would be worth
-building, or whether exclusion should remain permanent.
 
