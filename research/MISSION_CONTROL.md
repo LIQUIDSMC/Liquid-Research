@@ -10,9 +10,9 @@ Phase 5: v1 complete (paper_trader.py + paper_resolver.py),
          done; classifier redesign pending)
 
 ## Dataset Status
-Total paper trades: 58
-Open: 28
-Closed: 30 ✅ FIRST MILESTONE REACHED
+Total paper trades: 59
+Open: 27
+Closed: 32
 
 ## Category Breakdown (all trades, 2026-07-01)
 Sports: 18
@@ -57,14 +57,12 @@ time of the patch, not just newly-created ones.
 75-90: <n>
 Below 75: <n>
 
-## Performance (closed trades only — calculated from paper_trades.csv, 2026-07-01)
-⚠️ 30-trade first-look milestone reached. These numbers are now
-worth examining directionally, but remain far from conclusive.
-Do not over-interpret — this is a first look, not a verdict.
+## Performance (closed trades only — calculated from paper_trades.csv, 2026-07-02)
+⚠️ Still far from conclusive at n=32. Do not over-interpret.
 
-Win rate: 83.3% (25W / 5L)
-Total realized P&L: $86.60
-Expectancy: $2.89/trade
+Win rate: 84.4% (27W / 5L)
+Total realized P&L: $186.71
+Expectancy: $5.83/trade
 Max drawdown: not yet meaningful at this volume
 
 ## Category Performance
@@ -82,10 +80,34 @@ independently once volume allows.
 ## Primary Research Question
 "Does higher tradeability_score produce better paper-trade
 outcomes than lower-score markets?"
-Status: 30-trade milestone reached 2026-07-01. First directional
-look is now appropriate — see next session for median-split
-analysis. Do not draw conclusions from today's numbers alone;
-the analysis requires intentional examination, not a quick read.
+Status: FIRST EXPLORATORY ANALYSIS COMPLETED 2026-07-02 (n=32).
+
+Median-split analysis results:
+  Median tradeability score: 98.55
+  High-score group (≥98.55, n=16): 75.0% win rate, -$1.77
+    expectancy, -$28.35 total P&L
+  Low-score group (<98.55, n=16): 93.8% win rate, +$13.44
+    expectancy, +$215.06 total P&L
+
+Why this result is NOT conclusive:
+- ~85% of the low-score group's total P&L came from just 2 trades
+  (Hormuz 40-ships +$98.02, Bitcoin dip +$83.82), both entered
+  near 50% implied probability. High payouts on cheap entries,
+  not score-related outperformance.
+- The apparent relationship likely reflects entry-price and payout
+  structure, not tradeability score itself. High-score markets
+  in this dataset cluster near 0.96+ entry prices (small wins
+  when correct); low-score markets include more near-coin-flip
+  entries (larger wins when correct).
+- Score distribution remains highly compressed — median of 98.55
+  means even the "low" group contains high-quality markets.
+- 32 trades is still too small to separate signal from noise.
+
+Conclusion: The tradeability score hypothesis remains unresolved.
+This analysis is a valuable exploratory checkpoint but not
+sufficient evidence to validate or reject the hypothesis. Continue
+accumulating trades toward the 100-trade milestone before drawing
+any directional conclusion.
 
 ## Research Milestones
 - [x] 30 resolved trades — first directional look ✅ 2026-07-01

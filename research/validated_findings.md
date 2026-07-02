@@ -72,3 +72,13 @@ How it was verified: Tested directly against all 6 remaining unique Other/Unknow
 Date verified: 2026-06-25
 Evidence: Direct live queries against analyzers/market_resolution.py's fetch_market_by_slug() for all 6 real markets, this session.
 Affects: Closes the "Classifier Architecture: Metadata-First Redesign" backlog item's original optimistic hypothesis. Reframed in zROADMAP.md as "Proper-Noun Classification Limitation / External-Knowledge Decision" — remaining proper-noun cases (Starmer, Mojtaba Khamenei, aliens-type questions) require either a maintained name-to-category lookup table or genuinely external knowledge sources to resolve; neither is implemented at this time, by deliberate decision rather than oversight.
+
+---
+
+Finding: First exploratory median-split analysis of the primary research question completed at n=32 closed trades. The tradeability score hypothesis remains unresolved.
+How it was verified: All 32 closed paper trades were split at the median tradeability_score_at_entry (98.55) into two equal groups of 16. Win rate, expectancy, and total P&L were calculated independently for each group.
+Raw results: High-score group (≥98.55): 75.0% win rate, -$1.77 expectancy, -$28.35 total P&L. Low-score group (<98.55): 93.8% win rate, +$13.44 expectancy, +$215.06 total P&L.
+Why the result is inconclusive: Approximately 85% of the low-score group's total P&L came from just 2 trades (trade 32: Hormuz 40-ships at entry price 0.505, +$98.02; trade 46: Bitcoin dip at entry price 0.544, +$83.82). Both were entered near 50% implied probability, producing large payouts relative to the high-score group's typical entries at 0.96+ (which pay $1-4 per win). The apparent outperformance of low-score trades reflects entry-price and payout structure, not tradeability score itself — high-liquidity, tight-spread markets (high scorers) tend to be heavily-favored and therefore cheap to enter but small to win. The score distribution is highly compressed (median 98.55; even "low" scores are still high-quality markets). Remove the two high-payout outliers and the low-score group's expectancy drops from $13.44 to approximately $2.08/trade.
+Date verified: 2026-07-02
+Evidence: Terminal analysis against data/simulator/paper_trades.csv, 32 closed trades, median split at score 98.55.
+Affects: Primary research question ("Does higher tradeability_score produce better paper-trade outcomes?") remains open. Next meaningful checkpoint: 100 closed trades, with wider score diversity needed to test the hypothesis properly. Future work should examine whether entry price (not score) is the actual predictor of expectancy, since the two variables are correlated in this dataset.
