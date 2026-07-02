@@ -94,11 +94,14 @@ Why this result is NOT conclusive:
   (Hormuz 40-ships +$98.02, Bitcoin dip +$83.82), both entered
   near 50% implied probability. High payouts on cheap entries,
   not score-related outperformance.
-- The apparent relationship likely reflects entry-price and payout
-  structure, not tradeability score itself. High-score markets
+- The observed result is consistent with entry-price and payout
+  structure acting as a confounding factor. High-score markets
   in this dataset cluster near 0.96+ entry prices (small wins
   when correct); low-score markets include more near-coin-flip
-  entries (larger wins when correct).
+  entries (larger wins when correct). However, the relationship
+  between tradeability score and entry price has not yet been
+  quantified — this remains an observation, not a demonstrated
+  causal relationship.
 - Score distribution remains highly compressed — median of 98.55
   means even the "low" group contains high-quality markets.
 - 32 trades is still too small to separate signal from noise.
