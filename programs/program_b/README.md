@@ -1,11 +1,10 @@
 # Program B — Order Book Imbalance / Micro-Price Research
 
 ## Status
-QUEUED — Not yet started.
+ACTIVE — First diagnostic complete. Stability testing in progress.
 
 Program A (Tradeability Score / Scanner One) continues running
-its daily cycle uninterrupted. Program B will begin once the
-initial architecture and operating procedure are designed.
+its daily cycle uninterrupted. Program B runs independently.
 
 ## Hypothesis
 Order book imbalance (the relative volume of bids vs. asks near
@@ -22,20 +21,55 @@ Experiment design: research/future_experiments.md
 - Tests a timing signal (when to enter) rather than a selection
   filter (which market to trade) — a fundamentally different and
   complementary class of signal to Program A.
-- Could show initial results within days of starting, not weeks.
 - Promoted from research vault 2026-07-03 after full architectural
   review confirmed it as the highest-ROI next research direction.
 
+## Current State
+
+### Phase 1 — Feasibility ✅ COMPLETE (2026-07-03)
+Script: programs/program_b/obi_diagnostic.py
+
+OBI and micro-price computed successfully on all 5 markets from
+the latest Program A snapshot. Mathematical sanity confirmed —
+micro-price deviation direction matches OBI sign in every case.
+
+Results from first run (2026-07-03):
+- Fed no-change (0.895): OBI -0.48, micro-price below midpoint
+- Putin out (0.105): OBI +0.58, micro-price above midpoint
+- Fed increase (0.096): OBI -0.38, micro-price below midpoint
+- China/Taiwan (0.034): OBI +0.80, micro-price above midpoint
+- US-Iran July 10 (0.018): OBI +0.58, micro-price above midpoint
+
+This confirms feasibility only. No predictive claim is made.
+
+### Phase 2 — Stability Testing 🔲 IN PROGRESS
+Run obi_diagnostic.py on consecutive days. Observe whether OBI
+values are stable, volatile, or appear correlated with subsequent
+price movement. No code changes required — just repeated runs and
+comparison of outputs.
+
+Done when:
+- OBI and micro-price values documented across multiple days
+- Stability or volatility pattern identified per market type
+- Decision made: is the signal stable enough to study further?
+
+### Phase 3 — Predictive Value Testing 🔲 NOT STARTED
+Only begins after Phase 2 confirms stability.
+
+## Three-Question Check
+Every metric must answer these before earning a place in Liquid Research:
+1. Is it mathematically correct? ✅ Confirmed (Phase 1)
+2. Is it stable across many markets? ❓ Testing now (Phase 2)
+3. Does it improve a trading decision? ❓ Do not assume yet
+
+## Known Technical Debt
+obi_diagnostic.py currently fetches CLOB data twice per market —
+once via get_market_clob_data() and again via fetch_market_by_slug()
++ fetch_order_book(). This is a future cleanup item, not a blocker.
+Refactor only after Phase 2 confirms the signal is worth pursuing.
+
 ## Dependencies
-None. Program A data and infrastructure are not required.
-scanner/clob_client.py is the only prerequisite, and it already exists.
-
-## When Operational Documents Will Be Created
-MISSION_CONTROL.md, DAILY_OPERATIONS.md, and any program-specific
-roadmap will be created when Program B actually begins — not before.
-Documentation should emerge from real work, not assumptions about
-what the work will look like.
-
-## Current Blocking Conditions
-None. Program B is queued by choice, not by technical dependency.
-It begins when explicitly started.
+scanner/clob_client.py — existing, no modifications made.
+Program A trade results are not required or used.
+The diagnostic only reads the latest Program A market snapshot
+to select live slugs.
