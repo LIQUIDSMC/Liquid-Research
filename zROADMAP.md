@@ -67,7 +67,7 @@ Layer 7 — Research Programs     programs/
 
 Research Vault (platform knowledge): research/
 Program A (active):               programs/program_a/
-Program B (queued):               programs/program_b/
+Program B (active):               programs/program_b/
 
 ---
 
@@ -94,7 +94,7 @@ Those are different responsibilities and should never be confused.
 
 Potential signals currently under investigation or planned:
   Tradeability Score (Program A — active)
-  Order Book Imbalance / Micro-Price (Program B — queued)
+  Order Book Imbalance / Micro-Price (Program B — active)
   Calibration / Entry Price (Program C — queued)
   Cross-Venue Spread (Program D — future, requires infrastructure)
   Category-Aware Wallet Intelligence (Program E — blocked)
@@ -133,25 +133,33 @@ data or methodology.
 
 ---
 
-### Program B — Order Book Imbalance / Micro-Price Research
-**Status:** ACTIVE — Phase 1 (feasibility) complete, Phase 2
+### Program B — Market Microstructure Research
+**Status:** ACTIVE — Indicator 1 (OBI) Phase 1 complete, Phase 2
 (stability testing) in progress.
 **Folder:** programs/program_b/
-**Hypothesis:** Order book imbalance (relative volume of bids vs.
-asks near the best price) predicts short-term price movement better
-than midpoint alone. A volume-weighted micro-price outperforms
-midpoint as a short-term reference price on Polymarket.
+**Identity:** Studies order-book and market-microstructure
+indicators as a class. OBI is the first indicator studied, not the
+entire scope. Governing question: which microstructure indicators
+give the most useful, stable signal for market selection or entry
+timing?
+**Indicator 1 - OBI / Micro-Price Hypothesis:** Order book imbalance
+(relative volume of bids vs. asks near the best price) predicts
+short-term price movement better than midpoint alone. A
+volume-weighted micro-price outperforms midpoint as a short-term
+reference price on Polymarket.
 **Infrastructure required:** None new. scanner/clob_client.py
 already fetches and correctly parses full bid/ask book depth.
-**Signal class:** Timing signal (when to enter) — fundamentally
+**Signal class:** Timing signal (when to enter) - fundamentally
 different from Program A's selection signal (which market to trade).
-**Current work:** obi_diagnostic.py computes OBI and micro-price
-correctly (verified 2026-07-03). Logging to data/program_b/obi_log.csv
-established. Collecting daily observations before any further
+**Current work:** programs/program_b/diagnostics/run_obi.py computes
+OBI and micro-price correctly (verified 2026-07-03) using
+programs/program_b/indicators/obi.py. Logging to
+data/program_b/obi_log.csv established. Two queued indicator
+candidates (near-book depth imbalance, spread-normalized OBI) noted
+but not started. Collecting daily observations before any further
 scope expansion.
 **Blocking conditions:** None.
 **Details:** programs/program_b/README.md
-
 
 ---
 
