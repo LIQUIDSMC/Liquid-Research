@@ -1,0 +1,6 @@
+timestamp,snapshot_file,slug,question,midpoint,total_obi,near_obi,n_levels,v_bid_top_n,v_ask_top_n,bid_count,ask_count,status
+2026-07-04T17:46:14Z,snapshot_20260704_1005.csv,putin-out-before-2027,"Putin out as President of Russia by December 31, 2026?",0.105,0.5265,0.504,5,4875445.32,1607644.45,10,64,ok
+2026-07-04T17:46:16Z,snapshot_20260704_1005.csv,us-x-iran-diplomatic-meeting-by-july-10-2026-20260622191708360,"US x Iran diplomatic meeting by July 10, 2026?",0.0185,0.5517,0.866,5,100975.22,7253.35,18,92,ok
+2026-07-04T17:46:17Z,snapshot_20260704_1005.csv,will-trump-pardon-sbf-by-july-31-20260608235339562,Will Trump pardon SBF by July 31?,0.0215,-0.183,-0.9661,5,1197.12,69411.96,21,63,ok
+2026-07-04T17:46:18Z,snapshot_20260704_1005.csv,strait-of-hormuz-traffic-returns-to-normal-by-july-15,Strait of Hormuz traffic returns to normal by July 15?,0.045,0.4247,0.6574,5,1787384.98,369516.34,4,87,ok
+2026-07-04T17:46:19Z,snapshot_20260704_1005.csv,us-iran-final-nuclear-deal-by-september-30-2026,"US-Iran Final Nuclear Deal by September 30, 2026?",0.295,0.4933,0.5963,5,512454.67,129617.37,26,40,ok

@@ -9,3 +9,8 @@ timestamp,snapshot_file,slug,question,midpoint,micro_price,obi,v_bid,v_ask,bid_c
 2026-07-04T07:29:01Z,snapshot_20260703_2059.csv,will-the-fed-increase-interest-rates-by-25-bps-after-the-july-2026-meeting,Will the Fed increase interest rates by 25 bps after the July 2026 meeting?,0.0955,0.095304,-0.3917,10111579.33,23132307.98,95,141,ok
 2026-07-04T07:29:02Z,snapshot_20260703_2059.csv,will-china-invade-taiwan-before-2027,Will China invade Taiwan by end of 2026?,0.0355,0.035901,0.8025,15858626.74,1737540.82,35,184,ok
 2026-07-04T07:29:03Z,snapshot_20260703_2059.csv,us-x-iran-diplomatic-meeting-by-july-10-2026-20260622191708360,"US x Iran diplomatic meeting by July 10, 2026?",0.0175,0.017794,0.5882,607630.92,157561.78,17,76,ok
+2026-07-04T17:10:54Z,snapshot_20260704_1005.csv,putin-out-before-2027,"Putin out as President of Russia by December 31, 2026?",0.105,0.107572,0.5144,7992696.74,2563016.41,10,65,ok
+2026-07-04T17:10:55Z,snapshot_20260704_1005.csv,us-x-iran-diplomatic-meeting-by-july-10-2026-20260622191708360,"US x Iran diplomatic meeting by July 10, 2026?",0.022,0.02258,0.58,761612.28,202472.79,21,81,ok
+2026-07-04T17:10:56Z,snapshot_20260704_1005.csv,will-trump-pardon-sbf-by-july-31-20260608235339562,Will Trump pardon SBF by July 31?,0.0155,0.015401,-0.1982,250799.53,374805.83,15,68,ok
+2026-07-04T17:10:57Z,snapshot_20260704_1005.csv,strait-of-hormuz-traffic-returns-to-normal-by-july-15,Strait of Hormuz traffic returns to normal by July 15?,0.055,0.057172,0.4343,1788236.33,705214.35,5,86,ok
+2026-07-04T17:10:58Z,snapshot_20260704_1005.csv,us-iran-final-nuclear-deal-by-september-30-2026,"US-Iran Final Nuclear Deal by September 30, 2026?",0.29,0.294927,0.4927,899846.59,305799.83,25,40,ok

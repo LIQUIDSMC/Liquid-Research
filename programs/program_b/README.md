@@ -18,6 +18,27 @@ future market selection or entry timing? ROI and evidence matter
 more than novelty. A new indicator only earns a place here if it
 answers a real gap identified in an existing one.
 
+## Review Cadence
+
+All active Program B indicators are reviewed together on a shared
+schedule, not on separate per-indicator timelines. Clock starts
+from OBI's first log entry (2026-07-03).
+
+- 1-week review: around 2026-07-10
+- 2-week review: around 2026-07-17
+- 1-month review: around 2026-08-03
+
+At each checkpoint, evaluate every active indicator against:
+- Is it behaving correctly? Any errors or unexpected values?
+- Is it stable? Volatile? Noisy?
+- Does anything deserve refinement or retirement?
+- Does anything show early signs worth investing further in?
+
+Indicators that fail early are retired without further investment.
+Indicators that look promising continue collecting toward the next
+checkpoint. New indicators added between checkpoints join the same
+shared review cycle rather than starting their own clock.
+
 ## Folder Structure
 
 programs/program_b/
