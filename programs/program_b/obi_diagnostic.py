@@ -10,7 +10,8 @@ This script:
 - Uses existing scanner/clob_client.py with no modifications
 - Computes OBI and micro-price from raw bid/ask lists
 - Prints results in a readable table
-- Writes no files
+- Appends each run to programs/program_b/data/obi_log.csv
+- Creates programs/program_b/data/ if it does not exist
 - Places no trades
 - Introduces no new dependencies
 
@@ -37,6 +38,8 @@ ASSUMPTIONS AND LIMITATIONS:
 
 import sys
 import os
+import csv
+from datetime import datetime, UTC
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
 from scanner.clob_client import get_market_clob_data, fetch_order_book, parse_clob_token_ids, fetch_market_by_slug
@@ -46,7 +49,7 @@ from rich.table import Table
 console = Console()
 
 
-def load_slugs_from_latest_snapshot(n: int = 5) -> list:
+def load_slugs_from_latest_snapshot(n: int = 5) -> tuple:
     """
     Read the most recent Program A market snapshot and return the
     first n slugs. This keeps Program B automatically aligned with
@@ -63,7 +66,7 @@ def load_slugs_from_latest_snapshot(n: int = 5) -> list:
 
     snapshots = sorted(glob.glob("data/markets/snapshot_*.csv"))
     if not snapshots:
-        return []
+        return [], ""
 
     latest = snapshots[-1]
     console.print(f"[dim]Reading slugs from: {latest}[/dim]")
@@ -72,11 +75,12 @@ def load_slugs_from_latest_snapshot(n: int = 5) -> list:
         df = pd.read_csv(latest)
         if "slug" not in df.columns:
             console.print("[red]No slug column found in snapshot.[/red]")
-            return []
-        return df["slug"].dropna().tolist()[:n]
+            return [], ""
+        return df["slug"].dropna().tolist()[:n], os.path.basename(latest)
     except Exception as e:
         console.print(f"[red]Failed to read snapshot: {e}[/red]")
-        return []
+        return [], ""
+
 
 
 def compute_obi_and_microprice(bids: list, asks: list, best_bid: float, best_ask: float) -> dict:
@@ -108,6 +112,32 @@ def compute_obi_and_microprice(bids: list, asks: list, best_bid: float, best_ask
     return {"obi": obi, "micro_price": micro_price, "v_bid": round(v_bid, 2), "v_ask": round(v_ask, 2), "error": None}
 
 
+LOG_PATH = os.path.join(os.path.dirname(__file__), "data", "obi_log.csv")
+LOG_COLUMNS = [
+    "timestamp", "snapshot_file", "slug", "question",
+    "midpoint", "micro_price", "obi", "v_bid", "v_ask",
+    "bid_count", "ask_count", "status",
+]
+
+
+def log_to_csv(row: dict) -> None:
+    """
+    Append one row to programs/program_b/data/obi_log.csv.
+    Creates the data/ directory and CSV header if they do not exist.
+
+    Receives:
+        row (dict): must contain all keys in LOG_COLUMNS
+    """
+    os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
+    write_header = not os.path.exists(LOG_PATH)
+
+    with open(LOG_PATH, "a", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=LOG_COLUMNS)
+        if write_header:
+            writer.writeheader()
+        writer.writerow(row)
+
+
 def main():
     console.print("\n[bold cyan]Program B — OBI Diagnostic[/bold cyan]")
     console.print("[dim]Feasibility check: computing OBI and micro-price from existing CLOB data[/dim]\n")
@@ -123,7 +153,7 @@ def main():
     table.add_column("Asks", justify="right")
     table.add_column("Status")
 
-    slugs = load_slugs_from_latest_snapshot(n=5)
+    slugs, snapshot_file = load_slugs_from_latest_snapshot(n=5)
     if not slugs:
         console.print("[red]No slugs found. Is data/markets/ populated?[/red]")
         return
@@ -163,6 +193,21 @@ def main():
         vbid_str = f"{metrics['v_bid']:.0f}" if metrics["v_bid"] is not None else "-"
         vask_str = f"{metrics['v_ask']:.0f}" if metrics["v_ask"] is not None else "-"
         status = metrics["error"] if metrics["error"] else "ok"
+
+        log_to_csv({
+            "timestamp": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "snapshot_file": snapshot_file,
+            "slug": slug,
+            "question": clob.get("question") or "",
+            "midpoint": clob["midpoint"] if clob["midpoint"] is not None else "",
+            "micro_price": metrics["micro_price"] if metrics["micro_price"] is not None else "",
+            "obi": metrics["obi"] if metrics["obi"] is not None else "",
+            "v_bid": metrics["v_bid"] if metrics["v_bid"] is not None else "",
+            "v_ask": metrics["v_ask"] if metrics["v_ask"] is not None else "",
+            "bid_count": clob["bid_count"],
+            "ask_count": clob["ask_count"],
+            "status": status,
+        })
 
         table.add_row(
             question_short,

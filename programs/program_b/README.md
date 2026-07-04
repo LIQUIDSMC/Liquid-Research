@@ -68,6 +68,11 @@ once via get_market_clob_data() and again via fetch_market_by_slug()
 + fetch_order_book(). This is a future cleanup item, not a blocker.
 Refactor only after Phase 2 confirms the signal is worth pursuing.
 
+## Data
+Raw market snapshots stay in data/markets/ as shared platform input.
+Program B outputs live in programs/program_b/data/.
+Do not duplicate snapshots into Program B.
+
 ## Dependencies
 scanner/clob_client.py — existing, no modifications made.
 Program A trade results are not required or used.
