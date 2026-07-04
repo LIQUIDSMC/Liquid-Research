@@ -1,0 +1,6 @@
+timestamp,snapshot_file,slug,question,midpoint,micro_price,obi,v_bid,v_ask,bid_count,ask_count,status
+2026-07-04T05:56:32Z,snapshot_20260703_2059.csv,will-there-be-no-change-in-fed-interest-rates-after-the-july-2026-meeting,Will there be no change in Fed interest rates after the July 2026 meeting?,0.895,0.89262,-0.4761,3040468.89,8566214.89,54,10,ok
+2026-07-04T05:56:33Z,snapshot_20260703_2059.csv,putin-out-before-2027,"Putin out as President of Russia by December 31, 2026?",0.105,0.107901,0.5803,9525721.81,2530046.62,10,59,ok
+2026-07-04T05:56:34Z,snapshot_20260703_2059.csv,will-the-fed-increase-interest-rates-by-25-bps-after-the-july-2026-meeting,Will the Fed increase interest rates by 25 bps after the July 2026 meeting?,0.0955,0.095306,-0.3877,10264900.9,23266416.77,95,140,ok
+2026-07-04T05:56:36Z,snapshot_20260703_2059.csv,will-china-invade-taiwan-before-2027,Will China invade Taiwan by end of 2026?,0.0335,0.033902,0.8039,15917024.6,1730640.53,33,185,ok
+2026-07-04T05:56:37Z,snapshot_20260703_2059.csv,us-x-iran-diplomatic-meeting-by-july-10-2026-20260622191708360,"US x Iran diplomatic meeting by July 10, 2026?",0.0175,0.017787,0.574,605558.43,163899.84,17,76,ok

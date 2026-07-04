@@ -70,7 +70,10 @@ Refactor only after Phase 2 confirms the signal is worth pursuing.
 
 ## Data
 Raw market snapshots stay in data/markets/ as shared platform input.
-Program B outputs live in programs/program_b/data/.
+Program B outputs live in data/program_b/.
+This follows the platform convention: programs/ holds code and
+documentation only. data/ holds all generated datasets and outputs,
+organized per program.
 Do not duplicate snapshots into Program B.
 
 ## Dependencies

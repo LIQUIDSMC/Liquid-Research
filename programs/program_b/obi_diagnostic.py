@@ -10,8 +10,8 @@ This script:
 - Uses existing scanner/clob_client.py with no modifications
 - Computes OBI and micro-price from raw bid/ask lists
 - Prints results in a readable table
-- Appends each run to programs/program_b/data/obi_log.csv
-- Creates programs/program_b/data/ if it does not exist
+- Appends each run to data/program_b/obi_log.csv
+- Creates data/program_b/ if it does not exist
 - Places no trades
 - Introduces no new dependencies
 
@@ -112,7 +112,7 @@ def compute_obi_and_microprice(bids: list, asks: list, best_bid: float, best_ask
     return {"obi": obi, "micro_price": micro_price, "v_bid": round(v_bid, 2), "v_ask": round(v_ask, 2), "error": None}
 
 
-LOG_PATH = os.path.join(os.path.dirname(__file__), "data", "obi_log.csv")
+LOG_PATH = os.path.join("data", "program_b", "obi_log.csv")
 LOG_COLUMNS = [
     "timestamp", "snapshot_file", "slug", "question",
     "midpoint", "micro_price", "obi", "v_bid", "v_ask",
@@ -122,8 +122,8 @@ LOG_COLUMNS = [
 
 def log_to_csv(row: dict) -> None:
     """
-    Append one row to programs/program_b/data/obi_log.csv.
-    Creates the data/ directory and CSV header if they do not exist.
+    Append one row to data/program_b/obi_log.csv.
+    Creates data/program_b/ and the CSV header if they do not exist.
 
     Receives:
         row (dict): must contain all keys in LOG_COLUMNS
