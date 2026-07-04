@@ -279,6 +279,34 @@ misplaced content is harder to fix than it is to prevent.
 
 This rule applies to every file in every session, without exception.
 
+**Inspect-Before-Change Workflow:**
+Before proposing any code, documentation, architecture, or research
+change, first inspect the current state. Do not rely on memory or
+prior sessions.
+
+- If one section is relevant, read that section.
+- If the whole file is needed for context, read the entire file.
+- If multiple files are involved, inspect each relevant file first.
+
+After reading:
+1. Summarize the current state.
+2. Identify anything stale, inconsistent, or outdated.
+3. Explain why a change is needed.
+4. Only then propose edits.
+
+Never append new documentation or code without first understanding
+where it belongs in the current architecture.
+
+**Session-End Documentation Audit:**
+Before committing at the end of any session that touched
+documentation, verify every file that was modified:
+- All information is accurate and reflects current reality.
+- No stale cross-file references remain.
+- No sections were accidentally duplicated.
+- No obsolete notes were left in place.
+- The architecture is internally consistent across all files.
+
+Assume nothing. Verify everything.
 
 ---
 
@@ -290,24 +318,16 @@ This rule applies to every file in every session, without exception.
 - ACTION: Numbered step-by-step instructions
 - EXPECTED RESULT: What success looks like
 
-**Terminal command format:**
-Every command must be isolated. Never combine unrelated commands.
+**Terminal command delivery standard:**
+Every command must be in its own isolated bash code block.
+Place any explanation before or after the block — never inside it.
+Do not include STEP numbers, TYPE:, WHERE:, RUN:, terminal prompts,
+or any other text inside the code block.
 
-STEP N
-TYPE: Terminal Command
-WHERE: VS Code Terminal
-RUN: [single command]
-EXPECTED RESULT: [what you should see]
-STOP. Confirm before continuing.
+Correct format:
+```bash
+git status
 
-**The user should never have to guess:**
-- Where code goes
-- Whether something is a terminal command
-- Whether a file should be created or replaced
-- Whether commands run individually or as a batch
-
-**Checkpoint everything.** Small verified steps are better than
-large unverified ones. When in doubt, stop and confirm.
 
 ---
 

@@ -16,9 +16,9 @@ found not viable via the metadata approach, and reframed as a
 standing decision (see research/validated_findings.md).
 
 ## Dataset Status
-Total paper trades: 59
-Open: 27
-Closed: 32
+Total paper trades: 68
+Open: 35
+Closed: 33
 
 ## Category Breakdown (all trades, 2026-07-01)
 Sports: 18

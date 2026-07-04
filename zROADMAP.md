@@ -122,7 +122,7 @@ research/ and is shared across all programs.
 spread quality, and volume) predicts better paper-trade outcomes
 than lower-score markets on Polymarket.
 **Data:** data/simulator/paper_trades.csv
-**Current milestone:** 32 closed trades — accumulating toward 100.
+**Current milestone:** 33 closed trades — accumulating toward 100.
 **Next checkpoint:** 100 closed trades — bucket comparisons become
 meaningful.
 **Does not interfere with:** All other programs. Program A runs
