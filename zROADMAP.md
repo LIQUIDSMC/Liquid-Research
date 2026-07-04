@@ -134,7 +134,8 @@ data or methodology.
 ---
 
 ### Program B — Order Book Imbalance / Micro-Price Research
-**Status:** QUEUED — not yet started
+**Status:** ACTIVE — Phase 1 (feasibility) complete, Phase 2
+(stability testing) in progress.
 **Folder:** programs/program_b/
 **Hypothesis:** Order book imbalance (relative volume of bids vs.
 asks near the best price) predicts short-term price movement better
@@ -144,8 +145,13 @@ midpoint as a short-term reference price on Polymarket.
 already fetches and correctly parses full bid/ask book depth.
 **Signal class:** Timing signal (when to enter) — fundamentally
 different from Program A's selection signal (which market to trade).
-**Blocking conditions:** None. Queued by choice, not dependency.
+**Current work:** obi_diagnostic.py computes OBI and micro-price
+correctly (verified 2026-07-03). Logging to data/program_b/obi_log.csv
+established. Collecting daily observations before any further
+scope expansion.
+**Blocking conditions:** None.
 **Details:** programs/program_b/README.md
+
 
 ---
 
