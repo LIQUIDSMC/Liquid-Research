@@ -12,7 +12,7 @@ Date raised:
 ## Current Questions
 
 Question: Do profitable wallets exit early, or hold to resolution?
-Why it matters: Directly informs whether Liquid Research should study prediction skill traders or trading skill traders differently, per the trader-type distinction in zPHILOSOPHY.md.
+Why it matters: Directly informs whether Liquid Research should study prediction skill traders or trading skill traders differently, per the trader-type distinction in zHANDOFF.md.
 What data would be needed: A meaningful sample of wallets with both resolved trades and visible exit timing across many markets.
 Date raised: 2026-06-19
 

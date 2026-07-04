@@ -76,3 +76,17 @@ Required data: None new — scanner/clob_client.py already fetches and correctly
 Required engineering effort: Small — this is primarily a new calculation added alongside the existing CLOB client output, not a new data pipeline. Distinct from the cross-venue and liquidity-shock hypotheses, which both require genuinely new infrastructure Liquid Research does not currently have.
 Expected signal if true: Imbalance or micro-price would show measurable correlation with subsequent short-term price movement, beyond what midpoint alone shows.
 Status: Unreviewed — the only experiment in this batch with no infrastructure blocker. Worth prioritizing over the cross-venue and liquidity-shock experiments specifically because it requires no new data source, just new analysis of data already being collected.
+
+---
+
+NOTE — Status update for Order Book Imbalance experiment (above):
+Reviewed and promoted to Program B (2026-07-03). Status changed from "Unreviewed" to "Promoted — Program B." No longer a future experiment — now an active queued research program. See programs/program_b/README.md and zROADMAP.md.
+
+---
+
+Experiment: Calibration / Entry Price Analysis — does Polymarket price accurately reflect true probability, and does implied probability at entry independently predict outcomes?
+Tests which hypothesis: Motivated by the median-split analysis finding (2026-07-02) documented in research/validated_findings.md. The observed result — low-score trades outperforming high-score trades — was consistent with entry-price and payout structure acting as a confounding factor. However, the relationship between tradeability score and entry price has not yet been quantified. This experiment tests whether that relationship is real and whether entry price is an independent predictor of outcomes.
+Required data: Existing data/simulator/paper_trades.csv (entry_price, trade_won, trade_pnl, tradeability_score_at_entry fields). No new data source needed for the initial correlation analysis. Bucket analysis requires ~50-60 closed trades across varied entry price ranges.
+Required engineering effort: Small — primarily terminal analysis scripts against existing CSV data, not a new pipeline.
+Expected signal if true: (a) Entry price and tradeability score would show meaningful correlation, confirming the confounding factor observation. (b) Markets entered at lower implied probability (0.50-0.70) would show systematically higher expectancy than markets entered at higher implied probability (0.90+), independent of tradeability score. (c) Polymarket prices in certain ranges would show systematic miscalibration — resolving at rates meaningfully different from their implied probability — which would represent a directly actionable edge.
+Status: Promoted — Program C candidate (2026-07-03). Reviewed and selected as the strongest queued research direction after Program B. Testable with existing data once Program B is underway. No infrastructure blocker.

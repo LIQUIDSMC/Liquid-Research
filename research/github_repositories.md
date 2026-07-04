@@ -33,6 +33,6 @@ Status: Unreviewed / Reviewing / Rejected / Archived / Experiment / Promoted
 **Notes:**
 - MIT licensed — no ambiguity here, unlike poly_data.
 - The repository's own README states directly: "In today's market, this bot is not profitable and will lose money. Use it as a reference implementation for building your own market making strategies, not as a ready-to-deploy solution." This is the author's own stated assessment, not Liquid Research's inference.
-- This reinforces, with direct external evidence, that Liquid Research's existing read-only, research-first posture (see zPHILOSOPHY.md hard rules) is the correct approach — live execution and market making are explicitly not being pursued.
+- This reinforces, with direct external evidence, that Liquid Research's existing read-only, research-first posture (see zHANDOFF.md hard rules) is the correct approach — live execution and market making are explicitly not being pursued.
 - Rejected concepts for current roadmap: live market making, automated execution, order placement. None of these are under consideration now or planned.
 **Status:** Rejected as build direction / Reference only

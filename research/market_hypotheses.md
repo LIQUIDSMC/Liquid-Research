@@ -1,6 +1,6 @@
 # Market Hypotheses
 
-Testable claims about what might predict trader skill or market mispricing. Should connect to the Research to Edge Pipeline in zPHILOSOPHY.md.
+Testable claims about what might predict trader skill or market mispricing. Should connect to the Research to Edge Pipeline in zHANDOFF.md.
 
 ## Template
 
@@ -23,7 +23,7 @@ Status: Unreviewed — blocked on Phase 3's open question (no discovered wallet 
 
 Hypothesis: Following a historically strong wallet's trades (with a realistic reaction delay) would have produced positive historical P&L.
 Reasoning: If a wallet shows a real, repeatable edge, a delayed follower might capture some of that edge, net of slippage/delay costs.
-Evidence so far: None. This is explicitly a research question, not a basis for building a copy-trading system. Survivorship bias risk: a wallet's edge may not survive being followed by others, per zPHILOSOPHY.md.
+Evidence so far: None. This is explicitly a research question, not a basis for building a copy-trading system. Survivorship bias risk: a wallet's edge may not survive being followed by others, per zHANDOFF.md.
 How to test: Backtest — for a wallet with resolved trade history, simulate entering each position one block after the original trade, using realistic price impact assumptions, and compare resulting P&L to the original wallet's actual P&L.
 Status: Unreviewed — blocked on the same Phase 3 resolved-trade-data gap as the specialization hypothesis above.
 
@@ -38,7 +38,7 @@ Status: Reviewed — accepted as architectural guidance. Trader-edge direction f
 ---
 
 Hypothesis: Profitable wallets exit positions before market resolution more often than they hold to settlement, and exits correlate with observable signals (volume spikes, liquidity changes, price acceleration) rather than occurring randomly.
-Reasoning: If exit timing is systematic rather than arbitrary, it may be a learnable behavior pattern distinct from entry selection — relevant to the existing trader-type distinction (hold-to-resolution vs. early-exit) already defined in zPHILOSOPHY.md.
+Reasoning: If exit timing is systematic rather than arbitrary, it may be a learnable behavior pattern distinct from entry selection — relevant to the existing trader-type distinction (hold-to-resolution vs. early-exit) already defined in zHANDOFF.md.
 Evidence so far: None verified. This question was prompted by an external, unverified source making specific numeric claims about exit timing and profit capture — those specific numbers are explicitly NOT treated as evidence here, only the underlying question is retained.
 How to test: For wallets with resolved trade history (once available — see open_questions.md), compare exit timestamp to resolution timestamp, and check whether exits cluster around detectable events (volume spikes in the market, liquidity changes, rapid price movement) versus being uniformly distributed across the market's lifetime.
 Status: Unreviewed — blocked on the same resolved-trade-data gap as other wallet performance hypotheses.
@@ -66,3 +66,17 @@ Reasoning: Standard liquidity-shock mean-reversion framing from traditional mark
 Evidence so far: None. Prompted by the same external article; no performance claims from that source are treated as evidence.
 How to test: Would require historical, time-series order book data (not just point-in-time snapshots) to observe price behavior before/during/after a detected liquidity shock — Liquid Research currently only takes point-in-time CLOB snapshots, not continuous historical book data.
 Status: Unreviewed — blocked on a new data collection capability (continuous/historical book snapshots) that doesn't exist in this project yet.
+
+
+---
+
+Hypothesis: Certain Polymarket wallets exhibit repetitive micro-order patterns — identical or near-identical position sizes, prices, and timing intervals across many trades — and this bot-like behavior may be systematically correlated with either above-average or below-average outcomes, making it a detectable and potentially useful signal for wallet filtering or classification.
+Reasoning: During Phase 3 wallet discovery, several discovered wallets showed highly repetitive order patterns inconsistent with human discretionary trading. The question of whether this pattern predicts anything (profitability, a specific strategy type, or just noise) was raised in open_questions.md but never formalized into a hypothesis. Bot wallets are explicitly defined as a separate research category in zHANDOFF.md, with the stated goal of understanding what markets they trade, what they avoid, and whether their behavior improves scanner filters — not copying them. This hypothesis is the formal version of that question.
+Evidence so far: Observational only. Several wallets discovered via wallet_discovery.py showed this pattern during Phase 3 (2026-06-19). No outcome data exists yet for those wallets since all their eligible trades were unresolved at the time of analysis.
+How to test: Once wallet resolved-trade data exists (Phase 3 extension prerequisite), identify wallets exhibiting repetitive micro-order patterns (concentration metric: % of trades within a narrow size/price band), compare their win rate and P&L against wallets with varied order behavior, and determine whether the pattern is correlated with any measurable performance difference.
+Status: Unreviewed — blocked on Phase 3 resolved-trade-data gap. Promoted from open_questions.md (2026-07-03).
+
+---
+
+NOTE — Status update for Order Book Imbalance / Micro-Price hypothesis (above):
+The OBI hypothesis has been reviewed and promoted to Program B (active research program). Status changed from "Unreviewed" to "Promoted — Program B (2026-07-03)." See programs/program_b/README.md and zROADMAP.md for current program status.

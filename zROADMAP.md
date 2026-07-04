@@ -1,10 +1,14 @@
-# Liquid Research — Project Roadmap
+# Liquid Research — Platform Roadmap
 
 ## Mission
-Find repeatable prediction-market edges through data collection,
-market analysis, trader research, and paper trading simulation.
+Liquid Research is a multi-program research platform whose purpose
+is to discover statistically defensible, monetizable trading edges
+in prediction markets through disciplined, evidence-driven research.
 
 This is a research platform. Not a trading bot. Not an execution engine.
+Every research program must answer one question:
+"Does this increase the probability of discovering a repeatable edge
+that can eventually generate meaningful income?"
 
 ---
 
@@ -29,52 +33,6 @@ Polymarket numeric market IDs instead of conditionId hashes. The issue
 produced believable output while hiding a critical bug. This project
 should assume that plausible-looking results can still be wrong until
 verified.
-
----
-
-## Phase Exit Checklist
-
-Before moving from one phase to the next, answer these honestly.
-If the answer is "no" or "unclear," stay in the current phase.
-
-1. **Did this phase actually improve something measurable?**
-   Better data, better classification accuracy, better win-rate
-   signal, better filter quality — not just "more code written."
-
-2. **Did we find and fix any bugs this phase exposed?**
-   Document them in git commit messages. If nothing broke, ask
-   whether testing was thorough enough.
-
-3. **Is the current code safe to keep running?**
-   No execution, no wallet connection, no private keys, no
-   real money at risk — confirm this is still true every phase.
-
-4. **Does this phase move us closer to a real edge?**
-   Per PHILOSOPHY.md: "Can this information improve expected
-   returns?" If a phase produced interesting output with no
-   plausible link to better market selection, note that honestly
-   rather than treating it as progress.
-
-5. **What stood out, surprised us, or looked risky?**
-   Document anything unexpected — a wallet behaving oddly, an API
-   field that didn't mean what we assumed, a result that seemed
-   too clean or too convenient. These are often where real bugs
-   or real signal hide.
-
-6. **Is this safe to commit and build on top of?**
-   Confirm tests pass, confirm output was manually sanity-checked
-   against at least one known real-world case, not just internal
-   consistency.
-
-7. **Were outputs manually validated against external reality?**
-   Do not rely solely on internal consistency. Verify at least one
-   result against a live API response, known market, known wallet,
-   or known real-world example.
-
-8. **Could this result be explained by a bug rather than signal?**
-   Treat dramatic improvements, suspiciously clean outputs,
-   unexpected jumps, or surprising discoveries as potential bugs
-   until verified.
 
 ---
 
@@ -105,6 +63,11 @@ Layer 3 — Scanner Engine        scanner/
 Layer 4 — Wallet Research       analyzers/wallet_analyzer.py
 Layer 5 — Decision Engine       brain/
 Layer 6 — Paper Trading         simulator/
+Layer 7 — Research Programs     programs/
+
+Research Vault (platform knowledge): research/
+Program A (active):               programs/program_a/
+Program B (queued):               programs/program_b/
 
 ---
 
@@ -116,360 +79,194 @@ The long-term design philosophy is:
 - Every signal must earn its place through independent validation
   before it is ever combined with others.
 - Signals are researched individually first. Combination comes
-  later, only after each component has demonstrated standalone
-  value.
+  later, only after each component has demonstrated standalone value.
 - Any future confidence framework should emerge from evidence,
   not be assumed upfront.
 - This is a philosophy, not an implementation plan. No formulas,
   no weights, no architecture decisions are implied here.
 
+The idea lifecycle:
+Idea → Research Vault → Hypothesis → Experiment → Program → Finding
+→ Platform Knowledge
+
+Programs execute research. The vault discovers research.
+Those are different responsibilities and should never be confused.
+
 Potential signals currently under investigation or planned:
-  Tradeability Score (active)
-  Category Edge (pending volume)
-  Resolution Speed Signal (pending volume)
-  Category-Aware Wallet Intelligence (Phase 3 extension)
-  Cross-Market Intelligence (requires external infrastructure)
+  Tradeability Score (Program A — active)
+  Order Book Imbalance / Micro-Price (Program B — queued)
+  Calibration / Entry Price (Program C — queued)
+  Cross-Venue Spread (Program D — future, requires infrastructure)
+  Category-Aware Wallet Intelligence (Program E — blocked)
   Future signals not yet discovered
 
 ---
 
-## Phase Status
+## Active Research Programs
 
-### PHASE 0 — Planning ✅ COMPLETE
-- Reviewed all reference repos
-- Defined architecture
-- Confirmed legal status
-- Produced build plan
+This section is the authoritative index of all research programs.
+Each program tests an independent hypothesis. Programs do not share
+operational documentation — each program owns its own Mission Control,
+Daily Operations, and program-specific notes inside its folder under
+programs/.
 
-### PHASE 1 — Data Collection ✅ COMPLETE
-- Python environment configured
-- GitHub repo created (LIQUIDSMC/Liquid-Research)
-- market_collector.py working
-- Pulls 100 markets from Polymarket Gamma API
-- Saves snapshot CSV, kill log CSV
-- api_sanity_check.py created
-
-### PHASE 2 — Market Classification ✅ COMPLETE
-- market_classifier.py built and tested
-- Three-tier category system (Active Research / Research Queue / Excluded)
-- Word-boundary keyword matching (fixed nfl/inflation bug)
-- include_in_wallet_research logic (True/False/Review)
-
-### PHASE 3 — Wallet Research ✅ COMPLETE
-Goal:
-Study trader behavior using public Data API.
-Not copy-trading. Research only.
-
-Completed:
-- market_resolution.py — verified against live API, handles
-  Confirmed/Open/Unconfirmed/Partial states
-- wallet_analyzer.py Mode 1 (Recent Global Activity) — classify,
-  filter, resolve, real win rate/P&L
-- wallet_discovery.py — sources candidate wallets from Active
-  Research markets, not leaderboard (684 wallets discovered)
-- wallet_analyzer.py Mode 2 (Discovered Market Context) — analyzes
-  a wallet only within the markets that caused its discovery
-- Critical bug fixed: resolve_trades_batch() now uses slug-based
-  lookup as primary method instead of unreliable conditionId query
-- Validation run: 20/20 real trades from a known-resolved market
-  correctly scored, manually verified against real-world outcome
-
-Done when:
-- Mode 2 implemented and labeled clearly in output ✅
-- At least one discovered wallet analyzed successfully ✅
-- At least one confirmed market resolved correctly ✅
-- Win rate and P&L generated from confirmed outcomes only ✅
-- Results manually verified against raw trade history ✅
-
-
-### PHASE 4 — Scanner Engine ✅ COMPLETE
-Goal:
-Expand kill filters. Add order book depth checks. Add real
-spread from CLOB API. Score surviving markets.
-
-Completed (five patches):
-- Patch 1: scanner/clob_client.py — order book retrieval, correct
-  bid/ask parsing (bids ascending, asks descending — validated
-  against three structurally different markets)
-- Patch 2: scanner/filters.py — empty-book kill filter, returns
-  explainable pass/fail dict with specific reason
-- Patch 3: scanner/filters.py — spread quality labels (excellent/
-  acceptable/wide/extreme/unknown), informational only, not a
-  kill filter, deliberately generous to avoid penalizing low/high-
-  probability markets with structurally elevated spread_pct
-- Patch 4: collectors/market_collector.py — added slug field to
-  snapshot CSVs, eliminating dependency on unreliable conditionId
-  lookup for scanner use
-- Patch 5: scanner/scorer.py + scanner/scanner.py — full
-  orchestration: reads snapshot, fetches CLOB data via slug,
-  applies filters, computes tradeability_score, ranks top 10,
-  saves results to data/scanner/. Live-verified against 21 real
-  markets; a latent NaN-propagation bug was found in code review
-  and fixed before commit.
-
-Verification:
-- 21/21 markets scanned successfully with real CLOB data
-- Zero markets killed in this run — explained, not assumed: Phase
-  1's existing Gamma-side filters already remove thin/illiquid
-  markets before CLOB scoring reaches them, so the empty-book
-  filter currently has nothing left to catch on this snapshot
-- Independent CSV verification matched terminal output exactly
-- No conditionId fallback logic anywhere in the scanner
-
-Done when:
-- Terminal prints scanned / killed / passed summary ✅
-- Every killed market has a documented reason ✅
-- Every passed market has a score ✅
-- Top 10 opportunities ranked and explained ✅
-
-Deferred to future backlog (not required for Phase 4 completion):
-- Depth-near-inside-market as a ranking signal
-- Order Book Imbalance / micro-price (logged in Research Vault,
-  flagged as testable with existing clob_client.py — not yet
-  promoted to roadmap status)
-
-
-### PHASE 5 — Research Improvements ✅ COMPLETE (2026-06-23)
-
-Goal:
-Remove Top-5 selection bias and capture metadata required for
-category and score-bucket analysis, before the dataset scales.
-
-Completed:
-- paper_trader.py converted from Top 5 to All Passing Markets —
-  verified live: 19 new trades created in one run vs. 5 previously
-- Every new trade record now includes category, category_tier,
-  scanner_run_id, liquidity, volume_24h, spread_label,
-  recurrence_count
-- Category classification reuses analyzers/market_classifier.py
-  directly (no duplicated logic) — this surfaced the classifier
-  finding now tracked under "Classifier Architecture:
-  Metadata-First Redesign" in the backlog
-- research/DAILY_OPERATIONS.md and research/MISSION_CONTROL.md
-  created as the operating procedure and single-source-of-truth
-  scorecard for ongoing data collection
-
-Done when:
-- paper_trader.py creates one entry per passing market, not just Top 5 ✅
-- Every new trade record includes category, category_tier,
-  scanner_run_id, liquidity, volume_24h, spread_label ✅
-- Recurrence of the same market_id across multiple trades is
-  detectable from stored data ✅
-
-Known follow-up (not blocking, tracked in backlog):
-- Category breakdown currently shows ~42% Other/Unknown due to
-  classifier proper-noun gap — category-performance analysis
-  remains blocked until this is addressed (see Classifier
-  Architecture backlog item)
-
-### PHASE 6 — Exit Logic Research 🔲 NOT STARTED
-Goal:
-Study whether top wallets exit early or hold to resolution.
-Build exit rules based on data, not assumptions.
-
-Done when:
-- Report comparing hold-to-resolution vs early exit P&L
-- Recommended exit rules documented
-
-### PHASE 7 — Dashboard MVP 🔲 NOT STARTED
-Goal:
-React/Vite local dashboard showing scanner results and paper trades.
-Built to eventually plug into LiquidOS.
-
-Done when:
-- Local web app shows scanner results
-- Paper trade history visible
-- Daily P&L, win rate, drawdown visible
-
-### PHASE 8 — Signal Alerts 🔲 NOT STARTED
-Goal:
-Send signal alerts to Discord or email.
-No live execution. Manual approval required.
-
-### PHASE 9 — Execution Layer 🔲 NOT STARTED
-LOCKED. Do not begin until:
-- Phase 5 (Paper Trading) shows 100+ simulated trades
-- Results show positive expectancy vs random market selection
-- Legal pathway for live trading is explicitly confirmed
-- Explicit human approval is given — this is never automatic
+Platform-wide knowledge (hypotheses, findings, vault) remains in
+research/ and is shared across all programs.
 
 ---
 
-### Research Backlog (Ordered by Realistic Execution Priority)
-
-**Phase 3 Extension — Category-Aware Wallet Research**
-Goal: Return to the existing wallet_discovery.py and
-wallet_analyzer.py infrastructure built in Phase 3, now equipped
-with the category metadata that didn't exist when Phase 3 was
-originally built. Identify whether certain wallets specialize by
-category, whether specialists outperform generalists, and whether
-following historically profitable participants adds measurable
-value over consensus pricing.
-
-This is NOT a new build. The infrastructure already exists.
-The opportunity comes from category metadata that is now reliable
-enough to support category-level wallet analysis. Most immediately
-actionable research direction in this backlog.
+### Program A — Tradeability Score / Scanner One
+**Status:** ACTIVE — daily cycle running
+**Folder:** programs/program_a/
+**Hypothesis:** Higher tradeability_score (combining liquidity,
+spread quality, and volume) predicts better paper-trade outcomes
+than lower-score markets on Polymarket.
+**Data:** data/simulator/paper_trades.csv
+**Current milestone:** 32 closed trades — accumulating toward 100.
+**Next checkpoint:** 100 closed trades — bucket comparisons become
+meaningful.
+**Does not interfere with:** All other programs. Program A runs
+its daily cycle independently. No other program touches Program A's
+data or methodology.
+**Details:** programs/program_a/MISSION_CONTROL.md
+**Build history:** programs/program_a/HISTORY.md
 
 ---
+
+### Program B — Order Book Imbalance / Micro-Price Research
+**Status:** QUEUED — not yet started
+**Folder:** programs/program_b/
+**Hypothesis:** Order book imbalance (relative volume of bids vs.
+asks near the best price) predicts short-term price movement better
+than midpoint alone. A volume-weighted micro-price outperforms
+midpoint as a short-term reference price on Polymarket.
+**Infrastructure required:** None new. scanner/clob_client.py
+already fetches and correctly parses full bid/ask book depth.
+**Signal class:** Timing signal (when to enter) — fundamentally
+different from Program A's selection signal (which market to trade).
+**Blocking conditions:** None. Queued by choice, not dependency.
+**Details:** programs/program_b/README.md
+
+---
+
+### Program C — Calibration / Entry Price Analysis
+**Status:** QUEUED — not yet started
+**Hypothesis:** Implied probability at entry independently predicts
+paper-trade outcomes. Polymarket may systematically misprice markets
+in certain probability ranges, representing a directly actionable edge.
+**Motivation:** Emerged from Program A's 2026-07-02 median-split
+analysis — low-score trades appeared to outperform high-score trades,
+consistent with entry-price and payout structure acting as a
+confounding factor. The relationship between tradeability score and
+entry price has not yet been quantified.
+**Infrastructure required:** None. Uses existing paper_trades.csv.
+**Blocking conditions:** None. Testable once Program B is underway.
+**Experiment design:** research/future_experiments.md
+
+---
+
+### Program D — Cross-Venue Spread Research
+**Status:** FUTURE — requires new infrastructure
+**Hypothesis:** Semantically equivalent markets on different
+prediction market venues (e.g. Polymarket vs. Kalshi) exhibit
+persistent, measurable price deviations that may be exploitable.
+**Evidence:** Gebele & Matthes (2026), arXiv:2601.01706 — roughly
+6% of events listed across platforms, with 2-4% persistent price
+deviations even in liquid markets. Strongest external evidence for
+any hypothesis in the research vault.
+**Infrastructure required:** Kalshi data collection (does not exist).
+**Blocking conditions:** Requires building an entirely new data
+pipeline for a second venue before any testing can occur.
+**Hypothesis:** research/market_hypotheses.md
+
+---
+
+### Program E — Category-Aware Wallet Research
+**Status:** BLOCKED — pending Phase 3 resolved trade data
+**Hypothesis:** Wallets that concentrate trading in a single
+category (specialists) outperform wallets that spread trades across
+categories (generalists). Category-aware wallet analysis can
+identify reliably profitable participants.
+**Infrastructure required:** None new. wallet_discovery.py and
+wallet_analyzer.py already exist from Phase 3.
+**Blocking conditions:** Requires wallets with meaningful resolved
+trade history. All wallets discovered during Phase 3 had only
+open/unresolved trades at time of analysis. This resolves naturally
+as Polymarket markets mature — no active work needed to unblock.
+**Hypothesis:** research/market_hypotheses.md
+
+---
+
+## Platform Research Backlog
+
+### Queued Research Programs
+(Defined hypotheses, no infrastructure blocker, ready to begin)
+
+See Active Research Programs section above for Programs B and C.
+Additional queued directions:
 
 **Resolution Speed Research**
-Goal: Investigate whether market duration at entry (days_left)
-affects tradeability score correlation with outcomes, expectancy,
-or win rate. Short-duration markets (1-7 days) and long-duration
-markets (30-180+ days) may behave differently in ways the current
-scoring model doesn't capture.
-
-Entirely self-contained — no external infrastructure required.
-days_left at entry is already captured in paper_trades.csv.
-Testable once enough closed trades exist across different duration
-buckets. Low infrastructure cost when ready.
+Investigate whether market duration at entry (days_left) affects
+tradeability score correlation with outcomes, expectancy, or win
+rate. Entirely self-contained — days_left already captured in
+paper_trades.csv. Testable once sufficient closed trades exist
+across varied duration buckets.
 
 ---
+
+### Deferred / Blocked Research Programs
 
 **Sports Research Framework**
-Goal: Sports markets currently pass through scanner and paper
-trading but are excluded from wallet research. Decide whether
-sports deserves its own analysis framework given this asymmetry,
-or whether it should be reclassified consistently across all
-three systems.
-
----
+Sports markets pass scanner and paper trading but are excluded
+from wallet research. Decision needed: dedicated framework, or
+reclassify consistently across all systems.
+Blocking condition: None technical — this is a strategic decision.
 
 **Crypto Ultra-Short Research Framework**
-Goal: Crypto Ultra-Short markets remain excluded from research
-entirely. Revisit whether a dedicated framework (different
-resolution speed, different metadata needs) would be worth
-building, or whether exclusion should remain permanent.
+Crypto Ultra-Short markets excluded entirely. Revisit whether a
+dedicated framework would be worth building or exclusion should
+remain permanent.
+Blocking condition: None technical — this is a strategic decision.
 
 ---
 
-**Cross-Market Intelligence Research**
-Goal: Investigate whether external markets (sportsbooks, betting
-exchanges, other prediction markets) contain information that may
-eventually improve Liquid Research's decision-making, either as
-a standalone signal or as an input to a future confidence
-framework.
+### Platform Engineering Backlog
+(Infrastructure work not tied to a specific research program)
 
-Honest limitations:
-- External markets don't always price identical products or use
-  identical resolution criteria to Polymarket — comparisons are
-  structurally messier than they appear.
-- Different participant types, pricing mechanics, and liquidity
-  profiles make direct comparison non-trivial.
-- Requires external data infrastructure (paid odds API, reliable
-  historical data) that does not currently exist in this project.
-- Cannot be meaningfully tested until internal signals are
-  independently validated first.
+**Price History Tracking**
+Currently the scanner captures market state at a single daily
+snapshot. No memory of how a market was priced on prior days
+exists. Building even a simple price history tracker (appending
+daily yes_price per active market to a running file) would unlock
+an entirely new class of research questions including momentum,
+late-stage repricing, and timing signals. Medium infrastructure
+effort, high long-term research value.
 
-This is a long-term research direction only. Do not prioritize
-before the internal pipeline has demonstrated stable, repeatable
-signal.
-
----
-
-## Backlog — Future Engineering Work (Not Yet Started)
-
-This section is future work only. Completed patches are NOT
-recorded here — git commit history is the source of truth for
-what has already been built. Items are removed from this list
-once implemented, not marked "done" in place.
-
-### High Priority
+**Automated Reclassification on Classifier Patch**
+Dataset-wide reclassification has been run manually three times
+after classifier patches. A script that automatically re-checks
+all open trades against the current classifier after any patch
+would eliminate this recurring maintenance burden.
 
 **Resolution Cache**
-Goal: Avoid repeatedly resolving the same market across large
-wallet batches.
-
-Done when:
-- Market resolutions cached locally
-- Duplicate API calls reduced
-- Cache behavior documented
-- Cache invalidation strategy documented
+Avoid repeatedly resolving the same market across large wallet
+batches. Market resolutions should be cached locally.
 
 **ConditionId Validation Layer**
-Goal: Prevent malformed identifiers from contaminating discovery
-or analysis.
-
-Done when:
-- ConditionIds validated before query execution
-- Invalid IDs fail loudly
-- Legacy pre-fix snapshot data detected automatically
+Prevent malformed identifiers from contaminating discovery or
+analysis. Invalid IDs should fail loudly, not silently.
 
 **Combined Filter Stress Testing**
-Goal: Validate user+market filtering under larger workloads.
+Validate user and market filtering under larger workloads —
+multiple wallets, multiple markets, higher trade counts,
+pagination behavior, truncation and duplication checks.
 
-Done when:
-- Multiple wallets tested
-- Multiple markets tested
-- Higher trade counts tested
-- Pagination behavior verified
-- Truncation and duplication checks completed
-
-**Proper-Noun Classification Limitation / External-Knowledge Decision**
-(Formerly "Discovery Classification Improvements," then
-"Classifier Architecture: Metadata-First Redesign" — reframed
-2026-06-25 following an evidence-based investigation that did not
-support the metadata-first hypothesis.)
-
-Goal: Decide how (or whether) to handle markets whose questions
-reference specific named individuals or unique one-off scenarios
-with no generic category keyword anywhere in the title, slug, or
-available metadata — a limitation of text-pattern matching itself,
-not a bug in the current implementation.
-
-Original finding (2026-06-23):
-market_classifier.py uses keyword matching only. Markets phrased
-with proper nouns instead of generic category terms were
-systematically misclassified into Other/Unknown — observed at
-10/24 (42%) of paper trades in one real dataset.
-
-Interim hygiene patch (2026-06-25): added missing sports
-league/slug terms ("wta", "atp", "fifwc") and adjectival
-geopolitical forms ("iranian", "israeli", "russian", "chinese").
-Measured result: Other/Unknown reduced from 21 to 8 trades (62%)
-on the real dataset (39 trades at the time of fix, before
-recurrence dedup; 6 unique markets remained affected).
-
-Gamma events/series metadata investigation (2026-06-25):
-Tested directly against all 6 remaining unique Other/Unknown
-markets at the time (3 Starmer variants sharing one event, Mojtaba
-Khamenei, US/aliens, Cole Young/MLB award). Findings:
-- `series` field was ABSENT on every single tested market — the
-  original hypothesis's most promising piece (e.g. "fomc" series
-  on Fed markets) had zero supporting evidence in this sample.
-- `events` was present on all 6, but 5 of 6 were templated
-  restatements of the question itself, adding no new
-  classification signal (e.g. Starmer's event title is literally
-  "Starmer out by...?").
-- Only 1 of 6 (Cole Young / AL Platinum Glove) was genuinely
-  helped — its event title explicitly said "MLB," information not
-  present in the question or slug.
-- Estimated real-world impact of appending event text to the
-  classifier's searchable string: ~17% of currently-remaining
-  cases (1 of 6), not the broad improvement originally
-  hypothesized.
-
-Decision (2026-06-25): Do NOT implement event-text append. Do NOT
-build a tiered metadata-first architecture. Do NOT add a
-name-to-category lookup table at this time. The measured impact
-does not justify the added complexity or new data dependency. The
-remaining proper-noun cases (Starmer, Mojtaba Khamenei, aliens,
-and any future similar market) are not solvable by any text-based
-method available to this project — they require either a
-maintained name-to-category lookup table (ongoing maintenance
-burden) or genuinely external knowledge sources, both of which are
-separate, larger decisions beyond a classifier patch.
-
-Status: Open as a DECISION item, not an implementation item.
-Revisit only if: (a) a maintained lookup table becomes worth the
-ongoing effort, (b) Other/Unknown volume grows large enough to
-justify the investment, or (c) a fundamentally different data
-source becomes available that wasn't tested here.
-
-Done when:
-- A explicit decision is made (and has been made, 2026-06-25):
-  accept remaining proper-noun cases as Other/Unknown for now ✅
-- Finding is logged in research/validated_findings.md for future
-  reference ✅
-
+**Proper-Noun Classification Limitation — Standing Decision**
+Remaining Other/Unknown trades (Starmer, Mojtaba Khamenei,
+aliens-type questions) are not solvable by any text-based method
+available to this project. Decision made 2026-06-25: accept as
+Other/Unknown for now. Revisit only if a maintained lookup table
+becomes worth the ongoing effort, Other/Unknown volume grows large
+enough to justify the investment, or a fundamentally different
+data source becomes available.
+See research/validated_findings.md for the full investigation record.

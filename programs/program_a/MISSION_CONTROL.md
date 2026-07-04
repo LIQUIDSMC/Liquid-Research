@@ -1,13 +1,19 @@
-# Liquid Research — Mission Control
+# Program A — Tradeability Score / Scanner One
+# Mission Control
 
-Last updated: 2026-07-01
-(Updated during weekly review — see DAILY_OPERATIONS.md)
+> This document tracks Program A specifically. Platform-wide
+> research programs and the experiment registry live in zROADMAP.md.
+> Build history and phase details live in programs/program_a/HISTORY.md.
+
+Last updated: 2026-07-03
+(Updated during weekly review — see programs/program_a/DAILY_OPERATIONS.md)
 
 ## Phase Status
-Phase 0-4: Complete
-Phase 5: v1 complete (paper_trader.py + paper_resolver.py),
-         Research Improvements in progress (All-Passing migration
-         done; classifier redesign pending)
+Phases 0-5: Complete. See programs/program_a/HISTORY.md for full
+build history. Program A is now in active data collection toward
+100 closed paper trades. Classifier redesign was investigated,
+found not viable via the metadata approach, and reframed as a
+standing decision (see research/validated_findings.md).
 
 ## Dataset Status
 Total paper trades: 59
@@ -122,11 +128,18 @@ any directional conclusion.
 - [ ] 500 resolved trades — threshold discussions become serious
 
 ## Current Hypotheses Under Active Test
-[pull live from research/market_hypotheses.md — list only ones
-current data collection actually speaks to]
+Primary: "Does higher tradeability_score produce better paper-trade
+outcomes than lower-score markets?" — see Primary Research Question
+section below for current status.
+Full hypothesis list: research/market_hypotheses.md
 
 ## Current Open Questions
-[pull live from research/open_questions.md]
+See research/open_questions.md for the full platform list.
+Most relevant to Program A currently:
+- Do the 0.05/0.95 thresholds in filters.py represent the right
+  cutoffs for flagging near-extreme pricing?
+- Does clob_client.py's outcome_index=0 default correctly represent
+  the primary outcome across all market types?
 
 ## Technical Debt (tracked here until resolved)
 

@@ -81,3 +81,27 @@ Raw results: High-score group (≥98.55): 75.0% win rate, -$1.77 expectancy, -$2
 Why the result is inconclusive: Approximately 85% of the low-score group's total P&L came from just 2 trades (trade 32: Hormuz 40-ships at entry price 0.505, +$98.02; trade 46: Bitcoin dip at entry price 0.544, +$83.82). Both were entered near 50% implied probability, producing large payouts relative to the high-score group's typical entries at 0.96+ (which pay $1-4 per win). The observed result is consistent with entry-price and payout structure acting as a confounding factor — high-liquidity, tight-spread markets (high scorers) tend to be heavily-favored and therefore entered at high prices with small wins when correct. However, the relationship between tradeability score and entry price has not yet been quantified in this dataset. It would be incorrect to conclude that entry price is the causal explanation; this remains an observation that warrants further investigation. The score distribution is highly compressed (median 98.55; even "low" scores are still high-quality markets). Remove the two high-payout outliers and the low-score group's expectancy drops from $13.44 to approximately $2.08/trade.Date verified: 2026-07-02
 Evidence: Terminal analysis against data/simulator/paper_trades.csv, 32 closed trades, median split at score 98.55.
 Affects: Primary research question ("Does higher tradeability_score produce better paper-trade outcomes?") remains open. Next meaningful checkpoint: 100 closed trades, with wider score diversity needed to test the hypothesis properly. Future work should directly measure the relationship between tradeability score and entry price before drawing any conclusions about whether entry price is acting as a confounding variable — this correlation has been observed but not yet quantified.
+
+---
+
+Finding: All Active Research category markets sampled during Phase 3 wallet discovery (2026-06-20) were genuinely unresolved at the time of sampling — this was a timing limitation, not a tooling gap.
+How it was verified: diagnostics/find_resolved_market.py was run after fixing the slug-lookup bug in market_resolution.py. All 20 unique markets sampled by wallet_discovery.py returned Open status. Previously suspected to be a code issue; confirmed via direct API checks to be real-world timing (markets simply had not resolved yet).
+Date verified: 2026-06-20
+Evidence: diagnostics/find_resolved_market.py output, 20-market sample, single snapshot.
+Affects: category_intelligence.md observation (now migrated here). Confirms resolution logic was correct; bottleneck was wallet sourcing, not pipeline logic. Sample size: 20 markets, single point in time. Confidence: Low — single snapshot, not a generalizable finding about category resolution speed.
+
+---
+
+Finding: Phase 3 wallet pipeline validation — poRussky wallet correctly excluded by category filter.
+How it was verified: 50 trades pulled from poRussky wallet. 100% classified as Crypto Ultra-Short. 0 eligible trades, 50 excluded. The exclusion filter correctly identifies and removes pure ultra-short gambling wallets from research scope without any manual intervention.
+Date verified: 2026-06-19
+Evidence: wallet_analyzer.py Mode 1 run against poRussky wallet, this session.
+Affects: Confirms the category exclusion filter in wallet_analyzer.py works correctly end-to-end for wallets outside Active Research categories.
+
+---
+
+Finding: Phase 3 wallet pipeline validation — KickstandBot wallet confirmed eligible-trade pipeline works correctly end-to-end.
+How it was verified: 200 trades pulled from KickstandBot. 68 classified as eligible (Geopolitical, Macro/Economic, Political). 131 flagged Review (weather/temperature markets, entertainment, AI product launches). 1 excluded (entertainment box office). All resolution logic verified correct — 0 resolved trades found was confirmed to be real-world timing (all 68 eligible trades were genuinely Open at time of analysis), not a code failure. Resolution logic was independently verified via hardcoded tests (10/10 passing), live API test against a known-resolved market (Czechia World Cup match — correctly Confirmed), and live API test against a known dirty/archived market (Biden COVID market — correctly Unconfirmed). Wallet was found to be broad/general-purpose, not a focused specialist — Review trades outnumber eligible trades roughly 2-to-1.
+Date verified: 2026-06-19
+Evidence: wallet_analyzer.py Mode 1 run against KickstandBot wallet, this session.
+Affects: Confirms eligible-trade pipeline works correctly. Identified that the bottleneck at the time was wallet sourcing (no systematic way to find wallets with both Active Research trades AND already-resolved history), which motivated building wallet_discovery.py.
