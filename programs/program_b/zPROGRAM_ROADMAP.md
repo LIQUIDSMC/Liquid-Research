@@ -58,12 +58,23 @@ cadence in README.md reaches a checkpoint.
 Goal: Make it possible to observe the same market over multiple
 days, not just today.
 
-- Historical Market View — retrieve all logged observations for a
-  given market (matched by slug) across both obi_log.csv and
-  near_book_depth_log.csv, sorted by date.
+- Historical Market View ✅ COMPLETE (2026-07-06) — implemented in
+  programs/program_b/analysis/history.py. Returns all logged
+  observations for a market in LONG FORMAT (one row per real
+  observation, tagged by source: obi or near_book), not the
+  originally-envisioned wide/paired format. This changed during
+  implementation: snapshot_file + slug is not a unique key (same-day
+  diagnostic reruns produce genuine duplicate observations), so a
+  wide merge risked cartesian products. Pairing OBI and Near-Book
+  observations by nearest timestamp was considered and rejected as
+  an unvalidated heuristic. Any future OBI-vs-Near-OBI comparison
+  (e.g. a diff calculation) requires its own explicit pairing rule
+  and belongs in a downstream consumer, not in this retrieval layer.
+  See research/validated_findings.md or git history for the full
+  reasoning if needed.
 - Snapshot Change Detector — compare today's observation to
   yesterday's for the same market (simplest possible consumer of
-  Historical Market View; build this first to validate the
+  Historical Market View; build this next to validate the
   retrieval logic before anything more complex).
 - Divergence Detection — flag when Near-OBI and Total-OBI diverge
   by more than any previously observed amount for that market.
