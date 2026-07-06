@@ -72,10 +72,18 @@ days, not just today.
   and belongs in a downstream consumer, not in this retrieval layer.
   See research/validated_findings.md or git history for the full
   reasoning if needed.
-- Snapshot Change Detector — compare today's observation to
-  yesterday's for the same market (simplest possible consumer of
-  Historical Market View; build this next to validate the
-  retrieval logic before anything more complex).
+- Snapshot Change Detector ✅ COMPLETE (2026-07-06) — implemented in
+  programs/program_b/analysis/change_detector.py. Compares the
+  latest observation against the immediately previous observation,
+  per source (OBI, Near-Book) — NOT calendar "today vs yesterday",
+  since diagnostics can be rerun against the same snapshot and the
+  correct comparison is chronological, per source. Never compares
+  OBI rows to Near-Book rows. Verified against the Fed rate market:
+  OBI correctly showed has_change=True with real computed deltas;
+  Near-Book correctly showed has_change=False with only one
+  observation logged for that market. Uses get_market_history()
+  exclusively — no direct CSV access, confirming the Historical
+  Market View foundation supports real downstream analysis.
 - Divergence Detection — flag when Near-OBI and Total-OBI diverge
   by more than any previously observed amount for that market.
 - Stability Tracking — compute variance/stddev of an indicator's
