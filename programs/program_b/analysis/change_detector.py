@@ -25,13 +25,18 @@ tracking. Those are separate, later Phase 2 items.
 
 import sys
 import os
+import pandas as pd
 
+# sys.path.insert is required here because this module imports
+# another Program B module directly (history.py). Modules that
+# only import third-party/stdlib packages (e.g. history.py itself)
+# do not need this.
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
 from programs.program_b.analysis.history import get_market_history
 
 
-def _build_source_section(source_df) -> dict:
+def _build_source_section(source_df: pd.DataFrame) -> dict:
     """
     Build the change-detection section for a single source's rows
     (already filtered and sorted chronologically by the caller).

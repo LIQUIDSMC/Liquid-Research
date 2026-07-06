@@ -45,7 +45,7 @@ OBI_LOG_PATH = os.path.join("data", "program_b", "obi_log.csv")
 NEAR_BOOK_LOG_PATH = os.path.join("data", "program_b", "near_book_depth_log.csv")
 
 
-def _load_logs() -> tuple:
+def _load_logs() -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Load both Program B logs from disk.
 
@@ -118,7 +118,12 @@ def get_market_history(slug: str) -> pd.DataFrame:
 
     combined = pd.concat([obi_slice, near_slice], ignore_index=True, sort=False)
 
-    # Ensure every expected column exists even if one log was empty
+# Ensure every expected column exists even if one log was empty.
+    # Convention: pd.NA/NaN is used for missing values inside
+    # DataFrames (like this one). Plain None is used in plain dict
+    # outputs intended for humans or JSON serialization (see
+    # change_detector.py). Keep these separate — do not mix them
+    # within the same return type.
     expected_columns = [
         "timestamp", "snapshot_file", "slug", "question", "source",
         "midpoint", "bid_count", "ask_count", "status",
