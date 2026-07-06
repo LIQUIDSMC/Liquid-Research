@@ -93,12 +93,32 @@ Not: "Is this a cool dashboard?"
 4. Work that produces findings over work that produces features.
 
 **On parallel programs:**
-Liquid Research operates as a multi-program platform. Independent
-research programs can run simultaneously as long as:
+Liquid Research should actively maintain multiple independent
+research programs whenever doing so increases the probability of
+discovering a repeatable edge without compromising existing
+experiments. Liquid Research operates closer to a research lab
+running multiple independent efforts in parallel than a single
+sequential project. The governing constraints are not "how many
+programs can exist at once" but:
 - They test genuinely different hypotheses.
 - Their data and methodology do not contaminate each other.
+- Each program's methodology stays frozen once data collection
+  begins, regardless of how many other programs are also running.
 - Each program maintains its own documentation.
 - Each program's findings feed into the shared platform knowledge.
+New programs are welcome whenever they are genuinely independent —
+the discipline is in methodology isolation and evidence standards,
+not in limiting how many efforts run simultaneously.
+
+**Frozen Experiments, Active Platform:**
+Once an experiment begins collecting data, its methodology remains
+frozen until the experiment reaches its predefined review
+milestone. Freezing an experiment does not freeze platform
+progress. While experiments collect evidence, the platform should
+continue improving through independent research, infrastructure,
+documentation, tooling, and new programs that do not contaminate
+existing experiments. Progress comes from protecting experimental
+integrity while continuously expanding the platform around it.
 
 **On scope:**
 I do not want to build things before the data justifies them.
@@ -166,6 +186,47 @@ Execution Engineering. Do not skip ahead — execution-quality
 questions may be legitimate research even before an edge is
 validated (see research/open_questions.md), but execution
 engineering itself waits until there is something worth executing.
+
+**Early rejection beats late analysis:**
+Design research pipelines so inexpensive, deterministic tests
+eliminate the overwhelming majority of candidates before expensive
+computation begins. Every stage should reduce both uncertainty and
+workload. Large search spaces should shrink through multiple cheap
+filtering stages rather than one expensive evaluation. Favor many
+cheap eliminations over one expensive one whenever possible.
+
+**Observe, Reduce, Reason, Validate, Measure:**
+Any pipeline involving an LLM or reasoning model should follow this
+order: observe the raw problem space, reduce it deterministically
+before any reasoning begins, apply narrow LLM reasoning to one
+well-specified task only (never arithmetic, validation, or direct
+decisions), validate the model's output deterministically before
+trusting it, then measure the real result. Never let an LLM be the
+first stage of a pipeline, and never trust its output directly.
+This is effectively a retrieval pipeline for reasoning, reusable
+anywhere Liquid Research needs LLM-assisted classification or
+reasoning against a large search space — not specific to any one
+research area (see research/future_experiments.md, Methodology
+Reproduction — Combinatorial Arbitrage Pipeline, for the case that
+surfaced this principle).
+
+**Research produces two kinds of value:**
+Every research effort should attempt to produce one or both of the
+following: (1) validated findings, or (2) reusable infrastructure,
+architecture, and methodology. Even if a specific hypothesis
+ultimately fails or a specific idea never earns Program status, the
+engineering patterns it introduces may still improve future work.
+Capture reusable ideas as platform knowledge whenever they appear,
+independent of whether the originating idea itself succeeds. The
+Early Rejection and Observe-Reduce-Reason-Validate-Measure
+principles above are themselves examples of this — both emerged
+from evaluating an idea that has not (yet) earned Program status.
+
+**Ideas do not need to become programs to be successful:**
+Some ideas become principles. Some become utilities. Some become
+reusable architecture, engineering patterns, or documentation
+improvements. Those are all wins. Not every successful idea needs
+to become the next lettered Program.
 
 ---
 
@@ -333,12 +394,6 @@ Every command must be in its own isolated bash code block.
 Place any explanation before or after the block — never inside it.
 Do not include STEP numbers, TYPE:, WHERE:, RUN:, terminal prompts,
 or any other text inside the code block.
-
-Correct format:
-```bash
-git status
-
-
 ---
 
 # PART 2 — CURRENT OPERATING STATE

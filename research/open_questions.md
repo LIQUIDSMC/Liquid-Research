@@ -17,7 +17,7 @@ What data would be needed: A meaningful sample of wallets with both resolved tra
 Date raised: 2026-06-19
 
 ---
-i
+
 Question: Are repetitive micro-orders, bot-like, identical size and price patterns, predictive of anything, profitability, a specific strategy, or just noise?
 Why it matters: Several discovered wallets show this pattern. Worth knowing whether it is a distinct, study-able behavior or irrelevant clutter to filter out.
 What data would be needed: Resolved trade outcomes for several wallets exhibiting this pattern, compared against wallets with varied order behavior.
@@ -131,4 +131,90 @@ Date raised: 2026-07-05
 Question: Can execution quality be measured without placing any trades?
 Why it matters: Directly tests whether this domain is compatible with Liquid Research's current read-only, no-execution constraint. If yes, this could become a legitimate research program even before any program produces a validated edge. If no, it must wait.
 What data would be needed: N/A — this is a scoping question.
+Date raised: 2026-07-05
+
+---
+
+## Combinatorial Arbitrage Pipeline — Open Questions
+
+These questions emerged from reviewing arXiv:2508.03474's staged
+filtering/reasoning/validation methodology (2026-07-05). See
+research/papers.md for the paper entry and research/future_experiments.md
+for the proposed Phase 0 reproduction experiment. These are open
+questions only — no findings, no validated results, no promotion
+to hypothesis status yet.
+
+Question: Can we reproduce the candidate funnel from arXiv:2508.03474 on current Polymarket data?
+Why it matters: The paper's methodology is only useful to Liquid Research if it actually reproduces on real, current market data — not just on the paper's own dataset.
+What data would be needed: A snapshot of active Polymarket markets with title, description, end date, outcomes, prices, liquidity, and volume — data collectors/market_collector.py already gathers most of.
+Date raised: 2026-07-05
+
+---
+
+Question: Are same-date and same-topic filters sufficient to reduce search without killing too many real opportunities?
+Why it matters: Overly aggressive filtering could discard genuinely related market pairs; overly loose filtering defeats the purpose of search-space reduction.
+What data would be needed: A test set of manually-identified related market pairs to check whether the filters correctly retain them.
+Date raised: 2026-07-05
+
+---
+
+Question: Is "top 4 outcomes + Other" a robust compression rule across sports, politics, crypto, culture, and weather?
+Why it matters: The paper's claim that top-4-by-liquidity captures 90%+ of relevant signal may not hold uniformly across every category Liquid Research already tracks.
+What data would be needed: Outcome-level liquidity distributions across markets in each existing category (Sports, Geopolitical, Political, Macro/Economic, Crypto Long-Duration).
+Date raised: 2026-07-05
+
+---
+
+Question: Which model is best for dependency mapping: Claude, GPT, DeepSeek, embeddings + rules, or a SAT/constraint solver?
+Why it matters: The paper uses an LLM for one narrow logical-mapping task; whether that's the right tool (versus a pure rules/solver approach) affects both cost and reliability.
+What data would be needed: A small labeled test set of market pairs with known logical relationships, to compare candidate approaches against.
+Date raised: 2026-07-05
+
+---
+
+Question: Can LLM dependency outputs be converted into deterministic logical constraints?
+Why it matters: Directly relevant to whether the deterministic-validation-of-LLM-output pattern from the Reduce -> Reason -> Validate principle (see zHANDOFF.md) actually holds up when implemented against real LLM outputs.
+What data would be needed: Real LLM outputs from a small pilot run, checked against manually-verified expected logical relationships.
+Date raised: 2026-07-05
+
+---
+
+Question: What is the false-positive rate after JSON validation, one-true-per-market validation, and manual review?
+Why it matters: The paper's own funnel suggests the vast majority of candidates get rejected at each stage; confirming this holds on Liquid Research's own data is necessary before treating the pipeline as reliable.
+What data would be needed: Output logs from a full pilot run of the pipeline against real data.
+Date raised: 2026-07-05
+
+---
+
+Question: How often do theoretical gaps survive after maker/taker fees, spreads, depth, and partial-fill risk?
+Why it matters: This is the execution-quality question applied specifically to arbitrage gaps — theoretical mispricing is not the same as executable profit. Directly related to the Future Research Domain — Execution Quality section above.
+What data would be needed: Real fee schedules, order book depth, and historical fill data — none of which are needed for Phase 0 reproduction, only for any later execution-analysis phase.
+Date raised: 2026-07-05
+
+---
+
+Question: Is maker-only execution practical, or does queue priority make most opportunities unfillable?
+Why it matters: Determines whether any detected gap is realistically capturable at all, independent of whether the gap is correctly identified.
+What data would be needed: Order book queue position data over time — not currently collected by any existing Liquid Research component.
+Date raised: 2026-07-05
+
+---
+
+Question: Can we measure queue position and fill probability from the CLOB/order book?
+Why it matters: A prerequisite for the execution-risk questions above; determines whether this line of research is even feasible with data Liquid Research can access.
+What data would be needed: Repeated, time-stamped order book snapshots for the same market — the same continuous-observation capability flagged as missing in the Execution Quality section above.
+Date raised: 2026-07-05
+
+---
+
+Question: Does the neural-network detector from arXiv:2306.16422 apply to prediction-market structures, or is it only useful as conceptual support?
+Why it matters: Determines whether that paper deserves any further attention beyond background context.
+What data would be needed: N/A at this stage — this is a scoping question, not yet worth a real test given the paper's low current relevance (see research/papers.md).
+Date raised: 2026-07-05
+
+---
+
+Question: Is combinatorial arbitrage sufficiently common on modern Polymarket to justify becoming an ongoing research program?
+Why it matters: Even if the methodology reproduces successfully (Phase 0), it may not deserve continued investment if genuine logically-dependent market pairs are too infrequent to materially improve expected returns. This is arguably the highest-leverage question in this section — it determines whether success at Phase 0 is worth acting on at all.
+What data would be needed: Frequency counts from a real Phase 0 run — how many candidate pairs survive filtering, how many show genuine logical dependency, over a meaningful observation window (not a single snapshot).
 Date raised: 2026-07-05
