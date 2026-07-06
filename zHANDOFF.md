@@ -85,9 +85,13 @@ Not: "Is this technically impressive?"
 Not: "Is this a cool dashboard?"
 
 **Prioritization order:**
-1. Finishing active experiments before starting new ones — unless
-   a genuinely independent program with higher ROI exists and can
-   run without contaminating the active experiment.
+1. Protect active experiments — their methodology stays frozen
+   until their review milestone, regardless of what else is being
+   built. Independent parallel programs are welcome and encouraged
+   whenever they do not compete for data, engineering resources, or
+   methodological integrity with an active experiment (see "On
+   parallel programs" and "Frozen Experiments, Active Platform"
+   below).
 2. Evidence-driven work over speculative work.
 3. Self-contained work over work requiring new infrastructure.
 4. Work that produces findings over work that produces features.
@@ -394,6 +398,7 @@ Every command must be in its own isolated bash code block.
 Place any explanation before or after the block — never inside it.
 Do not include STEP numbers, TYPE:, WHERE:, RUN:, terminal prompts,
 or any other text inside the code block.
+
 ---
 
 # PART 2 — CURRENT OPERATING STATE
@@ -405,8 +410,9 @@ or any other text inside the code block.
 
 Liquid Research has transitioned from a single-experiment project
 to a multi-program research platform. Program A (Scanner One)
-continues its daily data collection cycle. Program B (Order Book
-Imbalance) is queued and ready to begin.
+continues its daily data collection cycle. Program B (Market
+Microstructure Research) is active, with OBI/Micro-Price and
+Near-Book Depth Imbalance both collecting daily observations.
 
 Full program registry: zROADMAP.md — Active Research Programs section.
 
@@ -421,7 +427,7 @@ outcomes on Polymarket.
 **Daily cycle:** Runs every day. Collect → Scan → Paper Trade →
 Resolve → Review. See programs/program_a/DAILY_OPERATIONS.md.
 
-**Current dataset:** 61 total trades, 32 closed, 29 open.
+**Current dataset:** 70 total trades, 33 closed, 37 open.
 
 **Key finding to date:** First median-split analysis (n=32, 2026-07-02)
 showed low-score trades outperforming high-score trades, but ~85%
@@ -443,16 +449,19 @@ frozen for the results to be interpretable.
 
 ## Program B — Current State
 
-**What it is:** Testing whether order book imbalance predicts
-short-term price movement better than midpoint alone.
+**What it is:** Market Microstructure Research. Studies order-book
+indicators as a class. Indicator 1 (OBI/Micro-Price) and Indicator 2
+(Near-Book Depth Imbalance) are both actively collecting data.
 
-**Status:** QUEUED. No work has begun. No operational documents
-exist yet beyond programs/program_b/README.md.
+**Status:** ACTIVE. Both indicators logging daily observations
+(data/program_b/obi_log.csv, data/program_b/near_book_depth_log.csv).
+Review checkpoints scheduled for approximately 2026-07-10 (1-week),
+2026-07-17 (2-week), and 2026-08-03 (1-month). See
+programs/program_b/README.md for full detail.
 
-**When it begins:** Explicitly, by decision — not automatically.
-When Program B begins, its MISSION_CONTROL.md and
-DAILY_OPERATIONS.md will be created based on what the work
-actually requires, not based on assumptions.
+**Do not modify Program B's methodology** while indicators are
+collecting data toward their review checkpoints, for the same
+reason Program A's methodology stays frozen.
 
 ---
 
@@ -480,6 +489,20 @@ Full findings in research/validated_findings.md.
 Order Book Imbalance / Micro-Price Research selected as Program B
 after full architectural review of the research vault. Promoted
 from research/future_experiments.md. No infrastructure blocker.
+
+**2026-07-04 — Program B reframed as Market Microstructure Research**
+Program B's identity broadened from "OBI Research" to "Market
+Microstructure Research," with OBI established as Indicator 1
+rather than the entire scope. Folder structure split into
+indicators/, diagnostics/, and analysis/ to support multiple
+independent indicators cleanly.
+
+**2026-07-04 — Indicator 2 added: Near-Book Depth Imbalance**
+Second Program B indicator added, testing whether volume near the
+current price (top N book levels) diverges meaningfully from
+total-book OBI. Logs independently to
+data/program_b/near_book_depth_log.csv. Both indicators now
+collecting data in parallel under the same review cadence.
 
 ---
 
