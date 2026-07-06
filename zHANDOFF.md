@@ -157,6 +157,16 @@ Observation → Hypothesis → Test → Measurable Result
 If there is no plausible path from a feature to improved expected
 returns, challenge the feature before building it.
 
+**Execution survives signal, not the other way around:**
+An edge is only valuable if it survives execution. Research should
+eventually evaluate both signal quality and execution quality, but
+only after a statistically validated edge exists. The correct
+sequence is: Research -> Validated Edge -> Execution Research ->
+Execution Engineering. Do not skip ahead — execution-quality
+questions may be legitimate research even before an edge is
+validated (see research/open_questions.md), but execution
+engineering itself waits until there is something worth executing.
+
 ---
 
 ## Trader Research Standards

@@ -247,6 +247,14 @@ Blocking condition: None technical — this is a strategic decision.
 ### Platform Engineering Backlog
 (Infrastructure work not tied to a specific research program)
 
+**Auto-generated Mission Control Status**
+Generate operational statistics directly from paper_trades.csv
+(trade counts, category counts, open/closed totals, performance
+metrics) rather than manually updating MISSION_CONTROL.md. Keep
+architecture/history documents human-authored while operational
+status is generated automatically to eliminate transcription drift.
+Small engineering task, permanent payoff.
+
 **Price History Tracking**
 Currently the scanner captures market state at a single daily
 snapshot. No memory of how a market was priced on prior days
