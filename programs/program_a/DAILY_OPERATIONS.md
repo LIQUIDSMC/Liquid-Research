@@ -34,12 +34,19 @@ Expected: open checked / newly closed / still open counts.
 ## Step 5 — Review
     python3 -c "
 import pandas as pd
+from datetime import datetime
+
 pd.set_option('display.max_colwidth', 60)
 
 df = pd.read_csv('data/simulator/paper_trades.csv')
 closed = df[df['status']=='closed']
 
+first_trade_date = pd.to_datetime(df['entry_date']).min()
+days_running = (datetime.now() - first_trade_date).days
+
 print('=== SUMMARY ===')
+print()
+print('Program A running since:', first_trade_date.strftime('%Y-%m-%d'), f'({days_running} days, {round(days_running/30.44, 1)} months)')
 print()
 print('Total trades:', len(df), '| Open:', (df['status']=='open').sum(), '| Closed:', len(closed))
 print('Wins:', (closed['trade_won']==True).sum(), '| Losses:', (closed['trade_won']==False).sum())
