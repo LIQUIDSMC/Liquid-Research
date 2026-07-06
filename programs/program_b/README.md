@@ -6,6 +6,10 @@ ACTIVE — First indicator (OBI) verified. Stability testing in progress.
 Program A (Tradeability Score / Scanner One) continues running
 its daily cycle uninterrupted. Program B runs independently.
 
+Program B's research questions, infrastructure phases, and future
+indicator candidates are tracked in zPROGRAM_ROADMAP.md, not here.
+This file covers current identity and state only.
+
 ## Identity
 Program B studies order-book and market-microstructure indicators
 as a class, not a single metric. Order Book Imbalance (OBI) and
@@ -40,9 +44,9 @@ checkpoint. New indicators added between checkpoints join the same
 shared review cycle rather than starting their own clock.
 
 ## Folder Structure
-
 programs/program_b/
     README.md
+    zPROGRAM_ROADMAP.md  - research roadmap: questions, infrastructure phases, future indicators
     indicators/       - pure calculation logic, no I/O
     diagnostics/      - runner scripts: fetch data, call indicators, log, display
     analysis/         - reserved for future comparison/stability scripts

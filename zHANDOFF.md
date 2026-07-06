@@ -199,6 +199,17 @@ workload. Large search spaces should shrink through multiple cheap
 filtering stages rather than one expensive evaluation. Favor many
 cheap eliminations over one expensive one whenever possible.
 
+**Prefer better evidence over more variables:**
+When choosing between collecting better evidence and collecting
+more variables, prefer better evidence first. This applies across
+every program, not just one: before adding a new indicator, a new
+filter, or a new data source, ask whether the data already being
+collected has actually been studied over time. A new variable
+without historical understanding of the variables already in hand
+adds dimensionality without adding insight. Better history and
+deeper analysis of existing signals should come before broadening
+the signal set further.
+
 **Observe, Reduce, Reason, Validate, Measure:**
 Any pipeline involving an LLM or reasoning model should follow this
 order: observe the raw problem space, reduce it deterministically
