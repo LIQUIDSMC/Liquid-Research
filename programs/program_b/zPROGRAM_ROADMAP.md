@@ -126,7 +126,7 @@ China/Taiwan). Program B is ready to move to Phase 3 — Research
 Analytics & Review, which consumes this infrastructure to begin
 answering the Core Research Questions above.
 
-### Phase 3 — Research Analytics & Review 🟡 IN PROGRESS (2 of 4 complete)
+### Phase 3 — Research Analytics & Review 🟡 IN PROGRESS (3 of 4 complete)
 
 Goal: Turn Phase 2's capabilities into answers to the Core
 Research Questions above.
@@ -180,9 +180,22 @@ Research Questions above.
   Resequenced after Market Observation Index: this analysis becomes
   more valuable once it's known which markets have accumulated
   enough history to compare repeatedly.
-- Weekly Review Packaging — assemble the above into the existing
-  review cadence (README.md) so review checkpoints require running
-  a report, not manually inspecting CSVs.
+- Weekly Review Packaging ✅ COMPLETE (2026-07-06) — implemented in
+  programs/program_b/presentation/weekly_review.py as
+  build_weekly_review() -> str. Assembles five sections (Dataset
+  Summary, Observation Index, Markets Missing One Source, Current
+  Divergence Summary, Per-Market Detail) entirely from existing
+  modules (build_market_observation_index(), build_market_report(),
+  format_stability_table()) — no new statistics, no thresholds, no
+  rankings, no recommendations, no generated research notes. Each
+  market's report is built exactly once and reused across sections
+  to avoid duplicated computation. Verified against the real
+  12-market dataset: dataset summary matched real totals,
+  China/Taiwan correctly isolated in the missing-source section,
+  Fed market's stability table matched character-for-character
+  against earlier verified output, and a whole-artifact sanity
+  check confirmed exactly 12 per-market sections present with none
+  skipped or duplicated.
 
 Done when: at least one Core Research Question has a first-pass,
 evidence-based answer (even if the answer is "inconclusive,
