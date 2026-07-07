@@ -126,7 +126,7 @@ China/Taiwan). Program B is ready to move to Phase 3 — Research
 Analytics & Review, which consumes this infrastructure to begin
 answering the Core Research Questions above.
 
-### Phase 3 — Research Analytics & Review 🟡 IN PROGRESS (1 of 4 complete)
+### Phase 3 — Research Analytics & Review 🟡 IN PROGRESS (2 of 4 complete)
 
 Goal: Turn Phase 2's capabilities into answers to the Core
 Research Questions above.
@@ -146,11 +146,40 @@ Research Questions above.
   missing_source_warning="No Near-Book observations exist for this
   market" and propagates that absence honestly through every
   downstream section rather than forcing a fake comparison).
-- Recurring Market Tracker — identify markets observed across many
-  days and treat them as ongoing research subjects, tracking their
-  full indicator + price history together.
+- Market Observation Index ✅ COMPLETE (2026-07-06) — implemented
+  in programs/program_b/analysis/recurring_markets.py as
+  build_market_observation_index(). Renamed from "Recurring Market
+  Tracker" during design review: recurrence and observation volume
+  are different concepts (a market seen 12 times isn't more
+  "recurring" than one seen twice — both are simply not one-off).
+  Reports facts only per known slug: first_seen, last_seen,
+  observation_count, snapshot_count, days_observed,
+  sources_present. No threshold, no recurring boolean, no priority
+  score. Sorted by last_seen descending. Verified against all 12
+  known markets: Fed market (observation_count=4, snapshot_count=2,
+  sources_present="near_book, obi"), Hormuz July 15
+  (observation_count=6, sources_present="near_book, obi"),
+  China/Taiwan (observation_count=2, sources_present="obi" only).
+  Total rows matched len(list_known_slugs()) exactly.
+- Presentation Layer ✅ STARTED (2026-07-06) — new folder
+  programs/program_b/presentation/report_printer.py. Pure
+  formatting only: no analysis logic, no CSV access, no
+  classification, no thresholds. First function implemented:
+  format_stability_table() renders a stability dict (from
+  track_stability() or market_report.py's stability section) into
+  a fixed-width plain text table. Verified against the Fed market's
+  real stability data. Planned expansion (not yet built): one
+  format_*() function per Phase 3 analysis output
+  (format_observation_summary, format_latest_change,
+  format_divergence, format_market_report,
+  format_market_observation_index), all living in this same file
+  so analysis modules stay purely computational and presentation
+  stays in one dedicated place.
 - Agreement Matrix — for each day, does OBI sign match Near-OBI
   sign? Track agreement/disagreement frequency over time.
+  Resequenced after Market Observation Index: this analysis becomes
+  more valuable once it's known which markets have accumulated
+  enough history to compare repeatedly.
 - Weekly Review Packaging — assemble the above into the existing
   review cadence (README.md) so review checkpoints require running
   a report, not manually inspecting CSVs.
