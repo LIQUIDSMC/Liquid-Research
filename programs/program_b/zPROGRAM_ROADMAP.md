@@ -126,14 +126,26 @@ China/Taiwan). Program B is ready to move to Phase 3 — Research
 Analytics & Review, which consumes this infrastructure to begin
 answering the Core Research Questions above.
 
-### Phase 3 — Research Analytics & Review 🔲 NOT STARTED
+### Phase 3 — Research Analytics & Review 🟡 IN PROGRESS (1 of 4 complete)
 
 Goal: Turn Phase 2's capabilities into answers to the Core
 Research Questions above.
 
-- Market History Report — per-market summary (days observed,
-  average/median/min/max OBI and Near-OBI, largest divergence,
-  average midpoint, largest midpoint move).
+- Market History Report ✅ COMPLETE (2026-07-06) — implemented in
+  programs/program_b/analysis/market_report.py. Consolidates all
+  four Phase 2 modules (history, change detection, divergence
+  detection, stability tracking) into one organized dict for a
+  single market. The only new logic is observation_summary (counts,
+  known snapshots, missing-source warning) — every other section
+  is an unmodified pass-through of an existing Phase 2 function's
+  output. No synthesis across sections, no combined score, no
+  duplicated "latest" values at the top level. Verified against the
+  Fed rate market (imbalanced source counts, no warning needed),
+  a Hormuz market (fully populated across all sections), and the
+  China/Taiwan market (correctly triggers
+  missing_source_warning="No Near-Book observations exist for this
+  market" and propagates that absence honestly through every
+  downstream section rather than forcing a fake comparison).
 - Recurring Market Tracker — identify markets observed across many
   days and treat them as ongoing research subjects, tracking their
   full indicator + price history together.
