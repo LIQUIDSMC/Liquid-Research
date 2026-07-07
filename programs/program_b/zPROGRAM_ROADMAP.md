@@ -53,7 +53,7 @@ Both indicators are frozen per the Frozen Experiments, Active
 Platform principle. Methodology does not change until the review
 cadence in README.md reaches a checkpoint.
 
-### Phase 2 — Research Infrastructure 🔲 NOT STARTED
+### Phase 2 — Research Infrastructure 🟡 IN PROGRESS (3 of 4 complete)
 
 Goal: Make it possible to observe the same market over multiple
 days, not just today.
@@ -84,14 +84,30 @@ days, not just today.
   observation logged for that market. Uses get_market_history()
   exclusively — no direct CSV access, confirming the Historical
   Market View foundation supports real downstream analysis.
-- Divergence Detection — flag when Near-OBI and Total-OBI diverge
-  by more than any previously observed amount for that market.
+- Divergence Detection ✅ COMPLETE (2026-07-06) — implemented in
+  programs/program_b/analysis/divergence_detector.py. Measures
+  divergence between the latest OBI observation and the latest
+  Near-Book observation, paired only when they share the same
+  snapshot_file — no forced comparison across different days.
+  Reports raw_diff, absolute_diff, and sign_flip as plain
+  measurements: no thresholds, no alerts, no historical maximum
+  tracking, no percentile logic. Uses get_market_history()
+  exclusively — no direct CSV access. Verified against three real
+  cases: the Fed rate market (positive case, matching snapshot_file,
+  real diff of 1.3559 with sign_flip=true), a Hormuz market
+  (independent positive case, real diff of -0.3179 with
+  sign_flip=false), and the China/Taiwan market (real negative case
+  — no Near-Book observation exists at all, correctly returning
+  has_comparable_pair=false without forcing a stale comparison).
 - Stability Tracking — compute variance/stddev of an indicator's
   value for a given market across its observed history.
 
 Done when: all four capabilities work correctly against the real
 logs and have been spot-checked against at least one known
 recurring market (e.g. the Fed rate markets, Hormuz markets).
+3 of 4 complete (Historical Market View, Snapshot Change Detector,
+Divergence Detection). Only Stability Tracking remains before
+Phase 2 is complete.
 
 ### Phase 3 — Research Analytics & Review 🔲 NOT STARTED
 
