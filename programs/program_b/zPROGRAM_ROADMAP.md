@@ -53,7 +53,7 @@ Both indicators are frozen per the Frozen Experiments, Active
 Platform principle. Methodology does not change until the review
 cadence in README.md reaches a checkpoint.
 
-### Phase 2 — Research Infrastructure 🟡 IN PROGRESS (3 of 4 complete)
+### Phase 2 — Research Infrastructure ✅ COMPLETE (2026-07-06)
 
 Goal: Make it possible to observe the same market over multiple
 days, not just today.
@@ -99,15 +99,32 @@ days, not just today.
   sign_flip=false), and the China/Taiwan market (real negative case
   — no Near-Book observation exists at all, correctly returning
   has_comparable_pair=false without forcing a stale comparison).
-- Stability Tracking — compute variance/stddev of an indicator's
-  value for a given market across its observed history.
+- Stability Tracking ✅ COMPLETE (2026-07-06) — implemented in
+  programs/program_b/analysis/stability_tracker.py. Measures
+  count, mean, min, max, range, standard deviation, and latest
+  value for four independent sections: obi, near_obi,
+  midpoint_obi_source, midpoint_near_source — no pairing between
+  OBI and Near-Book rows. Measure only: no thresholds, no
+  stable/unstable classification. Small-n behavior: count=0 gives
+  all-None; count=1 gives mean/min/max/latest populated with
+  range=0.0 and stddev=None; count>=2 computes everything including
+  stddev. Uses get_market_history() exclusively — no direct CSV
+  access. Verified against the Fed market (real count=3 for OBI
+  with computed stddev, real count=1 for Near-OBI correctly showing
+  range=0.0/stddev=None) and a Hormuz market (all four sections at
+  count=3, fully populated, independently confirming correctness on
+  a second market).
 
 Done when: all four capabilities work correctly against the real
 logs and have been spot-checked against at least one known
 recurring market (e.g. the Fed rate markets, Hormuz markets).
-3 of 4 complete (Historical Market View, Snapshot Change Detector,
-Divergence Detection). Only Stability Tracking remains before
-Phase 2 is complete.
+✅ PHASE 2 COMPLETE (2026-07-06). All four capabilities
+(Historical Market View, Snapshot Change Detector, Divergence
+Detection, Stability Tracking) implemented and verified against
+real recurring markets (Fed rate markets, Hormuz markets,
+China/Taiwan). Program B is ready to move to Phase 3 — Research
+Analytics & Review, which consumes this infrastructure to begin
+answering the Core Research Questions above.
 
 ### Phase 3 — Research Analytics & Review 🔲 NOT STARTED
 
