@@ -84,6 +84,51 @@ def format_stability_table(stability_section: dict) -> str:
     return "\n".join(lines)
 
 
+def format_agreement_matrix_table(matrix_df) -> str:
+    """
+    Format an agreement matrix DataFrame (from build_agreement_matrix())
+    into a fixed-width plain text table. Presentation only — this
+    function does not modify the DataFrame, compute anything new,
+    or change the underlying data in any way.
+
+    Receives:
+        matrix_df (pd.DataFrame): output of build_agreement_matrix(),
+        already sorted by snapshot_date, slug, snapshot_file.
+
+    Returns:
+        str: a fixed-width plain text table, e.g.:
+
+            Date        Market                         OBI     Near OBI  Same?  Flip?
+            ---------------------------------------------------------------------------
+            2026-07-04  putin-out-before-2027          0.5144   0.5040   True   False
+            2026-07-06  fed-increase-25bps            -0.3643   0.9916   False  True
+
+        Preserves the DataFrame's existing row order — no
+        resorting happens here.
+    """
+    header = f"{'Date':<12}{'Market':<32}{'OBI':>9}{'Near OBI':>11}{'Same?':>8}{'Flip?':>8}"
+    separator = "-" * len(header)
+
+    lines = [header, separator]
+
+    if matrix_df is None or len(matrix_df) == 0:
+        lines.append("No agreement data available.")
+        return "\n".join(lines)
+
+    for _, row in matrix_df.iterrows():
+        date_str = row.get("snapshot_date") if row.get("snapshot_date") is not None else "—"
+        market_str = str(row.get("slug", ""))[:30]
+        obi_str = _format_value(row.get("obi_value"))
+        near_obi_str = _format_value(row.get("near_obi_value"))
+        same_str = str(row.get("same_sign")) if row.get("same_sign") is not None else "—"
+        flip_str = str(row.get("sign_flip")) if row.get("sign_flip") is not None else "—"
+
+        line = f"{date_str:<12}{market_str:<32}{obi_str:>9}{near_obi_str:>11}{same_str:>8}{flip_str:>8}"
+        lines.append(line)
+
+    return "\n".join(lines)
+
+
 if __name__ == "__main__":
     import sys
     import os
@@ -91,6 +136,9 @@ if __name__ == "__main__":
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
     from programs.program_b.analysis.market_report import build_market_report
+    from programs.program_b.analysis.agreement_matrix import build_agreement_matrix
 
     report = build_market_report("will-the-fed-increase-interest-rates-by-25-bps-after-the-july-2026-meeting")
     print(format_stability_table(report["stability"]))
+    print()
+    print(format_agreement_matrix_table(build_agreement_matrix()))

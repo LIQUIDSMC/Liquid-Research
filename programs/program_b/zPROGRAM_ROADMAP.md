@@ -126,7 +126,7 @@ China/Taiwan). Program B is ready to move to Phase 3 — Research
 Analytics & Review, which consumes this infrastructure to begin
 answering the Core Research Questions above.
 
-### Phase 3 — Research Analytics & Review 🟡 IN PROGRESS (3 of 4 complete)
+### Phase 3 — Research Analytics & Review ✅ COMPLETE (2026-07-06)
 
 Goal: Turn Phase 2's capabilities into answers to the Core
 Research Questions above.
@@ -175,11 +175,26 @@ Research Questions above.
   format_market_observation_index), all living in this same file
   so analysis modules stay purely computational and presentation
   stays in one dedicated place.
-- Agreement Matrix — for each day, does OBI sign match Near-OBI
-  sign? Track agreement/disagreement frequency over time.
-  Resequenced after Market Observation Index: this analysis becomes
-  more valuable once it's known which markets have accumulated
-  enough history to compare repeatedly.
+- Agreement Matrix ✅ COMPLETE (2026-07-06) — implemented in
+  programs/program_b/analysis/agreement_matrix.py as
+  build_agreement_matrix() -> pd.DataFrame. Historical, cross-market
+  view of whether OBI and Near-OBI share the same sign, for every
+  (slug, snapshot_file) combination where both sources exist. Pairs
+  the latest OBI row against the latest Near-Book row per
+  snapshot_file — mirroring divergence_detector.py's "latest vs
+  latest" philosophy, extended historically instead of just to the
+  current moment. Zero is neutral (same_sign=False), consistent
+  with divergence_detector.py's existing convention. Rows missing
+  either source are excluded entirely, not forced. Verified: 11 of
+  12 known markets contributed rows (China/Taiwan correctly
+  excluded, zero Near-Book observations), zero duplicate
+  (slug, snapshot_file) rows, no cartesian products. A plain-text
+  formatter (format_agreement_matrix_table()) was added to
+  presentation/report_printer.py and integrated into
+  weekly_review.py as a new Section 6, kept deliberately separate
+  from Section 4's existing "current, latest-only" divergence view
+  — the two represent genuinely different facts (historical vs.
+  latest) and are not interchangeable.
 - Weekly Review Packaging ✅ COMPLETE (2026-07-06) — implemented in
   programs/program_b/presentation/weekly_review.py as
   build_weekly_review() -> str. Assembles five sections (Dataset

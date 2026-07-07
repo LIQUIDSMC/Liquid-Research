@@ -12,14 +12,15 @@ dataset-level counts and min/max of existing timestamps. It does
 NOT compute new statistics, does NOT classify markets, does NOT
 rank, recommend, or interpret. It packages evidence that already
 exists — every value in this document is pulled directly from
-build_market_observation_index() or build_market_report(), never
-recomputed. Presentation formatting belongs here rather than in
-analysis modules so computation and presentation remain separate
-responsibilities.
+build_market_observation_index(), build_market_report(), or
+build_agreement_matrix(), never recomputed. Presentation formatting
+belongs here rather than in analysis modules so computation and
+presentation remain separate responsibilities.
 
 This module reads no CSVs and creates no new logs. It calls
-build_market_observation_index(), build_market_report(), and
-format_stability_table() exclusively.
+build_market_observation_index(), build_market_report(),
+build_agreement_matrix(), format_stability_table(), and
+format_agreement_matrix_table() exclusively.
 """
 
 import sys
@@ -30,7 +31,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
 from programs.program_b.analysis.recurring_markets import build_market_observation_index
 from programs.program_b.analysis.market_report import build_market_report
-from programs.program_b.presentation.report_printer import format_stability_table
+from programs.program_b.analysis.agreement_matrix import build_agreement_matrix
+from programs.program_b.presentation.report_printer import format_stability_table, format_agreement_matrix_table
 
 
 def _render_dataset_summary(index_df: pd.DataFrame) -> str:
@@ -124,7 +126,10 @@ def _render_divergence_summary(index_df: pd.DataFrame, reports: dict) -> str:
     slug | has_comparable_pair | raw_diff | absolute_diff | sign_flip.
 
     Full divergence detail already appears in the per-market
-    section below — this section is deliberately compact.
+    section below — this section is deliberately compact. This
+    section reflects the LATEST observation per market only. See
+    Section 6 (Agreement Matrix) for the historical view across
+    every matched snapshot_file.
 
     Receives:
         index_df (pd.DataFrame): output of
@@ -207,6 +212,7 @@ def build_weekly_review() -> str:
 
     Builds each market's report exactly once and reuses it across
     all sections that need it, avoiding duplicated computation.
+    Builds the agreement matrix exactly once as well.
 
     Returns:
         str: the complete, human-readable weekly review document.
@@ -217,6 +223,8 @@ def build_weekly_review() -> str:
         slug: build_market_report(slug)
         for slug in index_df["slug"]
     }
+
+    agreement_matrix_df = build_agreement_matrix()
 
     sections = [
         "=" * 64,
@@ -232,6 +240,9 @@ def build_weekly_review() -> str:
         _render_divergence_summary(index_df, reports),
         "",
         _render_per_market_section(index_df, reports),
+        "",
+        "--- 6. AGREEMENT MATRIX (HISTORICAL, ALL MATCHED SNAPSHOTS) ---",
+        format_agreement_matrix_table(agreement_matrix_df),
         "",
         "=" * 64,
         "END OF REVIEW",
