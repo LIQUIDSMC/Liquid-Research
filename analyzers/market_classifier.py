@@ -32,6 +32,7 @@ Usage (standalone test):
 
 import re
 import pandas as pd
+from typing import Optional, Union
 from rich.console import Console
 from rich.table import Table
 
@@ -285,7 +286,7 @@ def classify_category(title: str, slug: str) -> tuple[str, str]:
 
 # ── Function 3 ─────────────────────────────────────────────────────────────
 
-def determine_duration_type(slug: str, days_left) -> str:
+def determine_duration_type(slug: str, days_left: Optional[float]) -> str:
     """
     Assign a duration bucket independent of category.
 
@@ -312,7 +313,7 @@ def determine_duration_type(slug: str, days_left) -> str:
 
 # ── Function 4 ─────────────────────────────────────────────────────────────
 
-def get_research_inclusion(category: str):
+def get_research_inclusion(category: str) -> Union[bool, str]:
     """
     Look up whether a category should be included in wallet research.
 
@@ -378,7 +379,7 @@ def classify_market(market: dict) -> dict:
 
 # ── Function 6 ─────────────────────────────────────────────────────────────
 
-def classify_markets_batch(markets: list) -> pd.DataFrame:
+def classify_markets_batch(markets: list[dict]) -> pd.DataFrame:
     """
     Classify a list of markets and return a combined DataFrame.
 
@@ -468,7 +469,7 @@ EXAMPLE_MARKETS = [
 ]
 
 
-def run_test():
+def run_test() -> None:
     """Run the classifier against known example markets and print results."""
     console.print("\n[bold cyan]Liquid Research — Market Classifier Test[/bold cyan]")
     console.print(f"[dim]Testing classifier against {len(EXAMPLE_MARKETS)} known example markets...[/dim]\n")
