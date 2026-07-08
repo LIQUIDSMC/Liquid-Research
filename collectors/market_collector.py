@@ -12,6 +12,7 @@ from rich.table import Table
 import os
 import json
 import sys
+from typing import Optional
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "analyzers"))
 from market_classifier import classify_market
@@ -22,6 +23,15 @@ GAMMA_API = "https://gamma-api.polymarket.com"
 MIN_VOLUME_24H = 5000
 MIN_TOTAL_VOLUME = 10000
 MAX_RESULTS = 200
+
+# Kill filter thresholds used inside process_markets(). Centralized
+# here alongside the volume thresholds above for consistency —
+# these values were previously inline literals in the filter logic.
+MIN_DAYS_LEFT = 1
+MAX_DAYS_LEFT = 365
+EXTREME_PRICE_LOWER_BOUND = 0.01
+EXTREME_PRICE_UPPER_BOUND = 0.99
+MAX_PRICE_SUM_DEVIATION = 0.10
 
 FOCUS_KEYWORDS = [
     "president", "election", "federal reserve", "fed", "rate", "inflation",
@@ -44,7 +54,7 @@ SPORTS_KEYWORDS = [
 OUTPUT_DIR = "data/markets"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-def fetch_markets(limit=MAX_RESULTS, offset=0):
+def fetch_markets(limit: int = MAX_RESULTS, offset: int = 0) -> list[dict]:
     url = f"{GAMMA_API}/markets"
     params = {
         "active": "true",
@@ -62,7 +72,7 @@ def fetch_markets(limit=MAX_RESULTS, offset=0):
         console.print(f"[red]API error: {e}[/red]")
         return []
 
-def is_sports_market(question, slug=None, days_left=None):
+def is_sports_market(question: str, slug: Optional[str] = None, days_left: Optional[float] = None) -> bool:
     """
     Determines whether a market is Sports, using the shared
     classify_market() function from analyzers/market_classifier.py
@@ -98,14 +108,14 @@ def is_sports_market(question, slug=None, days_left=None):
         console.print(f"[yellow]Warning: classify_market() failed during sports check ({e}). Market not killed as a precaution.[/yellow]")
         return False
 
-def is_focus_market(question):
+def is_focus_market(question: str) -> bool:
     q = question.lower()
     return any(kw in q for kw in FOCUS_KEYWORDS)
 
-def passes_volume_filter(volume_24h, volume_total):
+def passes_volume_filter(volume_24h: float, volume_total: float) -> bool:
     return volume_24h >= MIN_VOLUME_24H and volume_total >= MIN_TOTAL_VOLUME
 
-def parse_price(raw):
+def parse_price(raw) -> float:
     try:
         if isinstance(raw, list):
             return float(raw[0])
@@ -113,7 +123,7 @@ def parse_price(raw):
     except (TypeError, ValueError, IndexError):
         return 0.0
 
-def days_until_end(end_date_str):
+def days_until_end(end_date_str: Optional[str] = None) -> float:
     if not end_date_str:
         return 999.0
     try:
@@ -123,7 +133,7 @@ def days_until_end(end_date_str):
     except Exception:
         return 999.0
 
-def process_markets(raw_markets):
+def process_markets(raw_markets: list[dict]) -> tuple[pd.DataFrame, pd.DataFrame]:
     passed = []
     kill_log = []
 
@@ -154,19 +164,19 @@ def process_markets(raw_markets):
             kill_log.append({"question": question[:80], "kill_reason": f"LOW VOLUME — 24h=${volume_24h:,.0f} total=${volume_total:,.0f}"})
             continue
 
-        if days_left < 1:
+        if days_left < MIN_DAYS_LEFT:
             kill_log.append({"question": question[:80], "kill_reason": "TOO CLOSE — resolves in under 1 day"})
             continue
 
-        if days_left > 365:
+        if days_left > MAX_DAYS_LEFT:
             kill_log.append({"question": question[:80], "kill_reason": "TOO FAR — resolves in over 365 days"})
             continue
 
-        if yes_price <= 0.01 or yes_price >= 0.99:
+        if yes_price <= EXTREME_PRICE_LOWER_BOUND or yes_price >= EXTREME_PRICE_UPPER_BOUND:
             kill_log.append({"question": question[:80], "kill_reason": f"EXTREME PRICE — yes={yes_price:.2f} (no edge)"})
             continue
-
-        if price_sum_deviation > 0.10:
+        
+        if price_sum_deviation > MAX_PRICE_SUM_DEVIATION:
             kill_log.append({"question": question[:80], "kill_reason": f"PRICE SUM DEVIATION — {price_sum_deviation:.3f} (over 10%, Yes+No pricing looks broken/stale)"})
             continue
 
@@ -198,7 +208,7 @@ def process_markets(raw_markets):
 
     return passed_df, kill_df
 
-def print_results(passed_df, kill_df, total_fetched):
+def print_results(passed_df: pd.DataFrame, kill_df: pd.DataFrame, total_fetched: int) -> None:
     console.print("\n[bold cyan]═══ Liquid Research — Market Scanner ═══[/bold cyan]\n")
     console.print(f"  Fetched:  [white]{total_fetched}[/white]")
     console.print(f"  Killed:   [red]{len(kill_df)}[/red]")
@@ -233,7 +243,7 @@ def print_results(passed_df, kill_df, total_fetched):
     for _, row in kill_df.head(8).iterrows():
         console.print(f"  [red]✗[/red] {row['question'][:65]}  →  [dim]{row['kill_reason']}[/dim]")
 
-def main():
+def main() -> None:
     console.print("[bold]Liquid Research — Phase 1 starting...[/bold]")
     console.print("[dim]Source: Polymarket Gamma API (public, read-only, no auth)[/dim]\n")
 
