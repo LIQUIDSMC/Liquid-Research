@@ -53,9 +53,9 @@ import os
 import glob
 import pandas as pd
 from datetime import datetime
+from typing import Optional
 from rich.console import Console
 from rich.table import Table
-
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "analyzers"))
 from market_classifier import classify_market
 
@@ -80,7 +80,7 @@ OUTPUT_COLUMNS = [
 
 # ── File Loading ──────────────────────────────────────────────────────────────
 
-def find_latest_file(directory: str, pattern: str) -> str:
+def find_latest_file(directory: str, pattern: str) -> Optional[str]:
     """
     Find the most recently created file matching a glob pattern.
 
@@ -120,7 +120,7 @@ def load_existing_paper_trades() -> pd.DataFrame:
 
 # ── Side Selection ────────────────────────────────────────────────────────────
 
-def determine_side(yes_price, no_price) -> tuple:
+def determine_side(yes_price: Optional[float], no_price: Optional[float]) -> tuple[Optional[str], Optional[float]]:
     """
     Mechanically select a side based on higher implied probability.
     NOT a prediction signal — a bookkeeping rule only.
@@ -149,7 +149,7 @@ def determine_side(yes_price, no_price) -> tuple:
 
 # ── Category Classification ──────────────────────────────────────────────────
 
-def classify_trade_category(question, slug, days_left) -> dict:
+def classify_trade_category(question: str, slug: str, days_left: Optional[float]) -> dict:
     """
     Reuses analyzers/market_classifier.py directly. No new
     classification logic is invented in this file.
@@ -196,7 +196,7 @@ def count_market_recurrence(existing_trades: pd.DataFrame, market_id: str) -> in
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-def main():
+def main() -> None:
     console.print("\n[bold cyan]Liquid Research — Paper Trader (Phase 5)[/bold cyan]")
     console.print("[dim]Trading ALL passing scanner markets — score diversity preserved.[/dim]\n")
 
