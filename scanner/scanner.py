@@ -29,6 +29,7 @@ import os
 import glob
 import pandas as pd
 from datetime import datetime
+from typing import Optional
 from rich.console import Console
 from rich.table import Table
 
@@ -45,15 +46,15 @@ SCANNER_OUTPUT_DIR = "data/scanner"
 
 # ── Snapshot Loading ──────────────────────────────────────────────────────────
 
-def find_latest_snapshot() -> str:
+def find_latest_snapshot() -> Optional[str]:
     """
     Find the most recently created snapshot CSV in data/markets/.
 
     Receives:
         Nothing — reads from the filesystem directly.
 
-    Returns:
-        str: path to the latest snapshot, or None if none exist
+Returns:
+        Optional[str]: path to the latest snapshot, or None if none exist
     """
     snapshots = glob.glob(os.path.join(MARKETS_DIR, "snapshot_*.csv"))
     if not snapshots:
@@ -175,7 +176,7 @@ def process_market(row: pd.Series) -> dict:
 
 # ── Display ───────────────────────────────────────────────────────────────────
 
-def print_killed_table(killed_rows: list, max_rows: int = 15):
+def print_killed_table(killed_rows: list, max_rows: int = 15) -> None:
     if not killed_rows:
         console.print("[dim]No markets killed.[/dim]")
         return
@@ -193,7 +194,7 @@ def print_killed_table(killed_rows: list, max_rows: int = 15):
         console.print(f"[dim]...and {len(killed_rows) - max_rows} more killed markets not shown[/dim]")
 
 
-def print_top_10(passed_rows: list):
+def print_top_10(passed_rows: list) -> None:
     if not passed_rows:
         console.print("[yellow]No markets passed. Nothing to rank.[/yellow]")
         return
@@ -220,7 +221,7 @@ def print_top_10(passed_rows: list):
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-def main():
+def main() -> None:
     console.print("\n[bold cyan]Liquid Research — Scanner Engine[/bold cyan]")
 
     snapshot_path = find_latest_snapshot()

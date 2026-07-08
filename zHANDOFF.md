@@ -427,6 +427,15 @@ justify an update, (4) only then consider whether any program
 needs maintenance — and only recommend maintenance backed by a
 real observation from that day's run, not for its own sake.
 
+**Commit message convention:**
+Keep commit messages short and focused on what changed, not why or
+how the review happened. Typically 3-6 words, longer only when
+genuinely necessary. Style: "scanner.py: typing cleanup",
+"market_collector.py: add type hints", "filters.py: docstring
+cleanup". Avoid multi-sentence messages, explanations of the
+review process, or restating "zero behavioral change" — that
+reasoning lives in conversation history, not the commit log.
+
 ---
 
 # PART 2 — CURRENT OPERATING STATE
