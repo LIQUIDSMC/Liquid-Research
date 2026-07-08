@@ -16,10 +16,10 @@ found not viable via the metadata approach, and reframed as a
 standing decision (see research/validated_findings.md).
 
 ## Dataset Status
-Running since: 2026-06-22 (13 days as of 2026-07-06)
-Total paper trades: 71
-Open: 37
-Closed: 34
+Running since: 2026-06-22 (16 days as of 2026-07-08)
+Total paper trades: 83
+Open: 46
+Closed: 37
 
 ## Category Breakdown (all trades, 2026-07-01)
 Sports: 18
@@ -64,13 +64,19 @@ time of the patch, not just newly-created ones.
 75-90: <n>
 Below 75: <n>
 
-## Performance (closed trades only — calculated from paper_trades.csv, 2026-07-02)
-⚠️ Still far from conclusive at n=32. Do not over-interpret.
-
-Win rate: 84.4% (27W / 5L)
-Total realized P&L: $186.71
-Expectancy: $5.83/trade
+## Performance (closed trades only — calculated from paper_trades.csv, 2026-07-08)
+⚠️ Still far from conclusive at n=37. Do not over-interpret.
+Win rate: 83.8% (31W / 6L)
+Total realized P&L: $157.72
+Expectancy: $4.26/trade
 Max drawdown: not yet meaningful at this volume
+
+Entry-price confound checkpoint run at n=36 (2026-07-08) — weak
+correlation (Pearson 0.078, Spearman 0.103) between score and
+entry_price found. Does not support entry_price as the explanation
+for the original median-split result. See
+research/validated_findings.md for full checkpoint. Scheduled for
+re-evaluation at 100 closed trades.
 
 ## Category Performance
 BLOCKED. As of 2026-06-25, several categories now have at least
