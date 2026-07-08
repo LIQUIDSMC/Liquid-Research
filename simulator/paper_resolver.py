@@ -140,7 +140,7 @@ def resolve_one_trade(row: pd.Series) -> dict:
     return {"outcome": "closed", "updates": updates}
 
 
-def main():
+def main() -> None:
     console.print("\n[bold cyan]Liquid Research — Paper Resolver (Phase 5)[/bold cyan]")
 
     if not os.path.exists(PAPER_TRADES_PATH):
