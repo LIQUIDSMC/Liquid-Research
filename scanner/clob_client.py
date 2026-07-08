@@ -28,6 +28,7 @@ Usage (standalone test):
 
 import requests
 import json
+from typing import Optional
 from rich.console import Console
 from rich.table import Table
 
@@ -35,6 +36,15 @@ console = Console()
 
 GAMMA_API_MARKET_BY_SLUG = "https://gamma-api.polymarket.com/markets/slug"
 CLOB_BASE = "https://clob.polymarket.com"
+
+# Request timeouts (seconds). Gamma market lookup and CLOB
+# endpoint calls previously used separate inline literals — two
+# of the three CLOB-related calls already shared the same value
+# (10), now centralized. The market lookup timeout (15) is kept
+# separate since it is a different endpoint with potentially
+# different latency characteristics.
+GAMMA_LOOKUP_TIMEOUT = 15
+CLOB_REQUEST_TIMEOUT = 10
 
 
 # ── Function 1 ─────────────────────────────────────────────────────────────
@@ -56,7 +66,7 @@ def fetch_market_by_slug(slug: str) -> dict:
 
     url = f"{GAMMA_API_MARKET_BY_SLUG}/{slug}"
     try:
-        response = requests.get(url, timeout=15)
+        response = requests.get(url, timeout=GAMMA_LOOKUP_TIMEOUT)
         if response.status_code == 404:
             return {}
         response.raise_for_status()
@@ -68,7 +78,7 @@ def fetch_market_by_slug(slug: str) -> dict:
 
 # ── Function 2 ─────────────────────────────────────────────────────────────
 
-def parse_clob_token_ids(market: dict) -> list:
+def parse_clob_token_ids(market: dict) -> list[str]:
     """
     Safely parse clobTokenIds, which arrives as a JSON-encoded
     string, an already-parsed list, or None (no tokens minted).
@@ -91,7 +101,7 @@ def parse_clob_token_ids(market: dict) -> list:
         return []
 
 
-def parse_outcomes(market: dict) -> list:
+def parse_outcomes(market: dict) -> list[str]:
     """Safely parse the outcomes field, same JSON-string pattern."""
     raw = market.get("outcomes")
     if not raw:
@@ -126,7 +136,7 @@ def fetch_order_book(token_id: str) -> dict:
         return {"success": False, "bids": [], "asks": [], "error": "No token_id provided"}
 
     try:
-        response = requests.get(f"{CLOB_BASE}/book", params={"token_id": token_id}, timeout=10)
+        response = requests.get(f"{CLOB_BASE}/book", params={"token_id": token_id}, timeout=CLOB_REQUEST_TIMEOUT)
 
         if response.status_code == 404:
             return {"success": False, "bids": [], "asks": [], "error": "No orderbook exists (404)"}
@@ -153,7 +163,7 @@ def fetch_order_book(token_id: str) -> dict:
 
 # ── Function 4 ─────────────────────────────────────────────────────────────
 
-def parse_best_prices(bids: list, asks: list) -> dict:
+def parse_best_prices(bids: list[dict], asks: list[dict]) -> dict:
     """
     Correctly determine best bid/ask from raw book levels.
 
@@ -199,7 +209,7 @@ def parse_best_prices(bids: list, asks: list) -> dict:
 
 # ── Function 5 ─────────────────────────────────────────────────────────────
 
-def compute_spread_and_midpoint(best_bid, best_ask) -> dict:
+def compute_spread_and_midpoint(best_bid: Optional[float], best_ask: Optional[float]) -> dict:
     """
     Compute spread, midpoint, and spread as a percentage of
     midpoint, with safe handling for missing/zero values.
@@ -264,7 +274,7 @@ def fetch_official_endpoints(token_id: str) -> dict:
 
     for key, url, params, field in endpoints:
         try:
-            response = requests.get(url, params=params, timeout=10)
+            response = requests.get(url, params=params, timeout=CLOB_REQUEST_TIMEOUT)
             if response.status_code == 200:
                 data = response.json()
                 value = data.get(field)
@@ -383,7 +393,7 @@ TEST_SLUGS = [
 ]
 
 
-def main():
+def main() -> None:
     console.print("\n[bold cyan]Liquid Research — CLOB Client Test Harness[/bold cyan]")
     console.print("[dim]Validating against the three previously confirmed slugs...[/dim]\n")
 
