@@ -32,11 +32,17 @@ Usage (standalone test):
     python3 scanner/scorer.py
 """
 
+from typing import Optional
 from rich.console import Console
 from rich.table import Table
 
 console = Console()
 
+# Scoring formula constants (v1, approved — see module docstring).
+NORMALIZATION_DIVISOR = 50000.0
+SPREAD_WEIGHT = 0.5
+LIQUIDITY_WEIGHT = 0.3
+VOLUME_WEIGHT = 0.2
 
 # ── Component Calculations ───────────────────────────────────────────────────
 
@@ -64,7 +70,7 @@ def _safe_float(value, default: float = 0.0) -> float:
         return default
 
 
-def calculate_spread_component(spread_pct) -> float:
+def calculate_spread_component(spread_pct: Optional[float]) -> float:
     """
     Receives:
         spread_pct (float or None): spread as a percentage of midpoint
@@ -76,7 +82,7 @@ def calculate_spread_component(spread_pct) -> float:
     return max(0.0, 100.0 - pct)
 
 
-def calculate_liquidity_component(liquidity) -> float:
+def calculate_liquidity_component(liquidity: Optional[float]) -> float:
     """
     Receives:
         liquidity (float or None): Gamma-reported liquidity in USD
@@ -85,10 +91,10 @@ def calculate_liquidity_component(liquidity) -> float:
         float: 0-100, higher is better
     """
     liq = _safe_float(liquidity, default=0.0)
-    return min(100.0, (liq / 50000.0) * 100.0)
+    return min(100.0, (liq / NORMALIZATION_DIVISOR) * 100.0)
 
 
-def calculate_volume_component(volume_24h) -> float:
+def calculate_volume_component(volume_24h: Optional[float]) -> float:
     """
     Receives:
         volume_24h (float or None): Gamma-reported 24h volume in USD
@@ -97,12 +103,12 @@ def calculate_volume_component(volume_24h) -> float:
         float: 0-100, higher is better
     """
     vol = _safe_float(volume_24h, default=0.0)
-    return min(100.0, (vol / 50000.0) * 100.0)
+    return min(100.0, (vol / NORMALIZATION_DIVISOR) * 100.0)
 
 
 # ── Primary Scoring Function ──────────────────────────────────────────────────
 
-def score_market(spread_pct, liquidity, volume_24h, spread_label: str = "unknown") -> dict:
+def score_market(spread_pct: Optional[float], liquidity: Optional[float], volume_24h: Optional[float], spread_label: str = "unknown") -> dict:
     """
     Compute a tradeability_score (0-100) and plain-English
     explanation for one market.
@@ -127,7 +133,7 @@ def score_market(spread_pct, liquidity, volume_24h, spread_label: str = "unknown
     liquidity_comp = calculate_liquidity_component(liquidity)
     volume_comp = calculate_volume_component(volume_24h)
 
-    raw_score = (spread_comp * 0.5) + (liquidity_comp * 0.3) + (volume_comp * 0.2)
+    raw_score = (spread_comp * SPREAD_WEIGHT) + (liquidity_comp * LIQUIDITY_WEIGHT) + (volume_comp * VOLUME_WEIGHT)
     score = round(max(0.0, min(100.0, raw_score)), 1)
 
     spread_display = f"{_safe_float(spread_pct, default=0.0):.2f}%" if spread_pct is not None else "unknown"
@@ -192,7 +198,7 @@ TEST_CASES = [
 ]
 
 
-def main():
+def main() -> None:
     console.print("\n[bold cyan]Liquid Research — Scorer Formula Test[/bold cyan]")
     console.print("[dim]Validating tradeability_score math against known cases, no live API calls...[/dim]\n")
 
