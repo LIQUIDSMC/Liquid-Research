@@ -410,6 +410,23 @@ Place any explanation before or after the block — never inside it.
 Do not include STEP numbers, TYPE:, WHERE:, RUN:, terminal prompts,
 or any other text inside the code block.
 
+**"Run the daily cycle" convention:**
+When the person says "run the daily cycle," this means: run the
+normal daily operational workflow for every currently active
+program, not just Program A. As of 2026-07-08 that means Program A
+and Program B. Any future program added to Liquid Research
+automatically becomes part of the daily cycle unless explicitly
+excluded — no separate reminder needed to include it.
+
+Running the daily cycle does NOT imply any program needs code
+changes. The correct sequence is: (1) run each program's normal
+daily workflow, (2) verify everything completed correctly, (3)
+update operational artifacts (MISSION_CONTROL.md, research
+checkpoints, program logs) only if the day's results actually
+justify an update, (4) only then consider whether any program
+needs maintenance — and only recommend maintenance backed by a
+real observation from that day's run, not for its own sake.
+
 ---
 
 # PART 2 — CURRENT OPERATING STATE
