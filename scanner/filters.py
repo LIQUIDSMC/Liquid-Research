@@ -25,6 +25,7 @@ Usage (standalone test):
 
 import sys
 import os
+from typing import Optional
 from rich.console import Console
 from rich.table import Table
 
@@ -125,8 +126,15 @@ SPREAD_LABEL_BANDS = [
     ("extreme", 25, float("inf")),
 ]
 
+# Near-extreme-price bounds used only to enrich the reason text in
+# label_spread_quality() — never used to change the label band
+# itself. See research/open_questions.md — these specific cutoff
+# values have not yet been independently validated.
+NEAR_EXTREME_PRICE_LOWER = 0.05
+NEAR_EXTREME_PRICE_UPPER = 0.95
 
-def _is_near_extreme_price(midpoint) -> bool:
+
+def _is_near_extreme_price(midpoint: Optional[float]) -> bool:
     """
     Helper: returns True if a market's midpoint sits close to 0 or 1,
     where spread_pct is structurally elevated even for healthy markets.
@@ -135,7 +143,10 @@ def _is_near_extreme_price(midpoint) -> bool:
     """
     if midpoint is None:
         return False
-    return midpoint <= 0.05 or midpoint >= 0.95
+    return (
+        midpoint <= NEAR_EXTREME_PRICE_LOWER
+        or midpoint >= NEAR_EXTREME_PRICE_UPPER
+    )
 
 
 def label_spread_quality(clob_data: dict) -> dict:
@@ -201,7 +212,7 @@ TEST_SLUGS = [
 ]
 
 
-def main():
+def main() -> None:
     console.print("\n[bold cyan]Liquid Research — Empty Book Filter Test[/bold cyan]")
     console.print("[dim]Validating against 3 known-active markets (expect PASS) and 1 known-closed market (expect FAIL)...[/dim]\n")
 
