@@ -34,7 +34,7 @@ ENDPOINTS = [
     },
 ]
 
-def check_endpoint(name, url, params):
+def check_endpoint(name: str, url: str, params: dict) -> tuple[str, str, str, str, str]:
     try:
         response = requests.get(url, params=params, timeout=10)
         status = response.status_code
@@ -50,7 +50,7 @@ def check_endpoint(name, url, params):
     except Exception as e:
         return ("✗", name, "—", "—", str(e)[:40])
 
-def main():
+def main() -> None:
     console.print("\n[bold cyan]Liquid Research — API Sanity Check[/bold cyan]")
     console.print("[dim]Testing all public Polymarket endpoints...[/dim]\n")
 
