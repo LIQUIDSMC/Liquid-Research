@@ -29,6 +29,17 @@ console = Console()
 GAMMA_API_MARKETS = "https://gamma-api.polymarket.com/markets"
 GAMMA_API_MARKET_BY_SLUG = "https://gamma-api.polymarket.com/markets/slug"
 
+# Request timeout (seconds) for both Gamma lookup methods.
+GAMMA_LOOKUP_TIMEOUT = 15
+
+# Resolution detection thresholds. A price within RESOLUTION_TOLERANCE
+# of 1.0 is treated as a confirmed winner; a price within
+# RESOLUTION_TOLERANCE of PARTIAL_RESOLUTION_PRICE (0.5) for ALL
+# outcomes is treated as a 50/50 partial resolution.
+RESOLUTION_TOLERANCE = 0.01
+WINNING_PRICE_TARGET = 1.0
+PARTIAL_RESOLUTION_PRICE = 0.5
+
 
 # ── Function 1 ─────────────────────────────────────────────────────────────
 
@@ -53,7 +64,7 @@ def fetch_market_by_slug(slug: str) -> dict:
 
     url = f"{GAMMA_API_MARKET_BY_SLUG}/{slug}"
     try:
-        response = requests.get(url, timeout=15)
+        response = requests.get(url, timeout=GAMMA_LOOKUP_TIMEOUT)        
         if response.status_code == 404:
             return {}
         response.raise_for_status()
@@ -88,7 +99,7 @@ def fetch_market_by_condition_id(condition_id: str) -> dict:
     """
     params = {"condition_ids": condition_id}
     try:
-        response = requests.get(GAMMA_API_MARKETS, params=params, timeout=15)
+        response = requests.get(GAMMA_API_MARKETS, params=params, timeout=GAMMA_LOOKUP_TIMEOUT)
         response.raise_for_status()
         results = response.json()
         if isinstance(results, list) and len(results) > 0:
@@ -108,7 +119,7 @@ def fetch_market_by_condition_id(condition_id: str) -> dict:
 
 # ── Helper: Safely Parse outcomes / outcomePrices ────────────────────────────
 
-def _parse_json_field(raw):
+def _parse_json_field(raw) -> list:
     """
     Safely parse a field that may arrive as a JSON-encoded string
     (e.g. '["Yes", "No"]') or already be a list. Returns an empty
@@ -270,7 +281,7 @@ def evaluate_trade_outcome(trade: dict, market_resolution: dict) -> dict:
 
 # ── Function 4 ─────────────────────────────────────────────────────────────
 
-def resolve_trades_batch(trades: list) -> list:
+def resolve_trades_batch(trades: list[dict]) -> list[dict]:
     """
     Resolve a batch of trades, caching market resolution lookups so
     the same market is never fetched twice.
@@ -410,7 +421,7 @@ EXAMPLE_TRADES = [
 ]
 
 
-def run_test():
+def run_test() -> None:
     """Run the resolution logic against hardcoded example markets and trades."""
     console.print("\n[bold cyan]Liquid Research — Market Resolution Test[/bold cyan]")
     console.print("[dim]Testing resolution logic against hardcoded example markets (no live API calls)...[/dim]\n")
