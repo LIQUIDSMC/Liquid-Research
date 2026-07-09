@@ -37,6 +37,7 @@ Usage:
 
 import requests
 import pandas as pd
+from typing import Optional
 from rich.console import Console
 from rich.table import Table
 import os
@@ -70,7 +71,7 @@ ACTIVE_MODE = "mode2"
 
 # ── Function: Mode 1 trade fetch (unchanged) ─────────────────────────────────
 
-def fetch_wallet_trades(wallet_address: str, limit: int = 50) -> list:
+def fetch_wallet_trades(wallet_address: str, limit: int = 50) -> list[dict]:
     """
     Pull a wallet's most recent N trades, regardless of market.
     MODE 1 ONLY.
@@ -156,8 +157,8 @@ def get_wallet_discovery_info(wallet_address: str) -> dict:
 
 # ── Function: Mode 2 trade fetch ─────────────────────────────────────────────
 
-def fetch_wallet_trades_for_markets(wallet_address: str, condition_ids: list,
-                                     limit_per_market: int = MODE2_TRADES_PER_MARKET) -> list:
+def fetch_wallet_trades_for_markets(wallet_address: str, condition_ids: list[str],
+                                     limit_per_market: int = MODE2_TRADES_PER_MARKET) -> list[dict]:
     """
     Pull a wallet's trades ONLY from the specific markets in
     condition_ids, using the CONFIRMED working combined filter:
@@ -207,7 +208,7 @@ def classify_trade(trade: dict) -> dict:
     return enriched_trade
 
 
-def filter_research_eligible_trades(classified_trades: list) -> dict:
+def filter_research_eligible_trades(classified_trades: list[dict]) -> dict:
     """
     Split classified trades into eligible / excluded / review.
     Used by both modes. NEVER uses a bare `if value:` check on
@@ -232,7 +233,7 @@ def filter_research_eligible_trades(classified_trades: list) -> dict:
     return {"eligible": eligible, "excluded": excluded, "review": review}
 
 
-def calculate_wallet_stats(wallet_address: str, resolved_eligible_trades: list,
+def calculate_wallet_stats(wallet_address: str, resolved_eligible_trades: list[dict],
                             total_pulled: int, excluded_count: int,
                             review_count: int) -> dict:
     """
@@ -373,7 +374,7 @@ def run_wallet_analysis_mode2(wallet_address: str) -> dict:
 # ── Display ───────────────────────────────────────────────────────────────────
 
 def print_mode_header(mode: str, wallet_address: str, wallet_name: str = "",
-                       discovery_info: dict = None):
+                        discovery_info: Optional[dict] = None) -> None:
     """
     Print an unmissable header stating which mode produced this
     output. Critical for preventing the exact confusion that
@@ -400,7 +401,7 @@ def print_mode_header(mode: str, wallet_address: str, wallet_name: str = "",
         )
 
 
-def print_trade_table(classified_trades: list, max_rows: int = 15):
+def print_trade_table(classified_trades: list[dict], max_rows: int = 15) -> None:
     """Print a table of classified trades. Used by both modes."""
     if not classified_trades:
         console.print("[yellow]No trades to display.[/yellow]")
@@ -437,7 +438,7 @@ def print_trade_table(classified_trades: list, max_rows: int = 15):
         console.print(f"[dim]...and {len(classified_trades) - max_rows} more trades not shown[/dim]")
 
 
-def print_wallet_summary(stats: dict):
+def print_wallet_summary(stats: dict) -> None:
     """Print the final wallet summary block. Used by both modes."""
     console.print("\n[bold cyan]═══ Wallet Summary ═══[/bold cyan]")
     console.print(f"Wallet: {stats['wallet_address']}")
@@ -481,7 +482,7 @@ def print_wallet_summary(stats: dict):
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-def main():
+def main() -> None:
     if ACTIVE_MODE == "mode1":
         print_mode_header("mode1", SEEDED_WALLET_ADDRESS, SEEDED_WALLET_NAME)
         result = run_wallet_analysis_mode1(SEEDED_WALLET_ADDRESS, limit=TRADE_LIMIT)
