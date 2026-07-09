@@ -95,7 +95,7 @@ def classify_snapshot_markets(markets_df: pd.DataFrame) -> pd.DataFrame:
     for _, row in markets_df.iterrows():
         market_input = {
             "title": row.get("question", "Unknown"),
-"slug": "",  # snapshot CSV does not currently save slug;
+            "slug": "",  # snapshot CSV does not currently save slug;
                          # classification relies on title-only matching
                          # for these markets. Ultra-short detection via
                          # slug pattern will not trigger here, but
@@ -129,7 +129,7 @@ def filter_active_research_markets(classified_df: pd.DataFrame) -> pd.DataFrame:
 
 # ── Function 4 ─────────────────────────────────────────────────────────────
 
-def fetch_trades_for_market(condition_id: str, limit: int = TRADES_PER_MARKET) -> list:
+def fetch_trades_for_market(condition_id: str, limit: int = TRADES_PER_MARKET) -> list[dict]:
     """
     Pull a sample of trades for ONE specific market, using the
     CONFIRMED working parameter: market={conditionId}.
@@ -156,7 +156,7 @@ def fetch_trades_for_market(condition_id: str, limit: int = TRADES_PER_MARKET) -
 
 # ── Function 5 ─────────────────────────────────────────────────────────────
 
-def extract_wallets_from_trades(trades: list, market_title: str, category: str,
+def extract_wallets_from_trades(trades: list[dict], market_title: str, category: str,
                                  condition_id: str) -> dict:
     """
     Pull every proxyWallet out of one market's trade batch.
@@ -195,7 +195,7 @@ def extract_wallets_from_trades(trades: list, market_title: str, category: str,
 
 # ── Function 6 ─────────────────────────────────────────────────────────────
 
-def collapse_wallet_discoveries(all_discoveries: list) -> dict:
+def collapse_wallet_discoveries(all_discoveries: list[dict]) -> dict:
     """
     Merge per-market discovery results into ONE row per unique
     wallet, accumulating categories_touched, markets_touched,
@@ -236,7 +236,7 @@ def collapse_wallet_discoveries(all_discoveries: list) -> dict:
 
 # ── Function 7 ─────────────────────────────────────────────────────────────
 
-def run_wallet_discovery(trades_per_market: int = TRADES_PER_MARKET) -> tuple:
+def run_wallet_discovery(trades_per_market: int = TRADES_PER_MARKET) -> tuple[pd.DataFrame, dict]:
     """
     Orchestrator. Runs the full discovery pipeline.
 
@@ -307,7 +307,7 @@ def run_wallet_discovery(trades_per_market: int = TRADES_PER_MARKET) -> tuple:
 
 # ── Diagnostic Summary ────────────────────────────────────────────────────────
 
-def print_discovery_summary(result_df: pd.DataFrame, stats: dict):
+def print_discovery_summary(result_df: pd.DataFrame, stats: dict) -> None:
     """
     Print the diagnostic summary: markets sampled, total trades
     sampled, unique wallets, average wallets per market, and top 10
@@ -355,7 +355,7 @@ def print_discovery_summary(result_df: pd.DataFrame, stats: dict):
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-def main():
+def main() -> None:
     console.print("\n[bold cyan]Liquid Research — Wallet Discovery[/bold cyan]")
     console.print("[dim]Sourcing candidate wallets from Active Research category markets...[/dim]\n")
 
