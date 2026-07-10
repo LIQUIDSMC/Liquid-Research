@@ -74,9 +74,9 @@ def _build_row_for_slug(slug: str) -> dict:
 
     observation_count = len(history)
 
-    snapshot_count = history["snapshot_file"].dropna().nunique()
+    snapshot_count = history["publication_id"].dropna().nunique()
 
-    # days_observed uses timestamp calendar dates, not snapshot_file,
+    # days_observed uses timestamp calendar dates, not publication_id,
     # per the module's design: timestamp is the ground-truth
     # observation moment.
     calendar_dates = timestamps.str.slice(0, 10).unique() if len(timestamps) > 0 else []

@@ -129,7 +129,7 @@ def _render_divergence_summary(index_df: pd.DataFrame, reports: dict) -> str:
     section below — this section is deliberately compact. This
     section reflects the LATEST observation per market only. See
     Section 6 (Agreement Matrix) for the historical view across
-    every matched snapshot_file.
+    every matched publication_id.
 
     Receives:
         index_df (pd.DataFrame): output of

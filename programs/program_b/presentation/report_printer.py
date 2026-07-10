@@ -93,7 +93,7 @@ def format_agreement_matrix_table(matrix_df) -> str:
 
     Receives:
         matrix_df (pd.DataFrame): output of build_agreement_matrix(),
-        already sorted by snapshot_date, slug, snapshot_file.
+        already sorted by snapshot_date, slug, publication_id.
 
     Returns:
         str: a fixed-width plain text table, e.g.:

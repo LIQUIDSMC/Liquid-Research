@@ -17,12 +17,13 @@ history.py returns long format and deliberately does not pair OBI
 and Near-Book rows (see history.py's module docstring for why).
 Divergence Detection defines its own explicit pairing rule: compare
 the latest OBI observation to the latest Near-Book observation ONLY
-if they share the same snapshot_file. snapshot_file represents the
-market universe analyzed in one daily cycle; requiring a match
-avoids comparing observations from different days as if they were
-simultaneous. If the latest observations from each source do not
-share a snapshot_file (or either source has no observations at
-all), no comparable pair exists — this is reported honestly via
+if they share the same publication_id. publication_id identifies
+the publication cycle that produced the market universe both
+observations were drawn from; requiring a match avoids comparing
+observations from different cycles as if they were simultaneous.
+If the latest observations from each source do not share a
+publication_id (or either source has no observations at all), no
+comparable pair exists — this is reported honestly via
 has_comparable_pair=False rather than forcing a stale comparison.
 
 This module reads no CSVs directly. It calls get_market_history()
@@ -87,7 +88,7 @@ def detect_divergence(slug: str) -> dict:
     """
     Measure divergence between the latest OBI and latest Near-Book
     observation for a market, only if they share the same
-    snapshot_file. See module docstring for the full pairing rule.
+    publication_id. See module docstring for the full pairing rule.
 
     Receives:
         slug (str): the market slug to check.
@@ -96,8 +97,8 @@ def detect_divergence(slug: str) -> dict:
         dict: {
             "slug": str,
             "has_comparable_pair": bool,
-            "obi_snapshot_file": str or None,
-            "near_book_snapshot_file": str or None,
+            "obi_publication_id": str or None,
+            "near_book_publication_id": str or None,
             "obi_timestamp": str or None,
             "near_book_timestamp": str or None,
             "obi_value": float or None,
@@ -107,8 +108,8 @@ def detect_divergence(slug: str) -> dict:
             "sign_flip": bool or None,
         }
 
-        If has_comparable_pair is False, obi_snapshot_file /
-        near_book_snapshot_file / obi_timestamp / near_book_timestamp
+        If has_comparable_pair is False, obi_publication_id /
+        near_book_publication_id / obi_timestamp / near_book_timestamp
         are still populated where available, so the reason no pair
         was found is visible. raw_diff, absolute_diff, and sign_flip
         are None whenever has_comparable_pair is False.
@@ -118,8 +119,8 @@ def detect_divergence(slug: str) -> dict:
     result = {
         "slug": slug,
         "has_comparable_pair": False,
-        "obi_snapshot_file": None,
-        "near_book_snapshot_file": None,
+        "obi_publication_id": None,
+        "near_book_publication_id": None,
         "obi_timestamp": None,
         "near_book_timestamp": None,
         "obi_value": None,
@@ -139,19 +140,19 @@ def detect_divergence(slug: str) -> dict:
     latest_near = _get_latest_row(near_rows)
 
     if latest_obi is not None:
-        result["obi_snapshot_file"] = latest_obi.get("snapshot_file")
+        result["obi_publication_id"] = latest_obi.get("publication_id")
         result["obi_timestamp"] = latest_obi.get("timestamp")
         result["obi_value"] = latest_obi.get("obi")
 
     if latest_near is not None:
-        result["near_book_snapshot_file"] = latest_near.get("snapshot_file")
+        result["near_book_publication_id"] = latest_near.get("publication_id")
         result["near_book_timestamp"] = latest_near.get("timestamp")
         result["near_obi_value"] = latest_near.get("near_obi")
 
     if latest_obi is None or latest_near is None:
         return result
 
-    if result["obi_snapshot_file"] != result["near_book_snapshot_file"]:
+    if result["obi_publication_id"] != result["near_book_publication_id"]:
         return result
 
     obi_value = result["obi_value"]

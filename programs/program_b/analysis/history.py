@@ -16,21 +16,22 @@ historical data.
 
 IMPORTANT — THIS IS A RAW OBSERVATION VIEW, NOT A PAIRED COMPARISON
 TABLE:
-snapshot_file + slug is NOT a unique key. Diagnostics have been
-rerun against the same snapshot during testing, producing multiple
-real, independent observations for the same snapshot_file + slug.
-Because of this, get_market_history() returns LONG FORMAT — one
-row per real logged observation, tagged with a `source` column
+publication_id + slug is NOT a unique key. Diagnostics have been
+rerun against the same publication cycle during testing, producing
+multiple real, independent observations for the same publication_id
++ slug. Because of this, get_market_history() returns LONG FORMAT —
+one row per real logged observation, tagged with a `source` column
 ("obi" or "near_book") — rather than attempting to merge OBI and
 Near-Book rows into one wide row per market-moment.
 
 An earlier version of this function attempted a wide-format outer
-merge on snapshot_file + slug. This produced a cartesian product
-whenever either log had more than one row for the same key (e.g.
-2 OBI rows x 1 Near-Book row = 2 incorrect combined rows). Pairing
-OBI and Near-Book observations by nearest timestamp was considered
-and rejected — it would introduce an unvalidated heuristic with no
-ground truth confirming which observations were "the same moment."
+merge on publication_id + slug (then named snapshot_file). This
+produced a cartesian product whenever either log had more than one
+row for the same key (e.g. 2 OBI rows x 1 Near-Book row = 2
+incorrect combined rows). Pairing OBI and Near-Book observations by
+nearest timestamp was considered and rejected — it would introduce
+an unvalidated heuristic with no ground truth confirming which
+observations were "the same moment."
 
 Any future comparison between OBI and Near-Book values (e.g. a
 diff calculation) requires an explicit, visible pairing rule and
@@ -86,20 +87,18 @@ def get_market_history(slug: str) -> pd.DataFrame:
         slug (str): the market slug to retrieve history for.
 
     Returns:
-        pd.DataFrame: one row per real logged observation from
+       pd.DataFrame: one row per real logged observation from
         either log (no merging, no deduplication), with columns:
-            timestamp, snapshot_file, slug, question, source,
+            timestamp, publication_id, slug, question, source,
             midpoint, bid_count, ask_count, status,
             obi, micro_price, v_bid, v_ask,
             near_obi, n_levels, v_bid_top_n, v_ask_top_n
-
         `source` is "obi" or "near_book". Columns not applicable
         to a given row's source are NaN (e.g. a "near_book" row
         has NaN for obi, micro_price, v_bid, v_ask).
-
         Sorted by timestamp ascending. All real rows are preserved,
-        including multiple rows sharing the same snapshot_file if
-        a diagnostic was rerun against that snapshot.
+        including multiple rows sharing the same publication_id if
+        a diagnostic was rerun against that publication cycle.
     """
     obi_df, near_df = _load_logs()
 
@@ -125,7 +124,7 @@ def get_market_history(slug: str) -> pd.DataFrame:
     # change_detector.py). Keep these separate — do not mix them
     # within the same return type.
     expected_columns = [
-        "timestamp", "snapshot_file", "slug", "question", "source",
+        "timestamp", "publication_id", "slug", "question", "source",
         "midpoint", "bid_count", "ask_count", "status",
         "obi", "micro_price", "v_bid", "v_ask",
         "near_obi", "n_levels", "v_bid_top_n", "v_ask_top_n",

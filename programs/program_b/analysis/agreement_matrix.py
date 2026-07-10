@@ -5,34 +5,34 @@ programs/program_b/analysis/agreement_matrix.py
 
 PURPOSE:
 Build a historical, cross-market view of whether OBI and Near-OBI
-agree in sign, across every (slug, snapshot_file) combination where
-both an OBI and a Near-Book observation exist. This is Phase 3's
-fourth and final item, deliberately sequenced last since it becomes
-more valuable once other Phase 3 modules reveal which markets have
-accumulated enough history to compare repeatedly.
+agree in sign, across every (slug, publication_id) combination
+where both an OBI and a Near-Book observation exist. This is Phase
+3's fourth and final item, deliberately sequenced last since it
+becomes more valuable once other Phase 3 modules reveal which
+markets have accumulated enough history to compare repeatedly.
 
 This module does NOT classify agreement as good/bad, does NOT
 apply any threshold, and does NOT infer predictive value from
 agreement or disagreement. It reports a historical fact: for each
-real (slug, snapshot_file) pairing where both sources exist, did
+real (slug, publication_id) pairing where both sources exist, did
 OBI and Near-OBI have the same sign?
 
 PAIRING RULE:
-For each (slug, snapshot_file), take the LATEST OBI row and the
+For each (slug, publication_id), take the LATEST OBI row and the
 LATEST Near-Book row for that combination, then compare those two.
 This mirrors divergence_detector.py's existing "latest vs latest"
-philosophy, extended historically across every snapshot_file rather
-than only the current moment. This avoids the cartesian-product
-risk already identified in history.py's design: a snapshot_file
-can have multiple OBI or Near-Book rows (same-day diagnostic
-reruns), and naively comparing every combination would fabricate
-comparisons that don't represent real, distinct observation
-moments.
+philosophy, extended historically across every publication_id
+rather than only the current moment. This avoids the cartesian-
+product risk already identified in history.py's design: a
+publication_id can have multiple OBI or Near-Book rows (same-cycle
+diagnostic reruns), and naively comparing every combination would
+fabricate comparisons that don't represent real, distinct
+observation moments.
 
 Rows are included ONLY when both an OBI and a Near-Book observation
-exist for that (slug, snapshot_file). Combinations missing one side
-are correctly excluded entirely — the same "no forced comparison"
-principle used throughout divergence_detector.py.
+exist for that (slug, publication_id). Combinations missing one
+side are correctly excluded entirely — the same "no forced
+comparison" principle used throughout divergence_detector.py.
 
 ZERO HANDLING:
 If either obi_value or near_obi_value is exactly 0, same_sign and
@@ -81,18 +81,18 @@ def build_agreement_matrix() -> pd.DataFrame:
     market.
 
     Returns:
-        pd.DataFrame: one row per (slug, snapshot_file) combination
+        pd.DataFrame: one row per (slug, publication_id) combination
         where both an OBI and a Near-Book observation exist, with
-        columns: slug, question, snapshot_file, snapshot_date,
+        columns: slug, question, publication_id, snapshot_date,
         obi_timestamp, near_book_timestamp, obi_value,
         near_obi_value, same_sign, sign_flip.
 
         Combinations missing either source are excluded entirely.
-        No duplicate (slug, snapshot_file) rows are produced — the
+        No duplicate (slug, publication_id) rows are produced — the
         latest OBI row and latest Near-Book row are taken per
         combination before comparison.
 
-        Sorted by snapshot_date, slug, snapshot_file (all
+        Sorted by snapshot_date, slug, publication_id (all
         ascending) for readability. This sort does not affect any
         calculation or pairing logic.
     """
@@ -109,14 +109,14 @@ def build_agreement_matrix() -> pd.DataFrame:
         if obi_rows.empty or near_rows.empty:
             continue
 
-        common_snapshots = set(obi_rows["snapshot_file"].dropna().unique()) & \
-                            set(near_rows["snapshot_file"].dropna().unique())
+        common_publications = set(obi_rows["publication_id"].dropna().unique()) & \
+                              set(near_rows["publication_id"].dropna().unique())
 
-        for snapshot_file in sorted(common_snapshots):
-            obi_slice = obi_rows[obi_rows["snapshot_file"] == snapshot_file]
-            near_slice = near_rows[near_rows["snapshot_file"] == snapshot_file]
+        for publication_id in sorted(common_publications):
+            obi_slice = obi_rows[obi_rows["publication_id"] == publication_id]
+            near_slice = near_rows[near_rows["publication_id"] == publication_id]
 
-            # Take the latest row per source for this snapshot_file
+            # Take the latest row per source for this publication_id
             # (history is already chronologically sorted by
             # get_market_history(), so .iloc[-1] is the latest).
             latest_obi = obi_slice.iloc[-1]
@@ -139,7 +139,7 @@ def build_agreement_matrix() -> pd.DataFrame:
             rows.append({
                 "slug": slug,
                 "question": latest_obi.get("question"),
-                "snapshot_file": snapshot_file,
+                "publication_id": publication_id,
                 "snapshot_date": snapshot_date,
                 "obi_timestamp": latest_obi.get("timestamp"),
                 "near_book_timestamp": latest_near.get("timestamp"),
@@ -150,7 +150,7 @@ def build_agreement_matrix() -> pd.DataFrame:
             })
 
     columns = [
-        "slug", "question", "snapshot_file", "snapshot_date",
+        "slug", "question", "publication_id", "snapshot_date",
         "obi_timestamp", "near_book_timestamp",
         "obi_value", "near_obi_value", "same_sign", "sign_flip",
     ]
@@ -161,10 +161,11 @@ def build_agreement_matrix() -> pd.DataFrame:
     df = pd.DataFrame(rows)
     df = df[columns]
     df = df.sort_values(
-        by=["snapshot_date", "slug", "snapshot_file"],
+        by=["snapshot_date", "slug", "publication_id"],
         ascending=[True, True, True],
         na_position="last",
     ).reset_index(drop=True)
+
     return df
 
 

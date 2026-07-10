@@ -11,10 +11,10 @@ downstream analysis without duplicating any retrieval logic.
 Compares the latest observation against the immediately previous
 observation, per source (OBI, Near-Book), for a given market. This
 is NOT "today vs yesterday" — Program B logs are append-only and
-diagnostics can be rerun against the same snapshot, so the correct
-comparison is chronological: latest OBI vs previous OBI, latest
-Near-Book vs previous Near-Book. OBI and Near-Book rows are never
-compared against each other.
+diagnostics can be rerun against the same publication cycle, so the
+correct comparison is chronological: latest OBI vs previous OBI,
+latest Near-Book vs previous Near-Book. OBI and Near-Book rows are
+never compared against each other.
 
 This module reads no CSVs directly. It calls get_market_history()
 from analysis/history.py exclusively.
@@ -46,10 +46,10 @@ def _build_source_section(source_df: pd.DataFrame) -> dict:
         all "obi" rows or all "near_book" rows), already sorted
         chronologically ascending.
 
-    Returns:
+Returns:
         dict: has_change, previous, latest, previous_timestamp,
-        latest_timestamp, previous_snapshot_file,
-        latest_snapshot_file, midpoint_delta, bid_count_delta,
+        latest_timestamp, previous_publication_id,
+        latest_publication_id, midpoint_delta, bid_count_delta,
         ask_count_delta.
     """
     n = len(source_df)
@@ -59,15 +59,15 @@ def _build_source_section(source_df: pd.DataFrame) -> dict:
             "has_change": False,
             "previous": None,
             "latest": None,
-            "previous_timestamp": None,
+"previous_timestamp": None,
             "latest_timestamp": None,
-            "previous_snapshot_file": None,
-            "latest_snapshot_file": None,
+            "previous_publication_id": None,
+            "latest_publication_id": None,
             "midpoint_delta": None,
             "bid_count_delta": None,
             "ask_count_delta": None,
         }
-
+    
     latest_row = source_df.iloc[-1].to_dict()
 
     if n == 1:
@@ -77,8 +77,8 @@ def _build_source_section(source_df: pd.DataFrame) -> dict:
             "latest": latest_row,
             "previous_timestamp": None,
             "latest_timestamp": latest_row.get("timestamp"),
-            "previous_snapshot_file": None,
-            "latest_snapshot_file": latest_row.get("snapshot_file"),
+            "previous_publication_id": None,
+            "latest_publication_id": latest_row.get("publication_id"),
             "midpoint_delta": None,
             "bid_count_delta": None,
             "ask_count_delta": None,
@@ -100,8 +100,8 @@ def _build_source_section(source_df: pd.DataFrame) -> dict:
         "latest": latest_row,
         "previous_timestamp": previous_row.get("timestamp"),
         "latest_timestamp": latest_row.get("timestamp"),
-        "previous_snapshot_file": previous_row.get("snapshot_file"),
-        "latest_snapshot_file": latest_row.get("snapshot_file"),
+        "previous_publication_id": previous_row.get("publication_id"),
+        "latest_publication_id": latest_row.get("publication_id"),
         "midpoint_delta": safe_delta(latest_row.get("midpoint"), previous_row.get("midpoint")),
         "bid_count_delta": safe_delta(latest_row.get("bid_count"), previous_row.get("bid_count")),
         "ask_count_delta": safe_delta(latest_row.get("ask_count"), previous_row.get("ask_count")),

@@ -54,9 +54,20 @@ Platform principle. Methodology does not change until the review
 cadence in README.md reaches a checkpoint.
 
 ### Phase 2 — Research Infrastructure ✅ COMPLETE (2026-07-06)
-
 Goal: Make it possible to observe the same market over multiple
 days, not just today.
+
+TERMINOLOGY NOTE (2026-07-10): entries below reference
+"snapshot_file" as it was understood at the time each item was
+completed — a raw Program A market snapshot filename. Following the
+Prediction Markets Domain refactor (see zARCHITECTURE.md ADR-006),
+Program B now reads a canonical output identified by
+publication_id, and the log schema's "snapshot_file" column has
+been renamed to publication_id throughout (both code and existing
+log data). The historical entries below are left as originally
+written to accurately reflect what was true at the time; treat
+every "snapshot_file" reference below as historically accurate but
+superseded by publication_id in the current codebase.
 
 - Historical Market View ✅ COMPLETE (2026-07-06) — implemented in
   programs/program_b/analysis/history.py. Returns all logged

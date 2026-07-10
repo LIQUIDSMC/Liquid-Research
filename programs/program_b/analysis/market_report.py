@@ -71,7 +71,7 @@ def _build_observation_summary(history, slug: str) -> dict:
     obi_count = len(obi_rows)
     near_book_count = len(near_rows)
 
-    known_snapshots = sorted(history["snapshot_file"].dropna().unique().tolist())
+    known_snapshots = sorted(history["publication_id"].dropna().unique().tolist())
 
     warning = None
     if obi_count == 0:

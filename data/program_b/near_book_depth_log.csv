@@ -1,4 +1,4 @@
-timestamp,snapshot_file,slug,question,midpoint,total_obi,near_obi,n_levels,v_bid_top_n,v_ask_top_n,bid_count,ask_count,status
+timestamp,publication_id,slug,question,midpoint,total_obi,near_obi,n_levels,v_bid_top_n,v_ask_top_n,bid_count,ask_count,status
 2026-07-04T17:46:14Z,snapshot_20260704_1005.csv,putin-out-before-2027,"Putin out as President of Russia by December 31, 2026?",0.105,0.5265,0.504,5,4875445.32,1607644.45,10,64,ok
 2026-07-04T17:46:16Z,snapshot_20260704_1005.csv,us-x-iran-diplomatic-meeting-by-july-10-2026-20260622191708360,"US x Iran diplomatic meeting by July 10, 2026?",0.0185,0.5517,0.866,5,100975.22,7253.35,18,92,ok
 2026-07-04T17:46:17Z,snapshot_20260704_1005.csv,will-trump-pardon-sbf-by-july-31-20260608235339562,Will Trump pardon SBF by July 31?,0.0215,-0.183,-0.9661,5,1197.12,69411.96,21,63,ok
@@ -23,3 +23,23 @@ timestamp,snapshot_file,slug,question,midpoint,total_obi,near_obi,n_levels,v_bid
 2026-07-08T15:00:55Z,snapshot_20260708_0559.csv,will-bitcoin-reach-67pt5k-in-july-2026,"Will Bitcoin reach $67,500 in July?",0.305,-0.1354,0.0439,5,23044.84,21106.57,22,28,ok
 2026-07-08T15:00:56Z,snapshot_20260708_0559.csv,will-nigel-farage-win-the-clacton-by-election-20260707144027825,Will Nigel Farage win the Clacton by-election?,0.9075,0.0391,-0.0743,5,3936.0,4567.81,78,68,ok
 2026-07-08T15:00:57Z,snapshot_20260708_0559.csv,will-marine-le-pen-win-the-2027-french-presidential-election,Will Marine Le Pen win the 2027 French presidential election?,0.245,-0.9142,0.8284,5,25422.08,2386.26,55,132,ok
+2026-07-09T00:56:33Z,snapshot_20260708_1753.csv,will-there-be-no-change-in-fed-interest-rates-after-the-july-2026-meeting,Will there be no change in Fed interest rates after the July 2026 meeting?,0.775,-0.1737,-0.9271,5,41777.02,1103889.67,45,22,ok
+2026-07-09T00:56:40Z,snapshot_20260708_1753.csv,will-count-binface-win-the-clacton-by-election-20260707211451133,Will Count Binface win the Clacton by-election?,0.073,-0.769,-0.6129,5,4988.57,20784.39,57,93,ok
+2026-07-09T00:56:47Z,snapshot_20260708_1753.csv,putin-out-before-2027-346,"Putin out as President of Russia by December 31, 2026?",0.085,0.4774,0.4087,5,3277510.52,1375770.51,8,68,ok
+2026-07-09T00:56:52Z,snapshot_20260708_1753.csv,will-the-fed-increase-interest-rates-by-25-bps-after-the-july-2026-meeting,Will the Fed increase interest rates by 25 bps after the July 2026 meeting?,0.2195,-0.3855,0.5303,5,15714.96,4823.35,154,104,ok
+2026-07-09T00:56:55Z,snapshot_20260708_1753.csv,will-nigel-farage-win-the-clacton-by-election-20260707144027825,Will Nigel Farage win the Clacton by-election?,0.9045,0.1228,0.0481,5,9932.49,9020.37,73,66,ok
+2026-07-09T17:23:01Z,snapshot_20260709_1020.csv,will-there-be-no-change-in-fed-interest-rates-after-the-july-2026-meeting,Will there be no change in Fed interest rates after the July 2026 meeting?,0.855,-0.1748,-0.8843,5,119704.51,1949822.73,56,14,ok
+2026-07-09T17:23:03Z,snapshot_20260709_1020.csv,putin-out-before-2027-346,"Putin out as President of Russia by December 31, 2026?",0.085,0.4998,0.4469,5,3267636.3,1249163.57,8,69,ok
+2026-07-09T17:23:05Z,snapshot_20260709_1020.csv,will-the-fed-increase-interest-rates-by-25-bps-after-the-july-2026-meeting,Will the Fed increase interest rates by 25 bps after the July 2026 meeting?,0.145,-0.3991,-0.7375,5,2440.36,16154.0,125,132,ok
+2026-07-09T17:23:06Z,snapshot_20260709_1020.csv,will-count-binface-win-the-clacton-by-election-20260707211451133,Will Count Binface win the Clacton by-election?,0.0825,-0.3333,-0.645,5,11059.42,51254.1,59,83,ok
+2026-07-09T17:23:07Z,snapshot_20260709_1020.csv,will-the-fed-decrease-interest-rates-by-25-bps-after-the-september-2026-meeting-586,Will the Fed decrease interest rates by 25 bps after the September 2026 meeting?,0.0385,0.5944,0.3422,5,120558.96,59083.68,30,80,ok
+2026-07-10T13:02:31Z,snapshot_20260710_0558.csv,will-there-be-no-change-in-fed-interest-rates-after-the-july-2026-meeting,Will there be no change in Fed interest rates after the July 2026 meeting?,0.855,-0.1065,-0.8521,5,140103.74,1754743.46,55,14,ok
+2026-07-10T13:02:32Z,snapshot_20260710_0558.csv,will-count-binface-win-the-clacton-by-election-20260707211451133,Will Count Binface win the Clacton by-election?,0.0745,-0.4926,0.1918,5,42937.2,29117.28,49,97,ok
+2026-07-10T13:02:33Z,snapshot_20260710_0558.csv,will-lebron-james-play-for-the-cleveland-cavaliers-in-2026-27,Will LeBron James play for the Cleveland Cavaliers in 2026-27?,0.619,0.2609,0.2127,5,7016.67,4554.84,97,55,ok
+2026-07-10T13:02:34Z,snapshot_20260710_0558.csv,will-arthur-fery-be-the-2026-mens-wimbledon-winner,Will Arthur Fery be the 2026 Men’s Wimbledon winner?,0.025,-0.9994,-0.82,5,501.37,5067.95,8,66,ok
+2026-07-10T13:02:35Z,snapshot_20260710_0558.csv,mojtaba-khamenei-seen-in-public-by-july-15-155,Mojtaba Khamenei seen in public by July 15?,0.0265,-0.5849,0.8349,5,12081.85,1087.21,23,112,ok
+2026-07-10T22:09:15Z,20260710_123833,will-there-be-no-change-in-fed-interest-rates-after-the-july-2026-meeting,Will there be no change in Fed interest rates after the July 2026 meeting?,0.775,-0.0235,-0.3808,5,67205.17,149857.46,47,22,ok
+2026-07-10T22:09:17Z,20260710_123833,will-count-binface-win-the-clacton-by-election-20260707211451133,Will Count Binface win the Clacton by-election?,0.0705,-0.5307,-0.4065,5,11338.24,26871.52,47,94,ok
+2026-07-10T22:09:19Z,20260710_123833,will-lebron-james-play-for-the-cleveland-cavaliers-in-2026-27,Will LeBron James play for the Cleveland Cavaliers in 2026-27?,0.443,0.3265,0.4791,5,2072.22,729.8,53,91,ok
+2026-07-10T22:09:21Z,20260710_123833,mojtaba-khamenei-seen-in-public-by-july-15-155,Mojtaba Khamenei seen in public by July 15?,0.0215,-0.6008,0.3035,5,5618.3,3002.16,17,145,ok
+2026-07-10T22:09:24Z,20260710_123833,strait-of-hormuz-traffic-returns-to-normal-by-july-31,Strait of Hormuz traffic returns to normal by July 31?,0.085,0.2212,0.723,5,620933.04,99841.13,8,86,ok

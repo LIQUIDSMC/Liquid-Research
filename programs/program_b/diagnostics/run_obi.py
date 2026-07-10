@@ -9,6 +9,9 @@ Feasibility and stability check. Answers:
 collect, and are they stable across markets and over time?"
 
 This script:
+- Reads the Prediction Markets Domain's canonical output
+  (data/approved_markets/prediction_markets_latest.csv) — no
+  count limit, analyzes every approved instrument
 - Uses existing scanner/clob_client.py with no modifications
 - Uses programs/program_b/indicators/obi.py for calculation
 - Prints results in a readable table
@@ -39,44 +42,52 @@ console = Console()
 
 LOG_PATH = os.path.join("data", "program_b", "obi_log.csv")
 LOG_COLUMNS = [
-    "timestamp", "snapshot_file", "slug", "question",
+    "timestamp", "publication_id", "slug", "question",
     "midpoint", "micro_price", "obi", "v_bid", "v_ask",
     "bid_count", "ask_count", "status",
 ]
 
 
-def load_slugs_from_latest_snapshot(n: int = 5) -> tuple:
+def load_approved_slugs() -> tuple:
     """
-    Read the most recent Program A market snapshot and return the
-    first n slugs.
+    Read the Prediction Markets Domain's canonical output and
+    return every approved instrument_id, per zARCHITECTURE.md
+    Section 5.
 
     Returns:
-        tuple: (list[str] slugs, str snapshot filename), or ([], "") if none found
+        tuple: (list[str] instrument_ids, str publication_id for
+        this publication cycle), or ([], "") if the canonical
+        output does not exist or is missing required columns.
     """
-    import glob
     import pandas as pd
-
-    snapshots = sorted(glob.glob("data/markets/snapshot_*.csv"))
-    if not snapshots:
+    canonical_path = "data/approved_markets/prediction_markets_latest.csv"
+    if not os.path.exists(canonical_path):
+        console.print(
+            f"[red]No canonical output found at {canonical_path}. "
+            f"Run programs/program_a/domain/publish_canonical_output.py first.[/red]"
+        )
         return [], ""
-
-    latest = snapshots[-1]
-    console.print(f"[dim]Reading slugs from: {latest}[/dim]")
-
+    console.print(f"[dim]Reading approved instruments from: {canonical_path}[/dim]")
     try:
-        df = pd.read_csv(latest)
-        if "slug" not in df.columns:
-            console.print("[red]No slug column found in snapshot.[/red]")
+        df = pd.read_csv(canonical_path)
+        if "instrument_id" not in df.columns or "publication_id" not in df.columns:
+            console.print("[red]Canonical output missing instrument_id or publication_id column.[/red]")
             return [], ""
-        return df["slug"].dropna().tolist()[:n], os.path.basename(latest)
+        slugs = df["instrument_id"].dropna().tolist()
+        publication_id = df["publication_id"].iloc[0] if len(df) > 0 else ""
+        return slugs, publication_id
     except Exception as e:
-        console.print(f"[red]Failed to read snapshot: {e}[/red]")
+        console.print(f"[red]Failed to read canonical output: {e}[/red]")
         return [], ""
 
 
 def log_to_csv(row: dict) -> None:
     """
     Append one row to data/program_b/obi_log.csv.
+
+    Schema uses publication_id as the canonical identifier
+    for the Program A publication cycle.
+
     Creates data/program_b/ and the CSV header if they do not exist.
     """
     os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
@@ -89,10 +100,9 @@ def log_to_csv(row: dict) -> None:
         writer.writerow(row)
 
 
-def main():
+def main() -> None:
     console.print("\n[bold cyan]Program B — Market Microstructure Research[/bold cyan]")
     console.print("[dim]Indicator: OBI / Micro-Price — stability check[/dim]\n")
-
     table = Table(show_lines=True)
     table.add_column("Market", max_width=28)
     table.add_column("Midpoint", justify="right")
@@ -104,11 +114,10 @@ def main():
     table.add_column("Asks", justify="right")
     table.add_column("Status")
 
-    slugs, snapshot_file = load_slugs_from_latest_snapshot(n=5)
+    slugs, publication_id = load_approved_slugs()
     if not slugs:
-        console.print("[red]No slugs found. Is data/markets/ populated?[/red]")
+        console.print("[red]No slugs found. Is the canonical output populated?[/red]")
         return
-
     for slug in slugs:
         clob = get_market_clob_data(slug, outcome_index=0, include_official=False)
 
@@ -146,7 +155,7 @@ def main():
 
         log_to_csv({
             "timestamp": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "snapshot_file": snapshot_file,
+            "publication_id": publication_id,
             "slug": slug,
             "question": clob.get("question") or "",
             "midpoint": clob["midpoint"] if clob["midpoint"] is not None else "",
