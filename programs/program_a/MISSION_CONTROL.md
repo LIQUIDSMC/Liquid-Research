@@ -5,7 +5,7 @@
 > research programs and the experiment registry live in zROADMAP.md.
 > Build history and phase details live in programs/program_a/HISTORY.md.
 
-Last updated: 2026-07-03
+Last updated: 2026-07-10
 (Updated during weekly review — see programs/program_a/DAILY_OPERATIONS.md)
 
 ## Phase Status
@@ -15,11 +15,19 @@ build history. Program A is now in active data collection toward
 found not viable via the metadata approach, and reframed as a
 standing decision (see research/validated_findings.md).
 
+## Domain Producer Role (added 2026-07-10)
+Program A is the current implementation of the Prediction Markets
+Domain's producer, per zARCHITECTURE.md. It now also publishes the
+Domain's canonical output (interface and data contract) for
+downstream Programs to consume. Program B is currently the only
+downstream consumer. See programs/program_a/domain/README.md for
+the full contract and responsibilities.
+
 ## Dataset Status
-Running since: 2026-06-22 (16 days as of 2026-07-08)
-Total paper trades: 83
-Open: 46
-Closed: 37
+Running since: 2026-06-22 (18 days as of 2026-07-10)
+Total paper trades: 96
+Open: 57
+Closed: 39
 
 ## Category Breakdown (all trades, 2026-07-01)
 Sports: 18
@@ -64,10 +72,10 @@ time of the patch, not just newly-created ones.
 75-90: <n>
 Below 75: <n>
 
-## Performance (closed trades only — calculated from paper_trades.csv, 2026-07-08)
-⚠️ Still far from conclusive at n=37. Do not over-interpret.
-Win rate: 83.8% (31W / 6L)
-Total realized P&L: $157.72
+## Performance (closed trades only — calculated from paper_trades.csv, 2026-07-10)
+⚠️ Still far from conclusive at n=39. Do not over-interpret.
+Win rate: 84.6% (33W / 6L)
+Total realized P&L: $166.22
 Expectancy: $4.26/trade
 Max drawdown: not yet meaningful at this volume
 

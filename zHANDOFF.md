@@ -456,24 +456,32 @@ Full program registry: zROADMAP.md — Active Research Programs section.
 ---
 
 ## Program A — Current State
-
 **What it is:** Testing whether tradeability_score (combining
 liquidity, spread quality, and volume) predicts better paper-trade
-outcomes on Polymarket.
+outcomes on Polymarket. Also the current implementation of the
+Prediction Markets Domain's producer, per zARCHITECTURE.md.
 
 **Daily cycle:** Runs every day. Collect → Scan → Paper Trade →
 Resolve → Review. See programs/program_a/DAILY_OPERATIONS.md.
 
-**Current dataset:** 70 total trades, 33 closed, 37 open.
+**Domain producer role (added 2026-07-10):** Publishes the
+Prediction Markets Domain's canonical output
+(data/approved_markets/prediction_markets_latest.csv), the
+interface and data contract for downstream Programs, per
+zARCHITECTURE.md. Program B is currently the only downstream
+consumer. See programs/program_a/domain/README.md.
+
+**Current dataset:** 96 total trades, 39 closed, 57 open.
 
 **Key finding to date:** First median-split analysis (n=32, 2026-07-02)
 showed low-score trades outperforming high-score trades, but ~85%
 of the low-score group's P&L came from two high-payout trades
-entered near 50% implied probability. The observed result is
-consistent with entry-price and payout structure acting as a
-confounding factor, but the relationship between tradeability score
-and entry price has not yet been quantified. Hypothesis remains
-unresolved. See research/validated_findings.md.
+entered near 50% implied probability. A follow-up checkpoint
+(n=36, 2026-07-08) found weak correlation between tradeability
+score and entry price (Pearson 0.078, Spearman 0.103), which does
+not support entry_price as the explanation for the original
+median-split result. Primary research question remains open. See
+research/validated_findings.md.
 
 **Next milestone:** 100 closed trades — bucket comparisons become
 meaningful.

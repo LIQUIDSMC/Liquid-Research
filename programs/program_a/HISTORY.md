@@ -173,6 +173,23 @@ Done when:
 - Recurrence of the same market_id across multiple trades is
   detectable from stored data ✅
 
+### Domain Producer Role — Prediction Markets Canonical Output ✅ COMPLETE (2026-07-10)
+Not part of the original Phase 0-9 sequence. Added following the
+Domain/Program architecture defined in zARCHITECTURE.md. Program A
+is the current implementation of the Prediction Markets Domain's
+producer, responsible for publishing a canonical output
+(data/approved_markets/prediction_markets_latest.csv) that serves
+as the interface for downstream Programs — Program B is the first
+consumer. Implemented in
+programs/program_a/domain/publish_canonical_output.py. Verified
+against real scanner/snapshot data with structural and per-row
+validation (missing slug/market_id handling, duplicate detection,
+classification failure logging). Program A's own internal pipeline
+(paper_trader.py, scanner.py) continues reading its own internal
+snapshot/scanner artifacts directly — this is internal
+implementation detail per zARCHITECTURE.md Section 5, not a
+downstream consumer relationship, and required no changes.
+
 ### PHASE 6 — Exit Logic Research 🔲 NOT STARTED
 Goal:
 Study whether top wallets exit early or hold to resolution.
