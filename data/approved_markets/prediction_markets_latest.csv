@@ -1,0 +1,7 @@
+instrument_id,resolution_id,instrument_name,tradeability_score,category,liquidity,volume_24h,spread_pct,spread_label,days_left
+will-there-be-no-change-in-fed-interest-rates-after-the-july-2026-meeting,0x8bf1c1536ecb1c08fe13c6b71e8ab1f58bf3461c4cb79f5f1679f869a06aef86,Will there be no change in Fed interest rates after the July 2026 meeting?,99.4,Macro/Economic,452471.46,259386.34,1.1696,excellent,18.5
+will-count-binface-win-the-clacton-by-election-20260707211451133,0x513bf1706e9cbf61b7cc56f12803b1b72a522bae3c5157e7b356abdf36e2e72d,Will Count Binface win the Clacton by-election?,99.3,Political,312192.05,252015.52,1.3423,excellent,355.5
+will-lebron-james-play-for-the-cleveland-cavaliers-in-2026-27,0xa4402219045f0fe392ea08a92d6f50b89419976d484aba5592d19bb65ea7b5c6,Will LeBron James play for the Cleveland Cavaliers in 2026-27?,99.7,Other/Unknown,56749.77,260202.81,0.6462,excellent,112.6
+will-arthur-fery-be-the-2026-mens-wimbledon-winner,0x12490c32bd76611b695b35946cb4f7c89c1765a500311f83cc572eecfd663c1d,Will Arthur Fery be the 2026 Men’s Wimbledon winner?,50.0,Other/Unknown,56512.52,215479.72,122.5806,extreme,1.5
+mojtaba-khamenei-seen-in-public-by-july-15-155,0x20cb32a3ff2b1932b99fe3343034d4dafe67cfce196eab2d771047f3d6e33be5,Mojtaba Khamenei seen in public by July 15?,98.1,Other/Unknown,59352.4,167077.08,3.7736,acceptable,4.5
+strait-of-hormuz-traffic-returns-to-normal-by-july-31,0xb8e6d129a06d0ccb21d7b32eb529ea455eddba3cf29bfa097112202cbdf5bf21,Strait of Hormuz traffic returns to normal by July 31?,88.9,Geopolitical,883000.73,149009.43,22.2222,wide,20.5
