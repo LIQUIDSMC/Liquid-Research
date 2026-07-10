@@ -144,6 +144,21 @@ at the time it was generated. Downstream Programs should assume every
 instrument in this file is eligible for analysis and should not
 perform additional market-selection filtering.
 
+**Publication identity:** Every canonical output carries a
+`publication_id` — a unique identifier for the publication cycle
+that produced it. This field is part of the universal publication
+contract, not a Domain-specific extension: every Domain Publisher
+is expected to generate one, since publication identity is a
+property of the publishing process itself, not of any particular
+Domain's internal data. `publication_id` allows downstream Programs
+to correctly group or pair observations that originated from the
+same publication cycle, without depending on filenames or
+timestamps embedded in unrelated internal artifacts. This
+architecture does not prescribe how a `publication_id` is generated
+— only that it uniquely identifies one publication cycle. See the
+Prediction Markets implementation below for today's concrete
+approach.
+
 ### Interface Stability
 
 Consumers should depend only on documented canonical fields and
@@ -167,17 +182,22 @@ These are architectural responsibilities, not implementation
 details.
 
 ### Prediction Markets Domain — Current Canonical Output Implementation
-
 **Producer:** Prediction Markets Domain (currently implemented by
 Program A)
 **File (current implementation):** `data/approved_markets/prediction_markets_latest.csv`
+**`publication_id` generation (current implementation):** the
+Prediction Markets Publisher generates this using the existing
+`YYYYMMDD_HHMMSS` convention already used throughout the repository
+(matching `scanner_run_*.csv` and `snapshot_*.csv` naming). This is
+an implementation choice, not an architectural requirement — a
+future Domain, or a future revision of this Domain's implementation,
+may generate `publication_id` differently as long as it remains
+unique per publication cycle.
 
 **Schema — fully specified, this is what ships:**
-
 | Field | Description |
 |---|---|
-| `instrument_id` | Maps to `slug`. Primary key for live-data lookups. |
-| `resolution_id` | Maps to `market_id` / conditionId. Used for resolution and historical tracking. |
+| `publication_id` | Unique identifier for the publication cycle that produced this canonical output. || `resolution_id` | Maps to `market_id` / conditionId. Used for resolution and historical tracking. |
 | `instrument_name` | Maps to `question`. Human-readable label. |
 | `tradeability_score` | Prediction Markets' scanner-computed evaluation score. Not assumed comparable across future Domains. |
 | `category` | Prediction Markets' classifier output. |
@@ -310,9 +330,28 @@ publication cycle.
 eliminates duplicate market-selection logic, and allows internal
 implementation to evolve independently of downstream Programs.
 **Status:** Accepted (v1)
-
 ---
-
+### ADR-006
+**Decision:** Every canonical output includes a `publication_id`, a
+unique identifier for the publication cycle that produced it. This
+field belongs to the universal publication contract, not to any
+individual Domain's schema — publication identity is a property of
+the publishing process itself.
+**Reason:** A canonical output is published to a fixed location and
+overwritten on each publication cycle, per the architecture's own
+"single publication cycle" definition (ADR-005). This design
+intentionally keeps consumers pointed at one stable location rather
+than requiring them to track timestamped files — but it also means
+a canonical output, on its own, carries no way to distinguish one
+publication cycle from the next. Without an explicit identity, the
+question "which cycle produced this data" cannot be answered from
+the canonical output alone. `publication_id` closes this gap as a
+first-class part of the contract, independent of any particular
+consumer's needs. This gap was surfaced during Program B's
+implementation, but the decision reflects a structural property of
+canonical outputs generally, not a Program B-specific requirement.
+**Status:** Accepted (v1)
+---
 ## Version History
 
 **v1.0 — 2026-07-09** — Initial architecture specification. Domain/
