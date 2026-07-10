@@ -28,11 +28,14 @@ The publisher validates its inputs before publication and reports
 structural and per-row issues separately so the canonical output
 remains transparent and auditable.
 
+See zARCHITECTURE.md for the canonical output contract and publication architecture.
+
 No wallet. No private key. No execution. Read-only.
 """
 
 import sys
 import os
+from datetime import datetime
 import pandas as pd
 from rich.console import Console
 
@@ -46,7 +49,7 @@ MARKETS_DIR = "data/markets"
 OUTPUT_PATH = "data/approved_markets/prediction_markets_latest.csv"
 
 CANONICAL_COLUMNS = [
-    "instrument_id", "resolution_id", "instrument_name",
+    "publication_id", "instrument_id", "resolution_id", "instrument_name",
     "tradeability_score", "category", "liquidity", "volume_24h",
     "spread_pct", "spread_label", "days_left",
 ]
@@ -57,6 +60,20 @@ REQUIRED_SCANNER_COLUMNS = [
 ]
 
 REQUIRED_SNAPSHOT_COLUMNS = ["market_id", "slug", "days_left"]
+
+
+def generate_publication_id() -> str:
+    """
+    Generate a unique identifier for one publication cycle.
+
+    Isolated in its own function so the identifier strategy can
+    change (UUID, hash, monotonic counter, etc.) without touching
+    the publishing logic itself.
+
+    Returns:
+        str: the publication_id for this publication cycle.
+    """
+    return datetime.now().strftime("%Y%m%d_%H%M%S")
 
 
 def _find_latest_file(directory: str, pattern: str) -> str:
@@ -188,6 +205,7 @@ def publish_prediction_markets_canonical_output() -> dict:
 
     Returns:
         dict: {
+            "publication_id": str,
             "approved_by_scanner": int,
             "matched_to_snapshot": int,
             "duplicate_market_ids": int,
@@ -198,6 +216,8 @@ def publish_prediction_markets_canonical_output() -> dict:
             "output_path": str,
         }
     """
+    publication_id = generate_publication_id()
+
     scanner_df = _load_and_validate_scanner()
     snapshot_df = _load_and_validate_snapshot()
 
@@ -230,6 +250,7 @@ def publish_prediction_markets_canonical_output() -> dict:
         category = _compute_category(row.get("question"), classification_failures)
 
         published_rows.append({
+            "publication_id": publication_id,
             "instrument_id": slug,
             "resolution_id": market_id,
             "instrument_name": row.get("question"),
@@ -251,6 +272,7 @@ def publish_prediction_markets_canonical_output() -> dict:
     skipped_count = approved_count - len(published_rows)
 
     summary = {
+        "publication_id": publication_id,
         "approved_by_scanner": approved_count,
         "matched_to_snapshot": matched_count,
         "duplicate_market_ids": duplicate_market_ids,
@@ -262,6 +284,7 @@ def publish_prediction_markets_canonical_output() -> dict:
     }
 
     console.print(f"\n[bold cyan]Prediction Markets Domain Published[/bold cyan]\n")
+    console.print(f"Publication ID: {publication_id}")
     console.print(f"Approved:  {summary['approved_by_scanner']}")
     console.print(f"Published: [green]{summary['published']}[/green]")
     console.print(f"Skipped:   {summary['skipped']}")
