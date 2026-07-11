@@ -268,6 +268,13 @@ once a second Domain actually exists.
   external research (bookmarked material on crypto, market
   microstructure, quantitative trading, and system design) not yet
   incorporated into this document.
+- Crypto is the first candidate second Domain. Its vision, research
+  framework, and open questions are captured at domains/crypto/
+  (see domains/crypto/README.md), but it remains entirely
+  unimplemented — Phase 0 (documentation only) per
+  domains/crypto/zROADMAP.md. Nothing about this Domain has been
+  built, and none of the schema/architecture questions above have
+  been answered by its existence.
 
 **Revision trigger:** Sections 3-5 (Domain/Program specifics, the
 Prediction Markets schema) get revisited when a second Domain is
