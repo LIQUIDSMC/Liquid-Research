@@ -418,6 +418,15 @@ and Program B. Any future program added to Liquid Research
 automatically becomes part of the daily cycle unless explicitly
 excluded — no separate reminder needed to include it.
 
+As of 2026-07-10, the daily cycle also includes publishing the
+Prediction Markets Domain's canonical output (Step 2.5 in
+programs/program_a/DAILY_OPERATIONS.md) between the scanner and
+Program B's diagnostics. This step was missing from the daily
+cycle for one full day (2026-07-10 to 2026-07-11) before being
+caught and fixed — Program B was silently analyzing a stale
+canonical output during that window. Never skip this step when
+running the daily cycle.
+
 Running the daily cycle does NOT imply any program needs code
 changes. The correct sequence is: (1) run each program's normal
 daily workflow, (2) verify everything completed correctly, (3)

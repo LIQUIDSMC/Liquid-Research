@@ -21,6 +21,24 @@ data/markets/snapshot_<timestamp>.csv.
 Expected: scanned/killed/passed counts, top-10 table. New file in
 data/scanner/scanner_run_<timestamp>.csv.
 
+## Step 2.5 — Publish Prediction Markets Domain Canonical Output
+    python3 -c "
+import sys
+sys.path.insert(0, '.')
+from programs.program_a.domain.publish_canonical_output import publish_prediction_markets_canonical_output
+publish_prediction_markets_canonical_output()
+"
+Expected: new publication_id, approved/published/skipped counts,
+data/approved_markets/prediction_markets_latest.csv updated.
+REQUIRED before running Program B — Program B reads this file
+exclusively (see programs/program_a/domain/README.md) and will
+silently analyze a stale market universe if this step is skipped.
+This step was missing from the daily cycle from 2026-07-10 (when
+the publisher was built) through 2026-07-11, causing Program B to
+run against a stale, day-old canonical output during that window —
+see research/validated_findings.md or git history if this needs
+investigating further.
+
 ## Step 3 — Create Paper Trades (All Passing Markets)
     python3 simulator/paper_trader.py
 Expected: new trades created vs. skipped counts. Every passing
