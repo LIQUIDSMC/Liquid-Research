@@ -164,17 +164,31 @@ scope expansion.
 ---
 
 ### Program C — Calibration / Entry Price Analysis
-**Status:** QUEUED — not yet started
+**Status:** QUEUED — not yet formally started as a Program.
 **Hypothesis:** Implied probability at entry independently predicts
 paper-trade outcomes. Polymarket may systematically misprice markets
 in certain probability ranges, representing a directly actionable edge.
 **Motivation:** Emerged from Program A's 2026-07-02 median-split
 analysis — low-score trades appeared to outperform high-score trades,
 consistent with entry-price and payout structure acting as a
-confounding factor. The relationship between tradeability score and
-entry price has not yet been quantified.
-**Infrastructure required:** None. Uses existing paper_trades.csv.
-**Blocking conditions:** None. Testable once Program B is underway.
+confounding factor.
+**Preliminary evidence (not yet Program C itself):** Program A's own
+exploratory follow-up, programs/program_a/analysis/entry_price_analysis.py,
+produced a first checkpoint at n=36 closed trades (2026-07-08):
+weak correlation between tradeability_score and entry_price
+(Pearson 0.078, Spearman 0.103), which does not support entry_price
+as the explanation for the original median-split result. See
+research/validated_findings.md. This is exploratory work performed
+by Program A investigating its own result — not a formally launched
+Program C, which per zARCHITECTURE.md's Domain/Program model would
+require its own sustained infrastructure and roadmap, the same way
+Program B was promoted from vault idea to active Program.
+**Infrastructure required:** None yet. Uses existing paper_trades.csv.
+**Blocking conditions:** None technical. Re-evaluation planned at
+~100 closed trades (currently 39). At that point, an evidence-based
+decision should be made: continue this narrow line of analysis
+within Program A, or formally launch Program C with the broader
+Entry/Execution Research scope zARCHITECTURE.md anticipates.
 **Experiment design:** research/future_experiments.md
 
 ---
