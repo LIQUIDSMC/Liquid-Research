@@ -11,7 +11,6 @@ programming pattern is used today. If today's implementation
 changes, this section should not need to change.
 
 ### Canonical Asset
-
 The validated event history, losslessly normalized into the
 canonical event schema, is the canonical asset of this platform —
 independent of storage format. It is the only artifact that cannot be recreated once
@@ -21,6 +20,19 @@ reproducible consumer of this one asset. Today's implementation
 happens to use Parquet for this storage; the canonical asset is the
 validated event history itself, not the file format it currently
 lives in.
+
+### Canonical Asset — Precise Definition
+
+The canonical asset is the minimal, lossless representation of
+every observable fact reported by the exchange that cannot be
+independently re-derived once the moment has passed. This is the
+information-theoretic basis for every other principle in this
+section: a field, structure, or value is required in the canonical
+schema exactly when its omission would make some real, transmitted
+fact permanently unrecoverable — never because of exchange-specific
+naming or transport convention alone. This definition governs
+schema design, precision decisions, and adapter responsibilities
+uniformly, regardless of which exchange is being adapted.
 
 ### Architectural Invariant
 
