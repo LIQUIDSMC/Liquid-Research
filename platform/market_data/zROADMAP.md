@@ -52,7 +52,6 @@ the validated, normalized event history rather than any
 reconstructed or derived representation of it.
 
 ### Numeric Precision
-
 Canonical numeric values must preserve the exact mathematical
 decimal value reported by the exchange, without loss of
 information. This is an architectural commitment to exactness, not
@@ -61,6 +60,14 @@ correctness is judged against the exact decimal quantity the
 exchange transmitted, never against the limitations or convenience
 of whatever tool is used to store it. (See Part 2 for today's
 implementation of this rule.)
+
+### Canonical Unit of Observation
+The canonical unit of observation is the smallest indivisible
+observable fact reported by a source system. Transport messages may
+contain one or many such facts. Canonical normalization may
+separate them into individual records provided that sufficient
+context is preserved to trace each record back to its originating
+transport message without losing information.
 
 ### Derived Data Is Disposable
 
