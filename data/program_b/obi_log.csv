@@ -63,3 +63,23 @@ timestamp,publication_id,slug,question,midpoint,micro_price,obi,v_bid,v_ask,bid_
 2026-07-11T15:58:37Z,20260710_123833,will-lebron-james-play-for-the-cleveland-cavaliers-in-2026-27,Will LeBron James play for the Cleveland Cavaliers in 2026-27?,0.4895,0.48969,0.3803,1317114.51,591327.99,81,70,ok
 2026-07-11T15:58:41Z,20260710_123833,mojtaba-khamenei-seen-in-public-by-july-15-155,Mojtaba Khamenei seen in public by July 15?,0.0295,0.028516,-0.6559,263078.3,1265880.73,22,137,ok
 2026-07-11T15:58:43Z,20260710_123833,strait-of-hormuz-traffic-returns-to-normal-by-july-31,Strait of Hormuz traffic returns to normal by July 31?,0.095,0.095108,0.0216,1028002.8,984466.95,9,82,ok
+2026-07-12T19:04:29Z,20260712_120341,will-count-binface-win-the-clacton-by-election-20260707211451133,Will Count Binface win the Clacton by-election?,0.0565,0.056326,-0.3481,358277.57,740924.69,42,107,ok
+2026-07-12T19:04:29Z,20260712_120341,will-there-be-no-change-in-fed-interest-rates-after-the-july-2026-meeting,Will there be no change in Fed interest rates after the July 2026 meeting?,0.795,0.794861,-0.0278,2830979.74,2993078.5,47,20,ok
+2026-07-12T19:04:31Z,20260712_120341,fed-rate-hike-in-2026,Fed rate hike in 2026?,0.605,0.608436,0.6871,1333253.59,247272.95,47,29,ok
+2026-07-12T19:04:32Z,20260712_120341,will-wti-reach-80-in-july-2026-791,Will WTI Crude Oil (WTI) hit (HIGH) $80 in July?,0.46,0.46224,0.224,138077.07,87530.48,40,36,ok
+2026-07-12T19:04:33Z,20260712_120341,will-the-fed-increase-interest-rates-by-25-bps-after-the-july-2026-meeting,Will the Fed increase interest rates by 25 bps after the July 2026 meeting?,0.198,0.197633,-0.3666,10545773.1,22752484.56,144,111,ok
+2026-07-12T19:04:34Z,20260712_120341,will-china-invade-taiwan-before-2027,Will China invade Taiwan by end of 2026?,0.0385,0.038893,0.7863,15326969.33,1833461.11,38,184,ok
+2026-07-12T19:04:35Z,20260712_120341,will-wti-reach-90-in-july-2026-334,Will WTI Crude Oil (WTI) hit (HIGH) $90 in July?,0.1275,0.127906,0.271,308662.59,177051.16,47,52,ok
+2026-07-12T19:04:36Z,20260712_120341,strait-of-hormuz-traffic-returns-to-normal-by-july-31,Strait of Hormuz traffic returns to normal by July 31?,0.045,0.044353,-0.1294,1071713.02,1390216.83,4,87,ok
+2026-07-12T19:04:37Z,20260712_120341,iran-full-airspace-closure-by-july-15-20260625195254149,Iran full airspace closure by July 15?,0.0905,0.091445,0.3782,360595.81,162702.53,55,115,ok
+2026-07-12T19:04:38Z,20260712_120341,will-the-us-invade-iran-before-2027,Will the U.S. invade Iran before 2027?,0.165,0.169036,0.8072,4716455.79,503303.41,16,77,ok
+2026-07-12T19:04:39Z,20260712_120341,will-the-us-announce-a-blockade-on-iran-by-july-31-20260622191116912,Will the US announce a blockade on Iran by July 31?,0.365,0.366374,0.2748,403399.94,229475.74,35,56,ok
+2026-07-12T19:04:40Z,20260712_120341,strait-of-hormuz-traffic-returns-to-normal-by-august-31-20260702154212320,Strait of Hormuz traffic returns to normal by August 31?,0.165,0.16873,0.746,2278676.38,331481.35,16,58,ok
+2026-07-12T19:04:41Z,20260712_120341,strait-of-hormuz-traffic-returns-to-normal-by-december-31,Strait of Hormuz traffic returns to normal by December 31?,0.625,0.628884,0.7768,4256878.38,534815.1,52,37,ok
+2026-07-12T19:04:42Z,20260712_120341,us-iran-final-nuclear-deal-by-august-18-2026-20260621201255153,"US-Iran Final Nuclear Deal by August 18, 2026?",0.065,0.064522,-0.0956,537813.76,651507.65,6,54,ok
+2026-07-12T19:04:43Z,20260712_120341,mojtaba-khamenei-seen-in-public-by-july-15-155,Mojtaba Khamenei seen in public by July 15?,0.1105,0.111068,0.0598,241382.34,214136.66,52,96,ok
+2026-07-12T19:04:44Z,20260712_120341,will-russia-capture-kostyantynivka-by-december-31-2026-936-942-271-276-578-687-312-238,"Will Russia capture Kostyantynivka by December 31, 2026?",0.942,0.950824,0.6303,815355.6,184897.4,112,30,ok
+2026-07-12T19:04:45Z,20260712_120341,will-iran-announce-withdrawal-from-mou-negotiations-by-july-17,Will Iran announce withdrawal from MOU negotiations by July 17?,0.0745,0.073322,-0.471,121559.38,338057.32,45,63,ok
+2026-07-12T19:04:46Z,20260712_120341,will-iran-announce-withdrawal-from-mou-negotiations-by-july-31-20260622191733846-586-829-787,Will Iran announce withdrawal from MOU negotiations by July 31?,0.155,0.155604,0.1208,328128.39,257371.59,15,60,ok
+2026-07-12T19:04:47Z,20260712_120341,israel-closes-its-airspace-by-july-15-182,Israel closes its airspace by July 15?,0.0435,0.043475,-0.0168,384913.84,398058.44,40,113,ok
+2026-07-12T19:04:48Z,20260712_120341,elon-musk-of-tweets-july-7-july-14-160-179,"Will Elon Musk post 160-179 tweets from July 7 to July 14, 2026?",0.027,0.027131,0.0656,130975.51,114854.76,21,97,ok

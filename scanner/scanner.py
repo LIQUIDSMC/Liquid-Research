@@ -194,28 +194,26 @@ def print_killed_table(killed_rows: list, max_rows: int = 15) -> None:
         console.print(f"[dim]...and {len(killed_rows) - max_rows} more killed markets not shown[/dim]")
 
 
-def print_top_10(passed_rows: list) -> None:
+def print_ranked_markets(passed_rows: list) -> None:
+    """
+    Print every passed market, ranked by tradeability score.
+    """
     if not passed_rows:
         console.print("[yellow]No markets passed. Nothing to rank.[/yellow]")
         return
-
     sorted_rows = sorted(passed_rows, key=lambda r: r["tradeability_score"], reverse=True)
-    top_10 = sorted_rows[:10]
-
-    table = Table(title="Top 10 by Tradeability Score", show_lines=True)
+    table = Table(title=f"All {len(sorted_rows)} Passed Markets by Tradeability Score", show_lines=True)
     table.add_column("#", justify="right")
     table.add_column("Market", max_width=40)
     table.add_column("Score", justify="right")
     table.add_column("Spread Label")
     table.add_column("Explanation", max_width=50)
-
-    for i, row in enumerate(top_10, 1):
+    for i, row in enumerate(sorted_rows, 1):
         title = str(row["question"])[:38] + ("..." if len(str(row["question"])) > 38 else "")
         table.add_row(
             str(i), title, str(row["tradeability_score"]),
             str(row["spread_label"]), str(row["explanation"]),
         )
-
     console.print(table)
 
 
@@ -248,8 +246,8 @@ def main() -> None:
 
     print_killed_table(killed_rows)
     console.print()
-    print_top_10(passed_rows)
-
+    print_ranked_markets(passed_rows)
+    
     # Save full run to CSV
     os.makedirs(SCANNER_OUTPUT_DIR, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M")
