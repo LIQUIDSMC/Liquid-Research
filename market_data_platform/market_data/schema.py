@@ -53,8 +53,9 @@ class DepthLevelRecord:
     Fields:
         timestamp_received (float): local receipt time. Not
             reported by Binance — assigned locally.
-        event_time (float): Binance's "E" field.
-        transaction_time (Optional[float]): Binance's "T" field,
+            event_time (int): Binance's "E" field, milliseconds.
+            transaction_time (Optional[int]): Binance's "T" field,
+            milliseconds,
             where provided.
 
         --- Transport/traceability facts (not market facts) ---
@@ -78,8 +79,8 @@ class DepthLevelRecord:
             A quantity of zero means this level has been removed.
     """
     timestamp_received: float
-    event_time: float
-    transaction_time: Optional[float]
+    event_time: int
+    transaction_time: Optional[int]
     first_update_id: int
     final_update_id: int
     previous_final_update_id: Optional[int]
@@ -107,8 +108,8 @@ class TradeRecord:
 
     Fields:
         timestamp_received (float): local receipt time.
-        event_time (float): Binance's "E" field.
-        trade_time (Optional[float]): Binance's "T" field.
+        event_time (int): Binance's "E" field, milliseconds.
+        trade_time (Optional[int]): Binance's "T" field, milliseconds.
         trade_id (int): Binance's "t" field — exchange-assigned identifier for this trade. Preserved because it is part of the observable event and cannot be re-derived once lost.
         price (Decimal): trade price. Market fact.
         quantity (Decimal): trade quantity. Market fact.
@@ -117,8 +118,8 @@ class TradeRecord:
             preserved fields.
     """
     timestamp_received: float
-    event_time: float
-    trade_time: Optional[float]
+    event_time: int
+    trade_time: Optional[int]
     trade_id: int
     price: Decimal
     quantity: Decimal
@@ -137,8 +138,8 @@ class TradeRecord:
 if __name__ == "__main__":
     depth_record = DepthLevelRecord(
         timestamp_received=1720000000.0,
-        event_time=1720000000123.0,
-        transaction_time=1720000000120.0,
+        event_time=1720000000123,
+        transaction_time=1720000000120,
         first_update_id=157,
         final_update_id=160,
         previous_final_update_id=149,
@@ -150,8 +151,8 @@ if __name__ == "__main__":
 
     trade_record = TradeRecord(
         timestamp_received=1720000000.0,
-        event_time=1773110023891.0,
-        trade_time=1773110023877.0,
+        event_time=1773110023891,
+        trade_time=1773110023877,
         trade_id=19911650,
         price=Decimal("8.40000000"),
         quantity=Decimal("0.97915700"),
@@ -162,7 +163,7 @@ if __name__ == "__main__":
     try:
         DepthLevelRecord(
             timestamp_received=1720000000.0,
-            event_time=1720000000123.0,
+            event_time=1720000000123,
             transaction_time=None,
             first_update_id=157,
             final_update_id=160,
@@ -178,7 +179,7 @@ if __name__ == "__main__":
     try:
         TradeRecord(
             timestamp_received=1720000000.0,
-            event_time=1773110023891.0,
+            event_time=1773110023891,
             trade_time=None,
             trade_id=1,
             price=1.23,
