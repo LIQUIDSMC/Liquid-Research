@@ -44,13 +44,23 @@ shouldn't exist in that form, or the canonical event history is
 missing information that should have been captured.
 
 ### Governing Design Principle
-
 Favor irreversible data collection over irreversible data
 transformation. The raw event history cannot be recollected once a
 moment passes uncaptured. Everything built from it can always be
 rebuilt. This single principle explains why the canonical asset is
 the validated, normalized event history rather than any
 reconstructed or derived representation of it.
+
+### Numeric Precision
+
+Canonical numeric values must preserve the exact mathematical
+decimal value reported by the exchange, without loss of
+information. This is an architectural commitment to exactness, not
+a commitment to any particular language or data type — a value's
+correctness is judged against the exact decimal quantity the
+exchange transmitted, never against the limitations or convenience
+of whatever tool is used to store it. (See Part 2 for today's
+implementation of this rule.)
 
 ### Derived Data Is Disposable
 
@@ -99,12 +109,16 @@ adapter.
 
 **Success criteria — Functional:**
 - Live WebSocket connection to the exchange, maintained correctly.
-- Every event (add/modify/cancel/trade) is validated before
-  storage; malformed events are rejected and logged separately,
-  never silently dropped.
-- Events are normalized into the canonical event schema (today's
-  implementation: timestamp_received, exchange_timestamp,
-  sequence_number, event_type, side, price, size) before storage.
+- Every event is validated before storage; malformed events are
+  rejected and logged separately, never silently dropped.
+- Events are normalized into the canonical event schema (schema
+  under active re-derivation as of this writing — see "Canonical
+  Asset — Precise Definition" and "Numeric Precision" in Part 1;
+  the field list here is intentionally not yet finalized).
+- Numeric values (price, quantity) are stored using today's
+  implementation of the Numeric Precision principle: Python
+  Decimal, constructed directly from the exchange's transmitted
+  string, never via a float intermediate.
 - Raw events are written to immutable, partitioned storage (today's
   implementation: date-partitioned Parquet) and never modified
   after being written.
