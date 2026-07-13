@@ -48,6 +48,70 @@ LEVEL2_SUBSCRIBE_MESSAGE = {
 SSL_CONTEXT = ssl.create_default_context(cafile=certifi.where())
 
 
+class SequenceGapTracker:
+    """
+    Tracks sequence_num continuity for one connection session's
+    lifetime only. Confirmed by live evidence, this session:
+    sequence_num is a single counter shared across every channel,
+    product, and control message on one WebSocket connection — not
+    scoped per channel or per product.
+
+    Sequence continuity is valid only within one observed connection
+    session. A new tracker is created for every connection. The
+    first sequence observed in a new connection is accepted as the
+    baseline, regardless of its value — no continuity is inferred
+    across reconnects, since one observed reconnect restarting at 0
+    does not establish a guarantee that every future connection will
+    behave identically.
+
+    A new SequenceGapTracker instance must be created for every new
+    _connect_and_stream() call — never reused across reconnects.
+    """
+
+    def __init__(self):
+        self.previous_sequence = None
+
+    def check(self, sequence_num) -> None:
+        """
+        Check one message's sequence_num against the previously
+        seen value for this session, and log the result. Never
+        raises, never crashes the collector — a malformed or
+        unexpected sequence value is logged, not fatal.
+
+        Receives:
+            sequence_num: the message's raw "sequence_num" value,
+            of unknown type until validated here.
+
+        Returns:
+            None. All results are logged directly to console.
+        """
+        if type(sequence_num) is not int:
+            print(f"GAP-TRACKER: malformed sequence_num (not an int): {sequence_num!r}")
+            return
+
+        if self.previous_sequence is None:
+            self.previous_sequence = sequence_num
+            return
+
+        expected = self.previous_sequence + 1
+
+        if sequence_num == expected:
+            self.previous_sequence = sequence_num
+        elif sequence_num > expected:
+            missing_count = sequence_num - expected
+            print(
+                f"GAP DETECTED: previous={self.previous_sequence}, current={sequence_num}, "
+                f"first_missing={expected}, last_missing={sequence_num - 1}, "
+                f"missing_count={missing_count}"
+            )
+            self.previous_sequence = sequence_num
+        else:
+            print(
+                f"DUPLICATE/OUT-OF-ORDER: previous={self.previous_sequence}, "
+                f"current={sequence_num} (not advancing tracker)"
+            )
+
+
 async def _connect_and_stream() -> None:
     """
     Perform a single connection attempt: connect, subscribe, and
@@ -70,11 +134,15 @@ async def _connect_and_stream() -> None:
     ) as websocket:
         await websocket.send(json.dumps(SUBSCRIBE_MESSAGE))
         await websocket.send(json.dumps(LEVEL2_SUBSCRIBE_MESSAGE))
+        gap_tracker = SequenceGapTracker()
         print("Connected and subscribed. Printing parsed records (Ctrl+C to stop):\n")
         async for raw_message in websocket:
             timestamp_received = int(time.time() * 1000)
             message = json.loads(raw_message)
             channel = message.get("channel")
+
+            gap_tracker.check(message.get("sequence_num"))
+
             if channel == "market_trades":
                 records = parse_market_trades_message(message, timestamp_received)
                 for record in records:
