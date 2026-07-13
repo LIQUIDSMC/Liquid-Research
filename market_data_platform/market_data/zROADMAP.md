@@ -102,10 +102,27 @@ needing to revisit Part 1.
 normalize, store immutably, detect gaps, survive disconnects — for
 one exchange and a small number of liquid pairs.
 
-**Current implementation choice:** Binance, BTC-USDT and ETH-USDT.
-Chosen for deepest liquidity and most third-party precedent for
-this kind of collector — not an architectural requirement, subject
-to change if evidence says otherwise.
+**Current Phase 0 Reference Implementation:** Coinbase Exchange,
+BTC-USD and ETH-USD.
+
+**Rationale:** Binance.com is not a viable Phase 0 target from the
+current U.S. environment due to legal/access restrictions (confirmed
+via a live connection attempt returning HTTP 451). Coinbase was
+selected as the initial reference implementation because it provides
+a publicly accessible, well-documented market data API suitable for
+validating the collector, adapter, canonical schema, and storage
+pipeline. The selection followed an evidence-based evaluation of the
+legally accessible exchange candidates available during Phase 0
+planning.
+
+**Architecture Note:** This project is intentionally exchange-
+agnostic. Coinbase is the first reference implementation, not the
+permanent data source. Additional exchanges (e.g., Kraken and
+others) are planned as future adapters so the same canonical schema
+can support cross-exchange market microstructure research and
+comparative analysis. The implementation is not architecturally
+dependent on Coinbase and may change if future evidence supports a
+different approach.
 
 **Why this phase exists:** Every future exchange adapter, Domain,
 and research question depends on this foundation being solid.
