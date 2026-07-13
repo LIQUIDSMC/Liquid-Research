@@ -59,10 +59,20 @@ class DepthLevelRecord:
             where provided.
 
         --- Transport/traceability facts (not market facts) ---
-        first_update_id (int): Binance's "U" — first update ID in
-            the originating message.
-        final_update_id (int): Binance's "u" — final update ID in
-            the originating message.
+        first_update_id (Optional[int]): Binance's "U" — first
+            update ID in the originating message. Optional because
+            not every supported venue has an equivalent concept
+            (e.g. Coinbase's level2 protocol has no per-message
+            update-ID range at all). Made Optional rather than
+            removed as the conservative, lowest-risk choice — see
+            design discussion, this session: the schema cannot
+            require a field that would force an adapter to
+            fabricate data a venue never transmitted. This is not
+            claimed to be the final correct abstraction; revisit
+            if a third venue's evidence suggests a better shape.
+        final_update_id (Optional[int]): Binance's "u" — final
+            update ID in the originating message. Same optionality
+            rationale as first_update_id above.
         previous_final_update_id (Optional[int]): Binance's "pu" —
             the previous message's final update ID, where provided.
             Canonical because losing it makes gap detection and
@@ -81,8 +91,8 @@ class DepthLevelRecord:
     timestamp_received: float
     event_time: int
     transaction_time: Optional[int]
-    first_update_id: int
-    final_update_id: int
+    first_update_id: Optional[int]
+    final_update_id: Optional[int]
     previous_final_update_id: Optional[int]
     side: str
     price: Decimal
