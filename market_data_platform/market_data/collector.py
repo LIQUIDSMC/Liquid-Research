@@ -30,7 +30,7 @@ COINBASE_WS_URL = "wss://advanced-trade-ws.coinbase.com"
 
 SUBSCRIBE_MESSAGE = {
     "type": "subscribe",
-    "product_ids": ["BTC-USD"],
+    "product_ids": ["BTC-USD", "ETH-USD"],
     "channel": "market_trades",
 }
 
