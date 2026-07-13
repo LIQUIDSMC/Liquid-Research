@@ -12,3 +12,4 @@ requests==2.34.2
 rich==15.0.0
 six==1.17.0
 urllib3==2.7.0
+websockets==16.1
