@@ -103,6 +103,40 @@ def parse_market_trades_message(message: dict, timestamp_received: int) -> List[
     return records
 
 
+def _map_coinbase_side(coinbase_side: str) -> str:
+    """
+    Explicitly map Coinbase's level2 side values to the canonical
+    schema's "bid"/"ask" values. Coinbase uses "offer" for the ask
+    side, confirmed against live level2 traffic (Coinbase's own
+    documentation example only showed "bid", the ask-side value was
+    unverified until live data revealed it).
+
+    Any value other than the two confirmed Coinbase terms raises
+    immediately, at the adapter boundary — surfacing Coinbase
+    protocol drift here, with a clear source-specific error,
+    rather than letting an unrecognized value pass through and fail
+    later inside DepthLevelRecord's own generic validation.
+
+    Receives:
+        coinbase_side (str): Coinbase's raw side value.
+
+    Returns:
+        str: "bid" or "ask".
+
+    Raises:
+        ValueError: if coinbase_side is not "bid" or "offer".
+    """
+    if coinbase_side == "bid":
+        return "bid"
+    if coinbase_side == "offer":
+        return "ask"
+    raise ValueError(
+        f"Unrecognized Coinbase level2 side value: '{coinbase_side}'. "
+        f"Expected 'bid' or 'offer'. This may indicate a Coinbase "
+        f"protocol change requiring adapter review."
+    )
+
+
 def parse_level2_message(message: dict, timestamp_received: int) -> List[DepthLevelRecord]:
     """
     Parse one Coinbase level2 message into a list of
@@ -161,7 +195,7 @@ def parse_level2_message(message: dict, timestamp_received: int) -> List[DepthLe
                 first_update_id=None,
                 final_update_id=None,
                 previous_final_update_id=None,
-                side=update["side"],
+                side=_map_coinbase_side(update["side"]),
                 price=Decimal(update["price_level"]),
                 quantity=Decimal(update["new_quantity"]),
             ))
@@ -248,6 +282,12 @@ if __name__ == "__main__":
                         "price_level": "21921.3",
                         "new_quantity": "0.02",
                     },
+                    {
+                        "side": "offer",
+                        "event_time": "1970-01-01T00:00:00Z",
+                        "price_level": "21922.5",
+                        "new_quantity": "0.015",
+                    },
                 ],
             }
         ],
@@ -264,6 +304,7 @@ if __name__ == "__main__":
     assert depth_records[0].first_update_id is None, "first_update_id should be None for Coinbase"
     assert depth_records[0].final_update_id is None, "final_update_id should be None for Coinbase"
     assert depth_records[0].previous_final_update_id is None, "previous_final_update_id should be None for Coinbase"
+    assert depth_records[2].side == "ask", "Coinbase 'offer' should map to canonical 'ask'"
     print("\nAll depth precision and None-field checks passed.")
 
     try:
@@ -271,3 +312,9 @@ if __name__ == "__main__":
         print("ERROR: wrong channel was not rejected")
     except ValueError as e:
         print("Correctly rejected wrong channel:", e)
+
+    try:
+        _map_coinbase_side("unknown_side")
+        print("ERROR: unrecognized side was not rejected")
+    except ValueError as e:
+        print("Correctly rejected unrecognized side:", e)

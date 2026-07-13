@@ -24,7 +24,7 @@ import time
 import certifi
 from websockets.asyncio.client import connect
 
-from market_data_platform.market_data.adapters.coinbase import parse_market_trades_message
+from market_data_platform.market_data.adapters.coinbase import parse_market_trades_message, parse_level2_message
 
 COINBASE_WS_URL = "wss://advanced-trade-ws.coinbase.com"
 
@@ -32,6 +32,12 @@ SUBSCRIBE_MESSAGE = {
     "type": "subscribe",
     "product_ids": ["BTC-USD", "ETH-USD"],
     "channel": "market_trades",
+}
+
+LEVEL2_SUBSCRIBE_MESSAGE = {
+    "type": "subscribe",
+    "product_ids": ["BTC-USD", "ETH-USD"],
+    "channel": "level2",
 }
 
 # Explicitly use certifi's certificate bundle. Python's default SSL
@@ -55,17 +61,26 @@ async def run() -> None:
     observation, never derived from the exchange's own timestamp.
     """
     print(f"Connecting to {COINBASE_WS_URL} ...")
-    async with connect(COINBASE_WS_URL, ssl=SSL_CONTEXT) as websocket:
+    async with connect(
+        COINBASE_WS_URL,
+        ssl=SSL_CONTEXT,
+        max_size=8 * 1024 * 1024,
+    ) as websocket:
         await websocket.send(json.dumps(SUBSCRIBE_MESSAGE))
+        await websocket.send(json.dumps(LEVEL2_SUBSCRIBE_MESSAGE))
         print("Connected and subscribed. Printing parsed records (Ctrl+C to stop):\n")
         async for raw_message in websocket:
             timestamp_received = int(time.time() * 1000)
             message = json.loads(raw_message)
-            if message.get("channel") != "market_trades":
-                continue
-            records = parse_market_trades_message(message, timestamp_received)
-            for record in records:
-                print(record)
+            channel = message.get("channel")
+            if channel == "market_trades":
+                records = parse_market_trades_message(message, timestamp_received)
+                for record in records:
+                    print(record)
+            elif channel == "l2_data":
+                records = parse_level2_message(message, timestamp_received)
+                for record in records:
+                    print(record)
 
 
 if __name__ == "__main__":
