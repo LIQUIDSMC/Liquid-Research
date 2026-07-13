@@ -23,6 +23,7 @@ import ssl
 import time
 import certifi
 from websockets.asyncio.client import connect
+from websockets.exceptions import ConnectionClosed
 
 from market_data_platform.market_data.adapters.coinbase import parse_market_trades_message, parse_level2_message
 
@@ -47,13 +48,14 @@ LEVEL2_SUBSCRIBE_MESSAGE = {
 SSL_CONTEXT = ssl.create_default_context(cafile=certifi.where())
 
 
-async def run() -> None:
+async def _connect_and_stream() -> None:
     """
-    Connect to Coinbase's public market_trades channel for BTC-USD,
-    parse each real message through the adapter into TradeRecord
-    instances, and print the resulting canonical records. No
-    storage, no reconnection — proves the adapter works against
-    real, live traffic, not just the embedded fixture example.
+    Perform a single connection attempt: connect, subscribe, and
+    stream messages until the connection drops or the process is
+    interrupted. May return normally (remote side closed cleanly,
+    e.g. code 1000/1001) or raise ConnectionClosed/OSError (an
+    abnormal drop). The caller (run()) treats both cases as a
+    reason to reconnect.
 
     timestamp_received is captured immediately upon message
     receipt, at this collector-owned boundary, per the ownership
@@ -81,6 +83,37 @@ async def run() -> None:
                 records = parse_level2_message(message, timestamp_received)
                 for record in records:
                     print(record)
+
+
+async def run() -> None:
+    """
+    Run the collector indefinitely, automatically reconnecting on
+    any connection drop — whether the drop raises an exception
+    (ConnectionClosed, OSError) or the connection ends cleanly from
+    the remote side (_connect_and_stream() simply returns with no
+    exception). Both paths are treated identically: log, wait,
+    reconnect. No gap detection yet (Step 3f) — a reconnection is
+    only proven to happen, not yet proven to be gap-tracked.
+
+    Ctrl+C raises KeyboardInterrupt, which is deliberately NOT
+    caught here — it propagates up to __main__'s existing handler
+    and exits normally, without triggering a reconnect.
+
+    A short fixed backoff is used between reconnection attempts to
+    avoid hammering Coinbase's server if the connection keeps
+    failing (e.g. during a real network outage).
+    """
+    reconnect_delay_seconds = 3
+
+    while True:
+        try:
+            await _connect_and_stream()
+            print("\nConnection ended (remote side closed cleanly).")
+        except (ConnectionClosed, OSError) as e:
+            print(f"\nConnection lost: {e}")
+
+        print(f"Reconnecting in {reconnect_delay_seconds} seconds...\n")
+        await asyncio.sleep(reconnect_delay_seconds)
 
 
 if __name__ == "__main__":
