@@ -34,7 +34,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import List
 
-from market_data_platform.market_data.schema import TradeRecord
+from market_data_platform.market_data.schema import TradeRecord, DepthLevelRecord
 
 
 def iso8601_to_epoch_millis(iso_string: str) -> int:
@@ -103,6 +103,72 @@ def parse_market_trades_message(message: dict, timestamp_received: int) -> List[
     return records
 
 
+def parse_level2_message(message: dict, timestamp_received: int) -> List[DepthLevelRecord]:
+    """
+    Parse one Coinbase level2 message into a list of
+    DepthLevelRecord instances — one per price-level update in the
+    message's events/updates arrays, per the Canonical Unit of
+    Observation principle. Handles both "snapshot" (initial full
+    book state) and "update" (incremental change) event types
+    identically at the parsing level — both report the same shape
+    of price-level facts; the distinction is meaningful for
+    reconstruction logic (a future, separate concern), not for
+    parsing.
+
+    Coinbase's new_quantity is the absolute quantity at that price
+    level, not a delta — a new_quantity of "0" means the level
+    should be removed. This matches the canonical schema's existing
+    quantity semantics exactly; no special-casing needed here.
+
+    first_update_id, final_update_id, and previous_final_update_id
+    are populated as None for Coinbase — its level2 protocol has no
+    per-message update-ID range concept at all. See schema.py's
+    docstring for the full rationale (this session's design
+    discussion): these fields were made Optional specifically to
+    accommodate this real, structural absence without fabricating
+    data Coinbase never transmitted.
+
+    Receives:
+        message (dict): a decoded Coinbase level2 message, with
+        keys "channel", "timestamp", "sequence_num", "events".
+        timestamp_received (int): the collector's own local receipt
+        time (Unix epoch milliseconds), supplied by the caller —
+        never derived from the exchange's own timestamp.
+
+    Returns:
+        List[DepthLevelRecord]
+
+    Raises:
+        ValueError: if message["channel"] is not "l2_data".
+        KeyError: if a required field is missing.
+    """
+    if message.get("channel") != "l2_data":
+        raise ValueError(
+            f"parse_level2_message() requires an l2_data message, "
+            f"got channel='{message.get('channel')}'."
+        )
+
+    event_time = iso8601_to_epoch_millis(message["timestamp"])
+
+    records = []
+
+    for event in message.get("events", []):
+        for update in event.get("updates", []):
+            records.append(DepthLevelRecord(
+                timestamp_received=timestamp_received,
+                event_time=event_time,
+                transaction_time=iso8601_to_epoch_millis(update["event_time"]),
+                first_update_id=None,
+                final_update_id=None,
+                previous_final_update_id=None,
+                side=update["side"],
+                price=Decimal(update["price_level"]),
+                quantity=Decimal(update["new_quantity"]),
+            ))
+
+    return records
+
+
 if __name__ == "__main__":
     # Smoke test against a real message shape captured from the
     # live Coinbase connection during Step 3a, this session.
@@ -153,6 +219,55 @@ if __name__ == "__main__":
 
     try:
         parse_market_trades_message({"channel": "level2"}, fake_timestamp_received)
+        print("ERROR: wrong channel was not rejected")
+    except ValueError as e:
+        print("Correctly rejected wrong channel:", e)
+
+    # Smoke test for parse_level2_message(), against the real
+    # message shape confirmed from Coinbase's official
+    # documentation this session.
+    real_level2_message = {
+        "channel": "l2_data",
+        "client_id": "",
+        "timestamp": "2023-02-09T20:32:50.714964855Z",
+        "sequence_num": 0,
+        "events": [
+            {
+                "type": "snapshot",
+                "product_id": "BTC-USD",
+                "updates": [
+                    {
+                        "side": "bid",
+                        "event_time": "1970-01-01T00:00:00Z",
+                        "price_level": "21921.73",
+                        "new_quantity": "0.06317902",
+                    },
+                    {
+                        "side": "bid",
+                        "event_time": "1970-01-01T00:00:00Z",
+                        "price_level": "21921.3",
+                        "new_quantity": "0.02",
+                    },
+                ],
+            }
+        ],
+    }
+
+    depth_records = parse_level2_message(real_level2_message, fake_timestamp_received)
+    print(f"\nParsed {len(depth_records)} DepthLevelRecords from one l2_data message:")
+    for r in depth_records:
+        print(" ", r)
+
+    assert depth_records[0].price == Decimal("21921.73"), "Depth price value was not preserved exactly!"
+    assert depth_records[0].quantity == Decimal("0.06317902"), "Depth quantity value was not preserved exactly!"
+    assert depth_records[0].side == "bid", "side should pass through unchanged"
+    assert depth_records[0].first_update_id is None, "first_update_id should be None for Coinbase"
+    assert depth_records[0].final_update_id is None, "final_update_id should be None for Coinbase"
+    assert depth_records[0].previous_final_update_id is None, "previous_final_update_id should be None for Coinbase"
+    print("\nAll depth precision and None-field checks passed.")
+
+    try:
+        parse_level2_message({"channel": "market_trades"}, fake_timestamp_received)
         print("ERROR: wrong channel was not rejected")
     except ValueError as e:
         print("Correctly rejected wrong channel:", e)
