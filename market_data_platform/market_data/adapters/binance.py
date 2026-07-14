@@ -57,7 +57,7 @@ def parse_depth_update(message: dict) -> List[DepthLevelRecord]:
             f"got e='{message.get('e')}'."
         )
 
-    timestamp_received = time.time()
+    timestamp_received = int(time.time() * 1000)
     event_time = message["E"]
     transaction_time = message["T"] if "T" in message else None
     first_update_id = message["U"]
@@ -116,7 +116,7 @@ def parse_trade(message: dict) -> TradeRecord:
             f"got e='{message.get('e')}'."
         )
 
-    timestamp_received = time.time()
+    timestamp_received = int(time.time() * 1000)
 
     return TradeRecord(
         timestamp_received=timestamp_received,

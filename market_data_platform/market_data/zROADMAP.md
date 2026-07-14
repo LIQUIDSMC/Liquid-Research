@@ -131,34 +131,61 @@ adapter.
 
 **Dependencies:** None. First engineering milestone.
 
+**Milestone 3 (Steps 3a-3f): COMPLETE.** Live connection, trade
+adapter, multi-symbol subscription, depth adapter, automatic
+reconnection (verified against a real forced disconnect), and
+sequence gap detection (derived from live evidence after implementation revealed behavior that required validation beyond the published documentation) are all
+implemented, tested, and verified against real Coinbase traffic.
+See git history for the complete record.
+
+Not yet built: persistent storage. All Milestone 3 work currently
+prints to console only — no record has ever been written to disk.
+This is real, remaining Phase 0 scope, not a new requirement (see
+Persistent Canonical Storage milestone, below).
+
 **Success criteria — Functional:**
 - Live WebSocket connection to the exchange, maintained correctly.
+  COMPLETE (Milestone 3).
 - Every event is validated before storage; malformed events are
   rejected and logged separately, never silently dropped.
-- Events are normalized into the canonical event schema (schema
-  under active re-derivation as of this writing — see "Canonical
-  Asset — Precise Definition" and "Numeric Precision" in Part 1;
-  the field list here is intentionally not yet finalized).
+  PARTIALLY COMPLETE: validation exists (message-type and
+  structural checks in the adapters); "storage" to reject into or
+  away from does not yet exist.
+- Events are normalized into the canonical event schema, per
+  DepthLevelRecord and TradeRecord in schema.py — settled through
+  real design work during Steps 3a-3d, including canonical schema decisions derived from live multi-venue evidence. See the git history for the detailed derivation.
 - Numeric values (price, quantity) are stored using today's
   implementation of the Numeric Precision principle: Python
   Decimal, constructed directly from the exchange's transmitted
-  string, never via a float intermediate.
+  string, never via a float intermediate. COMPLETE (Milestone 3).
 - Raw events are written to immutable, partitioned storage (today's
   implementation: date-partitioned Parquet) and never modified
-  after being written.
+  after being written. NOT STARTED — see Persistent Canonical
+  Storage milestone, below.
 - Sequence-number gap detection correctly identifies and logs any
-  missing message range.
+  missing message range. COMPLETE (Milestone 3) for detection and
+  console logging; persistent, on-disk gap logging NOT STARTED —
+  see Persistent Canonical Storage milestone, below.
 
 **Success criteria — Operational:**
 - The collector automatically reconnects on drop and resumes
-  logging without manual intervention.
+  streaming without manual intervention. COMPLETE (Milestone 3),
+  verified against a real forced disconnect. Currently resumes
+  console output only — no persistent log exists yet to resume
+  writing to.
 - A deliberately forced disconnect test confirms the exact gap is
   logged correctly on reconnect — not merely assumed to work.
+  COMPLETE (Milestone 3), verified with real live evidence,
+  console-logged only.
 - The collector demonstrates sustained, unattended operation over
   a sufficiently long validation period, with the session log and
   gap log accurately reflecting what actually happened during that
-  window. (Today's specific acceptance threshold — e.g. 72 hours —
-  belongs in an implementation checklist, not this roadmap.)
+  window. NOT STARTED. Requires persistent session and gap logs to
+  exist first (see Persistent Canonical Storage milestone, below);
+  every Milestone 3 test was short and actively monitored, not
+  sustained or unattended. (Today's specific acceptance
+  threshold — e.g. 72 hours — belongs in an implementation
+  checklist, not this roadmap.)
 
 **Risks:**
 - Exchange-specific WebSocket message edge cases not caught during
@@ -175,10 +202,40 @@ adapter.
 - No research dataset builder.
 - No Program or Domain code reads from this pipeline yet.
 
+### Persistent Canonical Storage (CURRENT — remaining Phase 0 work)
+
+**Objective:** Persist the already-validated, already-tested
+canonical TradeRecord and DepthLevelRecord objects (Milestone 3)
+exactly once into immutable, partitioned storage, so Phase 1 has
+real historical data to reconstruct against. This closes the one
+remaining gap between Phase 0's stated success criteria and the
+current codebase.
+
+**Dependencies:** Milestone 3 (complete).
+
+**Required:**
+- Immutable Parquet storage for canonical records.
+- A partitioning strategy (date-partitioned, per today's Part 2
+  implementation choice).
+- A persistent session log (currently console-only).
+- A persistent gap log (currently console-only).
+- A sustained, unattended validation run, once the above exist,
+  proving Phase 0's Operational success criteria with real
+  evidence rather than short, monitored test sessions.
+
+**Explicitly NOT built in this milestone:** reconstruction, OBI or
+any derived metric, Program/Domain code reading this pipeline,
+additional exchanges, schema redesign — all remain out of scope,
+exactly as Phase 0's existing "Explicitly NOT built" list already
+states.
+
 **Evidence required to move to Phase 1:** Sustained unattended
 operation with correct gap tracking and successful reconnection,
 including a deliberately forced disconnect test — not assumed
-correct, demonstrated correct.
+correct, demonstrated correct. Persistent, inspectable session and
+gap logs, plus real accumulated canonical data on disk, are
+required for this evidence to be verifiable after the fact rather
+than only observed live.
 
 ---
 
