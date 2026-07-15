@@ -178,13 +178,18 @@ Persistent Canonical Storage milestone, below).
   COMPLETE (Milestone 3), verified with real live evidence,
   console-logged only.
 - The collector demonstrates sustained, unattended operation over
-  a sufficiently long validation period, with the session log and
-  gap log accurately reflecting what actually happened during that
-  window. NOT STARTED. Requires persistent session and gap logs to
-  exist first (see Persistent Canonical Storage milestone, below);
-  every Milestone 3 test was short and actively monitored, not
-  sustained or unattended. (Today's specific acceptance
-  threshold — e.g. 72 hours — belongs in an implementation
+  a sufficiently long validation period, with retained console-log
+  output and accumulated canonical data accurately reflecting what
+  occurred during that window. IN PROGRESS. One successful short
+  production validation run has completed with exact log-to-disk
+  row reconciliation, zero sequence gaps, zero connection losses,
+  zero persistence errors, and a successful final shutdown flush.
+  A multi-hour or longer unattended soak run remains required
+  before the strongest Phase 0 closure claim. Dedicated persistent
+  session and gap log files are not prerequisites; that was
+  explicitly re-evaluated as a scope decision in the Persistent
+  Canonical Storage section below. (Today's specific acceptance
+  threshold — e.g. 24 or 72 hours — belongs in an implementation
   checklist, not this roadmap.)
 
 **Risks:**
