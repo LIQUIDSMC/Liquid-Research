@@ -5,7 +5,7 @@
 > research programs and the experiment registry live in zROADMAP.md.
 > Build history and phase details live in programs/program_a/HISTORY.md.
 
-Last updated: 2026-07-10
+Last updated: 2026-07-14
 (Updated during weekly review — see programs/program_a/DAILY_OPERATIONS.md)
 
 ## Phase Status
@@ -24,10 +24,17 @@ downstream consumer. See programs/program_a/domain/README.md for
 the full contract and responsibilities.
 
 ## Dataset Status
-Running since: 2026-06-22 (18 days as of 2026-07-10)
-Total paper trades: 96
-Open: 57
-Closed: 39
+Running since: 2026-06-22 (22 days as of 2026-07-14)
+Total paper trades: 119
+Open: 74
+Closed: 45
+Latest cycle (2026-07-14): 29 markets passed, canonical publication
+20260714_190131. 14 new trades created. 4 newly closed: 2 wins, 2
+losses.
+  Wins: trade 102 (Elon Musk 160-179 tweets, +$2.77), trade 104
+  (Bitcoin $65,000, +$57.48).
+  Losses: trade 77 (US blockade on Iran, -$100.00), trade 103 (WTI
+  $80, -$100.00).
 
 ## Category Breakdown (all trades, 2026-07-01)
 Sports: 18
@@ -72,11 +79,10 @@ time of the patch, not just newly-created ones.
 75-90: <n>
 Below 75: <n>
 
-## Performance (closed trades only — calculated from paper_trades.csv, 2026-07-10)
-⚠️ Still far from conclusive at n=39. Do not over-interpret.
-Win rate: 84.6% (33W / 6L)
-Total realized P&L: $166.22
-Expectancy: $4.26/trade
+## Performance (closed trades only — calculated from paper_trades.csv, 2026-07-14)
+⚠️ Still far from conclusive at n=45. Do not over-interpret.
+Win rate: 82.2%
+Total realized P&L: $31.49
 Max drawdown: not yet meaningful at this volume
 
 Entry-price confound checkpoint run at n=36 (2026-07-08) — weak
