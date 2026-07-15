@@ -272,3 +272,23 @@ is still governed by the platform's three-question check:
 
 Infrastructure work (Phases 2-4) exists to help answer these
 questions for Indicators 1 and 2 — it does not bypass them.
+---
+
+## Research Checkpoints
+
+Program B's Core Research Questions are answered through checkpoints
+filed in research/validated_findings.md, not duplicated here. Two
+checkpoints exist to date, both addressing "Does Near-Book OBI add
+information beyond Total-Book OBI, or is it redundant?":
+
+- First checkpoint (2026-07-10, n=44 pairs, 22 markets): initial
+  75%/25% same-sign/sign-flip split observed.
+- Second checkpoint (2026-07-14, n=110 pairs, 54 markets): the
+  original split updated to 63.6%/36.4% with more data — a real,
+  meaningful shift, not noise. Markets previously showing perfect
+  same-sign stability each accumulated a sign-flip as more history
+  was observed. See research/validated_findings.md for the full
+  analysis, including the four individually re-examined n≥5 markets.
+
+Next re-evaluation trigger: markets with n≥5 observations reaching
+n≥10, or total comparable pairs meaningfully exceeding 110.
