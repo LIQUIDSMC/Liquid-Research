@@ -69,7 +69,7 @@ DEPTH_LEVEL_SCHEMA = pa.schema([
 ])
 
 
-def _partition_date_utc(timestamp_received_ms: int) -> str:
+def partition_date_utc(timestamp_received_ms: int) -> str:
     """
     Compute the UTC calendar date (YYYY-MM-DD) for a given
     timestamp_received value, used as the partition key. Always
@@ -139,7 +139,7 @@ def write_trade_records(records: List[TradeRecord]) -> str:
     if not records:
         raise ValueError("write_trade_records() requires at least one record.")
 
-    partition_dates = {_partition_date_utc(r.timestamp_received) for r in records}
+    partition_dates = {partition_date_utc(r.timestamp_received) for r in records}
     if len(partition_dates) > 1:
         raise ValueError(
             f"write_trade_records() received records spanning multiple "
@@ -182,7 +182,7 @@ def write_depth_level_records(records: List[DepthLevelRecord]) -> str:
     if not records:
         raise ValueError("write_depth_level_records() requires at least one record.")
 
-    partition_dates = {_partition_date_utc(r.timestamp_received) for r in records}
+    partition_dates = {partition_date_utc(r.timestamp_received) for r in records}
     if len(partition_dates) > 1:
         raise ValueError(
             f"write_depth_level_records() received records spanning multiple "
