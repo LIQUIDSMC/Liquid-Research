@@ -176,7 +176,10 @@ def main() -> None:
         if result["outcome"] == "closed":
             for field, value in result["updates"].items():
                 df.at[idx, field] = value
-            closed_rows.append(row["question"])
+            closed_rows.append({
+                "question": row["question"],
+                "trade_won": result["updates"].get("trade_won"),
+            })
         elif result["outcome"] == "still_open":
             still_open_rows.append(row["question"])
         else:
@@ -187,13 +190,18 @@ def main() -> None:
     if closed_rows:
         table = Table(title="Newly Closed Trades", show_lines=True)
         table.add_column("Market", max_width=50)
-        for q in closed_rows:
-            table.add_row(str(q)[:48])
+        for c in closed_rows:
+            table.add_row(str(c["question"])[:48])
         console.print(table)
         console.print()
 
+    wins_closed = sum(1 for c in closed_rows if c["trade_won"] is True)
+    losses_closed = sum(1 for c in closed_rows if c["trade_won"] is False)
+
     console.print(f"[bold]Open checked: {open_count}[/bold]")
     console.print(f"[green]Newly closed: {len(closed_rows)}[/green]")
+    if closed_rows:
+        console.print(f"  [green]Wins closed: {wins_closed}[/green]  [red]Losses closed: {losses_closed}[/red]")
     console.print(f"[yellow]Still open: {len(still_open_rows)}[/yellow]")
     console.print(f"[dim]Skipped (no slug): {len(skipped_rows)}[/dim]")
     console.print(f"[dim]Non-open rows untouched: {non_open_count}[/dim]")

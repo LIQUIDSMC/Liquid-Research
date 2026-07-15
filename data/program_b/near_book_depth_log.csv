@@ -90,3 +90,32 @@ timestamp,publication_id,slug,question,midpoint,total_obi,near_obi,n_levels,v_bi
 2026-07-13T12:48:42Z,20260713_054611,us-iran-final-nuclear-deal-by-august-18-2026-20260621201255153,"US-Iran Final Nuclear Deal by August 18, 2026?",0.045,-0.2499,0.0208,5,495638.68,475474.42,4,57,ok
 2026-07-13T12:48:43Z,20260713_054611,mojtaba-khamenei-seen-in-public-by-july-15-155,Mojtaba Khamenei seen in public by July 15?,0.0265,-0.1805,0.39,5,5924.85,2599.91,25,114,ok
 2026-07-13T12:48:45Z,20260713_054611,israel-closes-its-airspace-by-july-15-182,Israel closes its airspace by July 15?,0.021,0.9569,-0.5715,5,2318.37,8502.86,20,126,ok
+2026-07-15T02:06:43Z,20260714_190131,will-there-be-no-change-in-fed-interest-rates-after-the-july-2026-meeting,Will there be no change in Fed interest rates after the July 2026 meeting?,0.925,0.1561,-0.2833,5,576022.73,1031398.03,56,7,ok
+2026-07-15T02:06:47Z,20260714_190131,will-the-fed-increase-interest-rates-by-25-bps-after-the-july-2026-meeting,Will the Fed increase interest rates by 25 bps after the July 2026 meeting?,0.0715,-0.355,0.224,5,63466.11,40233.1,71,116,ok
+2026-07-15T02:06:49Z,20260714_190131,will-wti-reach-85-in-july-2026,Will WTI Crude Oil (WTI) hit (HIGH) $85 in July?,0.555,-0.053,-0.2152,5,20639.24,31959.85,48,32,ok
+2026-07-15T02:06:51Z,20260714_190131,fed-rate-hike-in-2026,Fed rate hike in 2026?,0.525,0.756,0.5387,5,67380.47,20198.19,35,39,ok
+2026-07-15T02:06:53Z,20260714_190131,itf-aguirre-gonzale-2026-07-14,ITF Sao Paulo: Isabella Barrera Aguirre vs Mell Elizabeth Reasco Gonzalez,0.105,0.3112,0.3112,5,502.54,264.0,3,2,ok
+2026-07-15T02:06:56Z,20260714_190131,will-the-fed-increase-interest-rates-by-25-bps-after-the-september-2026-meeting-649,Will the Fed increase interest rates by 25 bps after the September 2026 meeting?,0.385,-0.7653,-0.4502,5,48843.0,128843.36,30,33,ok
+2026-07-15T02:06:58Z,20260714_190131,putin-out-before-2027-346,"Putin out as President of Russia by December 31, 2026?",0.095,0.591,0.5051,5,3350352.62,1101501.76,9,64,ok
+2026-07-15T02:07:00Z,20260714_190131,will-the-fed-pausepausepause-in-the-next-three-decisions-aprjunjul,Will the Fed Pause–Pause–Pause in the next three decisions (Apr–Jun–Jul)?,0.915,0.6949,-0.1239,5,51762.53,66405.52,26,8,ok
+2026-07-15T02:07:02Z,20260714_190131,will-there-be-no-change-in-fed-interest-rates-after-the-september-2026-meeting-615,Will there be no change in Fed interest rates after the September 2026 meeting?,0.565,0.0405,0.7978,5,301499.06,33903.25,26,28,ok
+2026-07-15T02:07:05Z,20260714_190131,fed-rate-hike-by-july-2026-meeting,Fed Rate Hike by July 2026 Meeting?,0.061,-0.7487,-0.5322,5,1076.73,3526.85,31,67,ok
+2026-07-15T02:07:07Z,20260714_190131,will-lebron-james-play-for-the-golden-state-warriors-in-2026-27,Will LeBron James play for the Golden State Warriors in 2026-27?,0.272,-0.2665,-0.4873,5,845.0,2451.03,68,90,ok
+2026-07-15T02:07:09Z,20260714_190131,will-bitcoin-dip-to-57pt5k-in-july-2026-618,"Will Bitcoin dip to $57,500 in July?",0.135,-0.0559,-0.1846,5,34990.56,50830.31,13,58,ok
+2026-07-15T02:07:11Z,20260714_190131,will-bitcoin-reach-72pt5k-in-july-2026,"Will Bitcoin reach $72,500 in July?",0.115,-0.579,-0.0987,5,31675.59,38610.83,11,31,ok
+2026-07-15T02:07:13Z,20260714_190131,will-bitcoin-reach-67pt5k-in-july-2026,"Will Bitcoin reach $67,500 in July?",0.545,-0.0002,-0.1511,5,23683.91,32112.41,31,44,ok
+2026-07-15T02:07:15Z,20260714_190131,will-bitcoin-reach-75k-in-july-2026,"Will Bitcoin reach $75,000 in July?",0.0485,-0.3619,0.357,5,12657.4,5997.06,30,62,ok
+2026-07-15T02:07:17Z,20260714_190131,will-wti-reach-90-in-july-2026-334,Will WTI Crude Oil (WTI) hit (HIGH) $90 in July?,0.2955,0.2151,0.6274,5,4440.43,1016.65,92,55,ok
+2026-07-15T02:07:19Z,20260714_190131,will-lando-norris-be-the-2026-f1-drivers-champion,Will Lando Norris be the 2026 F1 Drivers' Champion?,0.0205,-0.7849,-0.5206,5,2698.36,8558.49,20,145,ok
+2026-07-15T02:07:22Z,20260714_190131,will-charles-leclerc-be-the-2026-f1-drivers-champion,Will Charles Leclerc be the 2026 F1 Drivers' Champion?,0.0205,-0.8793,0.4411,5,20372.91,7900.95,18,105,ok
+2026-07-15T02:07:25Z,20260714_190131,strait-of-hormuz-traffic-returns-to-normal-by-july-31,Strait of Hormuz traffic returns to normal by July 31?,0.0175,0.748,0.4088,5,98821.38,41473.96,17,145,ok
+2026-07-15T02:07:28Z,20260714_190131,will-iran-announce-withdrawal-from-mou-negotiations-by-july-17,Will Iran announce withdrawal from MOU negotiations by July 17?,0.176,0.0013,-0.8561,5,241.98,3121.15,77,124,ok
+2026-07-15T02:07:31Z,20260714_190131,will-the-us-invade-iran-before-2027,Will the U.S. invade Iran before 2027?,0.195,0.675,0.3916,5,966472.18,422550.56,19,71,ok
+2026-07-15T02:07:34Z,20260714_190131,will-iran-announce-withdrawal-from-mou-negotiations-by-july-31-20260622191733846-586-829-787,Will Iran announce withdrawal from MOU negotiations by July 31?,0.325,0.3705,0.8477,5,67168.58,5535.4,32,52,ok
+2026-07-15T02:07:37Z,20260714_190131,us-charges-hormuz-fees-by-july-31-2026-20260713151243233,"US charges Hormuz fees by July 31, 2026?",0.0255,0.0984,-0.4017,5,4871.98,11414.58,19,88,ok
+2026-07-15T02:07:39Z,20260714_190131,will-the-iranian-regime-fall-by-the-end-of-2026,Will the Iranian regime fall before 2027?,0.095,0.2058,0.2214,5,623148.87,397241.93,9,78,ok
+2026-07-15T02:07:42Z,20260714_190131,will-lebron-james-play-for-the-cleveland-cavaliers-in-2026-27,Will LeBron James play for the Cleveland Cavaliers in 2026-27?,0.3945,0.1643,0.8934,5,5061.92,285.0,80,103,ok
+2026-07-15T02:07:45Z,20260714_190131,strait-of-hormuz-traffic-returns-to-normal-by-august-31-20260702154212320,Strait of Hormuz traffic returns to normal by August 31?,0.115,0.6853,-0.0134,5,159606.33,163955.66,11,60,ok
+2026-07-15T02:07:48Z,20260714_190131,will-trump-acquire-greenland-before-2027,Will Trump acquire Greenland before 2027?,0.0425,-0.5418,0.3433,5,26934.91,13168.26,42,132,ok
+2026-07-15T02:07:51Z,20260714_190131,israel-closes-its-airspace-by-july-31-287,Israel closes its airspace by July 31?,0.125,-0.1246,0.1804,5,37090.78,25754.39,12,63,ok
+2026-07-15T02:07:54Z,20260714_190131,itf-barbosa-souz-2026-07-14,ITF Sao Paulo: Giovana Schincariol Delatorre Barbosa vs Marjorie Souza,0.345,-0.287,0.2951,5,17887.9,9736.9,16,29,ok
