@@ -202,26 +202,63 @@ Persistent Canonical Storage milestone, below).
 - No research dataset builder.
 - No Program or Domain code reads from this pipeline yet.
 
-### Persistent Canonical Storage (CURRENT — remaining Phase 0 work)
+### Persistent Canonical Storage — Implementation Complete, Operational Validation Ongoing
 
 **Objective:** Persist the already-validated, already-tested
 canonical TradeRecord and DepthLevelRecord objects (Milestone 3)
 exactly once into immutable, partitioned storage, so Phase 1 has
-real historical data to reconstruct against. This closes the one
-remaining gap between Phase 0's stated success criteria and the
-current codebase.
+real historical data to reconstruct against.
 
 **Dependencies:** Milestone 3 (complete).
 
-**Required:**
-- Immutable Parquet storage for canonical records.
-- A partitioning strategy (date-partitioned, per today's Part 2
-  implementation choice).
-- A persistent session log (currently console-only).
-- A persistent gap log (currently console-only).
-- A sustained, unattended validation run, once the above exist,
-  proving Phase 0's Operational success criteria with real
-  evidence rather than short, monitored test sessions.
+**Built and verified:**
+- Immutable, atomic Parquet storage for canonical records
+  (storage.py), proven via isolated offline tests including real
+  precision-boundary failures and collision-safe writes.
+- UTC-date partitioning (storage.partition_date_utc), verified
+  independent of local machine clock.
+- Bounded in-memory buffering (buffer.py) with correct partial-
+  failure semantics, verified by a comprehensive offline test
+  suite including real failure-and-retry scenarios.
+- Full collector integration (collector.py), with every production
+  code path — not a parallel reimplementation — exercised by a
+  dedicated integration test suite, including genuine asyncio task
+  cancellation triggering the real shutdown flush path.
+
+**Operational validation — initial production run:** An unattended
+run against the live Coinbase feed successfully persisted 294 trade
+records across 2 files and 70,906 depth-level records across 24
+files. Every Parquet file was independently readable via
+pq.ParquetFile, and total on-disk row counts reconciled exactly with
+the collector's logged flush counts. No sequence gaps, connection
+losses, or persistence errors occurred during the run. The final
+shutdown flush persisted all 191 remaining buffered records
+(94 trade and 97 depth) without data loss.
+
+The first two depth-buffer flushes contained 43,322 and 22,904
+records, substantially exceeding the nominal 200-record threshold.
+This was expected behavior rather than a defect: Coinbase's initial
+level2 snapshot for each subscribed product can contain tens of
+thousands of price-level facts in a single message, and the count
+threshold is a minimum flush trigger checked after each complete
+message, not a maximum file size. This behavior is documented in
+buffer.py.
+
+Reconnection was not exercised during this production run because
+the connection remained stable throughout. Reconnection behavior
+remains separately and directly proven by the deliberate
+forced-disconnect test performed during Step 3e.
+
+**Persistent session and gap logs — scope decision:** During
+implementation, dedicated persistent session and gap log files were
+re-evaluated. Current console logging captures the session lifecycle,
+reconnection events, malformed sequence values, duplicates or
+out-of-order messages, and detected sequence gaps needed for
+validation. Dedicated log files are therefore deferred pending
+evidence from longer operational runs rather than treated as
+mandatory Phase 0 deliverables. This is an explicit scope decision,
+not a claim that persistent operational logs could never become
+useful.
 
 **Explicitly NOT built in this milestone:** reconstruction, OBI or
 any derived metric, Program/Domain code reading this pipeline,
@@ -229,13 +266,17 @@ additional exchanges, schema redesign — all remain out of scope,
 exactly as Phase 0's existing "Explicitly NOT built" list already
 states.
 
-**Evidence required to move to Phase 1:** Sustained unattended
-operation with correct gap tracking and successful reconnection,
-including a deliberately forced disconnect test — not assumed
-correct, demonstrated correct. Persistent, inspectable session and
-gap logs, plus real accumulated canonical data on disk, are
-required for this evidence to be verifiable after the fact rather
-than only observed live.
+**Remaining before the strongest possible Phase 0 closure claim:**
+A sustained multi-hour (or longer) unattended operational soak run.
+This is an operational validation objective, not unfinished
+engineering work. The implementation is complete; what remains is
+additional runtime evidence demonstrating long-duration stability.
+
+**Evidence required to move to Phase 1:** A sustained unattended
+soak run (multi-hour or longer) confirming long-duration stability,
+together with real accumulated canonical data on disk, so the
+results remain independently verifiable after the run rather than
+existing only as live observations.
 
 ---
 

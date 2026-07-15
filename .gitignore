@@ -9,6 +9,8 @@ data/trades/*
 data/wallets/*
 data/scanner/*
 data/simulator/*
+data/market_data_platform/canonical/trades/*
+data/market_data_platform/canonical/depth_levels/*
 logs/*
 !data/raw/.gitkeep
 !data/markets/.gitkeep
@@ -16,4 +18,6 @@ logs/*
 !data/wallets/.gitkeep
 !data/scanner/.gitkeep
 !data/simulator/.gitkeep
+!data/market_data_platform/canonical/trades/.gitkeep
+!data/market_data_platform/canonical/depth_levels/.gitkeep
 !logs/.gitkeep

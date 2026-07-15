@@ -65,6 +65,17 @@ class RecordBuffer(Generic[T]):
             storage.partition_date_utc — injected so RecordBuffer
             has no import-time dependency on storage.py.
         count_threshold (int): flush when len(records) reaches this.
+            This is a minimum flush trigger, not a maximum batch
+            size: the check runs once per completed message, and
+            one exchange message can add many canonical records at
+            once (per the Canonical Unit of Observation principle).
+            Confirmed by real operational evidence: Coinbase's
+            initial level2 snapshot for one product can add tens of
+            thousands of DepthLevelRecord instances in a single
+            add() call, well past this threshold, before the next
+            flush check even runs. This is expected, correct
+            behavior, not a bug — the buffer is never artificially
+            split mid-message to force a smaller file.
         max_interval_seconds (float): flush when this many seconds
             have elapsed since the last successful full flush.
         clock (Callable[[], float]): defaults to time.monotonic.
