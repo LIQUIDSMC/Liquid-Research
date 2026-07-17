@@ -277,18 +277,14 @@ questions for Indicators 1 and 2 — it does not bypass them.
 ## Research Checkpoints
 
 Program B's Core Research Questions are answered through checkpoints
-filed in research/validated_findings.md, not duplicated here. Two
-checkpoints exist to date, both addressing "Does Near-Book OBI add
-information beyond Total-Book OBI, or is it redundant?":
-
-- First checkpoint (2026-07-10, n=44 pairs, 22 markets): initial
-  75%/25% same-sign/sign-flip split observed.
-- Second checkpoint (2026-07-14, n=110 pairs, 54 markets): the
-  original split updated to 63.6%/36.4% with more data — a real,
-  meaningful shift, not noise. Markets previously showing perfect
-  same-sign stability each accumulated a sign-flip as more history
-  was observed. See research/validated_findings.md for the full
-  analysis, including the four individually re-examined n≥5 markets.
-
-Next re-evaluation trigger: markets with n≥5 observations reaching
-n≥10, or total comparable pairs meaningfully exceeding 110.
+- Third checkpoint (2026-07-17, n=152 pairs, 64 markets): split
+  updated again to 57.9%/42.1%. Across the three checkpoints
+  observed so far, agreement declined as the dataset expanded.
+  The market with the deepest history — previously the strongest
+  example of stability in the dataset — showed a sharp reversal
+  in its four most recent observations (all sign-flips) despite
+  retaining a majority-agreement cumulative record, demonstrating
+  that a market's apparent relationship between the two indicators
+  can change materially over time. See
+  research/validated_findings.md for the full analysis, including
+  every individually re-examined n≥6 market.
