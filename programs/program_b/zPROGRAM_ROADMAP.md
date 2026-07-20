@@ -288,3 +288,19 @@ Program B's Core Research Questions are answered through checkpoints
   can change materially over time. See
   research/validated_findings.md for the full analysis, including
   every individually re-examined n≥6 market.
+- Fourth checkpoint (2026-07-20, n=190 pairs, 75 markets): triggered
+  because the Fed no-change market reached n≥15, per the third
+  checkpoint's predefined trigger. Aggregate split changed very
+  little (57.9% to 57.4% same-sign) — the first checkpoint interval
+  without a material decline, though whether this represents a
+  plateau or one interval within a longer trend is not yet known.
+  The Fed no-change market's newest observation returned to
+  same-sign after five consecutive sign-flips, directly testing the
+  open question posed at the third checkpoint — an initial
+  reversion, not confirmation the earlier reversal has resolved.
+  See research/validated_findings.md for the full analysis.
+
+Next re-evaluation trigger: the Fed no-change market's newest
+same-sign observation persisting or reverting across further
+observations, total comparable pairs reaching at least 200, or
+another market reaching n≥15.
