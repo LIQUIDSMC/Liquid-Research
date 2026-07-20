@@ -209,3 +209,31 @@ timestamp,publication_id,slug,question,midpoint,micro_price,obi,v_bid,v_ask,bid_
 2026-07-20T07:19:25Z,20260720_001125,ucl-sf-kps-2026-07-21-sf,Will Sabah FK win on 2026-07-21?,0.585,0.584808,-0.0385,236138.45,255042.74,35,33,ok
 2026-07-20T07:19:35Z,20260720_001125,us-x-iran-effective-ceasfire-by-july-31-20260715194822045,US x Iran Effective Ceasefire by July 31?,0.155,0.156963,0.3927,527060.61,229833.32,15,40,ok
 2026-07-20T07:19:44Z,20260720_001125,iran-full-airspace-closure-by-july-21,Iran full airspace closure by July 21?,0.06,0.060099,0.0099,42224.2,41396.94,5,40,ok
+2026-07-20T18:24:48Z,20260720_080126,will-there-be-no-change-in-fed-interest-rates-after-the-july-2026-meeting,Will there be no change in Fed interest rates after the July 2026 meeting?,0.9255,0.925702,0.4033,22250810.52,9461568.39,100,63,ok
+2026-07-20T18:24:49Z,20260720_080126,will-the-fed-increase-interest-rates-by-25-bps-after-the-july-2026-meeting,Will the Fed increase interest rates by 25 bps after the July 2026 meeting?,0.0725,0.072115,-0.7693,2965031.21,22739228.04,72,107,ok
+2026-07-20T18:24:50Z,20260720_080126,will-wti-reach-85-in-july-2026,Will WTI Crude Oil (WTI) hit (HIGH) $85 in July?,0.685,0.686516,0.3032,113822.46,60855.99,51,27,ok
+2026-07-20T18:24:52Z,20260720_080126,will-lebron-james-play-for-the-golden-state-warriors-in-2026-27,Will LeBron James play for the Golden State Warriors in 2026-27?,0.132,0.12884,-0.5267,106529.22,343626.51,46,89,ok
+2026-07-20T18:24:53Z,20260720_080126,will-wti-reach-90-in-july-2026-334,Will WTI Crude Oil (WTI) hit (HIGH) $90 in July?,0.352,0.347911,-0.3408,242975.53,494179.59,57,73,ok
+2026-07-20T18:24:54Z,20260720_080126,will-bitcoin-reach-72pt5k-in-july-2026,"Will Bitcoin reach $72,500 in July?",0.0905,0.090442,-0.0384,172060.7,185799.04,38,49,ok
+2026-07-20T18:24:55Z,20260720_080126,strait-of-hormuz-traffic-returns-to-normal-by-july-31,Strait of Hormuz traffic returns to normal by July 31?,0.0145,0.014744,0.4888,2564417.75,880565.03,14,147,ok
+2026-07-20T18:24:56Z,20260720_080126,will-the-us-invade-iran-before-2027,Will the U.S. invade Iran before 2027?,0.265,0.26871,0.7419,4810450.14,712765.92,26,72,ok
+2026-07-20T18:24:57Z,20260720_080126,strait-of-hormuz-traffic-returns-to-normal-by-august-31-20260702154212320,Strait of Hormuz traffic returns to normal by August 31?,0.135,0.138715,0.743,2238568.61,330097.31,13,63,ok
+2026-07-20T18:24:58Z,20260720_080126,will-lebron-james-play-for-the-miami-heat-in-2026-27,Will LeBron James play for the Miami Heat in 2026-27?,0.4565,0.456283,-0.434,125553.52,318085.05,91,80,ok
+2026-07-20T18:25:00Z,20260720_080126,will-lando-norris-be-the-2026-f1-drivers-champion,Will Lando Norris be the 2026 F1 Drivers' Champion?,0.0185,0.01809,-0.8196,2450013.22,24705019.87,18,140,ok
+2026-07-20T18:25:01Z,20260720_080126,will-mojtaba-khamenei-be-head-of-state-in-iran-end-of-2026,Will Mojtaba Khamenei be head of state in Iran end of 2026?,0.7575,0.757783,0.113,2343917.01,1867834.86,92,114,ok
+2026-07-20T18:25:02Z,20260720_080126,israel-closes-its-airspace-by-july-31-287,Israel closes its airspace by July 31?,0.17,0.17201,0.201,242879.62,161598.4,16,69,ok
+2026-07-20T18:25:03Z,20260720_080126,will-lebron-james-play-for-the-cleveland-cavaliers-in-2026-27,Will LeBron James play for the Cleveland Cavaliers in 2026-27?,0.2855,0.284324,-0.4705,108817.82,302228.17,71,88,ok
+2026-07-20T18:25:05Z,20260720_080126,iran-full-airspace-closure-by-july-31-20260625195254150-838,Iran full airspace closure by July 31?,0.265,0.267895,0.5789,194350.47,51832.19,25,46,ok
+2026-07-20T18:25:06Z,20260720_080126,israel-closes-its-airspace-by-july-24,Israel closes its airspace by July 24?,0.085,0.081265,-0.747,19867.03,137174.65,8,51,ok
+2026-07-20T18:25:07Z,20260720_080126,will-lebron-james-play-for-the-philadelphia-76ers-in-2026-27,Will LeBron James play for the Philadelphia 76ers in 2026-27?,0.1195,0.11923,-0.5391,76139.13,254230.3,45,44,ok
+2026-07-20T18:25:08Z,20260720_080126,us-x-iran-effective-ceasfire-by-july-24-20260715194822044,US x Iran Effective Ceasefire by July 24?,0.105,0.104112,-0.1776,129893.52,186009.8,10,48,ok
+2026-07-20T18:25:10Z,20260720_080126,us-iran-final-nuclear-deal-by-august-18-2026-20260621201255153,"US-Iran Final Nuclear Deal by August 18, 2026?",0.0465,0.04727,0.3082,829105.47,438474.12,35,89,ok
+2026-07-20T18:25:11Z,20260720_080126,us-x-iran-effective-ceasfire-by-july-31-20260715194822045,US x Iran Effective Ceasefire by July 31?,0.195,0.197253,0.4506,450205.59,170501.16,19,51,ok
+2026-07-20T18:25:12Z,20260720_080126,strait-of-hormuz-traffic-returns-to-normal-by-december-31,Strait of Hormuz traffic returns to normal by December 31?,0.545,0.549043,0.8086,4192918.54,443764.01,48,45,ok
+2026-07-20T18:25:14Z,20260720_080126,will-iran-announce-withdrawal-from-mou-negotiations-by-july-31-20260622191733846-586-829-787,Will Iran announce withdrawal from MOU negotiations by July 31?,0.11,0.10736,-0.264,128634.5,220938.72,10,61,ok
+2026-07-20T18:25:15Z,20260720_080126,will-the-us-announce-an-iran-ceasefire-by-july-21-20260718000915873,US announces halt in Iran offensive operations by July 21?,0.032,0.030643,-0.6785,65855.27,343853.73,17,68,ok
+2026-07-20T18:25:16Z,20260720_080126,will-the-iranian-regime-fall-by-the-end-of-2026,Will the Iranian regime fall before 2027?,0.095,0.096181,0.2362,2069563.09,1278653.96,9,79,ok
+2026-07-20T18:25:17Z,20260720_080126,iran-leadership-change-by-july-31-20260629143932628,Iran leadership change by July 31?,0.038,0.037582,-0.2088,271817.07,415257.66,26,85,ok
+2026-07-20T18:25:19Z,20260720_080126,will-lebron-james-play-for-the-minnesota-timberwolves-in-2026-27,Will LeBron James play for the Minnesota Timberwolves in 2026-27?,0.0125,0.011567,-0.622,84894.98,364279.27,11,68,ok
+2026-07-20T18:25:20Z,20260720_080126,israel-x-iran-ceasefire-continues-through-july-22-20260716224448966,Israel x Iran ceasefire continues through July 22?,0.915,0.91841,0.6819,142679.29,26983.09,51,8,ok
+2026-07-20T18:25:21Z,20260720_080126,will-jalen-duren-play-for-the-cleveland-cavaliers-in-2026-27-20260622170634996,Will Jalen Duren play for the Cleveland Cavaliers in 2026-27?,0.018,0.02553,0.6275,14855.57,3400.42,5,10,ok
