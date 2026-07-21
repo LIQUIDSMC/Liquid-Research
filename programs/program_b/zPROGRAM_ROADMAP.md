@@ -304,3 +304,22 @@ Next re-evaluation trigger: the Fed no-change market's newest
 same-sign observation persisting or reverting across further
 observations, total comparable pairs reaching at least 200, or
 another market reaching n≥15.
+- Fifth checkpoint (2026-07-21, n=246 pairs): triggered because
+  total comparable pairs reached 246, exceeding the fourth
+  checkpoint's n≥200 threshold. Aggregate split continued its
+  modest decline (57.4% to 56.5% same-sign) — a continuation, not
+  a structural break. The Fed no-change market's reversion toward
+  agreement (first observed at the fourth checkpoint) persisted for
+  one further same-sign observation before flipping again on its
+  newest reading — confirming ongoing oscillation between regimes,
+  not resolution in either direction. A data-quality limitation was
+  identified: build_agreement_matrix()'s lexicographic sort does
+  not reflect true chronological order once snapshot-style and
+  dated publication_id formats coexist; a canonical observed_at_utc
+  field is recommended before further automation. See
+  research/validated_findings.md for the full analysis.
+
+Next re-evaluation trigger: whether the Fed no-change market's
+oscillation between agreement and disagreement continues, resolves,
+or reveals a pattern; total comparable pairs reaching at least 300;
+or another market reaching n≥15.
