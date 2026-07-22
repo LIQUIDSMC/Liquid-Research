@@ -291,3 +291,26 @@ timestamp,publication_id,slug,question,midpoint,micro_price,obi,v_bid,v_ask,bid_
 2026-07-22T04:12:36Z,20260721_211140,iran-leadership-change-by-july-31-20260629143932628,Iran leadership change by July 31?,0.046,0.045959,-0.0415,373996.11,406342.61,39,89,ok
 2026-07-22T04:12:37Z,20260721_211140,iran-full-airspace-closure-by-july-31-20260625195254150-838,Iran full airspace closure by July 31?,0.285,0.287493,0.4986,132642.54,44379.0,27,48,ok
 2026-07-22T04:12:39Z,20260721_211140,israel-x-iran-ceasefire-continues-through-july-31-20260716224448968,Israel x Iran ceasefire continues through July 31?,0.65,0.645589,-0.4411,172191.34,443959.68,42,31,ok
+2026-07-22T16:17:27Z,20260722_091653,will-there-be-no-change-in-fed-interest-rates-after-the-july-2026-meeting,Will there be no change in Fed interest rates after the July 2026 meeting?,0.7645,0.764904,0.8081,21737820.05,2307060.54,90,109,ok
+2026-07-22T16:17:28Z,20260722_091653,will-the-fed-increase-interest-rates-by-25-bps-after-the-july-2026-meeting,Will the Fed increase interest rates by 25 bps after the July 2026 meeting?,0.2205,0.220114,-0.7713,2889744.38,22381552.6,152,93,ok
+2026-07-22T16:17:30Z,20260722_091653,will-lebron-james-play-for-the-golden-state-warriors-in-2026-27,Will LeBron James play for the Golden State Warriors in 2026-27?,0.108,0.106472,-0.5093,97704.5,300557.78,44,142,ok
+2026-07-22T16:17:31Z,20260722_091653,will-wti-reach-90-in-july-2026-334,Will WTI Crude Oil (WTI) hit (HIGH) $90 in July?,0.6495,0.647508,-0.3065,383843.0,723190.36,95,52,ok
+2026-07-22T16:17:32Z,20260722_091653,will-wti-reach-95-in-july-2026,Will WTI Crude Oil (WTI) hit (HIGH) $95 in July?,0.3085,0.308272,-0.4569,292253.24,784084.09,63,62,ok
+2026-07-22T16:17:34Z,20260722_091653,will-wti-reach-100-in-july-2026-928,Will WTI Crude Oil (WTI) hit (HIGH) $100 in July?,0.1455,0.140232,-0.7025,227552.28,1302005.33,44,46,ok
+2026-07-22T16:17:35Z,20260722_091653,will-ethereum-dip-to-1500-by-december-31-2026-865-787,"Will Ethereum dip to $1,500 by December 31, 2026?",0.375,0.379795,0.9589,11883151.96,249096.04,40,35,ok
+2026-07-22T16:17:36Z,20260722_091653,will-wti-reach-105-in-july-2026,Will WTI Crude Oil (WTI) hit (HIGH) $105 in July?,0.0775,0.070908,-0.6278,161127.74,704764.84,38,41,ok
+2026-07-22T16:17:38Z,20260722_091653,will-lebron-james-play-for-the-miami-heat-in-2026-27,Will LeBron James play for the Miami Heat in 2026-27?,0.492,0.49188,-0.1196,259274.68,329746.67,138,134,ok
+2026-07-22T16:17:39Z,20260722_091653,will-lebron-james-play-for-the-cleveland-cavaliers-in-2026-27,Will LeBron James play for the Cleveland Cavaliers in 2026-27?,0.287,0.283774,-0.5377,90205.45,300029.48,82,130,ok
+2026-07-22T16:17:40Z,20260722_091653,strait-of-hormuz-traffic-returns-to-normal-by-august-31-20260702154212320,Strait of Hormuz traffic returns to normal by August 31?,0.145,0.149179,0.8359,3103011.21,277422.16,14,60,ok
+2026-07-22T16:17:41Z,20260722_091653,will-the-us-invade-iran-before-2027,Will the U.S. invade Iran before 2027?,0.285,0.288936,0.7871,5193239.96,618600.39,28,69,ok
+2026-07-22T16:17:42Z,20260722_091653,will-alphabet-be-the-largest-company-in-the-world-by-market-cap-on-july-31-20260624192329844,Will Alphabet be the largest company in the world by market cap on July 31?,0.0115,0.00939,-0.8441,576880.78,6823905.34,9,92,ok
+2026-07-22T16:17:44Z,20260722_091653,clarity-act-signed-into-law-in-2026,Clarity Act signed into law in 2026?,0.385,0.385687,0.1374,509795.62,386643.35,33,50,ok
+2026-07-22T16:17:45Z,20260722_091653,will-lebron-james-play-for-the-philadelphia-76ers-in-2026-27,Will LeBron James play for the Philadelphia 76ers in 2026-27?,0.0955,0.095247,-0.5052,97804.51,297516.17,41,97,ok
+2026-07-22T16:17:46Z,20260722_091653,will-lebron-james-play-for-the-minnesota-timberwolves-in-2026-27,Will LeBron James play for the Minnesota Timberwolves in 2026-27?,0.0115,0.011138,-0.7232,64039.31,398596.28,10,107,ok
+2026-07-22T16:17:48Z,20260722_091653,israel-x-iran-ceasefire-continues-through-july-31-20260716224448968,Israel x Iran ceasefire continues through July 31?,0.595,0.585051,-0.3979,52229.98,121274.8,41,32,ok
+2026-07-22T16:17:49Z,20260722_091653,israel-x-iran-ceasefire-continues-through-july-25-20260716224448967,Israel x Iran ceasefire continues through July 25?,0.75,0.753149,0.3149,123270.54,64227.6,57,23,ok
+2026-07-22T16:17:50Z,20260722_091653,us-x-iran-effective-ceasfire-by-july-24-20260715194822044,US x Iran Effective Ceasefire by July 24?,0.065,0.062572,-0.4856,92445.5,266985.83,6,43,ok
+2026-07-22T16:17:52Z,20260722_091653,israel-closes-its-airspace-by-july-31-287,Israel closes its airspace by July 31?,0.235,0.235246,0.0492,152934.23,138599.89,23,58,ok
+2026-07-22T16:17:53Z,20260722_091653,iran-full-airspace-closure-by-july-31-20260625195254150-838,Iran full airspace closure by July 31?,0.365,0.367388,0.4776,121343.81,42896.4,33,39,ok
+2026-07-22T16:17:54Z,20260722_091653,elon-musk-of-tweets-july-17-july-24-140-159,"Will Elon Musk post 140-159 tweets from July 17 to July 24, 2026?",0.0105,0.010139,-0.7212,15318.68,94565.55,8,101,ok
+2026-07-22T16:17:55Z,20260722_091653,will-iran-announce-withdrawal-from-mou-negotiations-by-july-31-20260622191733846-586-829-787,Will Iran announce withdrawal from MOU negotiations by July 31?,0.105,0.105076,0.0153,214808.39,208335.13,10,59,ok
