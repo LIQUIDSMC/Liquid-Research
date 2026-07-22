@@ -208,12 +208,15 @@ Research Questions above.
   latest) and are not interchangeable.
 - Weekly Review Packaging ✅ COMPLETE (2026-07-06) — implemented in
   programs/program_b/presentation/weekly_review.py as
-  build_weekly_review() -> str. Assembles five sections (Dataset
+  build_weekly_review() -> str. Assembles six sections (Dataset
   Summary, Observation Index, Markets Missing One Source, Current
-  Divergence Summary, Per-Market Detail) entirely from existing
-  modules (build_market_observation_index(), build_market_report(),
-  format_stability_table()) — no new statistics, no thresholds, no
-  rankings, no recommendations, no generated research notes. Each
+  Divergence Summary, Per-Market Detail, Historical Agreement
+  Matrix) entirely from existing modules
+  (build_market_observation_index(), build_market_report(),
+  build_agreement_matrix(), format_stability_table(),
+  format_agreement_matrix_table()) — no new statistics, no
+  thresholds, no rankings, no recommendations, no generated
+  research notes. Each
   market's report is built exactly once and reused across sections
   to avoid duplicated computation. Verified against the real
   12-market dataset: dataset summary matched real totals,
@@ -323,3 +326,31 @@ Next re-evaluation trigger: whether the Fed no-change market's
 oscillation between agreement and disagreement continues, resolves,
 or reveals a pattern; total comparable pairs reaching at least 300;
 or another market reaching n≥15.
+- Sixth checkpoint (2026-07-22, n=295 pairs, 89 markets): triggered
+  because a second market (Fed increase) reached n≥15. Aggregate
+  split changed only marginally despite ~20% dataset growth (56.5%
+  to 55.6% same-sign) — the most notable finding of this checkpoint.
+  The additional data did not materially change the aggregate
+  measurements during this interval, although further checkpoints
+  are required to determine whether this represents a durable
+  plateau or continued movement around a slower trend. The Fed
+  no-change market (now n=19, the deepest market ever recorded)
+  added two further sign-flip observations after the fifth
+  checkpoint, extending its current disagreement streak from one
+  observation to three consecutive observations since its most
+  recent same-sign reading at publication 20260720_080126. This is
+  real evidence that disagreement can persist across multiple
+  consecutive observations in this market, without establishing a
+  durable regime shift. Two new shallow watch-list markets were
+  flagged with perfect n=6 records (LeBron-76ers: 0/6 same-sign;
+  Iranian regime fall: 6/6 same-sign), explicitly unconfirmed given
+  this project's own prior evidence that shallow perfect records
+  don't reliably predict deeper behavior. See
+  research/validated_findings.md for the full analysis.
+
+Next re-evaluation trigger: whether the aggregate's near-flat
+movement persists or reverses at the next checkpoint; whether the
+Fed no-change market's three-observation disagreement streak
+continues or reverts; whether either new watch-list market's perfect
+record holds as it deepens; total comparable pairs reaching at least
+350; or a third market reaching n≥15.
