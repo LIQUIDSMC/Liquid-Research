@@ -180,17 +180,23 @@ Persistent Canonical Storage milestone, below).
 - The collector demonstrates sustained, unattended operation over
   a sufficiently long validation period, with retained console-log
   output and accumulated canonical data accurately reflecting what
-  occurred during that window. IN PROGRESS. One successful short
-  production validation run has completed with exact log-to-disk
-  row reconciliation, zero sequence gaps, zero connection losses,
-  zero persistence errors, and a successful final shutdown flush.
-  A multi-hour or longer unattended soak run remains required
-  before the strongest Phase 0 closure claim. Dedicated persistent
-  session and gap log files are not prerequisites; that was
-  explicitly re-evaluated as a scope decision in the Persistent
-  Canonical Storage section below. (Today's specific acceptance
-  threshold — e.g. 24 or 72 hours — belongs in an implementation
-  checklist, not this roadmap.)
+  occurred during that window. COMPLETE. A ~30-hour unattended soak
+  run on dedicated Raspberry Pi 3 hardware (2026-07-20 through
+  2026-07-21) confirmed: the collector process remained alive under
+  the same PID for the full duration; 189,318 Parquet files were
+  written, growing the canonical dataset to ~1.5GB; date-partition
+  rollover across a real UTC day boundary occurred correctly; five
+  real WebSocket disconnects occurred ("Connection lost: no close
+  frame received or sent") and all five were automatically
+  recovered from — real evidence the reconnection logic holds under
+  genuine, unplanned network conditions, not just a controlled
+  forced-disconnect test; zero GAP DETECTED events; zero ERROR
+  events; ample disk headroom retained throughout. Dedicated
+  persistent session and gap log files remain not prerequisites,
+  per the scope decision in the Persistent Canonical Storage
+  section below — console-log output plus accumulated canonical
+  data proved sufficient to fully evaluate this soak run after the
+  fact.
 
 **Risks:**
 - Exchange-specific WebSocket message edge cases not caught during
@@ -271,11 +277,49 @@ additional exchanges, schema redesign — all remain out of scope,
 exactly as Phase 0's existing "Explicitly NOT built" list already
 states.
 
-**Remaining before the strongest possible Phase 0 closure claim:**
-A sustained multi-hour (or longer) unattended operational soak run.
-This is an operational validation objective, not unfinished
-engineering work. The implementation is complete; what remains is
-additional runtime evidence demonstrating long-duration stability.
+**Long-duration soak test — COMPLETE (~30 hours observed, meeting
+and exceeding the 24-hour minimum requirement):** An unattended run
+on dedicated Raspberry Pi 3 hardware (1GB RAM, real production
+hardware, not the development machine), spanning 2026-07-20 through
+2026-07-21, confirmed sustained, unattended stability: same PID
+alive for the full duration; the canonical dataset contained
+approximately 189,000 Parquet files by the conclusion of the soak
+test, with the majority belonging to depth-level data; approximately
+1.5GB of canonical data had been accumulated; correct date-partition rollover across a real UTC day boundary; five real WebSocket disconnects, all
+automatically recovered ("Connection lost: no close frame received
+or sent"); zero GAP DETECTED events; zero ERROR events; ample disk
+headroom throughout (14% used of 58GB). This is real evidence of
+reconnection robustness under genuine, unplanned conditions, distinct
+from and complementary to the earlier deliberate forced-disconnect
+test. Phase 0's Operational success criteria are now fully satisfied
+by real evidence, closing the item previously listed here as
+remaining.
+
+**Known operating constraint — Pi memory headroom:** During the
+soak test, system-wide free memory on the Pi ran low (~81MiB free,
+~51MiB in swap, out of ~905MiB total), while the collector process's
+own memory (RSS) remained stable (~137-140MiB, no evidence of a
+leak). This is not a collector defect and did not cause the soak
+test to fail, but it is a real, documented constraint: the Pi 3 has
+limited headroom and should not casually absorb additional major
+workloads. Given the Pi 3's observed resource limits during the
+soak test, Program A/B automation (the orchestrator, built
+2026-07-21) currently remains on the Mac rather than being moved
+onto the Pi. This is the present operating architecture based on
+today's evidence and may be revisited if future hardware or
+operational evidence justifies a different deployment.
+
+**Next operational priority — storage capacity and data layout:**
+The soak test's real growth rate (~1.5GB and ~189,000 files in ~24
+hours) makes storage planning a real, near-term priority rather than
+a hypothetical future concern. Before any storage migration or
+layout change, determine the true daily growth rate from further
+real runs; project 7-day, 30-day, 90-day, and 1-year usage; evaluate
+whether the file count is sustainable on the current SD-card-based
+filesystem or warrants compaction, different partitioning, or
+external storage (e.g. an SSD); and preserve all currently collected
+data safely before making any such change. Not started as of this
+writing.
 
 **Evidence required to move to Phase 1:** A sustained unattended
 soak run (multi-hour or longer) confirming long-duration stability,
