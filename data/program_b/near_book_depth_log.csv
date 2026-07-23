@@ -304,3 +304,31 @@ timestamp,publication_id,slug,question,midpoint,total_obi,near_obi,n_levels,v_bi
 2026-07-22T16:18:23Z,20260722_091653,iran-full-airspace-closure-by-july-31-20260625195254150-838,Iran full airspace closure by July 31?,0.365,0.4816,0.2028,5,7610.8,5044.69,33,39,ok
 2026-07-22T16:18:24Z,20260722_091653,elon-musk-of-tweets-july-17-july-24-140-159,"Will Elon Musk post 140-159 tweets from July 17 to July 24, 2026?",0.0105,-0.7212,0.4206,5,3015.96,1230.18,8,102,ok
 2026-07-22T16:18:25Z,20260722_091653,will-iran-announce-withdrawal-from-mou-negotiations-by-july-31-20260622191733846-586-829-787,Will Iran announce withdrawal from MOU negotiations by July 31?,0.105,0.0008,0.3464,5,146278.23,71006.25,10,59,ok
+2026-07-23T16:07:30Z,20260723_090623,will-there-be-no-change-in-fed-interest-rates-after-the-july-2026-meeting,Will there be no change in Fed interest rates after the July 2026 meeting?,0.7365,0.8033,0.7728,5,6902.53,884.71,109,130,ok
+2026-07-23T16:07:31Z,20260723_090623,will-the-fed-increase-interest-rates-by-25-bps-after-the-july-2026-meeting,Will the Fed increase interest rates by 25 bps after the July 2026 meeting?,0.246,-0.7855,0.7085,5,36560.44,6237.13,161,105,ok
+2026-07-23T16:07:33Z,20260723_090623,will-wti-reach-95-in-july-2026,Will WTI Crude Oil (WTI) hit (HIGH) $95 in July?,0.737,-0.243,-0.7604,5,596.93,4386.61,73,29,ok
+2026-07-23T16:07:34Z,20260723_090623,will-lebron-james-play-for-the-golden-state-warriors-in-2026-27,Will LeBron James play for the Golden State Warriors in 2026-27?,0.1605,-0.387,0.5252,5,4608.67,1434.62,55,146,ok
+2026-07-23T16:07:35Z,20260723_090623,will-bitcoin-reach-70k-in-july-2026,"Will Bitcoin reach $70,000 in July?",0.145,-0.483,-0.0035,5,41195.15,41487.12,14,40,ok
+2026-07-23T16:07:36Z,20260723_090623,will-ethereum-dip-to-1500-by-december-31-2026-865-787,"Will Ethereum dip to $1,500 by December 31, 2026?",0.4085,0.9563,-0.4128,5,4612.84,11098.41,59,36,ok
+2026-07-23T16:07:37Z,20260723_090623,will-mitch-mcconnell-resign-from-the-senate-before-his-term-ends,Mitch McConnell steps down from Senate before his term ends?,0.485,-0.3177,-0.6696,5,1940.1,9803.16,46,37,ok
+2026-07-23T16:07:38Z,20260723_090623,will-the-fed-decrease-interest-rates-by-25-bps-after-the-september-2026-meeting-586,Will the Fed decrease interest rates by 25 bps after the September 2026 meeting?,0.037,0.6733,-0.7925,5,1083.3,9358.38,36,86,ok
+2026-07-23T16:07:39Z,20260723_090623,fed-rate-hike-in-2026,Fed rate hike in 2026?,0.705,0.8105,0.1008,5,38134.57,31151.58,60,25,ok
+2026-07-23T16:07:41Z,20260723_090623,will-the-fed-decide-differently-in-the-next-three-decisions-junjulsep,Will the Fed decide differently in the next three decisions (Jun–Jul–Sep)?,0.595,-0.3825,-0.3553,5,17046.37,35838.88,22,24,ok
+2026-07-23T16:07:42Z,20260723_090623,will-wti-reach-100-in-july-2026-928,Will WTI Crude Oil (WTI) hit (HIGH) $100 in July?,0.432,-0.1508,0.2879,5,427.15,236.17,72,41,ok
+2026-07-23T16:07:43Z,20260723_090623,will-bitcoin-reach-67pt5k-in-july-2026,"Will Bitcoin reach $67,500 in July?",0.415,-0.0671,-0.119,5,33892.98,43052.5,25,46,ok
+2026-07-23T16:07:44Z,20260723_090623,will-lebron-james-play-for-the-miami-heat-in-2026-27,Will LeBron James play for the Miami Heat in 2026-27?,0.4365,0.1738,0.4399,5,2578.07,1002.77,82,132,ok
+2026-07-23T16:07:45Z,20260723_090623,strait-of-hormuz-traffic-returns-to-normal-by-july-31,Strait of Hormuz traffic returns to normal by July 31?,0.0105,0.5483,0.445,5,354717.1,136225.88,10,147,ok
+2026-07-23T16:07:47Z,20260723_090623,will-mojtaba-khamenei-be-head-of-state-in-iran-end-of-2026,Will Mojtaba Khamenei be head of state in Iran end of 2026?,0.743,0.1088,-0.3768,5,4942.89,10919.34,92,114,ok
+2026-07-23T16:07:48Z,20260723_090623,israel-x-iran-ceasefire-continues-through-july-25-20260716224448967-454,Israel x Iran ceasefire continues through July 25?,0.765,0.1955,-0.545,5,12230.12,41526.73,54,23,ok
+2026-07-23T16:07:49Z,20260723_090623,will-the-us-invade-iran-before-2027,Will the U.S. invade Iran before 2027?,0.295,0.7845,0.8639,5,1237906.4,90381.19,29,69,ok
+2026-07-23T16:07:51Z,20260723_090623,israel-x-iran-ceasefire-continues-through-july-31-20260716224448968-384-155-519,Israel x Iran ceasefire continues through July 31?,0.615,-0.0226,-0.2895,5,8072.8,14650.19,45,36,ok
+2026-07-23T16:07:52Z,20260723_090623,clarity-act-signed-into-law-in-2026,Clarity Act signed into law in 2026?,0.355,0.3252,0.3813,5,10910.13,4886.8,31,55,ok
+2026-07-23T16:07:53Z,20260723_090623,will-lebron-james-play-for-the-cleveland-cavaliers-in-2026-27,Will LeBron James play for the Cleveland Cavaliers in 2026-27?,0.2455,-0.2738,0.5972,5,8822.77,2225.27,88,137,ok
+2026-07-23T16:07:54Z,20260723_090623,bab-el-mandeb-strait-effectively-closed-by-july-31,Bab el-Mandeb Strait effectively closed by July 31?,0.0395,-0.3375,0.8261,5,20246.74,1927.85,29,115,ok
+2026-07-23T16:07:55Z,20260723_090623,us-x-iran-effective-ceasfire-by-july-24-20260715194822044,US x Iran Effective Ceasefire by July 24?,0.03,0.04,0.2203,5,6341.25,4051.8,29,72,ok
+2026-07-23T16:07:56Z,20260723_090623,will-lebron-james-play-for-the-philadelphia-76ers-in-2026-27,Will LeBron James play for the Philadelphia 76ers in 2026-27?,0.071,-0.3366,0.8858,5,25179.68,1524.46,36,123,ok
+2026-07-23T16:07:57Z,20260723_090623,israel-closes-its-airspace-by-july-31-287,Israel closes its airspace by July 31?,0.31,0.38,0.5528,5,12259.44,3530.41,30,57,ok
+2026-07-23T16:07:58Z,20260723_090623,strait-of-hormuz-traffic-returns-to-normal-by-august-31-20260702154212320,Strait of Hormuz traffic returns to normal by August 31?,0.125,0.6817,0.2147,5,385487.67,249233.63,12,60,ok
+2026-07-23T16:08:00Z,20260723_090623,us-x-iran-effective-ceasfire-by-july-31-20260715194822045,US x Iran Effective Ceasefire by July 31?,0.175,0.3191,0.253,5,30410.92,18129.38,17,41,ok
+2026-07-23T16:08:01Z,20260723_090623,israel-closes-its-airspace-by-july-24,Israel closes its airspace by July 24?,0.065,-0.7834,0.46,5,28272.25,10457.02,6,49,ok
+2026-07-23T16:08:03Z,20260723_090623,will-the-us-announce-an-iran-ceasefire-by-july-24-20260718000915874,US announces halt in Iran offensive operations by July 24?,0.065,-0.552,0.8706,5,53014.29,3667.72,6,55,ok
