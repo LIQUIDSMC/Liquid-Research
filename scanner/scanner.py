@@ -27,6 +27,7 @@ Usage:
 import sys
 import os
 import glob
+import time
 import pandas as pd
 from datetime import datetime
 from typing import Optional
@@ -220,6 +221,7 @@ def print_ranked_markets(passed_rows: list) -> None:
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main() -> None:
+    verbose = "--verbose" in sys.argv
     console.print("\n[bold cyan]Liquid Research — Scanner Engine[/bold cyan]")
 
     snapshot_path = find_latest_snapshot()
@@ -237,8 +239,14 @@ def main() -> None:
     console.print(f"[dim]Scanning {total_count} markets...[/dim]\n")
 
     results = []
-    for _, row in df.iterrows():
+    for idx, (_, row) in enumerate(df.iterrows(), start=1):
+        market_start = time.monotonic()
+        if verbose:
+            console.print(f"[dim]  [{idx}/{total_count}] {row.get('question', 'Unknown')[:50]}[/dim]")
         result = process_market(row)
+        if verbose:
+            elapsed = round(time.monotonic() - market_start, 2)
+            console.print(f"[dim]    -> {elapsed}s[/dim]")
         results.append(result)
 
     killed_rows = [r for r in results if r["killed"]]
