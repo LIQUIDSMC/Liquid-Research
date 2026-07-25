@@ -354,3 +354,26 @@ Fed no-change market's three-observation disagreement streak
 continues or reverts; whether either new watch-list market's perfect
 record holds as it deepens; total comparable pairs reaching at least
 350; or a third market reaching n≥15.
+- Seventh checkpoint (2026-07-25, n=371 pairs, 105 markets): triggered
+  because total comparable pairs reached 371, exceeding the sixth
+  checkpoint's n≥350 threshold, and a fourth market reached n≥15.
+  Both aggregate divergence measures decreased slightly relative to
+  checkpoint 6, reported without directional interpretation given
+  the small magnitude and substantial simultaneous dataset growth.
+  The more notable development is the continued accumulation of
+  persistent, market-specific behavior in deeper-sampled markets —
+  some markets (Hormuz July 31, Fed Increase) show sustained,
+  consistent character at real depth, distinguishing an emerging
+  pattern of market-level classification from aggregate statistics
+  alone. A sign-flip was recorded in a later observed US Invade
+  Iran record following a run of same-sign observations, reported
+  cautiously given the unresolved chronological-ordering
+  limitation. The LeBron-76ers perfect-disagreement record held at
+  n=7. See research/validated_findings.md for the full analysis.
+
+Next re-evaluation trigger: whether the small aggregate divergence
+decrease continues, reverses, or was noise; whether US Invade
+Iran's new flip is isolated or the start of a new pattern; whether
+the LeBron-76ers perfect-disagreement record continues to hold at
+greater depth; total comparable pairs reaching at least 450; or a
+fifth market reaching n≥15.
