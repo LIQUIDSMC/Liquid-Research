@@ -380,3 +380,23 @@ timestamp,publication_id,slug,question,midpoint,total_obi,near_obi,n_levels,v_bi
 2026-07-25T14:34:51Z,20260725_073340,will-nvidia-be-the-largest-company-in-the-world-by-market-cap-on-july-31-20260624192329841,Will NVIDIA be the largest company in the world by market cap on July 31?,0.765,0.5295,-0.7824,5,5427.14,44446.36,50,23,ok
 2026-07-25T14:34:52Z,20260725_073340,strait-of-hormuz-traffic-returns-to-normal-by-december-31,Strait of Hormuz traffic returns to normal by December 31?,0.535,0.7844,0.255,5,66236.3,39317.17,48,46,ok
 2026-07-25T14:34:53Z,20260725_073340,will-mojtaba-khamenei-be-head-of-state-in-iran-end-of-2026,Will Mojtaba Khamenei be head of state in Iran end of 2026?,0.7825,0.1798,0.6319,5,5865.58,1323.12,114,74,ok
+2026-07-25T23:11:18Z,20260725_161024,will-there-be-no-change-in-fed-interest-rates-after-the-july-2026-meeting,Will there be no change in Fed interest rates after the July 2026 meeting?,0.7835,0.8714,0.6557,5,42262.74,8789.18,123,100,ok
+2026-07-25T23:11:19Z,20260725_161024,putin-out-before-2027-346,"Putin out as President of Russia by December 31, 2026?",0.085,0.6162,0.5327,5,1464954.67,446668.23,8,68,ok
+2026-07-25T23:11:20Z,20260725_161024,will-the-fed-increase-interest-rates-by-25-bps-after-the-july-2026-meeting,Will the Fed increase interest rates by 25 bps after the July 2026 meeting?,0.2085,-0.7822,-0.5441,5,7759.43,26282.35,137,114,ok
+2026-07-25T23:11:21Z,20260725_161024,will-wti-reach-95-in-july-2026,Will WTI Crude Oil (WTI) hit (HIGH) $95 in July?,0.207,0.1798,0.9215,5,4970.56,203.0,46,94,ok
+2026-07-25T23:11:22Z,20260725_161024,will-wti-reach-100-in-july-2026-928,Will WTI Crude Oil (WTI) hit (HIGH) $100 in July?,0.124,0.0332,-0.1971,5,593.26,884.61,47,77,ok
+2026-07-25T23:11:23Z,20260725_161024,will-the-us-invade-iran-before-2027,Will the U.S. invade Iran before 2027?,0.255,0.7009,0.0757,5,168687.49,144931.63,25,70,ok
+2026-07-25T23:11:24Z,20260725_161024,strait-of-hormuz-traffic-returns-to-normal-by-august-31-20260702154212320,Strait of Hormuz traffic returns to normal by August 31?,0.14,0.7717,0.3617,5,482671.45,226277.12,13,55,ok
+2026-07-25T23:11:25Z,20260725_161024,israel-x-iran-ceasefire-continues-through-july-26,Israel x Iran ceasefire continues through July 26?,0.965,0.1198,0.2579,5,6842.28,4036.83,73,20,ok
+2026-07-25T23:11:26Z,20260725_161024,israel-x-iran-ceasefire-continues-through-july-31-20260716224448968-384-155-519-798-243,Israel x Iran ceasefire continues through July 31?,0.825,-0.1465,0.331,5,20223.03,10165.76,55,17,ok
+2026-07-25T23:11:27Z,20260725_161024,us-x-iran-effective-ceasfire-by-july-31-20260715194822045,US x Iran Effective Ceasefire by July 31?,0.395,0.727,-0.8525,5,1964.48,24675.93,36,34,ok
+2026-07-25T23:11:28Z,20260725_161024,strait-of-hormuz-traffic-returns-to-normal-by-december-31,Strait of Hormuz traffic returns to normal by December 31?,0.555,0.7802,0.5732,5,98770.74,26793.19,52,44,ok
+2026-07-25T23:11:30Z,20260725_161024,will-nicols-maduro-be-the-leader-of-venezuela-end-of-2026,Will Nicolás Maduro be the leader of Venezuela end of 2026?,0.8205,-0.5763,-0.534,5,698.88,2300.63,78,72,ok
+2026-07-25T23:11:31Z,20260725_161024,iran-leadership-change-by-july-31-20260629143932628,Iran leadership change by July 31?,0.0215,0.9268,0.0977,5,19698.13,16191.7,20,99,ok
+2026-07-25T23:11:32Z,20260725_161024,strait-of-hormuz-traffic-returns-to-normal-by-september-30-20260702154339440,Strait of Hormuz traffic returns to normal by September 30?,0.265,0.9253,0.6669,5,49973.28,9985.02,26,53,ok
+2026-07-25T23:11:33Z,20260725_161024,israel-closes-its-airspace-by-july-31-287,Israel closes its airspace by July 31?,0.09,-0.2809,0.3308,5,67505.59,33942.6,8,61,ok
+2026-07-25T23:11:34Z,20260725_161024,will-iran-announce-withdrawal-from-mou-negotiations-by-july-31-20260622191733846-586-829-787,Will Iran announce withdrawal from MOU negotiations by July 31?,0.0305,-0.0536,0.2734,5,11143.7,6358.43,26,95,ok
+2026-07-25T23:11:35Z,20260725_161024,us-announces-end-of-iranian-blockade-by-july-31-2026-20260713152715082-212,"US announces end of Iranian blockade by July 31, 2026?",0.245,0.4296,-0.0208,5,3434.08,3579.93,21,35,ok
+2026-07-25T23:11:36Z,20260725_161024,israel-x-iran-ceasefire-continues-through-july-27,Israel x Iran ceasefire continues through July 27?,0.94,0.6851,-0.3406,5,22316.35,45369.86,49,5,ok
+2026-07-25T23:11:37Z,20260725_161024,israel-x-iran-ceasefire-continues-through-august-31-20260716224448970-754-896-823,Israel x Iran ceasefire continues through August 31?,0.575,-0.4952,0.2503,5,1182.04,708.75,46,36,ok
+2026-07-25T23:11:38Z,20260725_161024,will-trump-meet-with-netanyahu-by-july-31-2026,"Will Trump meet with Netanyahu by July 31, 2026?",0.9415,0.7042,-0.3998,5,2895.55,6752.9,76,34,ok

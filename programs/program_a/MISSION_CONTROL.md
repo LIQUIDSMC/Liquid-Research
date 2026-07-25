@@ -25,9 +25,9 @@ the full contract and responsibilities.
 
 ## Dataset Status
 Running since: 2026-06-22 (33 days as of 2026-07-25)
-Total paper trades: 167
-Open: 103
-Closed: 64
+Total paper trades: 171
+Open: 106
+Closed: 65
 Latest cycle (2026-07-14): 29 markets passed, canonical publication
 20260714_190131. 14 new trades created. 4 newly closed: 2 wins, 2
 losses.
@@ -80,9 +80,9 @@ time of the patch, not just newly-created ones.
 Below 75: <n>
 
 ## Performance (closed trades only — calculated from paper_trades.csv, 2026-07-25)
-⚠️ Still far from conclusive at n=64. Do not over-interpret.
-Win rate: 84.4%
-Total realized P&L: $149.20
+⚠️ Still far from conclusive at n=65. Do not over-interpret.
+Win rate: 84.6%
+Total realized P&L: $160.31
 Max drawdown: not yet meaningful at this volume
 
 Entry-price confound checkpoint run at n=36 (2026-07-08) — weak
