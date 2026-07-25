@@ -342,3 +342,51 @@ timestamp,publication_id,slug,question,midpoint,micro_price,obi,v_bid,v_ask,bid_
 2026-07-23T16:07:26Z,20260723_090623,us-x-iran-effective-ceasfire-by-july-31-20260715194822045,US x Iran Effective Ceasefire by July 31?,0.175,0.17656,0.3121,318037.32,166742.37,17,41,ok
 2026-07-23T16:07:27Z,20260723_090623,israel-closes-its-airspace-by-july-24,Israel closes its airspace by July 24?,0.065,0.0611,-0.7801,32798.01,265451.53,6,46,ok
 2026-07-23T16:07:28Z,20260723_090623,will-the-us-announce-an-iran-ceasefire-by-july-24-20260718000915874,US announces halt in Iran offensive operations by July 24?,0.065,0.062129,-0.5743,67574.79,249895.28,6,54,ok
+2026-07-24T22:03:19Z,20260724_150242,will-there-be-no-change-in-fed-interest-rates-after-the-july-2026-meeting,Will there be no change in Fed interest rates after the July 2026 meeting?,0.734,0.737308,0.8271,22101563.14,2091798.07,96,114,ok
+2026-07-24T22:03:20Z,20260724_150242,will-the-fed-increase-interest-rates-by-25-bps-after-the-july-2026-meeting,Will the Fed increase interest rates by 25 bps after the July 2026 meeting?,0.249,0.248241,-0.7593,3082426.2,22526625.04,154,106,ok
+2026-07-24T22:03:22Z,20260724_150242,will-bitcoin-reach-70k-in-july-2026,"Will Bitcoin reach $70,000 in July?",0.061,0.060653,-0.3471,102786.25,212057.04,29,71,ok
+2026-07-24T22:03:23Z,20260724_150242,will-bitcoin-reach-67pt5k-in-july-2026,"Will Bitcoin reach $67,500 in July?",0.255,0.254086,-0.1829,104945.53,151912.85,24,51,ok
+2026-07-24T22:03:24Z,20260724_150242,putin-out-before-2027-346,"Putin out as President of Russia by December 31, 2026?",0.085,0.087849,0.5699,4968438.18,1361365.74,8,68,ok
+2026-07-24T22:03:25Z,20260724_150242,will-renan-santos-win-the-2026-brazilian-presidential-election,Will Renan Santos win the 2026 Brazilian presidential election?,0.1175,0.117024,-0.9524,577249.48,23659204.36,68,155,ok
+2026-07-24T22:03:26Z,20260724_150242,will-bitcoin-dip-to-62pt5k-in-july-2026-from-july-14,"Will Bitcoin dip to $62,500 in July?",0.5395,0.539369,-0.2612,267295.27,456309.32,39,41,ok
+2026-07-24T22:03:27Z,20260724_150242,will-mitch-mcconnell-resign-from-the-senate-before-his-term-ends,Mitch McConnell steps down from Senate before his term ends?,0.455,0.456076,0.2153,355801.34,229757.3,42,39,ok
+2026-07-24T22:03:28Z,20260724_150242,will-wti-reach-95-in-july-2026,Will WTI Crude Oil (WTI) hit (HIGH) $95 in July?,0.585,0.586211,0.1009,350288.81,286056.74,67,58,ok
+2026-07-24T22:03:31Z,20260724_150242,will-wti-reach-120-in-july-2026,Will WTI Crude Oil (WTI) hit (HIGH) $120 in July?,0.021,0.020126,-0.8738,171488.48,2546411.18,14,62,ok
+2026-07-24T22:03:32Z,20260724_150242,will-the-us-invade-iran-before-2027,Will the U.S. invade Iran before 2027?,0.295,0.298949,0.7898,5019745.72,589607.51,29,69,ok
+2026-07-24T22:03:33Z,20260724_150242,israel-x-iran-ceasefire-continues-through-july-25-20260716224448967-454,Israel x Iran ceasefire continues through July 25?,0.865,0.86584,0.168,164945.37,117490.15,53,13,ok
+2026-07-24T22:03:35Z,20260724_150242,will-trump-meet-with-netanyahu-by-july-31-2026,"Will Trump meet with Netanyahu by July 31, 2026?",0.905,0.907975,0.595,136218.03,34587.27,55,9,ok
+2026-07-24T22:03:36Z,20260724_150242,will-mojtaba-khamenei-be-head-of-state-in-iran-end-of-2026,Will Mojtaba Khamenei be head of state in Iran end of 2026?,0.725,0.72536,0.18,2603881.18,1809439.38,87,132,ok
+2026-07-24T22:03:37Z,20260724_150242,israel-x-iran-ceasefire-continues-through-july-31-20260716224448968-384-155-519-798-243,Israel x Iran ceasefire continues through July 31?,0.635,0.632931,-0.4138,195879.53,472406.79,43,32,ok
+2026-07-24T22:03:38Z,20260724_150242,clarity-act-signed-into-law-in-2026,Clarity Act signed into law in 2026?,0.325,0.325532,0.1065,302521.72,244294.18,32,61,ok
+2026-07-24T22:03:39Z,20260724_150242,israel-closes-its-airspace-by-july-24,Israel closes its airspace by July 24?,0.028,0.027809,-0.0954,238326.99,288573.72,13,74,ok
+2026-07-24T22:03:41Z,20260724_150242,israel-closes-its-airspace-by-july-31-287,Israel closes its airspace by July 31?,0.265,0.263907,-0.2187,120804.05,188416.18,24,57,ok
+2026-07-24T22:03:42Z,20260724_150242,israel-x-iran-ceasefire-continues-through-july-26,Israel x Iran ceasefire continues through July 26?,0.785,0.78527,0.054,117694.61,105640.48,48,21,ok
+2026-07-24T22:03:43Z,20260724_150242,strait-of-hormuz-traffic-returns-to-normal-by-august-31-20260702154212320,Strait of Hormuz traffic returns to normal by August 31?,0.105,0.109284,0.8569,4605679.12,354933.43,10,62,ok
+2026-07-24T22:03:44Z,20260724_150242,will-nvidia-be-the-largest-company-in-the-world-by-market-cap-on-july-31-20260624192329841,Will NVIDIA be the largest company in the world by market cap on July 31?,0.715,0.718466,0.6933,833769.36,151039.52,44,28,ok
+2026-07-24T22:03:45Z,20260724_150242,iran-leadership-change-by-july-31-20260629143932628,Iran leadership change by July 31?,0.042,0.042041,0.0405,534646.83,492988.85,35,94,ok
+2026-07-24T22:03:46Z,20260724_150242,bab-el-mandeb-strait-effectively-closed-by-july-31,Bab el-Mandeb Strait effectively closed by July 31?,0.0365,0.036772,0.5432,1494089.66,442246.77,34,112,ok
+2026-07-24T22:03:47Z,20260724_150242,bab-el-mandeb-strait-effectively-closed-by-august-31,Bab el-Mandeb Strait effectively closed by August 31?,0.19,0.186592,-0.3408,110533.92,224840.24,18,47,ok
+2026-07-24T22:03:49Z,20260724_150242,strait-of-hormuz-traffic-returns-to-normal-by-december-31,Strait of Hormuz traffic returns to normal by December 31?,0.515,0.518935,0.787,4373293.03,521143.97,46,48,ok
+2026-07-24T22:03:50Z,20260724_150242,will-the-iranian-regime-fall-by-the-end-of-2026,Will the Iranian regime fall before 2027?,0.095,0.095984,0.1968,2272694.26,1525156.09,9,79,ok
+2026-07-24T22:03:51Z,20260724_150242,will-trump-meet-with-netanyahu-by-august-31-2026,"Will Trump meet with Netanyahu by August 31, 2026?",0.9395,0.942251,0.786,299521.25,35882.38,66,23,ok
+2026-07-24T22:03:52Z,20260724_150242,iran-invades-kuwait-by-august-31-20260720015031546,Iran invades Kuwait by August 31?,0.031,0.031937,0.9365,11303201.04,370625.91,25,94,ok
+2026-07-24T22:03:54Z,20260724_150242,us-x-iran-effective-ceasfire-by-july-31-20260715194822045,US x Iran Effective Ceasefire by July 31?,0.155,0.157605,0.521,329292.21,103690.06,15,34,ok
+2026-07-25T14:34:12Z,20260725_073340,will-there-be-no-change-in-fed-interest-rates-after-the-july-2026-meeting,Will there be no change in Fed interest rates after the July 2026 meeting?,0.7495,0.749924,0.8479,22107851.19,1819518.57,108,115,ok
+2026-07-25T14:34:13Z,20260725_073340,will-the-fed-increase-interest-rates-by-25-bps-after-the-july-2026-meeting,Will the Fed increase interest rates by 25 bps after the July 2026 meeting?,0.2475,0.247111,-0.7779,2822186.48,22589905.08,154,109,ok
+2026-07-25T14:34:14Z,20260725_073340,will-bitcoin-reach-70k-in-july-2026,"Will Bitcoin reach $70,000 in July?",0.045,0.044792,-0.2082,124805.08,190442.75,25,87,ok
+2026-07-25T14:34:15Z,20260725_073340,will-bitcoin-reach-67pt5k-in-july-2026,"Will Bitcoin reach $67,500 in July?",0.225,0.223427,-0.3145,95620.14,183378.69,20,56,ok
+2026-07-25T14:34:16Z,20260725_073340,will-mitch-mcconnell-resign-from-the-senate-before-his-term-ends,Mitch McConnell steps down from Senate before his term ends?,0.465,0.465819,0.1639,349884.52,251355.55,44,40,ok
+2026-07-25T14:34:17Z,20260725_073340,will-the-us-invade-iran-before-2027,Will the U.S. invade Iran before 2027?,0.255,0.258385,0.6769,4019671.38,774378.45,25,73,ok
+2026-07-25T14:34:18Z,20260725_073340,israel-x-iran-ceasefire-continues-through-july-26,Israel x Iran ceasefire continues through July 26?,0.93,0.932594,0.2594,267477.25,157303.05,47,6,ok
+2026-07-25T14:34:19Z,20260725_073340,israel-x-iran-ceasefire-continues-through-july-31-20260716224448968-384-155-519-798-243,Israel x Iran ceasefire continues through July 31?,0.825,0.823823,-0.2354,138912.87,224455.62,56,17,ok
+2026-07-25T14:34:20Z,20260725_073340,will-trump-meet-with-netanyahu-by-july-31-2026,"Will Trump meet with Netanyahu by July 31, 2026?",0.9595,0.96049,0.66,300251.97,61502.19,81,24,ok
+2026-07-25T14:34:21Z,20260725_073340,iran-leadership-change-by-july-31-20260629143932628,Iran leadership change by July 31?,0.0215,0.021964,0.9279,13498468.16,504532.62,20,104,ok
+2026-07-25T14:34:22Z,20260725_073340,bab-el-mandeb-strait-effectively-closed-by-july-31,Bab el-Mandeb Strait effectively closed by July 31?,0.0275,0.027766,0.5322,1754922.45,535759.6,23,120,ok
+2026-07-25T14:34:24Z,20260725_073340,israel-closes-its-airspace-by-july-31-287,Israel closes its airspace by July 31?,0.115,0.113113,-0.3773,117921.04,260831.82,11,63,ok
+2026-07-25T14:34:25Z,20260725_073340,strait-of-hormuz-traffic-returns-to-normal-by-august-31-20260702154212320,Strait of Hormuz traffic returns to normal by August 31?,0.125,0.129203,0.8406,3403843.95,294771.11,12,62,ok
+2026-07-25T14:34:26Z,20260725_073340,will-nicols-maduro-be-the-leader-of-venezuela-end-of-2026,Will Nicolás Maduro be the leader of Venezuela end of 2026?,0.827,0.825834,-0.5828,366395.69,1390166.97,92,66,ok
+2026-07-25T14:34:27Z,20260725_073340,us-x-iran-effective-ceasfire-by-july-31-20260715194822045,US x Iran Effective Ceasefire by July 31?,0.245,0.246757,0.3514,297101.17,142605.07,24,52,ok
+2026-07-25T14:34:28Z,20260725_073340,clarity-act-signed-into-law-in-2026,Clarity Act signed into law in 2026?,0.345,0.347048,0.4096,609365.25,255234.59,32,51,ok
+2026-07-25T14:34:29Z,20260725_073340,will-nvidia-be-the-largest-company-in-the-world-by-market-cap-on-july-31-20260624192329841,Will NVIDIA be the largest company in the world by market cap on July 31?,0.765,0.76765,0.5301,840385.38,258104.72,50,23,ok
+2026-07-25T14:34:30Z,20260725_073340,strait-of-hormuz-traffic-returns-to-normal-by-december-31,Strait of Hormuz traffic returns to normal by December 31?,0.535,0.538921,0.7842,4178777.68,505451.59,48,46,ok
+2026-07-25T14:34:31Z,20260725_073340,will-mojtaba-khamenei-be-head-of-state-in-iran-end-of-2026,Will Mojtaba Khamenei be head of state in Iran end of 2026?,0.7825,0.78259,0.1799,2604873.62,1810637.37,113,73,ok
