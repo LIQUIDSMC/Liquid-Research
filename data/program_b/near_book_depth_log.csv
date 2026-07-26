@@ -400,3 +400,23 @@ timestamp,publication_id,slug,question,midpoint,total_obi,near_obi,n_levels,v_bi
 2026-07-25T23:11:36Z,20260725_161024,israel-x-iran-ceasefire-continues-through-july-27,Israel x Iran ceasefire continues through July 27?,0.94,0.6851,-0.3406,5,22316.35,45369.86,49,5,ok
 2026-07-25T23:11:37Z,20260725_161024,israel-x-iran-ceasefire-continues-through-august-31-20260716224448970-754-896-823,Israel x Iran ceasefire continues through August 31?,0.575,-0.4952,0.2503,5,1182.04,708.75,46,36,ok
 2026-07-25T23:11:38Z,20260725_161024,will-trump-meet-with-netanyahu-by-july-31-2026,"Will Trump meet with Netanyahu by July 31, 2026?",0.9415,0.7042,-0.3998,5,2895.55,6752.9,76,34,ok
+2026-07-26T14:55:54Z,20260726_075457,will-there-be-no-change-in-fed-interest-rates-after-the-july-2026-meeting,Will there be no change in Fed interest rates after the July 2026 meeting?,0.8275,0.8116,0.3232,5,83929.54,42928.03,139,94,ok
+2026-07-26T14:55:55Z,20260726_075457,will-the-fed-increase-interest-rates-by-25-bps-after-the-july-2026-meeting,Will the Fed increase interest rates by 25 bps after the July 2026 meeting?,0.1715,-0.6279,-0.3009,5,32759.38,60953.11,134,118,ok
+2026-07-26T14:55:56Z,20260726_075457,putin-out-before-2027-346,"Putin out as President of Russia by December 31, 2026?",0.085,0.6397,0.6012,5,1553965.37,387000.77,8,68,ok
+2026-07-26T14:55:57Z,20260726_075457,will-wti-reach-95-in-july-2026,Will WTI Crude Oil (WTI) hit (HIGH) $95 in July?,0.1745,0.3357,0.2182,5,7618.17,4888.68,51,99,ok
+2026-07-26T14:55:58Z,20260726_075457,fed-rate-hike-in-2026,Fed rate hike in 2026?,0.675,0.8302,-0.2566,5,15829.72,26756.32,60,28,ok
+2026-07-26T14:55:59Z,20260726_075457,will-the-us-invade-iran-before-2027,Will the U.S. invade Iran before 2027?,0.195,0.7449,0.8541,5,1587371.5,124946.78,19,76,ok
+2026-07-26T14:56:00Z,20260726_075457,strait-of-hormuz-traffic-returns-to-normal-by-august-31-20260702154212320,Strait of Hormuz traffic returns to normal by August 31?,0.155,0.861,0.8257,5,911550.18,87023.51,15,63,ok
+2026-07-26T14:56:01Z,20260726_075457,israel-x-iran-ceasefire-continues-through-july-31-20260716224448968-384-155-519-798-243,Israel x Iran ceasefire continues through July 31?,0.875,-0.2018,-0.1687,5,23558.12,33118.3,55,12,ok
+2026-07-26T14:56:02Z,20260726_075457,us-x-iran-effective-ceasfire-by-july-31-20260715194822045,US x Iran Effective Ceasefire by July 31?,0.465,0.4135,0.1834,5,8639.28,5962.09,35,43,ok
+2026-07-26T14:56:03Z,20260726_075457,israel-closes-its-airspace-by-july-31-287,Israel closes its airspace by July 31?,0.075,-0.4026,0.4857,5,74134.45,25662.79,7,65,ok
+2026-07-26T14:56:04Z,20260726_075457,israel-x-iran-ceasefire-continues-through-july-27,Israel x Iran ceasefire continues through July 27?,0.9745,-0.5541,0.6152,5,13084.82,3117.16,85,25,ok
+2026-07-26T14:56:05Z,20260726_075457,will-iran-announce-withdrawal-from-mou-negotiations-by-july-31-20260622191733846-586-829-787,Will Iran announce withdrawal from MOU negotiations by July 31?,0.017,-0.0576,0.5609,5,24831.63,6985.51,14,101,ok
+2026-07-26T14:56:06Z,20260726_075457,us-announces-end-of-iranian-blockade-by-july-31-2026-20260713152715082-212,"US announces end of Iranian blockade by July 31, 2026?",0.235,-0.0108,0.3243,5,12601.02,6429.26,23,43,ok
+2026-07-26T14:56:07Z,20260726_075457,israel-x-iran-ceasefire-continues-through-august-31-20260716224448970-754-896-823,Israel x Iran ceasefire continues through August 31?,0.63,-0.527,-0.049,5,7114.64,7847.54,48,30,ok
+2026-07-26T14:56:08Z,20260726_075457,will-trump-meet-with-netanyahu-by-july-31-2026,"Will Trump meet with Netanyahu by July 31, 2026?",0.956,0.7387,-0.0915,5,3051.09,3665.82,72,25,ok
+2026-07-26T14:56:10Z,20260726_075457,will-the-us-announce-an-iran-ceasefire-by-july-31-20260718000915875,US announces halt in Iran offensive operations by July 31?,0.52,0.4029,-0.4097,5,2495.49,5959.85,43,32,ok
+2026-07-26T14:56:11Z,20260726_075457,iran-leadership-change-by-july-31-20260629143932628,Iran leadership change by July 31?,0.013,0.9117,-0.6528,5,9780.39,46558.62,11,91,ok
+2026-07-26T14:56:12Z,20260726_075457,us-x-iran-effective-ceasfire-by-august-31-20260715194822047,US x Iran Effective Ceasefire by August 31?,0.725,0.716,-0.467,5,2024.63,5572.8,58,27,ok
+2026-07-26T14:56:13Z,20260726_075457,strait-of-hormuz-traffic-returns-to-normal-by-december-31,Strait of Hormuz traffic returns to normal by December 31?,0.575,0.7633,0.2834,5,72643.05,40559.42,55,42,ok
+2026-07-26T14:56:14Z,20260726_075457,iran-full-airspace-closure-by-july-31-20260625195254150-838,Iran full airspace closure by July 31?,0.065,0.1097,0.6808,5,85136.29,16167.63,6,52,ok
