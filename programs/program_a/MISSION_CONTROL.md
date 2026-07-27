@@ -24,10 +24,10 @@ downstream consumer. See programs/program_a/domain/README.md for
 the full contract and responsibilities.
 
 ## Dataset Status
-Running since: 2026-06-22 (34 days as of 2026-07-26)
-Total paper trades: 173
-Open: 108
-Closed: 65
+Running since: 2026-06-22 (35 days as of 2026-07-27)
+Total paper trades: 183
+Open: 112
+Closed: 71
 Latest cycle (2026-07-14): 29 markets passed, canonical publication
 20260714_190131. 14 new trades created. 4 newly closed: 2 wins, 2
 losses.
@@ -79,10 +79,10 @@ time of the patch, not just newly-created ones.
 75-90: <n>
 Below 75: <n>
 
-## Performance (closed trades only — calculated from paper_trades.csv, 2026-07-25)
-⚠️ Still far from conclusive at n=65. Do not over-interpret.
-Win rate: 84.6%
-Total realized P&L: $160.31
+## Performance (closed trades only — calculated from paper_trades.csv, 2026-07-27)
+⚠️ Still far from conclusive at n=71. Do not over-interpret.
+Win rate: 83.1%
+Total realized P&L: $41.38
 Max drawdown: not yet meaningful at this volume
 
 Entry-price confound checkpoint run at n=36 (2026-07-08) — weak
