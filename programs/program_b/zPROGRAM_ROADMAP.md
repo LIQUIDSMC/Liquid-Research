@@ -377,3 +377,26 @@ Iran's new flip is isolated or the start of a new pattern; whether
 the LeBron-76ers perfect-disagreement record continues to hold at
 greater depth; total comparable pairs reaching at least 450; or a
 fifth market reaching n≥15.
+- Eighth checkpoint (2026-07-28, n=466 pairs, 124 markets): triggered
+  because both predefined checkpoint-7 thresholds were reached
+  simultaneously (450+ pairs, a fifth market at n≥15). Aggregate
+  moved modestly back toward agreement (55.5% to 56.9% same-sign),
+  small relative to the substantial simultaneous dataset growth and
+  not yet treated as a directional trend. The more informative
+  finding is that market-level regimes remain heterogeneous and
+  persistent: two correlated Hormuz markets (same underlying event,
+  different deadlines) both show strong stability; US Invade Iran
+  shows strong stability at n=19; Fed Increase remains the clearest
+  persistent-disagreement example at n=21 (66.7% flip rate); and
+  Fed No-Change, now the deepest market in the matrix at n=25,
+  shifted notably back toward majority-agreement since the seventh
+  checkpoint's near-even split. See research/validated_findings.md
+  for the full analysis.
+
+Next re-evaluation trigger: whether the aggregate's modest reversal
+toward agreement continues, reverses, or remains ordinary variation;
+whether Fed No-Change's shift toward agreement persists or
+oscillates further; whether the two correlated Hormuz markets'
+stability holds as independent markets reach comparable depth;
+total comparable pairs reaching at least 550; or a sixth market
+reaching n≥15.
