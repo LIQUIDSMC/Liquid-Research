@@ -465,3 +465,23 @@ timestamp,publication_id,slug,question,midpoint,micro_price,obi,v_bid,v_ask,bid_
 2026-07-27T19:38:23Z,20260727_123657,bab-el-mandeb-strait-effectively-closed-by-august-31,Bab el-Mandeb Strait effectively closed by August 31?,0.095,0.092472,-0.5057,84134.14,256260.92,9,55,ok
 2026-07-27T19:38:24Z,20260727_123657,farsi-island-no-longer-under-iranian-control-by-august-31-20260720015111490,Farsi Island no longer under Iranian control by August 31?,0.039,0.039467,0.0778,113425.18,97052.85,20,53,ok
 2026-07-27T19:38:25Z,20260727_123657,abu-musa-island-no-longer-under-iranian-control-by-august-31-20260720011758216,Abu Musa Island no longer under Iranian control by August 31?,0.0445,0.044854,0.1012,110379.19,90089.74,19,50,ok
+2026-07-28T17:57:38Z,20260728_105543,will-bitcoin-dip-to-60000-in-july-20260706151220612-754,"Will Bitcoin dip to $60,000 in July?",0.125,0.125726,0.1453,28052.2,20935.61,12,29,ok
+2026-07-28T17:57:40Z,20260728_105543,fed-rate-hike-in-2026,Fed rate hike in 2026?,0.765,0.769319,0.8638,2329962.04,170211.26,69,19,ok
+2026-07-28T17:57:42Z,20260728_105543,will-bitcoin-reach-70k-in-july-2026,"Will Bitcoin reach $70,000 in July?",0.0135,0.011885,-0.6458,93223.14,433231.41,9,47,ok
+2026-07-28T17:57:43Z,20260728_105543,will-bitcoin-dip-to-62pt5k-in-july-2026-from-july-14,"Will Bitcoin dip to $62,500 in July?",0.5715,0.561958,-0.6581,62854.63,304807.73,35,29,ok
+2026-07-28T17:57:45Z,20260728_105543,will-wti-reach-95-in-july-2026,Will WTI Crude Oil (WTI) hit (HIGH) $95 in July?,0.017,0.01758,0.5803,365262.0,97015.88,16,99,ok
+2026-07-28T17:57:47Z,20260728_105543,will-bitcoin-reach-67pt5k-in-july-2026,"Will Bitcoin reach $67,500 in July?",0.075,0.071333,-0.7333,16962.05,110238.69,7,40,ok
+2026-07-28T17:57:48Z,20260728_105543,will-bitcoin-dip-to-57pt5k-in-july-2026-618,"Will Bitcoin dip to $57,500 in July?",0.0355,0.034861,-0.2555,153644.72,259122.93,24,52,ok
+2026-07-28T17:57:50Z,20260728_105543,strait-of-hormuz-traffic-returns-to-normal-by-august-31-20260702154212320,Strait of Hormuz traffic returns to normal by August 31?,0.135,0.138892,0.7785,4771467.14,594396.5,13,60,ok
+2026-07-28T17:57:52Z,20260728_105543,will-turkey-join-the-abraham-accords-before-2027,Will Turkey join the Abraham Accords before 2027?,0.0675,0.067619,0.2383,148754.2,91497.67,44,57,ok
+2026-07-28T17:57:53Z,20260728_105543,us-announces-end-of-iranian-blockade-by-july-31-2026-20260713152715082-212,"US announces end of Iranian blockade by July 31, 2026?",0.195,0.193482,-0.3035,68192.25,127622.73,19,44,ok
+2026-07-28T17:57:55Z,20260728_105543,will-nicols-maduro-be-the-leader-of-venezuela-end-of-2026,Will Nicolás Maduro be the leader of Venezuela end of 2026?,0.826,0.824747,-0.6266,325792.01,1419244.49,80,68,ok
+2026-07-28T17:57:56Z,20260728_105543,will-nvidia-be-the-largest-company-in-the-world-by-market-cap-on-july-31-20260624192329841,Will NVIDIA be the largest company in the world by market cap on July 31?,0.24,0.24196,0.196,756111.28,508294.75,21,51,ok
+2026-07-28T17:57:58Z,20260728_105543,israel-x-iran-ceasefire-continues-through-july-31-20260716224448968-384-155-519-798-243,Israel x Iran ceasefire continues through July 31?,0.935,0.937426,0.4853,229732.95,79615.91,49,6,ok
+2026-07-28T17:57:59Z,20260728_105543,us-x-iran-effective-ceasfire-by-july-31-20260715194822045,US x Iran Effective Ceasefire by July 31?,0.595,0.594673,-0.0655,268259.94,305848.83,44,31,ok
+2026-07-28T17:58:01Z,20260728_105543,will-the-us-invade-iran-before-2027,Will the U.S. invade Iran before 2027?,0.215,0.218948,0.7896,5136656.19,604062.11,21,74,ok
+2026-07-28T17:58:02Z,20260728_105543,will-apple-be-the-largest-company-in-the-world-by-market-cap-on-july-31-20260624192329843,Will Apple be the largest company in the world by market cap on July 31?,0.7585,0.758182,-0.0334,2919114.95,3121100.87,71,73,ok
+2026-07-28T17:58:04Z,20260728_105543,hantavirus-pandemic-in-2026,Hantavirus pandemic in 2026?,0.0325,0.032423,-0.1546,8849823.66,12086930.69,32,199,ok
+2026-07-28T17:58:05Z,20260728_105543,crichundred-sun-man-2026-07-28,The Hundred: Sunrisers Leeds vs Manchester Super Giants,0.52,0.52236,0.236,25907.88,16014.5,29,24,ok
+2026-07-28T17:58:07Z,20260728_105543,strait-of-hormuz-traffic-returns-to-normal-by-august-15-20260727171036148,Strait of Hormuz traffic returns to normal by August 15?,0.043,0.04388,0.8804,6552479.4,416628.67,40,65,ok
+2026-07-28T17:58:08Z,20260728_105543,clarity-act-signed-into-law-in-2026,Clarity Act signed into law in 2026?,0.345,0.347623,0.5247,1063848.23,331671.81,33,51,ok
