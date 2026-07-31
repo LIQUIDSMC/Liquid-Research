@@ -218,3 +218,65 @@ Question: Is combinatorial arbitrage sufficiently common on modern Polymarket to
 Why it matters: Even if the methodology reproduces successfully (Phase 0), it may not deserve continued investment if genuine logically-dependent market pairs are too infrequent to materially improve expected returns. This is arguably the highest-leverage question in this section — it determines whether success at Phase 0 is worth acting on at all.
 What data would be needed: Frequency counts from a real Phase 0 run — how many candidate pairs survive filtering, how many show genuine logical dependency, over a meaningful observation window (not a single snapshot).
 Date raised: 2026-07-05
+---
+
+Question: When multiple markets represent one underlying real-world event, how should trade count, win rate, and P&L be interpreted?
+Why it matters: Program A's reported statistics currently treat every closed trade as independent. If a cluster of correlated trades resolves together, one real-world event could disproportionately swing headline win rate and P&L, distorting confidence in Program A's own performance.
+Current evidence: On 2026-07-27, six distinct "Will LeBron James play for [team]" markets resolved simultaneously on one real event (4 wins, 2 losses). No measured distortion has been quantified — this is an observed motivating example, not a confirmed finding.
+Potential test: Investigate whether Polymarket exposes neg-risk/market-family grouping via API metadata (preferred) versus relying on unreliable text pattern-matching on question strings; if detectable, compute event-family-adjusted statistics alongside raw statistics for comparison.
+Status: Open
+Date raised: 2026-07-31
+
+---
+
+Question: Does each Program A paper trade preserve enough immutable decision-time data to reconstruct exactly what was known and used when the trade was created?
+Why it matters: If trade creation does not persist a snapshot of the data actually used, a later audit or resolution step could inadvertently read different, newer data than what genuinely informed the original decision.
+Current evidence: None gathered yet — this requires reading paper_trader.py's actual implementation, not assumption.
+Potential test: Trace what paper_trader.py persists per trade versus what it reads at creation time; confirm whether any field could differ if re-read later from a "latest" file.
+Status: Open
+Date raised: 2026-07-31
+
+---
+
+Question: Can a market outcome recorded as resolved later be disputed or changed, and if so, how does the current resolver behave?
+Why it matters: Prediction-market resolutions may involve dispute or finality stages; whether and how current Polymarket resolutions can change after first appearing resolved has not yet been verified for LRS. If they can, a resolver that reads "resolved" once and locks in the outcome could be capturing a value that later changes, silently corrupting historical trade records.
+Current evidence: None gathered yet.
+Potential test: Research Polymarket's actual resolution/finality mechanics from primary documentation, then trace whether paper_resolver.py re-checks resolved markets or treats resolution as permanent on first read.
+Status: Open
+Date raised: 2026-07-31
+
+---
+
+Question: Are paired total-book OBI and near-book observations in Program B genuinely contemporaneous enough to represent the same market state?
+Why it matters: If the two measurements are captured via separate API calls at meaningfully different real moments, a comparison between them could reflect timing skew rather than a genuine relationship between the two indicators.
+Current evidence: None gathered yet.
+Potential test: Measure the actual real-time gap between total-book and near-book capture for a sample of comparable pairs in the agreement matrix.
+Status: Open
+Date raised: 2026-07-31
+
+---
+
+Question: Can LRS reconstruct the exact data state available at a past decision time, rather than only reading current or mutable "latest" files?
+Why it matters: Point-in-time reconstruction capability is a prerequisite for confidently auditing any past decision after the fact; without it, later audits risk unknowingly substituting current data for what was actually available historically.
+Current evidence: Believed no such capability currently exists, but this has not been confirmed as either a real gap or a real requirement.
+Potential test: Attempt to reconstruct what canonical output existed at a specific arbitrary past timestamp using only currently-retained data/logs, and see whether this is actually possible.
+Status: Open
+Date raised: 2026-07-31
+
+---
+
+Question: Does Program B add information beyond Program A's existing liquidity, spread, category, and tradeability data, and what evidence would justify integration rather than continued independence?
+Why it matters: This is the central question determining whether Program A and Program B should ever be combined. Program B has found persistent, market-specific stability/instability patterns, but has not tested whether these are explainable by metadata Program A already has access to.
+Current evidence: No liquidity/spread/category correlation analysis has been run against Program B's stability classifications.
+Potential test: Correlate each market's Program B same-sign/sign-flip ratio against its liquidity, spread, and category fields.
+Status: Open
+Date raised: 2026-07-31
+
+---
+
+Question: Which timestamps does LRS actually need to distinguish among event time, observation, receipt, processing, publication, decision, execution, and resolution?
+Why it matters: A single "when was this known" timestamp may be too simple for an asynchronous, multi-machine system (Pi collector, Mac-side scanner/orchestrator, external APIs); collapsing distinct stages into one timestamp could hide real gaps between when data was captured, processed, published, and acted on.
+Current evidence: LRS currently records several timestamps and publication identifiers, but no audit has yet established which stages are represented distinctly, which are inferred, and which are collapsed together.
+Potential test: Trace one real trade or one real Program B comparison end-to-end and identify which of these stages are currently distinguishable in the data versus collapsed together.
+Status: Open
+Date raised: 2026-07-31
