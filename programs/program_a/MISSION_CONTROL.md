@@ -24,10 +24,10 @@ downstream consumer. See programs/program_a/domain/README.md for
 the full contract and responsibilities.
 
 ## Dataset Status
-Running since: 2026-06-22 (39 days as of 2026-07-31)
-Total paper trades: 209
-Open: 119
-Closed: 90
+Running since: 2026-06-22 (41 days as of 2026-08-01)
+Total paper trades: 216
+Open: 99
+Closed: 117
 Latest cycle (2026-07-14): 29 markets passed, canonical publication
 20260714_190131. 14 new trades created. 4 newly closed: 2 wins, 2
 losses.
@@ -79,18 +79,45 @@ time of the patch, not just newly-created ones.
 75-90: <n>
 Below 75: <n>
 
-## Performance (closed trades only — calculated from paper_trades.csv, 2026-07-31)
-⚠️ Approaching the 100-trade milestone at n=90. Do not over-interpret yet.
-Win rate: 85.6%
-Total realized P&L: $438.12
+## Performance (closed trades only — calculated from paper_trades.csv, 2026-08-01)
+✅ 100-trade milestone reached (n=117). Predefined Program A re-evaluation checkpoint completed.
+Win rate: 87.2%
+Total realized P&L: $647.24
 Max drawdown: not yet meaningful at this volume
 
-Entry-price confound checkpoint run at n=36 (2026-07-08) — weak
-correlation (Pearson 0.078, Spearman 0.103) between score and
-entry_price found. Does not support entry_price as the explanation
-for the original median-split result. See
-research/validated_findings.md for full checkpoint. Scheduled for
-re-evaluation at 100 closed trades.
+Entry-price confound history:
+- n=32 (2026-07-02): median split found high-score group
+  underperformed low-score group (75.0% vs 93.8% win rate, -$28.35
+  vs +$215.06 total P&L). Flagged as possibly confounded by entry
+  price, not concluded.
+- n=36 (2026-07-08): weak correlation (Pearson 0.078, Spearman
+  0.103) between score and entry_price. Did not support entry
+  price as the explanation for the n=32 result.
+- n=117 (2026-08-01): entry_price_analysis.py re-run per its own
+  scheduled 100-trade checkpoint. Score/entry-price correlation
+  remains weak (Pearson -0.1144, Spearman -0.0909), consistent
+  with n=36 — still does not support entry price as the
+  explanation for the score/outcome difference. The direction of
+  the original n=32 median-split result appears to have repeated:
+  low-score group (n=56) again showed higher win rate (92.9% vs
+  82.0%) and higher average/median P&L ($9.32/$10.80 vs
+  $2.06/$5.32) than the high-score group (n=61). This is a
+  directional replication of the observed pattern only — not proof
+  of predictive value, causation, or a durable edge. The
+  high-entry-price group's high win rate (98.3%) with small average
+  payoff ($3.09) versus the low-entry-price group's lower win rate
+  (75.9%) with larger average/median payoff ($8.01/$27.80) is
+  consistent with standard binary-market payout mechanics
+  (favorite-longshot structure), not presented as a novel causal
+  finding. The three largest-magnitude trades were each a full
+  -$100 loss (combined -$300, -46.4% of total realized P&L) —
+  results remain materially sensitive to a small number of full-
+  position losses. The raw n=117 count may overstate the effective
+  number of independent events, since related/correlated market
+  families (see research/open_questions.md, 2026-07-31 entry) have
+  not yet been identified or adjusted for. Full report:
+  programs/program_a/analysis/entry_price_analysis.py output, this
+  session. Scheduled for re-evaluation at 250 closed trades.
 
 ## Category Performance
 BLOCKED. As of 2026-06-25, several categories now have at least
@@ -141,7 +168,7 @@ any directional conclusion.
 
 ## Research Milestones
 - [x] 30 resolved trades — first directional look ✅ 2026-07-01
-- [ ] 100 resolved trades — bucket comparisons become meaningful
+- [x] 100 resolved trades — bucket comparisons become meaningful ✅ 2026-08-01 (n=117; see Performance section above and research/validated_findings.md for the full checkpoint)
 - [ ] ≥30 closed trades per category — category edge analysis:
       which categories produce highest expectancy? Does
       tradeability_score behave differently by category?
