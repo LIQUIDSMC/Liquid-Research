@@ -24,9 +24,9 @@ downstream consumer. See programs/program_a/domain/README.md for
 the full contract and responsibilities.
 
 ## Dataset Status
-Running since: 2026-06-22 (41 days as of 2026-08-01)
-Total paper trades: 216
-Open: 99
+Running since: 2026-06-22 (42 days as of 2026-08-02)
+Total paper trades: 224
+Open: 107
 Closed: 117
 Latest cycle (2026-07-14): 29 markets passed, canonical publication
 20260714_190131. 14 new trades created. 4 newly closed: 2 wins, 2

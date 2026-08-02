@@ -400,3 +400,23 @@ oscillates further; whether the two correlated Hormuz markets'
 stability holds as independent markets reach comparable depth;
 total comparable pairs reaching at least 550; or a sixth market
 reaching n≥15.
+- Ninth checkpoint (2026-08-02, n=575 pairs, 164 markets): triggered
+  because total comparable pairs reached 575, exceeding the eighth
+  checkpoint's 550-pair threshold. Aggregate moved up slightly
+  relative to checkpoint 8 (56.9% to 56.2% same-sign) — a small
+  reversal of the prior small reversal, still consistent with
+  ordinary variation rather than a directional trend. Still five
+  markets at n≥15, no sixth crossed this interval. Two already-
+  stable markets deepened and strengthened: US Invade Iran (16/3
+  at n=19 to 20/3 at n=23) and Hormuz August 31 (13/2 at n=15 to
+  17/2 at n=19) — real evidence that at least some persistent-
+  stability classifications hold up under continued observation.
+  Fed Increase and Fed No-Change received no new observations this
+  interval; their unchanged records are not new evidence either
+  way. See research/validated_findings.md for the full analysis.
+
+Next re-evaluation trigger: whether US Invade Iran and Hormuz
+August 31's strengthening continues as they deepen further;
+whether Fed Increase and Fed No-Change's classifications hold once
+new observations resume; total comparable pairs reaching at least
+700; or a sixth market reaching n≥15.
