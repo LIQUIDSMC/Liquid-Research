@@ -21,3 +21,22 @@ logs/*
 !data/market_data_platform/canonical/trades/.gitkeep
 !data/market_data_platform/canonical/depth_levels/.gitkeep
 !logs/.gitkeep
+
+# L0-L4 restructure — new runtime-data locations
+L2_DOMAINS/prediction_markets/data/markets/*
+L2_DOMAINS/prediction_markets/data/scanner/*
+L3_RESEARCH_ENGINES/market_selection/data/simulator/*
+!L3_RESEARCH_ENGINES/market_selection/data/simulator/.gitkeep
+L3_RESEARCH_ENGINES/wallet_intelligence/data/*
+L1_CORE/market_data_platform/data/canonical/trades/*
+L1_CORE/market_data_platform/data/canonical/depth_levels/*
+L1_CORE/logs/*
+
+!L2_DOMAINS/prediction_markets/data/markets/.gitkeep
+!L2_DOMAINS/prediction_markets/data/scanner/.gitkeep
+!L3_RESEARCH_ENGINES/market_selection/data/.gitkeep
+!L3_RESEARCH_ENGINES/wallet_intelligence/data/.gitkeep
+!L1_CORE/market_data_platform/data/canonical/trades/.gitkeep
+!L1_CORE/market_data_platform/data/canonical/depth_levels/.gitkeep
+!L1_CORE/logs/.gitkeep
+L2_DOMAINS/prediction_markets/data/kill_log.csv
