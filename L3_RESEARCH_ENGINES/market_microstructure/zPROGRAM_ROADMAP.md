@@ -447,3 +447,33 @@ was noise; whether Fed Increase, Fed No-Change, and Hormuz July
 31's classifications hold once new observations resume; total
 comparable pairs reaching at least 900; or a sixth market reaching
 n≥15.
+- Eleventh checkpoint (2026-08-13, n=744 pairs, 210 markets): triggered
+  because a sixth market (Clarity Act) reached n≥15, meeting the
+  alternate trigger condition; total pairs at 744 had not yet reached
+  the 900-pair threshold. Aggregate same-sign rate held at a rounded
+  56.5% relative to checkpoint 10, with the underlying proportion
+  moving only fractionally (56.53% to 56.45%). Half of the six deep
+  markets received zero new observations this interval. US Invade
+  Iran strengthened again (24/3 at n=27 to 25/3 at n=28), now 89.3%
+  same-sign across four consecutive checkpoints — the strongest
+  sustained single-market stability record observed so far in
+  Program B. Hormuz August 31 received one new observation, a
+  sign-flip, moving its ratio from 20/3 at n=23 to 20/4 at n=24 —
+  a real but modest single-observation data point, not treated as a
+  reversal. Clarity Act newly reached n≥15 at 10/5 (66.7% same-sign),
+  a moderately-stable, genuinely shallow new addition to the deep-
+  market roster. This checkpoint used a frozen, SHA-256-verified
+  snapshot of the Pi's research data captured 2026-08-12 after the
+  researcher's return from travel, analyzed independently of the
+  concurrent Mac-side L0-L4 repository restructure. See
+  research/validated_findings.md (now L4_KNOWLEDGE/validated_findings.md)
+  for the full analysis.
+
+Next re-evaluation trigger: whether US Invade Iran's strengthening
+trend continues or eventually plateaus/reverts; whether Hormuz
+August 31's single-observation decline this interval continues,
+reverses, or was noise; whether Clarity Act's moderate stability
+holds or shifts as it deepens; whether Fed Increase, Fed No-Change,
+and Hormuz July 31's classifications hold once new observations
+resume; total comparable pairs reaching at least 900; or a seventh
+market reaching n≥15.
