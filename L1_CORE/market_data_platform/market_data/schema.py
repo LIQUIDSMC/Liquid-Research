@@ -98,6 +98,7 @@ class DepthLevelRecord:
     side: str
     price: Decimal
     quantity: Decimal
+    instrument_id: Optional[str]
 
     def __post_init__(self):
         """Platform-wide invariants only."""
@@ -136,6 +137,7 @@ timestamp_received (int): local receipt time, Unix epoch
     price: Decimal
     quantity: Decimal
     is_buyer_maker: bool
+    instrument_id: Optional[str]
 
     def __post_init__(self):
         """Platform-wide invariants only."""
@@ -158,6 +160,7 @@ if __name__ == "__main__":
         side="bid",
         price=Decimal("0.0024"),
         quantity=Decimal("10"),
+        instrument_id="BNBBTC",
     )
     print("Valid DepthLevelRecord created:", depth_record)
 
@@ -169,6 +172,7 @@ if __name__ == "__main__":
         price=Decimal("8.40000000"),
         quantity=Decimal("0.97915700"),
         is_buyer_maker=False,
+        instrument_id="ALPHA_116USDT",
     )
     print("Valid TradeRecord created:", trade_record)
 
@@ -183,6 +187,7 @@ if __name__ == "__main__":
             side="bid",
             price="1.0",
             quantity=Decimal("1.0"),
+            instrument_id="BNBBTC",
         )
         print("ERROR: str price was not rejected")
     except ValueError as e:
@@ -197,6 +202,7 @@ if __name__ == "__main__":
             price=1.23,
             quantity=Decimal("1.0"),
             is_buyer_maker=False,
+            instrument_id="BNBBTC",
         )
         print("ERROR: float price was not rejected")
     except ValueError as e:

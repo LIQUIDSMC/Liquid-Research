@@ -90,6 +90,12 @@ def parse_market_trades_message(message: dict, timestamp_received: int) -> List[
 
     for event in message.get("events", []):
         for trade in event.get("trades", []):
+            instrument_id = trade.get("product_id")
+            if not instrument_id:
+                raise ValueError(
+                    f"parse_market_trades_message() received a trade "
+                    f"with missing or empty product_id: {trade!r}"
+                )
             records.append(TradeRecord(
                 timestamp_received=timestamp_received,
                 event_time=event_time,
@@ -98,6 +104,7 @@ def parse_market_trades_message(message: dict, timestamp_received: int) -> List[
                 price=Decimal(trade["price"]),
                 quantity=Decimal(trade["size"]),
                 is_buyer_maker=(trade["side"] == "BUY"),
+                instrument_id=instrument_id,
             ))
 
     return records
@@ -187,6 +194,12 @@ def parse_level2_message(message: dict, timestamp_received: int) -> List[DepthLe
     records = []
 
     for event in message.get("events", []):
+        instrument_id = event.get("product_id")
+        if not instrument_id:
+            raise ValueError(
+                f"parse_level2_message() received an event with missing "
+                f"or empty product_id: {event!r}"
+            )
         for update in event.get("updates", []):
             records.append(DepthLevelRecord(
                 timestamp_received=timestamp_received,
@@ -196,6 +209,7 @@ def parse_level2_message(message: dict, timestamp_received: int) -> List[DepthLe
                 final_update_id=None,
                 previous_final_update_id=None,
                 side=_map_coinbase_side(update["side"]),
+                instrument_id=instrument_id,
                 price=Decimal(update["price_level"]),
                 quantity=Decimal(update["new_quantity"]),
             ))

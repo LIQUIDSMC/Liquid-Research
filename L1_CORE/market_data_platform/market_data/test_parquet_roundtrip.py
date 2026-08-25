@@ -59,6 +59,7 @@ ARROW_SCHEMA = pa.schema([
     ("price", DECIMAL_TYPE),
     ("quantity", DECIMAL_TYPE),
     ("is_buyer_maker", pa.bool_()),
+    ("instrument_id", pa.string()),
 ])
 
 
@@ -77,6 +78,7 @@ def _trade_record_to_row(record: TradeRecord) -> dict:
         "price": record.price,
         "quantity": record.quantity,
         "is_buyer_maker": record.is_buyer_maker,
+        "instrument_id": record.instrument_id,
     }
 
 
@@ -95,6 +97,7 @@ def _depth_record_to_row(record: DepthLevelRecord) -> dict:
         "price": record.price,
         "quantity": record.quantity,
         "is_buyer_maker": None,
+        "instrument_id": record.instrument_id,
     }
 
 
@@ -116,6 +119,7 @@ def test_native_decimal_roundtrip():
         price=Decimal("63630.96"),       # 2 decimal places
         quantity=Decimal("0.00000009"),  # 8 decimal places, smallest scale observed live
         is_buyer_maker=True,
+        instrument_id="BTC-USD",
     )
 
     depth = DepthLevelRecord(
@@ -128,6 +132,7 @@ def test_native_decimal_roundtrip():
         side="bid",
         price=Decimal("10"),   # whole number, 0 decimal places
         quantity=Decimal("0"), # exact zero, tests the "level removed" case
+        instrument_id="BTC-USD",
     )
 
     rows = [_trade_record_to_row(trade), _depth_record_to_row(depth)]
@@ -158,6 +163,7 @@ def test_native_decimal_roundtrip():
         price=Decimal(trade_row["price"]),
         quantity=Decimal(trade_row["quantity"]),
         is_buyer_maker=trade_row["is_buyer_maker"],
+        instrument_id=trade_row["instrument_id"],
     )
 
     reconstructed_depth = DepthLevelRecord(
@@ -170,6 +176,7 @@ def test_native_decimal_roundtrip():
         side=depth_row["side"],
         price=Decimal(depth_row["price"]),
         quantity=Decimal(depth_row["quantity"]),
+        instrument_id=depth_row["instrument_id"],
     )
 
     assert reconstructed_trade.price == trade.price, f"Trade price drifted: {trade.price} -> {reconstructed_trade.price}"

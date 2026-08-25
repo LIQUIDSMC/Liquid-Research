@@ -54,6 +54,7 @@ TRADE_SCHEMA = pa.schema([
     ("price", DECIMAL_TYPE),
     ("quantity", DECIMAL_TYPE),
     ("is_buyer_maker", pa.bool_()),
+    ("instrument_id", pa.string()),
 ])
 
 DEPTH_LEVEL_SCHEMA = pa.schema([
@@ -66,6 +67,7 @@ DEPTH_LEVEL_SCHEMA = pa.schema([
     ("side", pa.string()),
     ("price", DECIMAL_TYPE),
     ("quantity", DECIMAL_TYPE),
+    ("instrument_id", pa.string()),
 ])
 
 
@@ -156,6 +158,7 @@ def write_trade_records(records: List[TradeRecord]) -> str:
         "price": r.price,
         "quantity": r.quantity,
         "is_buyer_maker": r.is_buyer_maker,
+        "instrument_id": r.instrument_id,
     } for r in records]
 
     table = pa.Table.from_pylist(rows, schema=TRADE_SCHEMA)
@@ -201,6 +204,7 @@ def write_depth_level_records(records: List[DepthLevelRecord]) -> str:
         "side": r.side,
         "price": r.price,
         "quantity": r.quantity,
+        "instrument_id": r.instrument_id,
     } for r in records]
 
     table = pa.Table.from_pylist(rows, schema=DEPTH_LEVEL_SCHEMA)
@@ -226,6 +230,7 @@ def read_trade_records(filepath: str) -> List[TradeRecord]:
             price=Decimal(row["price"]),
             quantity=Decimal(row["quantity"]),
             is_buyer_maker=row["is_buyer_maker"],
+            instrument_id=row.get("instrument_id"),
         )
         for row in table.to_pylist()
     ]
@@ -249,6 +254,7 @@ def read_depth_level_records(filepath: str) -> List[DepthLevelRecord]:
             side=row["side"],
             price=Decimal(row["price"]),
             quantity=Decimal(row["quantity"]),
+            instrument_id=row.get("instrument_id"),
         )
         for row in table.to_pylist()
     ]

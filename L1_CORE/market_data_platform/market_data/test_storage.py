@@ -35,6 +35,7 @@ def _make_trade_record(trade_id: int, timestamp_received: int) -> TradeRecord:
         price=Decimal("63630.96"),
         quantity=Decimal("0.00000009"),
         is_buyer_maker=True,
+        instrument_id="BTC-USD",
     )
 
 
@@ -49,6 +50,7 @@ def _make_depth_record(timestamp_received: int) -> DepthLevelRecord:
         side="bid",
         price=Decimal("10"),
         quantity=Decimal("0"),
+        instrument_id="BTC-USD",
     )
 
 

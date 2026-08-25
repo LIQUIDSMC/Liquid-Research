@@ -64,6 +64,13 @@ def parse_depth_update(message: dict) -> List[DepthLevelRecord]:
     final_update_id = message["u"]
     previous_final_update_id = message["pu"] if "pu" in message else None
 
+    instrument_id = message.get("s")
+    if not instrument_id:
+        raise ValueError(
+            f"parse_depth_update() received a message with missing "
+            f"or empty symbol ('s'): {message!r}"
+        )
+
     records = []
 
     for price_str, quantity_str in message.get("b", []):
@@ -77,6 +84,7 @@ def parse_depth_update(message: dict) -> List[DepthLevelRecord]:
             side="bid",
             price=Decimal(price_str),
             quantity=Decimal(quantity_str),
+            instrument_id=instrument_id,
         ))
 
     for price_str, quantity_str in message.get("a", []):
@@ -90,6 +98,7 @@ def parse_depth_update(message: dict) -> List[DepthLevelRecord]:
             side="ask",
             price=Decimal(price_str),
             quantity=Decimal(quantity_str),
+            instrument_id=instrument_id,
         ))
 
     return records
@@ -118,11 +127,19 @@ def parse_trade(message: dict) -> TradeRecord:
 
     timestamp_received = int(time.time() * 1000)
 
+    instrument_id = message.get("s")
+    if not instrument_id:
+        raise ValueError(
+            f"parse_trade() received a message with missing or empty "
+            f"symbol ('s'): {message!r}"
+        )
+
     return TradeRecord(
         timestamp_received=timestamp_received,
         event_time=message["E"],
         trade_time=message["T"] if "T" in message else None,
         trade_id=message["t"],
+        instrument_id=instrument_id,
         price=Decimal(message["p"]),
         quantity=Decimal(message["q"]),
         is_buyer_maker=message["m"],
