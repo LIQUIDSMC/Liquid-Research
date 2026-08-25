@@ -28,15 +28,13 @@ L2_DOMAINS/prediction_markets/data/scanner/*
 L3_RESEARCH_ENGINES/market_selection/data/simulator/*
 !L3_RESEARCH_ENGINES/market_selection/data/simulator/.gitkeep
 L3_RESEARCH_ENGINES/wallet_intelligence/data/*
-L1_CORE/market_data_platform/data/canonical/trades/*
-L1_CORE/market_data_platform/data/canonical/depth_levels/*
+L1_CORE/market_data_platform/data/canonical
 L1_CORE/logs/*
+collector_systemd.log
 
 !L2_DOMAINS/prediction_markets/data/markets/.gitkeep
 !L2_DOMAINS/prediction_markets/data/scanner/.gitkeep
 !L3_RESEARCH_ENGINES/market_selection/data/.gitkeep
 !L3_RESEARCH_ENGINES/wallet_intelligence/data/.gitkeep
-!L1_CORE/market_data_platform/data/canonical/trades/.gitkeep
-!L1_CORE/market_data_platform/data/canonical/depth_levels/.gitkeep
 !L1_CORE/logs/.gitkeep
 L2_DOMAINS/prediction_markets/data/kill_log.csv
