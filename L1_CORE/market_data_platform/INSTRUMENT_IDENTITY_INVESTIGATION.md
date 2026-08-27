@@ -60,7 +60,19 @@ An earlier attempted validation scan used an incorrect restart epoch (`175567375
 
 A full, exhaustive scan of the historical trade dataset (as it existed at the time of that scan) found real `trade_id` values clustering into two distinct, non-overlapping numeric bands, with a confirmed gap of 224,328,314 between the observed maximum of the lower band (835,280,351) and the observed minimum of the upper band (1,059,608,665). Zero records were found with a `trade_id` inside this gap across the full scanned dataset. Independent price-based validation (real trade prices in the lower band clustered at \$1,872–\$1,905; real trade prices in the upper band clustered at \$62,722–\$63,904) confirmed the lower band corresponds to ETH-USD and the upper band to BTC-USD.
 
-**This is evidence-based, strong support for reconstructing historical trade identity in the dataset as it existed at the time of the scan.** It is not established as a universal or permanent guarantee of Coinbase's trade_id allocation scheme, and no independent confirmation was obtained from Coinbase's own primary documentation. Historical trade reconstruction using this method has not yet been executed against the actual dataset.
+**This is evidence-based, strong support for reconstructing historical trade identity in the dataset as it existed at the time of the scan.** It is not established as a universal or permanent guarantee of Coinbase's trade_id allocation scheme, and no independent confirmation was obtained from Coinbase's own primary documentation.
+
+**Update, 2026-08-26 -- reconstruction executed, promoted, and independently validated.** A subsequent, more exhaustive audit found the originally recorded ETH upper boundary (835,280,351) was stale: 26,133 rows initially appearing to fall in an ambiguous gap were all found to be genuinely ETH-priced ($2,237.40-$2,265.69), extending the real ETH band to 835,306,482. The corrected empirical bands are: ETH-USD trade_id <= 835,306,482; BTC-USD trade_id >= 1,059,608,665; remaining unused separation of 224,302,182 IDs.
+
+Using these corrected bands, the complete readable pre-fix trade corpus (258,208 files, 20,616,107 rows -- the 20 zero-byte files contained no rows and were excluded, see Section 11) was reconstructed with instrument_id added: 6,281,726 ETH-USD rows, 14,334,381 BTC-USD rows, zero unclassified. A 100-file pilot ran first and passed before the full reconstruction. The reconstructed corpus was written to a separate location (/mnt/lrs001/data/market_data_platform/recovery/instrument_id_trades_full), never overwriting the original canonical files during reconstruction itself.
+
+The reconstructed corpus was independently validated four separate times before promotion: (1) internal self-consistency (zero nulls, zero unexpected values, correct totals), (2) source-correspondence and non-instrument-column value equality against canonical for all 258,208 files, (3) full-set bidirectional path correspondence using the exact mtime < 1787213355 selection rule (exact 1:1 match, zero orphans either direction), and (4) a completely fresh, independent re-derivation of every count directly from the recovery corpus alone. All four passed with zero defects.
+
+**Canonical promotion was then executed.** A hard-linked, filesystem-level backup of the full canonical trade corpus (317,694 files, 1.9GB) was taken immediately before promotion. The collector was stopped to freeze the tree. Each of the 258,208 pre-fix files was replaced in canonical via an atomic, fail-closed, per-file operation: content copied to a same-directory temporary file, fsync'd, then os.replace()'d over the original (POSIX-atomic). Promoted files received fresh filesystem modification times rather than the original historical mtimes, since preserving the old mtimes would have caused the promoted files to be misclassified by the restart-boundary logic used throughout this investigation, and because the on-disk content was genuinely rewritten. All 258,208 files were promoted with zero failures.
+
+Post-promotion, an exhaustive (non-sampled) validation confirmed every non-zero-byte file in canonical trades/ now carries instrument_id: zero nulls, zero unexpected values, zero read failures, across all 317,674 readable files (see Section 11 for the 20 excluded zero-byte files). The collector was restarted and confirmed to resume cleanly, with fresh post-restart trade writes independently inspected and confirmed to carry correct instrument_id values.
+
+**Historical trade identity recovery is COMPLETE: reconstructed, independently validated, and promoted into canonical.**
 
 ### Depth recovery
 
@@ -70,19 +82,26 @@ No equivalent per-record identifier exists in the depth-level schema. Investigat
 - `timestamp_received` alone: worse performance (203 collisions / 4,731 unique values).
 - Composite `(timestamp_received, event_time)`: improved but not zero (7 collisions / 4,975 unique keys).
 
-No candidate tested achieved zero collisions. The composite key was never tested against the actual historical depth Parquet dataset itself (only against live-probed data), so its real, row-weighted ambiguity rate in the historical dataset is **unresolved**.
+No candidate tested achieved zero collisions.
+
+**Update, 2026-08-26 -- composite key tested directly against real historical depth data.** A memory-safe, per-file scan of one full pre-fix date (2026-08-10: 178,714 files, 39,588,286 rows) checked every (timestamp_received, event_time) group for rows spanning both real ETH-range prices (~$1,000-$6,000) and real BTC-range prices (~$20,000+) within the same group. 2,597 such mixed groups were found across 2,529 files -- direct, concrete evidence of ambiguity within the actual historical corpus, not merely inferred from live sampling. This closes the previously open gap: the composite key's failure is now demonstrated in the real, persisted data itself, including within individual files.
+
+**Conclusion, stated precisely:** event_time alone, timestamp_received alone, and their composite have each been investigated and found insufficient to deterministically recover instrument identity -- the third now confirmed directly against the actual historical corpus, not only live-sampled data. This does not prove no deterministic recovery method could ever exist; it establishes that no trustworthy deterministic reconstruction method was identified from the persisted depth fields investigated. The historical depth corpus is therefore treated as instrument-ambiguous for any research requiring per-instrument depth identity (see Section 12).
 
 ## 11. Remaining Limitations / Unresolved Questions
 
-- Historical trade reconstruction: designed, evidence-supported, **not yet executed** against the real dataset.
-- Historical depth reconstruction: **unresolved**. No deterministic method identified. Composite-key hybrid approach not yet tested against real historical data.
-- 20 zero-byte trade files identified during the exhaustive historical trade scan: confirmed genuinely empty (0 bytes each), cause not investigated, disposition not yet decided.
+- Historical trade reconstruction: **complete** -- reconstructed, independently validated, and promoted into canonical (see Section 10).
+- Historical depth reconstruction: **no trustworthy deterministic method identified** from the persisted fields investigated (event_time, timestamp_received, their composite), the last confirmed directly against real historical data. Not proven impossible in principle; simply not solved by the signals actually available in the persisted schema.
+- 20 zero-byte trade files: mechanism established directly from source code -- _write_partitioned_parquet()'s open(filepath, "xb") creates the destination file immediately, before pq.write_table() writes content; an interruption between these two steps leaves a genuinely empty file. All 20 cluster in short (~10-20 second) bursts on four dates (Aug 6, 13, 15, 18), temporally consistent with -- but not conclusively proven to be caused by -- real WebSocket disconnect/reconnect events confirmed in collector logs (30 occurrences logged). The exact trigger for these specific 20 events remains unconfirmed. Whether any underlying trade data was permanently lost (versus simply never captured during a real, brief gap) was not established. Zero zero-byte trade files have occurred since the 2026-08-20 forward fix deployed, across five-plus days of continuous collection at the time of writing. On 2026-08-26, each file's path, original mtime, and this cause summary were recorded to a permanent, retained record (canonical/zero_byte_trade_files_removed_20260826.txt), and the 20 files were then removed from canonical, since they contained no readable rows and could not be repaired.
 - Binance adapter's real-world usage history: not established in this investigation.
 - Coinbase's trade_id allocation scheme: not confirmed against primary documentation; current evidence is empirical/observational only.
 
 ## 12. Research Epoch Decision
 
-**Not yet finalized.** Under consideration: treating 2026-08-20 01:09:15 PDT as the start of a clean research epoch for depth-level data specifically, given the real, demonstrated absence of a deterministic historical depth recovery method, while leaving the door open to historical trade reconstruction separately, given its meaningfully stronger evidentiary basis. This decision has not been made final and should be recorded as a deliberate choice, not a default, whenever it is.
+**Finalized, 2026-08-26.** The epoch policy is deliberately asymmetric by data type, based on actual recoverability rather than a single platform-wide cutoff:
+
+- **Depth:** 2026-08-20 01:09:15 PDT (epoch 1787213355) is the clean research boundary for any analysis requiring trustworthy per-instrument depth identity. Pre-epoch depth data remains preserved, unmodified, in canonical storage, but must be treated as instrument-ambiguous and excluded from per-instrument depth research.
+- **Trades:** no epoch cutoff applies. The full historical trade corpus, including all pre-epoch data back to the start of collection (2026-07-21), now carries valid, reconstructed, independently-validated instrument identity following the promotion described in Section 10. Trade-level research may draw on the complete history without exclusion.
 
 ## 13. Git Preservation / Commit
 
@@ -90,4 +109,10 @@ Committed on the Mac development workspace at commit `c018f04`, pushed to the ca
 
 ## 14. Final Status
 
-Forward fix: implemented, deployed, exhaustively validated in live production, and preserved through the canonical Mac → GitHub → Pi workflow at commit `c018f04`. Historical trade recovery: evidence-supported, not yet executed. Historical depth recovery: unresolved. 20 zero-byte trade files: identified, not yet investigated.
+Forward fix: implemented, deployed, exhaustively validated in live production, and preserved through the canonical Mac → GitHub → Pi workflow at commit `c018f04`.
+
+Historical trade recovery: **complete**. Reconstructed, independently validated four separate times, and promoted into canonical via an atomic, fail-closed, backed-up procedure. Post-promotion validation confirmed zero defects. The 20 zero-byte trade files were recorded and removed; canonical trades now contains 317,674 readable files, zero unreadable, 100% carrying instrument_id.
+
+Historical depth recovery: no trustworthy deterministic method identified from the persisted fields investigated, confirmed directly against real historical data as well as live sampling. 2026-08-20 01:09:15 PDT is the finalized clean research epoch for per-instrument depth analysis; pre-epoch depth data is preserved but instrument-ambiguous.
+
+This incident is considered closed. Any future work on deterministic historical depth recovery, using signals not yet investigated here, would constitute a new, separate investigation rather than a continuation of this one.
