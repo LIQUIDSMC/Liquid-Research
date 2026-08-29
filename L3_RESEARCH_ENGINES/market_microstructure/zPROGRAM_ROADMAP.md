@@ -477,3 +477,64 @@ holds or shifts as it deepens; whether Fed Increase, Fed No-Change,
 and Hormuz July 31's classifications hold once new observations
 resume; total comparable pairs reaching at least 900; or a seventh
 market reaching n≥15.
+- Twelfth checkpoint (2026-08-28, n=1,463 pairs, 388 markets): triggered
+  by both conditions simultaneously — total comparable pairs reached
+  1,463, far exceeding the 900-pair threshold, and the deep-market
+  roster grew to 18 markets at n>=15, well past the 7-market alternate
+  trigger. Aggregate same-sign rate moved to 59.26% (867/1,463), up
+  from checkpoint 11's 56.5% — a real, more notable shift than the
+  marginal back-and-forth observed across checkpoints 9-11, though
+  still modest in absolute terms.
+
+  US Invade Iran continued its multi-checkpoint stability trend,
+  strengthening further to 91.5% same-sign at n=47 (up from 89.3% at
+  n=28), now spanning five consecutive checkpoints of sustained high
+  agreement -- the most durable single-market record in the program's
+  history.
+
+  Two markets newly reached perfect same-sign agreement at meaningful
+  sample size: "Will the Iranian regime fall by the end of 2026"
+  (100.0%, n=16) and "Putin out before 2027" (100.0%, n=19).
+
+  A distinct cluster of markets showed consistent disagreement rather
+  than agreement, worth recording explicitly rather than treating as
+  noise: "Will the Fed decrease interest rates by 25 bps after the
+  September 2026 meeting" (25.8% same-sign, n=31), "Will Renan Santos
+  win the 2026 Brazilian presidential election" (28.6%, n=21), and
+  "Will the Fed increase interest rates by 25 bps after the July 2026
+  meeting" (33.3%, n=21) -- all large-n samples showing sign-flip
+  dominance rather than agreement, a real pattern distinct from the
+  majority of deep markets.
+
+  Twelve markets newly crossed the n>=15 threshold since checkpoint 11
+  (previously six: US Invade Iran, Hormuz Aug 31, Hormuz Jul 31, Fed
+  Increase Jul, Fed No-Change Jul, Clarity Act). Full deep-market
+  roster (n>=15) and same-sign rates:
+
+  | Market | n | Same-sign | % |
+  |---|---:|---:|---:|
+  | Will the US invade Iran before 2027? | 47 | 43 | 91.5% |
+  | Strait of Hormuz traffic returns to normal by August 31 | 37 | 29 | 78.4% |
+  | No change in Fed interest rates after Sept 2026 meeting | 33 | 31 | 93.9% |
+  | Strait of Hormuz traffic returns to normal by December 31 | 32 | 25 | 78.1% |
+  | Clarity Act signed into law in 2026 | 32 | 21 | 65.6% |
+  | Strait of Hormuz traffic returns to normal by September 30 | 31 | 24 | 77.4% |
+  | Fed decrease 25bps (Sept 2026 meeting) | 31 | 8 | 25.8% |
+  | Fed increase 25bps (Sept 2026 meeting) | 31 | 19 | 61.3% |
+  | No change in Fed interest rates after July 2026 meeting | 25 | 15 | 60.0% |
+  | Will Renan Santos win 2026 Brazilian presidential election? | 21 | 6 | 28.6% |
+  | Fed increase 25bps (July 2026 meeting) | 21 | 7 | 33.3% |
+  | US announces end of Iranian blockade by Aug 31, 2026 | 21 | 16 | 76.2% |
+  | Putin out before 2027 | 19 | 19 | 100.0% |
+  | Fed rate hike in 2026 | 19 | 11 | 57.9% |
+  | Israel x Iran ceasefire continues through August 31 | 17 | 9 | 52.9% |
+  | Will the Iranian regime fall by end of 2026? | 16 | 16 | 100.0% |
+  | Israel x Iran ceasefire continues through August 15 | 16 | 7 | 43.8% |
+  | Strait of Hormuz traffic returns to normal by July 31 | 15 | 14 | 93.3% |
+
+Next re-evaluation trigger: whether US Invade Iran's stability
+continues past 91.5% or begins to plateau; whether the Fed-related
+disagreement cluster persists or reverses as those markets deepen;
+whether the two newly-perfect markets (Iranian regime fall, Putin out)
+maintain 100% as they accumulate more observations; total comparable
+pairs reaching at least 2,000; or additional markets reaching n>=15.
