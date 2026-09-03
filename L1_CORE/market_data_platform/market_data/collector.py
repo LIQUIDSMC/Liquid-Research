@@ -38,7 +38,7 @@ from websockets.exceptions import ConnectionClosed
 
 from L1_CORE.market_data_platform.market_data.adapters.coinbase import parse_market_trades_message, parse_level2_message
 from L1_CORE.market_data_platform.market_data.buffer import RecordBuffer
-from L1_CORE.market_data_platform.market_data.storage import write_trade_records, write_depth_level_records, partition_date_utc
+from L1_CORE.market_data_platform.market_data.storage import write_trade_records, write_depth_level_records, partition_date_utc, verify_canonical_root_or_raise
 
 COINBASE_WS_URL = "wss://advanced-trade-ws.coinbase.com"
 
@@ -317,6 +317,13 @@ async def run() -> None:
     avoid hammering Coinbase's server if the connection keeps
     failing (e.g. during a real network outage).
     """
+    # Startup guard against the 2026-08-24/25 storage-path divergence
+    # incident (see STORAGE_PATH_DIVERGENCE_INCIDENT.md): fail loudly,
+    # before any writes happen, if the canonical storage path is not
+    # what it's expected to be, rather than silently writing to the
+    # wrong location for days.
+    verify_canonical_root_or_raise()
+
     reconnect_delay_seconds = 3
 
     trade_buffer = RecordBuffer(

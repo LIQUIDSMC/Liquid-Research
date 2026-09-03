@@ -36,9 +36,72 @@ import pyarrow.parquet as pq
 
 from L1_CORE.market_data_platform.market_data.schema import TradeRecord, DepthLevelRecord
 
-CANONICAL_ROOT = "L1_CORE/market_data_platform/data/canonical"
+# Canonical storage path. See STORAGE_PATH_DIVERGENCE_INCIDENT.md.
+# Production (LRS_PRODUCTION=1) requires LRS_CANONICAL_ROOT to be set
+# explicitly and fails closed if it isn't. Non-production falls back
+# to the historical relative path for local/test portability.
+_IS_PRODUCTION = os.environ.get("LRS_PRODUCTION") == "1"
+_ENV_ROOT = os.environ.get("LRS_CANONICAL_ROOT")
+
+if _IS_PRODUCTION and not _ENV_ROOT:
+    raise RuntimeError(
+        "LRS_PRODUCTION=1 but LRS_CANONICAL_ROOT is not set. Refusing "
+        "to fall back to a relative path in production. See "
+        "STORAGE_PATH_DIVERGENCE_INCIDENT.md."
+    )
+
+CANONICAL_ROOT = _ENV_ROOT or "L1_CORE/market_data_platform/data/canonical"
+CANONICAL_ROOT_IS_ABSOLUTE = os.path.isabs(CANONICAL_ROOT)
+
 TRADES_DIR = os.path.join(CANONICAL_ROOT, "trades")
 DEPTH_LEVELS_DIR = os.path.join(CANONICAL_ROOT, "depth_levels")
+
+
+def _validate_canonical_path(path, is_absolute_mode):
+    """
+    Pure validation logic, independent of any module-level state or
+    environment variables, so it can be exercised directly against
+    any path (e.g. an isolated temp directory in tests) without any
+    test-only production configuration. Raises RuntimeError on any
+    invariant violation; returns None on success.
+
+    See STORAGE_PATH_DIVERGENCE_INCIDENT.md for why this exists.
+    """
+    if not os.path.exists(path):
+        raise RuntimeError(
+            f"CANONICAL_ROOT does not exist: {path!r}. Refusing to start."
+        )
+
+    if is_absolute_mode:
+        if not os.path.isdir(path):
+            raise RuntimeError(
+                f"CANONICAL_ROOT ({path!r}) exists but is not a directory. "
+                f"Refusing to start."
+            )
+        return
+
+    if not os.path.islink(path):
+        raise RuntimeError(
+            f"CANONICAL_ROOT ({path!r}) exists but is not a symlink -- "
+            f"this is the storage-path divergence failure mode. Refusing "
+            f"to start. See STORAGE_PATH_DIVERGENCE_INCIDENT.md."
+        )
+
+    target = os.path.realpath(path)
+    if not os.path.isdir(target):
+        raise RuntimeError(
+            f"CANONICAL_ROOT ({path!r}) is a symlink, but its target "
+            f"({target!r}) is not a directory. Refusing to start."
+        )
+
+
+def verify_canonical_root_or_raise():
+    """
+    Startup guard against a repeat of the storage-path divergence
+    incident. Call once, before any writes. See
+    STORAGE_PATH_DIVERGENCE_INCIDENT.md for full context.
+    """
+    _validate_canonical_path(CANONICAL_ROOT, CANONICAL_ROOT_IS_ABSOLUTE)
 
 # Proven safe for real observed values in test_parquet_roundtrip.py.
 # Not claimed universally sufficient for every possible future venue.

@@ -1,0 +1,27 @@
+# Reference copy of the production systemd unit for the live collector.
+# The Pi's actual unit lives at /etc/systemd/system/liquid-research-collector.service
+# and is NOT deployed from this repo -- this file exists so the expected
+# production configuration has version-control provenance. See
+# STORAGE_PATH_DIVERGENCE_INCIDENT.md for why LRS_PRODUCTION and
+# LRS_CANONICAL_ROOT are required here.
+
+[Unit]
+Description=Liquid Research Market Data Collector
+After=network-online.target mnt-lrs001.mount
+Wants=network-online.target
+Requires=mnt-lrs001.mount
+
+[Service]
+Type=simple
+User=kristo
+WorkingDirectory=/mnt/lrs001/liquid-research-l0l4
+Environment=LRS_PRODUCTION=1
+Environment=LRS_CANONICAL_ROOT=/mnt/lrs001/data/market_data_platform/canonical
+ExecStart=/mnt/lrs001/liquid-research-l0l4/venv/bin/python3 -u -m L1_CORE.market_data_platform.market_data.collector
+Restart=on-failure
+RestartSec=10
+StandardOutput=append:/mnt/lrs001/liquid-research-l0l4/collector_systemd.log
+StandardError=append:/mnt/lrs001/liquid-research-l0l4/collector_systemd.log
+
+[Install]
+WantedBy=multi-user.target
