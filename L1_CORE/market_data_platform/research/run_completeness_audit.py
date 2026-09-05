@@ -201,6 +201,12 @@ def check_for_zero_byte_files_or_abort(date_str, partition_structure):
 def evaluate_date(date_str):
     partition_structure = audit_partition_structure(date_str)
 
+    # Zero-byte global-abort check runs FIRST, before either ordinary
+    # structural failure below, so an unexpected integrity anomaly in
+    # one partition is never hidden behind a missing/empty-partition
+    # failure in a different partition.
+    check_for_zero_byte_files_or_abort(date_str, partition_structure)
+
     missing_partitions = [label for label, s in partition_structure.items() if not s["exists"]]
     if missing_partitions:
         return {
@@ -208,7 +214,15 @@ def evaluate_date(date_str):
             "reason": f"missing required partition(s): {missing_partitions}",
         }
 
-    check_for_zero_byte_files_or_abort(date_str, partition_structure)
+    empty_partitions = [
+        label for label, s in partition_structure.items()
+        if s["exists"] and s["file_count"] == 0
+    ]
+    if empty_partitions:
+        return {
+            "date": date_str, "passed": False,
+            "reason": f"required partition(s) contain zero parquet files: {empty_partitions}",
+        }
 
     per_instrument = audit_instrument_day(date_str, partition_structure)
 
