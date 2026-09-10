@@ -538,3 +538,70 @@ disagreement cluster persists or reverses as those markets deepen;
 whether the two newly-perfect markets (Iranian regime fall, Putin out)
 maintain 100% as they accumulate more observations; total comparable
 pairs reaching at least 2,000; or additional markets reaching n>=15.
+
+- Thirteenth checkpoint (2026-09-09, n=1,762 pairs, 468 markets): triggered
+  by the alternate condition -- the deep-market roster grew to 21 markets
+  at n>=15, exceeding checkpoint 12's roster of 18; total comparable pairs
+  reached 1,762, still short of the 2,000-pair threshold. The aggregate
+  same-sign rate was therefore stable over this interval despite 299
+  additional comparable pairs, moving only from 59.26% (867/1,463) to
+  58.97% (1,039/1,762). This describes stability of the observed aggregate
+  rate only; it does not establish predictive value.
+
+  US Invade Iran continued strengthening, now 92.6% same-sign at n=54
+  (up from 91.5% at n=47), extending its multi-checkpoint stability
+  record. Both previously-perfect markets held: "Putin out before 2027"
+  remained 100.0% (now n=22, up from n=19) and "Will the Iranian regime
+  fall before 2027" remained 100.0% (now n=17, up from n=16).
+
+  Checkpoint 12's disagreement cluster did not move uniformly. Two of
+  the three members received no new observations this interval and are
+  therefore unchanged rather than newly confirmed: "Fed decrease 25bps
+  (September 2026 meeting)" remained at 25.8% (8/31, same n), and "Fed
+  increase 25bps (July 2026 meeting)" remained at 33.3% (7/21, same n).
+  The third member moved materially: "Will Renan Santos win the 2026
+  Brazilian presidential election" rose from 28.6% (6/21) to 37.9%
+  (11/29). All three remain below 40% same-sign, but their behavior
+  over this interval was not uniform. They should therefore continue
+  to be tracked individually rather than treated as moving uniformly.
+
+  Exactly three markets newly crossed the n>=15 threshold since
+  checkpoint 12: "Will Bitcoin dip to $45,000 by December 31, 2026?"
+  (86.7%, n=15), "Will Luiz Inácio Lula da Silva win the 2026 Brazilian
+  presidential election?" (41.2%, n=17), and "Will United Russia (ER)
+  gain the most seats in the next Russian parliamentary election?"
+  (75.0%, n=20).
+
+  Full deep-market roster (n>=15) and same-sign rates:
+
+  | Market | n | Same-sign | % |
+  |---|---:|---:|---:|
+  | Will the US invade Iran before 2027? | 54 | 50 | 92.6% |
+  | No change in Fed interest rates after Sept 2026 meeting | 45 | 41 | 91.1% |
+  | Fed increase 25bps (Sept 2026 meeting) | 43 | 27 | 62.8% |
+  | Clarity Act signed into law in 2026 | 42 | 28 | 66.7% |
+  | Strait of Hormuz traffic returns to normal by September 30 | 40 | 28 | 70.0% |
+  | Strait of Hormuz traffic returns to normal by December 31 | 39 | 29 | 74.4% |
+  | Strait of Hormuz traffic returns to normal by August 31 | 37 | 29 | 78.4% |
+  | Fed decrease 25bps (Sept 2026 meeting) | 31 | 8 | 25.8% |
+  | Will Renan Santos win 2026 Brazilian presidential election? | 29 | 11 | 37.9% |
+  | No change in Fed interest rates after July 2026 meeting | 25 | 15 | 60.0% |
+  | Fed rate hike in 2026 | 25 | 13 | 52.0% |
+  | Putin out before 2027 | 22 | 22 | 100.0% |
+  | Fed increase 25bps (July 2026 meeting) | 21 | 7 | 33.3% |
+  | US announces end of Iranian blockade by Aug 31, 2026 | 21 | 16 | 76.2% |
+  | Will United Russia (ER) gain the most seats in the next Russian parliamentary election? | 20 | 15 | 75.0% |
+  | Will Luiz Inácio Lula da Silva win 2026 Brazilian presidential election? | 17 | 7 | 41.2% |
+  | Will the Iranian regime fall before 2027? | 17 | 17 | 100.0% |
+  | Israel x Iran ceasefire continues through August 31 | 17 | 9 | 52.9% |
+  | Israel x Iran ceasefire continues through August 15 | 16 | 7 | 43.8% |
+  | Strait of Hormuz traffic returns to normal by July 31 | 15 | 14 | 93.3% |
+  | Will Bitcoin dip to $45,000 by December 31, 2026? | 15 | 13 | 86.7% |
+
+Next re-evaluation trigger: whether US Invade Iran maintains its >90%
+same-sign pattern as n increases; whether the three disagreement-
+cluster markets move independently or reconverge; whether Putin-out
+and Iranian-regime-fall maintain 100% as they deepen further; whether
+the three newly-deep markets' rates stabilize or shift as they
+accumulate more observations; total comparable pairs reaching at least
+2,000; or additional markets reaching n>=15.
