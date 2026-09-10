@@ -237,8 +237,11 @@ def main() -> None:
     )
 
     existing_trades = load_existing_paper_trades()
-    existing_open_slugs = set(
-        existing_trades[existing_trades["status"] == "open"]["slug"].dropna()
+    # LRS-1 frozen invariant (D1/D2 fix): one market_id may create at
+    # most one paper trade, ever. slug is metadata only, never identity.
+    # scanner_run_id is provenance only, never permission to retrade.
+    ever_traded_market_ids = set(
+        existing_trades["market_id"].dropna()
     ) if not existing_trades.empty else set()
 
     new_trades = []
@@ -248,13 +251,18 @@ def main() -> None:
     for _, row in merged_df.iterrows():
         slug = row.get("slug")
         question = row.get("question", "Unknown")
+        market_id = row.get("market_id")
 
         if pd.isna(slug) or slug == "":
             skipped.append((question, "missing slug from snapshot join"))
             continue
 
-        if slug in existing_open_slugs:
-            skipped.append((question, "already has an open paper trade"))
+        if pd.isna(market_id) or market_id == "":
+            skipped.append((question, "missing market_id from scanner join"))
+            continue
+
+        if market_id in ever_traded_market_ids:
+            skipped.append((question, "market_id already traded (one-trade-ever policy)"))
             continue
 
         side, entry_price = determine_side(row.get("yes_price"), row.get("no_price"))
@@ -263,9 +271,18 @@ def main() -> None:
             skipped.append((question, "missing/invalid price data"))
             continue
 
-        market_id = row.get("market_id")
-        category_info = classify_trade_category(question, slug, row.get("days_left"))
+        # Fail-closed invariant check: the eligibility gate above should
+        # make this impossible. If it ever disagrees, refuse to create
+        # the trade rather than silently write a duplicate.
         recurrence_count = count_market_recurrence(existing_trades, market_id)
+        if recurrence_count != 0:
+            raise RuntimeError(
+                f"Invariant violation: market_id {market_id} passed the "
+                f"eligibility gate but recurrence_count={recurrence_count}. "
+                f"Refusing to create trade — investigate before continuing."
+            )
+
+        category_info = classify_trade_category(question, slug, row.get("days_left"))
 
         new_trades.append({
             "trade_id": next_id,
@@ -292,6 +309,7 @@ def main() -> None:
             "trade_pnl": None,
             "exit_reason": None,
         })
+        ever_traded_market_ids.add(market_id)  # close same-run intra-batch hole
         next_id += 1
 
     if not new_trades:
