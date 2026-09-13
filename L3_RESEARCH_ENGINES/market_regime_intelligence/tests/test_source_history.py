@@ -324,3 +324,444 @@ if __name__ == "__main__":
     print(
         "\nALL LRS-4 LEADING SOURCE-HISTORY STRUCTURAL TESTS PASSED"
     )
+
+
+def test_resolved_break_starts_at_stop_boundary():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        AcquisitionBreak,
+        SOURCE_HISTORY_BREAK_CONFIRMED,
+        authorize_source_history,
+    )
+
+    source_start = 0
+
+    # Use endpoints well after leading maturity so this isolates break logic.
+    stop = 10 * HOUR_MS
+    restored = 11 * HOUR_MS
+
+    endpoints = np.arange(
+        stop - GRID_INTERVAL_MS,
+        stop + 2 * GRID_INTERVAL_MS,
+        GRID_INTERVAL_MS,
+        dtype=np.int64,
+    )
+
+    result = authorize_source_history(
+        endpoint_ms=endpoints,
+        source_start_ms=source_start,
+        window_name="1h",
+        confirmed_breaks=(
+            AcquisitionBreak(
+                stop_ms=stop,
+                restored_ms=restored,
+            ),
+        ),
+    )
+
+    assert result.authorized.tolist() == [
+        True,
+        False,
+        False,
+    ]
+
+    assert result.reason[0] == ()
+    assert result.reason[1] == (
+        SOURCE_HISTORY_BREAK_CONFIRMED,
+    )
+
+    print("PASS: resolved break begins exactly at T_stop")
+
+
+def test_resolved_break_recovery_boundary_equality_passes():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        AcquisitionBreak,
+        SOURCE_HISTORY_BREAK_CONFIRMED,
+        authorize_source_history,
+    )
+
+    source_start = 0
+
+    stop = 10 * HOUR_MS
+    restored = 11 * HOUR_MS
+
+    recovery = restored + 6 * HOUR_MS
+
+    endpoints = np.array(
+        [
+            recovery - GRID_INTERVAL_MS,
+            recovery,
+            recovery + GRID_INTERVAL_MS,
+        ],
+        dtype=np.int64,
+    )
+
+    result = authorize_source_history(
+        endpoint_ms=endpoints,
+        source_start_ms=source_start,
+        window_name="1h",
+        confirmed_breaks=(
+            AcquisitionBreak(
+                stop_ms=stop,
+                restored_ms=restored,
+            ),
+        ),
+    )
+
+    assert result.authorized.tolist() == [
+        False,
+        True,
+        True,
+    ]
+
+    assert result.reason[0] == (
+        SOURCE_HISTORY_BREAK_CONFIRMED,
+    )
+    assert result.reason[1] == ()
+    assert result.reason[2] == ()
+
+    print("PASS: G == break recovery endpoint is authorized")
+
+
+def test_off_grid_restoration_ceilings_before_recovery():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        AcquisitionBreak,
+        SOURCE_HISTORY_BREAK_CONFIRMED,
+        authorize_source_history,
+    )
+
+    source_start = 0
+
+    stop = 10 * HOUR_MS
+    restored = (
+        11 * HOUR_MS
+        + 1
+    )
+
+    restored_ceiling = (
+        11 * HOUR_MS
+        + GRID_INTERVAL_MS
+    )
+
+    recovery = (
+        restored_ceiling
+        + 6 * HOUR_MS
+    )
+
+    endpoints = np.array(
+        [
+            recovery - GRID_INTERVAL_MS,
+            recovery,
+        ],
+        dtype=np.int64,
+    )
+
+    result = authorize_source_history(
+        endpoint_ms=endpoints,
+        source_start_ms=source_start,
+        window_name="1h",
+        confirmed_breaks=(
+            AcquisitionBreak(
+                stop_ms=stop,
+                restored_ms=restored,
+            ),
+        ),
+    )
+
+    assert result.authorized.tolist() == [
+        False,
+        True,
+    ]
+
+    assert result.reason[0] == (
+        SOURCE_HISTORY_BREAK_CONFIRMED,
+    )
+    assert result.reason[1] == ()
+
+    print("PASS: off-grid restoration ceilings before 6W recovery")
+
+
+def test_unresolved_break_is_open_ended():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        AcquisitionBreak,
+        SOURCE_HISTORY_BREAK_END_UNRESOLVED,
+        authorize_source_history,
+    )
+
+    source_start = 0
+    stop = 10 * HOUR_MS
+
+    endpoints = np.array(
+        [
+            stop - GRID_INTERVAL_MS,
+            stop,
+            stop + GRID_INTERVAL_MS,
+            stop + 100 * HOUR_MS,
+        ],
+        dtype=np.int64,
+    )
+
+    # The last jump violates the consecutive-grid contract, so evaluate
+    # the nearby boundary and far-future point separately.
+    near = authorize_source_history(
+        endpoint_ms=endpoints[:3],
+        source_start_ms=source_start,
+        window_name="1h",
+        confirmed_breaks=(
+            AcquisitionBreak(
+                stop_ms=stop,
+                restored_ms=None,
+            ),
+        ),
+    )
+
+    assert near.authorized.tolist() == [
+        True,
+        False,
+        False,
+    ]
+
+    assert near.reason[1] == (
+        SOURCE_HISTORY_BREAK_END_UNRESOLVED,
+    )
+    assert near.reason[2] == (
+        SOURCE_HISTORY_BREAK_END_UNRESOLVED,
+    )
+
+    far = authorize_source_history(
+        endpoint_ms=np.array(
+            [stop + 100 * HOUR_MS],
+            dtype=np.int64,
+        ),
+        source_start_ms=source_start,
+        window_name="1h",
+        confirmed_breaks=(
+            AcquisitionBreak(
+                stop_ms=stop,
+                restored_ms=None,
+            ),
+        ),
+    )
+
+    assert far.authorized[0] is np.False_
+    assert far.reason[0] == (
+        SOURCE_HISTORY_BREAK_END_UNRESOLVED,
+    )
+
+    print("PASS: unresolved break remains open-ended")
+
+
+def test_break_recovery_remains_window_specific():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        AcquisitionBreak,
+        authorize_source_history,
+    )
+
+    source_start = 0
+    stop = 200 * HOUR_MS
+    restored = 201 * HOUR_MS
+
+    cases = {
+        "1h": 6 * HOUR_MS,
+        "4h": 24 * HOUR_MS,
+        "24h": 144 * HOUR_MS,
+    }
+
+    for window_name, raw_history in cases.items():
+        recovery = restored + raw_history
+
+        endpoints = np.array(
+            [
+                recovery - GRID_INTERVAL_MS,
+                recovery,
+            ],
+            dtype=np.int64,
+        )
+
+        result = authorize_source_history(
+            endpoint_ms=endpoints,
+            source_start_ms=source_start,
+            window_name=window_name,
+            confirmed_breaks=(
+                AcquisitionBreak(
+                    stop_ms=stop,
+                    restored_ms=restored,
+                ),
+            ),
+        )
+
+        assert result.authorized.tolist() == [
+            False,
+            True,
+        ]
+
+    print("PASS: break recovery uses window-specific 6W history")
+
+
+def test_leading_boundary_and_break_reasons_can_coexist():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        AcquisitionBreak,
+        SOURCE_HISTORY_BREAK_CONFIRMED,
+        SOURCE_HISTORY_LEADING_BOUNDARY_INSUFFICIENT,
+        authorize_source_history,
+    )
+
+    source_start = 0
+
+    stop = 1 * HOUR_MS
+    restored = 2 * HOUR_MS
+
+    endpoint = np.array(
+        [1 * HOUR_MS],
+        dtype=np.int64,
+    )
+
+    result = authorize_source_history(
+        endpoint_ms=endpoint,
+        source_start_ms=source_start,
+        window_name="1h",
+        confirmed_breaks=(
+            AcquisitionBreak(
+                stop_ms=stop,
+                restored_ms=restored,
+            ),
+        ),
+    )
+
+    assert result.authorized[0] is np.False_
+
+    assert result.reason[0] == (
+        SOURCE_HISTORY_LEADING_BOUNDARY_INSUFFICIENT,
+        SOURCE_HISTORY_BREAK_CONFIRMED,
+    )
+
+    print("PASS: leading-boundary and break reasons are retained together")
+
+
+def test_invalid_break_interval_fails_closed():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        AcquisitionBreak,
+        authorize_source_history,
+    )
+
+    try:
+        authorize_source_history(
+            endpoint_ms=np.array(
+                [10 * HOUR_MS],
+                dtype=np.int64,
+            ),
+            source_start_ms=0,
+            window_name="1h",
+            confirmed_breaks=(
+                AcquisitionBreak(
+                    stop_ms=10 * HOUR_MS,
+                    restored_ms=10 * HOUR_MS,
+                ),
+            ),
+        )
+        raise AssertionError(
+            "Expected zero-length break to fail"
+        )
+    except ValueError as exc:
+        assert "strictly greater than stop_ms" in str(exc)
+
+    print("PASS: invalid acquisition-break interval fails closed")
+
+
+def test_unsorted_breaks_fail_closed():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        AcquisitionBreak,
+        authorize_source_history,
+    )
+
+    try:
+        authorize_source_history(
+            endpoint_ms=np.array(
+                [30 * HOUR_MS],
+                dtype=np.int64,
+            ),
+            source_start_ms=0,
+            window_name="1h",
+            confirmed_breaks=(
+                AcquisitionBreak(
+                    stop_ms=20 * HOUR_MS,
+                    restored_ms=21 * HOUR_MS,
+                ),
+                AcquisitionBreak(
+                    stop_ms=10 * HOUR_MS,
+                    restored_ms=11 * HOUR_MS,
+                ),
+            ),
+        )
+        raise AssertionError(
+            "Expected unsorted breaks to fail"
+        )
+    except ValueError as exc:
+        assert "ordered by nondecreasing stop_ms" in str(exc)
+
+    print("PASS: unsorted acquisition breaks fail closed")
+
+
+def test_complete_source_history_result_is_immutable():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        AcquisitionBreak,
+        authorize_source_history,
+    )
+
+    result = authorize_source_history(
+        endpoint_ms=np.array(
+            [
+                20 * HOUR_MS,
+                20 * HOUR_MS + GRID_INTERVAL_MS,
+            ],
+            dtype=np.int64,
+        ),
+        source_start_ms=0,
+        window_name="1h",
+        confirmed_breaks=(
+            AcquisitionBreak(
+                stop_ms=10 * HOUR_MS,
+                restored_ms=11 * HOUR_MS,
+            ),
+        ),
+    )
+
+    try:
+        result.window_name = "4h"
+        raise AssertionError(
+            "Expected SourceHistoryAuthorizationResult mutation to fail"
+        )
+    except FrozenInstanceError:
+        pass
+
+    assert result.endpoint_ms.flags.writeable is False
+    assert result.authorized.flags.writeable is False
+    assert isinstance(result.reason, tuple)
+    assert isinstance(result.confirmed_breaks, tuple)
+
+    try:
+        result.authorized[0] = False
+        raise AssertionError(
+            "Expected read-only authorization array to fail"
+        )
+    except ValueError:
+        pass
+
+    print("PASS: complete source-history evidence object is immutable")
+
+
+if __name__ == "__main__":
+    print("\n--- ACQUISITION-BREAK TESTS ---")
+
+    test_resolved_break_starts_at_stop_boundary()
+    test_resolved_break_recovery_boundary_equality_passes()
+    test_off_grid_restoration_ceilings_before_recovery()
+    test_unresolved_break_is_open_ended()
+    test_break_recovery_remains_window_specific()
+    test_leading_boundary_and_break_reasons_can_coexist()
+    test_invalid_break_interval_fails_closed()
+    test_unsorted_breaks_fail_closed()
+    test_complete_source_history_result_is_immutable()
+
+    print(
+        "\nALL LRS-4 ACQUISITION-BREAK SOURCE-HISTORY TESTS PASSED"
+    )

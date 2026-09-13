@@ -186,3 +186,195 @@ def authorize_leading_source_history(
         authorized=_freeze_array(authorized.copy()),
         reason=reasons,
     )
+
+
+SOURCE_HISTORY_BREAK_CONFIRMED = (
+    "SOURCE_HISTORY_BREAK_CONFIRMED"
+)
+
+SOURCE_HISTORY_BREAK_END_UNRESOLVED = (
+    "SOURCE_HISTORY_BREAK_END_UNRESOLVED"
+)
+
+
+@dataclass(frozen=True)
+class AcquisitionBreak:
+    """
+    Confirmed instrument-attributed acquisition source break.
+
+    Interval semantics:
+        [stop_ms, restored_ms)
+
+    restored_ms=None means the acquisition restoration boundary
+    remains unresolved and the break is open-ended.
+    """
+
+    stop_ms: int
+    restored_ms: int | None = None
+
+
+@dataclass(frozen=True)
+class SourceHistoryAuthorizationResult:
+    window_name: str
+    source_start_ms: int
+    source_start_grid_ceiling_ms: int
+    raw_history_ms: int
+    leading_maturity_endpoint_ms: int
+
+    endpoint_ms: np.ndarray
+    authorized: np.ndarray
+    reason: tuple[tuple[str, ...], ...]
+
+    confirmed_breaks: tuple[AcquisitionBreak, ...]
+
+
+def _validate_breaks(
+    confirmed_breaks: tuple[AcquisitionBreak, ...],
+) -> tuple[AcquisitionBreak, ...]:
+    normalized = []
+
+    previous_stop = None
+
+    for break_record in confirmed_breaks:
+        if not isinstance(break_record, AcquisitionBreak):
+            raise TypeError(
+                "confirmed_breaks must contain AcquisitionBreak records"
+            )
+
+        stop_ms = int(break_record.stop_ms)
+
+        restored_ms = (
+            None
+            if break_record.restored_ms is None
+            else int(break_record.restored_ms)
+        )
+
+        if restored_ms is not None and restored_ms <= stop_ms:
+            raise ValueError(
+                "AcquisitionBreak restored_ms must be strictly "
+                "greater than stop_ms"
+            )
+
+        if previous_stop is not None and stop_ms < previous_stop:
+            raise ValueError(
+                "confirmed_breaks must be ordered by nondecreasing stop_ms"
+            )
+
+        normalized.append(
+            AcquisitionBreak(
+                stop_ms=stop_ms,
+                restored_ms=restored_ms,
+            )
+        )
+
+        previous_stop = stop_ms
+
+    return tuple(normalized)
+
+
+def authorize_source_history(
+    endpoint_ms: np.ndarray,
+    source_start_ms: int,
+    window_name: str,
+    confirmed_breaks: tuple[AcquisitionBreak, ...] = (),
+) -> SourceHistoryAuthorizationResult:
+    """
+    Apply complete endpoint-level K1.3-B source-history authorization.
+
+    Ordering:
+
+    1. Leading source-history maturity:
+           G >= ceil(S0,s)_grid + 6W
+
+    2. Confirmed acquisition source breaks.
+
+       For a resolved break:
+           B_s = [T_stop, T_restored)
+
+       Recovery is authorized only when:
+           G >= ceil(T_restored)_grid + 6W
+
+       Therefore endpoints from T_stop through the endpoint immediately
+       preceding the recovery boundary are source-history unauthorized.
+
+       For an unresolved break end:
+           all G >= T_stop remain unauthorized.
+
+    This function consumes already-confirmed operational evidence.
+    It does not discover, infer, or qualify source breaks.
+    """
+    leading = authorize_leading_source_history(
+        endpoint_ms=endpoint_ms,
+        source_start_ms=source_start_ms,
+        window_name=window_name,
+    )
+
+    breaks = _validate_breaks(tuple(confirmed_breaks))
+
+    endpoints = leading.endpoint_ms
+
+    authorized = leading.authorized.copy()
+
+    reasons = [
+        list(reason_tuple)
+        for reason_tuple in leading.reason
+    ]
+
+    raw_history_ms = leading.raw_history_ms
+
+    for break_record in breaks:
+        stop_ms = break_record.stop_ms
+        restored_ms = break_record.restored_ms
+
+        if restored_ms is None:
+            affected = endpoints >= stop_ms
+
+            for i in np.flatnonzero(affected):
+                authorized[i] = False
+
+                if (
+                    SOURCE_HISTORY_BREAK_END_UNRESOLVED
+                    not in reasons[i]
+                ):
+                    reasons[i].append(
+                        SOURCE_HISTORY_BREAK_END_UNRESOLVED
+                    )
+
+            continue
+
+        recovery_endpoint = (
+            ceil_to_grid(restored_ms)
+            + raw_history_ms
+        )
+
+        affected = (
+            (endpoints >= stop_ms)
+            & (endpoints < recovery_endpoint)
+        )
+
+        for i in np.flatnonzero(affected):
+            authorized[i] = False
+
+            if SOURCE_HISTORY_BREAK_CONFIRMED not in reasons[i]:
+                reasons[i].append(
+                    SOURCE_HISTORY_BREAK_CONFIRMED
+                )
+
+    return SourceHistoryAuthorizationResult(
+        window_name=window_name,
+        source_start_ms=leading.source_start_ms,
+        source_start_grid_ceiling_ms=(
+            leading.source_start_grid_ceiling_ms
+        ),
+        raw_history_ms=raw_history_ms,
+        leading_maturity_endpoint_ms=(
+            leading.maturity_endpoint_ms
+        ),
+        endpoint_ms=_freeze_array(endpoints.copy()),
+        authorized=_freeze_array(authorized),
+        reason=tuple(
+            tuple(reason_list)
+            for reason_list in reasons
+        ),
+        confirmed_breaks=breaks,
+    )
