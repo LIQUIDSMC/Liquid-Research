@@ -378,3 +378,248 @@ def authorize_source_history(
         ),
         confirmed_breaks=breaks,
     )
+
+
+LRS4_SOURCE_HISTORY_ELIGIBLE = (
+    "LRS4_SOURCE_HISTORY_ELIGIBLE"
+)
+
+LRS4_SOURCE_HISTORY_INELIGIBLE = (
+    "LRS4_SOURCE_HISTORY_INELIGIBLE"
+)
+
+
+@dataclass(frozen=True)
+class WindowSourceHistoryStatus:
+    """
+    K1.2-A source-history status for one actually-entered Window Evaluation.
+    """
+
+    window_name: str
+    consumed_endpoint_ms: np.ndarray
+    eligible: bool
+    provenance_reasons: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class InstrumentDaySourceHistoryStatus:
+    """
+    Governing realized-path source-history status for one instrument-day.
+    """
+
+    instrument_id: str
+    research_day: str
+    entered_windows: tuple[str, ...]
+    window_statuses: tuple[WindowSourceHistoryStatus, ...]
+    eligible: bool
+    population_status: str
+    provenance_reasons: tuple[str, ...]
+
+
+def _ordered_unique_int64(
+    values: np.ndarray,
+) -> np.ndarray:
+    """
+    Return sorted unique int64 values.
+
+    K1.2-A evaluates duplicate consumed endpoints once within W.
+    """
+    array = np.asarray(values)
+
+    if array.ndim != 1:
+        raise ValueError(
+            "consumed endpoint collection must be one-dimensional"
+        )
+
+    if array.dtype.kind not in ("i", "u"):
+        raise TypeError(
+            "consumed endpoint collection must have integer dtype"
+        )
+
+    array = array.astype(np.int64, copy=False)
+
+    if array.size == 0:
+        return _freeze_array(
+            np.array([], dtype=np.int64)
+        )
+
+    unique = np.unique(array)
+
+    if np.any(unique % GRID_INTERVAL_MS != 0):
+        raise ValueError(
+            "consumed endpoint collection contains non-grid-aligned "
+            "timestamp(s)"
+        )
+
+    return _freeze_array(
+        unique.astype(np.int64, copy=False)
+    )
+
+
+def aggregate_instrument_day_source_history(
+    *,
+    instrument_id: str,
+    research_day: str,
+    entered_window_consumed_endpoints: dict[str, np.ndarray],
+    source_history_by_window: dict[
+        str,
+        SourceHistoryAuthorizationResult,
+    ],
+) -> InstrumentDaySourceHistoryStatus:
+    """
+    Apply frozen K1.2-A endpoint-to-instrument-day aggregation.
+
+    entered_window_consumed_endpoints contains ONLY Window Evaluations
+    actually entered by the frozen Instrument Path.
+
+    For each entered W:
+        G_used,s,d,W = unique regime endpoints actually consumed by
+        inherited LRS-3 observations for which W classification was
+        actually evaluated.
+
+    SH(s,d,W) is ELIGIBLE iff every consumed G is source-history
+    authorized for that W.
+
+    SH_path(s,d) is the AND across entered Window Evaluations.
+
+    Unentered windows have no governing authority here.
+
+    Supplementary independent per-window clearance diagnostics belong
+    outside this governing aggregation.
+
+    An entered window with zero consumed endpoints is rejected because
+    the frozen SRC does not define a vacuous-eligibility interpretation.
+    """
+    if not isinstance(instrument_id, str) or not instrument_id:
+        raise ValueError(
+            "instrument_id must be a non-empty string"
+        )
+
+    if not isinstance(research_day, str) or not research_day:
+        raise ValueError(
+            "research_day must be a non-empty string"
+        )
+
+    if not entered_window_consumed_endpoints:
+        raise ValueError(
+            "At least one actually-entered Window Evaluation is required"
+        )
+
+    entered_windows = tuple(
+        entered_window_consumed_endpoints.keys()
+    )
+
+    if len(set(entered_windows)) != len(entered_windows):
+        raise ValueError(
+            "entered Window Evaluations must be unique"
+        )
+
+    window_statuses = []
+
+    governing_reasons = []
+
+    for window_name in entered_windows:
+        if window_name not in SOURCE_HISTORY_SPECS:
+            raise ValueError(
+                f"Unsupported frozen source-history window "
+                f"{window_name!r}"
+            )
+
+        if window_name not in source_history_by_window:
+            raise ValueError(
+                f"Missing source-history authorization for entered "
+                f"window {window_name!r}"
+            )
+
+        source_result = source_history_by_window[window_name]
+
+        if not isinstance(
+            source_result,
+            SourceHistoryAuthorizationResult,
+        ):
+            raise TypeError(
+                "source_history_by_window values must be "
+                "SourceHistoryAuthorizationResult"
+            )
+
+        if source_result.window_name != window_name:
+            raise ValueError(
+                "source-history result/window mismatch"
+            )
+
+        consumed = _ordered_unique_int64(
+            entered_window_consumed_endpoints[window_name]
+        )
+
+        if consumed.size == 0:
+            raise ValueError(
+                f"Entered window {window_name!r} has zero consumed "
+                "endpoints; frozen K1.2-A does not authorize vacuous "
+                "eligibility"
+            )
+
+        endpoint_to_index = {
+            int(endpoint): index
+            for index, endpoint
+            in enumerate(source_result.endpoint_ms)
+        }
+
+        missing = [
+            int(endpoint)
+            for endpoint in consumed
+            if int(endpoint) not in endpoint_to_index
+        ]
+
+        if missing:
+            raise ValueError(
+                f"Consumed endpoint(s) absent from source-history "
+                f"authorization for window {window_name!r}: {missing}"
+            )
+
+        eligible = True
+        window_reasons = []
+
+        for endpoint in consumed:
+            index = endpoint_to_index[int(endpoint)]
+
+            if not bool(source_result.authorized[index]):
+                eligible = False
+
+                for reason in source_result.reason[index]:
+                    if reason not in window_reasons:
+                        window_reasons.append(reason)
+
+                    if reason not in governing_reasons:
+                        governing_reasons.append(reason)
+
+        window_statuses.append(
+            WindowSourceHistoryStatus(
+                window_name=window_name,
+                consumed_endpoint_ms=_freeze_array(
+                    consumed.copy()
+                ),
+                eligible=eligible,
+                provenance_reasons=tuple(window_reasons),
+            )
+        )
+
+    path_eligible = all(
+        status.eligible
+        for status in window_statuses
+    )
+
+    population_status = (
+        LRS4_SOURCE_HISTORY_ELIGIBLE
+        if path_eligible
+        else LRS4_SOURCE_HISTORY_INELIGIBLE
+    )
+
+    return InstrumentDaySourceHistoryStatus(
+        instrument_id=instrument_id,
+        research_day=research_day,
+        entered_windows=entered_windows,
+        window_statuses=tuple(window_statuses),
+        eligible=path_eligible,
+        population_status=population_status,
+        provenance_reasons=tuple(governing_reasons),
+    )

@@ -765,3 +765,549 @@ if __name__ == "__main__":
     print(
         "\nALL LRS-4 ACQUISITION-BREAK SOURCE-HISTORY TESTS PASSED"
     )
+
+
+def _source_result_for_window(
+    *,
+    window_name,
+    endpoints,
+    source_start_ms=0,
+    confirmed_breaks=(),
+):
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        authorize_source_history,
+    )
+
+    return authorize_source_history(
+        endpoint_ms=np.asarray(endpoints, dtype=np.int64),
+        source_start_ms=source_start_ms,
+        window_name=window_name,
+        confirmed_breaks=confirmed_breaks,
+    )
+
+
+def test_k12a_duplicate_consumed_endpoints_count_once():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        LRS4_SOURCE_HISTORY_ELIGIBLE,
+        aggregate_instrument_day_source_history,
+    )
+
+    endpoints = np.array(
+        [
+            30 * HOUR_MS,
+            30 * HOUR_MS + GRID_INTERVAL_MS,
+        ],
+        dtype=np.int64,
+    )
+
+    source_result = _source_result_for_window(
+        window_name="4h",
+        endpoints=endpoints,
+    )
+
+    result = aggregate_instrument_day_source_history(
+        instrument_id="BTC-USD",
+        research_day="2026-09-01",
+        entered_window_consumed_endpoints={
+            "4h": np.array(
+                [
+                    endpoints[0],
+                    endpoints[0],
+                    endpoints[1],
+                    endpoints[1],
+                ],
+                dtype=np.int64,
+            ),
+        },
+        source_history_by_window={
+            "4h": source_result,
+        },
+    )
+
+    status = result.window_statuses[0]
+
+    assert status.consumed_endpoint_ms.tolist() == [
+        int(endpoints[0]),
+        int(endpoints[1]),
+    ]
+    assert status.eligible is True
+    assert result.eligible is True
+    assert result.population_status == LRS4_SOURCE_HISTORY_ELIGIBLE
+
+    print("PASS: duplicate consumed endpoints count once within W")
+
+
+def test_k12a_unused_24h_window_cannot_disqualify_4h_path():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        LRS4_SOURCE_HISTORY_ELIGIBLE,
+        aggregate_instrument_day_source_history,
+    )
+
+    endpoint = np.array(
+        [30 * HOUR_MS],
+        dtype=np.int64,
+    )
+
+    result_4h = _source_result_for_window(
+        window_name="4h",
+        endpoints=endpoint,
+    )
+
+    # At 30h the 24h branch is still immature because it requires 144h.
+    result_24h = _source_result_for_window(
+        window_name="24h",
+        endpoints=endpoint,
+    )
+
+    assert result_4h.authorized[0] is np.True_
+    assert result_24h.authorized[0] is np.False_
+
+    result = aggregate_instrument_day_source_history(
+        instrument_id="BTC-USD",
+        research_day="2026-09-01",
+        entered_window_consumed_endpoints={
+            "4h": endpoint,
+        },
+        source_history_by_window={
+            "4h": result_4h,
+            "24h": result_24h,
+        },
+    )
+
+    assert result.entered_windows == ("4h",)
+    assert len(result.window_statuses) == 1
+    assert result.window_statuses[0].window_name == "4h"
+    assert result.eligible is True
+    assert result.population_status == LRS4_SOURCE_HISTORY_ELIGIBLE
+    assert result.provenance_reasons == ()
+
+    print("PASS: unused 24h fallback has no authority over 4h SH_path")
+
+
+def test_k12a_entered_ineligible_window_controls_path():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        LRS4_SOURCE_HISTORY_INELIGIBLE,
+        SOURCE_HISTORY_LEADING_BOUNDARY_INSUFFICIENT,
+        aggregate_instrument_day_source_history,
+    )
+
+    endpoint_4h = np.array(
+        [30 * HOUR_MS],
+        dtype=np.int64,
+    )
+
+    endpoint_24h = np.array(
+        [30 * HOUR_MS],
+        dtype=np.int64,
+    )
+
+    result_4h = _source_result_for_window(
+        window_name="4h",
+        endpoints=endpoint_4h,
+    )
+
+    result_24h = _source_result_for_window(
+        window_name="24h",
+        endpoints=endpoint_24h,
+    )
+
+    result = aggregate_instrument_day_source_history(
+        instrument_id="BTC-USD",
+        research_day="2026-09-01",
+        entered_window_consumed_endpoints={
+            "4h": endpoint_4h,
+            "24h": endpoint_24h,
+        },
+        source_history_by_window={
+            "4h": result_4h,
+            "24h": result_24h,
+        },
+    )
+
+    assert result.window_statuses[0].eligible is True
+    assert result.window_statuses[1].eligible is False
+    assert result.eligible is False
+    assert result.population_status == LRS4_SOURCE_HISTORY_INELIGIBLE
+    assert result.provenance_reasons == (
+        SOURCE_HISTORY_LEADING_BOUNDARY_INSUFFICIENT,
+    )
+
+    print("PASS: one ineligible entered window controls SH_path")
+
+
+def test_k12a_any_consumed_endpoint_failure_controls_window():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        LRS4_SOURCE_HISTORY_INELIGIBLE,
+        SOURCE_HISTORY_LEADING_BOUNDARY_INSUFFICIENT,
+        aggregate_instrument_day_source_history,
+    )
+
+    endpoints = np.array(
+        [
+            23 * HOUR_MS + 55 * 60 * 1000,
+            24 * HOUR_MS,
+        ],
+        dtype=np.int64,
+    )
+
+    source_result = _source_result_for_window(
+        window_name="4h",
+        endpoints=endpoints,
+    )
+
+    assert source_result.authorized.tolist() == [
+        False,
+        True,
+    ]
+
+    result = aggregate_instrument_day_source_history(
+        instrument_id="ETH-USD",
+        research_day="2026-09-01",
+        entered_window_consumed_endpoints={
+            "4h": endpoints,
+        },
+        source_history_by_window={
+            "4h": source_result,
+        },
+    )
+
+    assert result.window_statuses[0].eligible is False
+    assert result.eligible is False
+    assert result.population_status == LRS4_SOURCE_HISTORY_INELIGIBLE
+    assert result.provenance_reasons == (
+        SOURCE_HISTORY_LEADING_BOUNDARY_INSUFFICIENT,
+    )
+
+    print("PASS: any failed consumed endpoint makes SH(s,d,W) ineligible")
+
+
+def test_k12a_break_provenance_propagates_to_day():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        AcquisitionBreak,
+        LRS4_SOURCE_HISTORY_INELIGIBLE,
+        SOURCE_HISTORY_BREAK_CONFIRMED,
+        aggregate_instrument_day_source_history,
+    )
+
+    stop = 30 * HOUR_MS
+    restored = 31 * HOUR_MS
+
+    endpoints = np.array(
+        [
+            stop,
+            stop + GRID_INTERVAL_MS,
+        ],
+        dtype=np.int64,
+    )
+
+    source_result = _source_result_for_window(
+        window_name="4h",
+        endpoints=endpoints,
+        confirmed_breaks=(
+            AcquisitionBreak(
+                stop_ms=stop,
+                restored_ms=restored,
+            ),
+        ),
+    )
+
+    result = aggregate_instrument_day_source_history(
+        instrument_id="BTC-USD",
+        research_day="2026-09-02",
+        entered_window_consumed_endpoints={
+            "4h": endpoints,
+        },
+        source_history_by_window={
+            "4h": source_result,
+        },
+    )
+
+    assert result.eligible is False
+    assert result.population_status == LRS4_SOURCE_HISTORY_INELIGIBLE
+    assert result.provenance_reasons == (
+        SOURCE_HISTORY_BREAK_CONFIRMED,
+    )
+    assert result.window_statuses[0].provenance_reasons == (
+        SOURCE_HISTORY_BREAK_CONFIRMED,
+    )
+
+    print("PASS: frozen source-break provenance propagates to instrument-day")
+
+
+def test_k12a_multiple_provenance_reasons_are_deduplicated():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        AcquisitionBreak,
+        SOURCE_HISTORY_BREAK_CONFIRMED,
+        SOURCE_HISTORY_LEADING_BOUNDARY_INSUFFICIENT,
+        aggregate_instrument_day_source_history,
+    )
+
+    stop = 1 * HOUR_MS
+    restored = 2 * HOUR_MS
+
+    endpoints = np.array(
+        [
+            stop,
+            stop + GRID_INTERVAL_MS,
+        ],
+        dtype=np.int64,
+    )
+
+    source_result = _source_result_for_window(
+        window_name="4h",
+        endpoints=endpoints,
+        confirmed_breaks=(
+            AcquisitionBreak(
+                stop_ms=stop,
+                restored_ms=restored,
+            ),
+        ),
+    )
+
+    result = aggregate_instrument_day_source_history(
+        instrument_id="BTC-USD",
+        research_day="2026-09-01",
+        entered_window_consumed_endpoints={
+            "4h": endpoints,
+        },
+        source_history_by_window={
+            "4h": source_result,
+        },
+    )
+
+    assert result.provenance_reasons == (
+        SOURCE_HISTORY_LEADING_BOUNDARY_INSUFFICIENT,
+        SOURCE_HISTORY_BREAK_CONFIRMED,
+    )
+
+    print("PASS: repeated endpoint provenance is retained once at day level")
+
+
+def test_k12a_consumed_endpoint_absent_from_authorization_fails_closed():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        aggregate_instrument_day_source_history,
+    )
+
+    authorized_endpoint = np.array(
+        [30 * HOUR_MS],
+        dtype=np.int64,
+    )
+
+    missing_endpoint = np.array(
+        [30 * HOUR_MS + GRID_INTERVAL_MS],
+        dtype=np.int64,
+    )
+
+    source_result = _source_result_for_window(
+        window_name="4h",
+        endpoints=authorized_endpoint,
+    )
+
+    try:
+        aggregate_instrument_day_source_history(
+            instrument_id="BTC-USD",
+            research_day="2026-09-01",
+            entered_window_consumed_endpoints={
+                "4h": missing_endpoint,
+            },
+            source_history_by_window={
+                "4h": source_result,
+            },
+        )
+        raise AssertionError(
+            "Expected absent consumed endpoint to fail"
+        )
+    except ValueError as exc:
+        assert "absent from source-history authorization" in str(exc)
+
+    print("PASS: consumed endpoint without authorization evidence fails closed")
+
+
+def test_k12a_entered_window_without_authorization_fails_closed():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        aggregate_instrument_day_source_history,
+    )
+
+    try:
+        aggregate_instrument_day_source_history(
+            instrument_id="BTC-USD",
+            research_day="2026-09-01",
+            entered_window_consumed_endpoints={
+                "4h": np.array(
+                    [30 * HOUR_MS],
+                    dtype=np.int64,
+                ),
+            },
+            source_history_by_window={},
+        )
+        raise AssertionError(
+            "Expected missing entered-window authorization to fail"
+        )
+    except ValueError as exc:
+        assert "Missing source-history authorization" in str(exc)
+
+    print("PASS: entered window without authorization evidence fails closed")
+
+
+def test_k12a_zero_consumed_endpoints_fails_closed():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        aggregate_instrument_day_source_history,
+    )
+
+    source_result = _source_result_for_window(
+        window_name="4h",
+        endpoints=np.array(
+            [30 * HOUR_MS],
+            dtype=np.int64,
+        ),
+    )
+
+    try:
+        aggregate_instrument_day_source_history(
+            instrument_id="BTC-USD",
+            research_day="2026-09-01",
+            entered_window_consumed_endpoints={
+                "4h": np.array([], dtype=np.int64),
+            },
+            source_history_by_window={
+                "4h": source_result,
+            },
+        )
+        raise AssertionError(
+            "Expected zero consumed endpoints to fail"
+        )
+    except ValueError as exc:
+        assert "zero consumed endpoints" in str(exc)
+
+    print("PASS: entered window with zero consumed endpoints fails closed")
+
+
+def test_k12a_no_entered_windows_fails_closed():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        aggregate_instrument_day_source_history,
+    )
+
+    try:
+        aggregate_instrument_day_source_history(
+            instrument_id="BTC-USD",
+            research_day="2026-09-01",
+            entered_window_consumed_endpoints={},
+            source_history_by_window={},
+        )
+        raise AssertionError(
+            "Expected empty realized path to fail"
+        )
+    except ValueError as exc:
+        assert "At least one actually-entered" in str(exc)
+
+    print("PASS: empty realized Window path fails closed")
+
+
+def test_k12a_non_grid_consumed_endpoint_fails_closed():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        aggregate_instrument_day_source_history,
+    )
+
+    source_result = _source_result_for_window(
+        window_name="4h",
+        endpoints=np.array(
+            [30 * HOUR_MS],
+            dtype=np.int64,
+        ),
+    )
+
+    try:
+        aggregate_instrument_day_source_history(
+            instrument_id="BTC-USD",
+            research_day="2026-09-01",
+            entered_window_consumed_endpoints={
+                "4h": np.array(
+                    [30 * HOUR_MS + 1],
+                    dtype=np.int64,
+                ),
+            },
+            source_history_by_window={
+                "4h": source_result,
+            },
+        )
+        raise AssertionError(
+            "Expected non-grid consumed endpoint to fail"
+        )
+    except ValueError as exc:
+        assert "non-grid-aligned" in str(exc)
+
+    print("PASS: non-grid consumed endpoint fails closed")
+
+
+def test_k12a_instrument_day_result_is_immutable():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.data.source_history import (
+        aggregate_instrument_day_source_history,
+    )
+
+    endpoint = np.array(
+        [30 * HOUR_MS],
+        dtype=np.int64,
+    )
+
+    source_result = _source_result_for_window(
+        window_name="4h",
+        endpoints=endpoint,
+    )
+
+    result = aggregate_instrument_day_source_history(
+        instrument_id="BTC-USD",
+        research_day="2026-09-01",
+        entered_window_consumed_endpoints={
+            "4h": endpoint,
+        },
+        source_history_by_window={
+            "4h": source_result,
+        },
+    )
+
+    try:
+        result.eligible = False
+        raise AssertionError(
+            "Expected InstrumentDaySourceHistoryStatus mutation to fail"
+        )
+    except FrozenInstanceError:
+        pass
+
+    status = result.window_statuses[0]
+
+    try:
+        status.eligible = False
+        raise AssertionError(
+            "Expected WindowSourceHistoryStatus mutation to fail"
+        )
+    except FrozenInstanceError:
+        pass
+
+    assert status.consumed_endpoint_ms.flags.writeable is False
+    assert isinstance(result.entered_windows, tuple)
+    assert isinstance(result.window_statuses, tuple)
+    assert isinstance(result.provenance_reasons, tuple)
+
+    print("PASS: K1.2-A governing status objects are immutable")
+
+
+if __name__ == "__main__":
+    print("\n--- K1.2-A INSTRUMENT-DAY AGGREGATION TESTS ---")
+
+    test_k12a_duplicate_consumed_endpoints_count_once()
+    test_k12a_unused_24h_window_cannot_disqualify_4h_path()
+    test_k12a_entered_ineligible_window_controls_path()
+    test_k12a_any_consumed_endpoint_failure_controls_window()
+    test_k12a_break_provenance_propagates_to_day()
+    test_k12a_multiple_provenance_reasons_are_deduplicated()
+    test_k12a_consumed_endpoint_absent_from_authorization_fails_closed()
+    test_k12a_entered_window_without_authorization_fails_closed()
+    test_k12a_zero_consumed_endpoints_fails_closed()
+    test_k12a_no_entered_windows_fails_closed()
+    test_k12a_non_grid_consumed_endpoint_fails_closed()
+    test_k12a_instrument_day_result_is_immutable()
+
+    print(
+        "\nALL LRS-4 K1.2-A INSTRUMENT-DAY "
+        "SOURCE-HISTORY TESTS PASSED"
+    )
