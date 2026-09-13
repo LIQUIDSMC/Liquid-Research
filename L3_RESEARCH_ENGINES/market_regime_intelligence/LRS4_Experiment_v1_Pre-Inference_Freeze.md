@@ -773,5 +773,32 @@ E2/E3 symmetry audit: interval sign (entirely>0 / entirely<0); frozen contrast d
 Everything in Parts A-J not listed above is CLOSED. Any future change to a CLOSED item is an Experiment v2 methodology change requiring independent freeze before conditioned outcomes are inspected, per the terminal-outcomes and change-control rules established throughout.
 
 ---
+## POST-FREEZE IMPLEMENTATION FINDING -- GATE-2 EVALUATION-DOMAIN SPECIFICATION OMISSION
+
+**Status:** IMPLEMENTATION-BLOCKING SPECIFICATION OMISSION IDENTIFIED POST-FREEZE / PRE-OUTCOME
+
+During Stage-1 implementation, after Experiment v1 methodology was formally frozen and before inspection of any conditioned outcomes, an implementation-blocking specification omission was identified in Part F.
+
+F4 and F6 require a "current Gate-2 evaluation domain" whose temporal boundaries determine episode boundary censoring, the fixed `K_total` episode population, and the fixed `T_classified` valid-classified-time population. Experiment v1 defines the behavior of these quantities relative to the evaluation domain, but does not deterministically define the temporal start and end boundaries of that domain.
+
+Targeted review of the canonical Experiment-v1 SRC found no separate definition under evaluation-domain, evaluation-period, retained-observation, target-domain, study/sample interval, corpus-span, date-range, or related terminology sufficient to resolve those temporal boundaries without introducing a new methodological rule.
+
+This omission prevents faithful implementation of the F4/F6 morphology and censoring calculations required to determine, where applicable:
+
+- `EXCESSIVE_EPISODE_TURNOVER`
+- `TOO_FEW_EPISODES_FROM_EXCESSIVE_PERSISTENCE`
+- `INDETERMINATE_EPISODE_MORPHOLOGY_FROM_BOUNDARY_CENSORING`
+
+Because these reason codes participate in Gate-2 resolution and can alter primary-window viability, directional fallback, or termination, the missing evaluation-domain boundary rule is methodological rather than a discretionary software-interface choice.
+
+No interpretation of the missing Gate-2 evaluation-domain boundary has been adopted. No candidate boundary definition has been frozen or implemented. No conditioned LRS-4 outcome comparison, `Delta_regime`, HIGH-versus-LOW conditioned effect, or other Stage-2 conditioned outcome has been inspected as part of resolving this omission.
+
+`gate2_diagnostics.py` has not been started. Gate-2 censoring/morphology implementation is blocked at this specification boundary.
+
+Previously completed Stage-1 primitives whose frozen behavior does not depend on the missing Gate-2 evaluation-domain definition remain unchanged. This finding does not retroactively modify their frozen methodological contracts or their completed structural tests.
+
+Under the existing Experiment-v1 change-control rule, Parts A-J are CLOSED and any future change to a CLOSED item requires an Experiment-v2 methodology change with an independent freeze before conditioned outcomes are inspected. Accordingly, this finding documents the Experiment-v1 implementation blockage only; it does not repair, reinterpret, amend, or otherwise modify the frozen Experiment-v1 methodology.
+
+Resolution of the Gate-2 evaluation-domain definition is deferred to Experiment v2 under outcome-blind change control.
 
 End of Experiment v1 methodology freeze. This document is the canonical LRS-4 Experiment-v1 research-design specification.
