@@ -1,0 +1,60 @@
+Loaded and validated exactly 50 frozen instrument-day results from /tmp/expanded_screen_results
+
+===== PROMOTION GATE TABLE =====
+
+Gate                                                       Result
+sign_consistency_5s (>=33/50)                                PASS
+sign_consistency_15s (>=33/50)                               PASS
+sign_consistency_30s (>=33/50)                               PASS
+sign_consistency_60s (>=33/50)                               PASS
+combined_median_positive_all_horizons                        PASS
+btc_median_positive_all_horizons                             PASS
+eth_median_positive_all_horizons                             PASS
+loo_49obs_mean_never_negative                                PASS
+60s_median_at_least_0.1bp                                    PASS
+                                                                 
+OVERALL                                                      PASS
+
+===== DIAGNOSTICS (reported, non-gating) =====
+
+--- Horizon 5s ---
+  Combined: mean=+0.6835bp median=+0.6622bp trimmed_mean(10%/tail)=+0.6569bp
+  BTC: mean=+0.5873bp median=+0.5939bp
+  ETH: mean=+0.7797bp median=+0.7246bp
+  Max absolute LOO shift: 0.0204bp (excluding ETH-USD 2026-08-30, its value: +1.6830bp)
+
+--- Horizon 15s ---
+  Combined: mean=+0.7424bp median=+0.6730bp trimmed_mean(10%/tail)=+0.7005bp
+  BTC: mean=+0.6539bp median=+0.6340bp
+  ETH: mean=+0.8309bp median=+0.7495bp
+  Max absolute LOO shift: 0.0188bp (excluding ETH-USD 2026-08-30, its value: +1.6623bp)
+
+--- Horizon 30s ---
+  Combined: mean=+0.8000bp median=+0.7343bp trimmed_mean(10%/tail)=+0.7370bp
+  BTC: mean=+0.6989bp median=+0.6887bp
+  ETH: mean=+0.9011bp median=+0.7609bp
+  Max absolute LOO shift: 0.0268bp (excluding ETH-USD 2026-08-27, its value: +2.1124bp)
+
+--- Horizon 60s ---
+  Combined: mean=+0.8170bp median=+0.7428bp trimmed_mean(10%/tail)=+0.7519bp
+  BTC: mean=+0.7126bp median=+0.7403bp
+  ETH: mean=+0.9215bp median=+0.7815bp
+  Max absolute LOO shift: 0.0589bp (excluding ETH-USD 2026-08-01, its value: +3.7049bp)
+
+--- Full aggregate D0-D9 decile shape (unweighted mean/median across all 50 instrument-days) ---
+  5s mean:   D0:-0.376 D1:-0.222 D2:-0.146 D3:-0.098 D4:-0.016 D5:+0.034 D6:+0.090 D7:+0.159 D8:+0.242 D9:+0.307
+  5s median: D0:-0.347 D1:-0.197 D2:-0.118 D3:-0.065 D4:-0.024 D5:+0.026 D6:+0.070 D7:+0.128 D8:+0.206 D9:+0.284
+  5s Spearman rho (decile index vs. mean return) [DIAGNOSTIC ONLY]: 1.0000
+
+  15s mean:   D0:-0.399 D1:-0.263 D2:-0.153 D3:-0.077 D4:+0.028 D5:+0.035 D6:+0.057 D7:+0.123 D8:+0.268 D9:+0.343
+  15s median: D0:-0.345 D1:-0.208 D2:-0.105 D3:-0.059 D4:+0.014 D5:+0.029 D6:+0.054 D7:+0.119 D8:+0.212 D9:+0.324
+  15s Spearman rho (decile index vs. mean return) [DIAGNOSTIC ONLY]: 1.0000
+
+  30s mean:   D0:-0.413 D1:-0.294 D2:-0.164 D3:-0.073 D4:+0.057 D5:+0.039 D6:+0.035 D7:+0.119 D8:+0.263 D9:+0.387
+  30s median: D0:-0.364 D1:-0.210 D2:-0.089 D3:-0.036 D4:+0.030 D5:+0.069 D6:+0.065 D7:+0.160 D8:+0.218 D9:+0.339
+  30s Spearman rho (decile index vs. mean return) [DIAGNOSTIC ONLY]: 0.9515
+
+  60s mean:   D0:-0.416 D1:-0.272 D2:-0.167 D3:-0.067 D4:+0.106 D5:+0.042 D6:+0.046 D7:+0.161 D8:+0.296 D9:+0.401
+  60s median: D0:-0.339 D1:-0.209 D2:-0.116 D3:+0.015 D4:+0.044 D5:+0.005 D6:+0.014 D7:+0.145 D8:+0.271 D9:+0.343
+  60s Spearman rho (decile index vs. mean return) [DIAGNOSTIC ONLY]: 0.9636
+

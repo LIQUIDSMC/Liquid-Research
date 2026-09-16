@@ -1,0 +1,169 @@
+{
+  "source_file": "/mnt/lrs001/liquid-research-l0l4/L1_CORE/market_data_platform/research/results/threshold_stability_v1/threshold_stability_results.json",
+  "common_eligible_dates": [
+    "2026-08-01",
+    "2026-08-02",
+    "2026-08-03",
+    "2026-08-04",
+    "2026-08-05",
+    "2026-08-06",
+    "2026-08-07",
+    "2026-08-08",
+    "2026-08-09",
+    "2026-08-26",
+    "2026-08-27",
+    "2026-08-28",
+    "2026-08-29",
+    "2026-08-30"
+  ],
+  "common_eligible_date_count": 14,
+  "note": "STABILITY vs. CALIBRATION: this analysis measures within-window daily dispersion and pooled-threshold churn between consecutive calendar-day targets. It does NOT measure calibration, responsiveness to genuine regime change, or optimality. No N selection or recommendation is made.",
+  "within_window_dispersion_common_eligible": {
+    "BTC-USD": {
+      "1": {
+        "mean_p10_std_across_daily": 0.0,
+        "mean_p90_std_across_daily": 0.0,
+        "mean_p10_range": 0.0,
+        "mean_p90_range": 0.0,
+        "mean_historical_p10": -0.9183491986624149,
+        "mean_historical_p90": 0.9744980038251211
+      },
+      "3": {
+        "mean_p10_std_across_daily": 0.024251498440429353,
+        "mean_p90_std_across_daily": 0.01601274505877881,
+        "mean_p10_range": 0.05691522674660091,
+        "mean_p90_range": 0.03783984333105006,
+        "mean_historical_p10": -0.9086595139492119,
+        "mean_historical_p90": 0.975108016922577
+      },
+      "5": {
+        "mean_p10_std_across_daily": 0.030750526468127506,
+        "mean_p90_std_across_daily": 0.019280133332273755,
+        "mean_p10_range": 0.08587081133936907,
+        "mean_p90_range": 0.05383562193344802,
+        "mean_historical_p10": -0.9052274938016669,
+        "mean_historical_p90": 0.9733306486957393
+      },
+      "10": {
+        "mean_p10_std_across_daily": 0.046039186884488305,
+        "mean_p90_std_across_daily": 0.029310368579085033,
+        "mean_p10_range": 0.17079888642715985,
+        "mean_p90_range": 0.08633492090060577,
+        "mean_historical_p10": -0.9024745647015655,
+        "mean_historical_p90": 0.9710153283444758
+      }
+    },
+    "ETH-USD": {
+      "1": {
+        "mean_p10_std_across_daily": 0.0,
+        "mean_p90_std_across_daily": 0.0,
+        "mean_p10_range": 0.0,
+        "mean_p90_range": 0.0,
+        "mean_historical_p10": -0.9190268325577219,
+        "mean_historical_p90": 0.9839500121390564
+      },
+      "3": {
+        "mean_p10_std_across_daily": 0.025516968410386514,
+        "mean_p90_std_across_daily": 0.012089211770648985,
+        "mean_p10_range": 0.05846449163074053,
+        "mean_p90_range": 0.028417972819793667,
+        "mean_historical_p10": -0.907874266263683,
+        "mean_historical_p90": 0.9784847904507993
+      },
+      "5": {
+        "mean_p10_std_across_daily": 0.03578077099992015,
+        "mean_p90_std_across_daily": 0.015805146368744256,
+        "mean_p10_range": 0.09658062642908136,
+        "mean_p90_range": 0.04516407130238155,
+        "mean_historical_p10": -0.9044975850258206,
+        "mean_historical_p90": 0.9740735442485166
+      },
+      "10": {
+        "mean_p10_std_across_daily": 0.04526491444473651,
+        "mean_p90_std_across_daily": 0.028654451226621663,
+        "mean_p10_range": 0.1344689854208686,
+        "mean_p90_range": 0.09775109695026098,
+        "mean_historical_p10": -0.893707236733256,
+        "mean_historical_p90": 0.9659405967942049
+      }
+    }
+  },
+  "pooled_threshold_churn_consecutive_days": {
+    "BTC-USD": {
+      "1": {
+        "consecutive_pairs": 21,
+        "p10_mean_abs_change": 0.03598970825716162,
+        "p10_median_abs_change": 0.0380095586899476,
+        "p10_max_abs_change": 0.08464123486441721,
+        "p90_mean_abs_change": 0.0187958386697459,
+        "p90_median_abs_change": 0.011232365925964105,
+        "p90_max_abs_change": 0.09532371799816708
+      },
+      "3": {
+        "consecutive_pairs": 19,
+        "p10_mean_abs_change": 0.014256278564719583,
+        "p10_median_abs_change": 0.013353228112471305,
+        "p10_max_abs_change": 0.0331499765234744,
+        "p90_mean_abs_change": 0.006546387304287108,
+        "p90_median_abs_change": 0.005349892713178872,
+        "p90_max_abs_change": 0.020567017583432046
+      },
+      "5": {
+        "consecutive_pairs": 17,
+        "p10_mean_abs_change": 0.008864241413818016,
+        "p10_median_abs_change": 0.007753146354266938,
+        "p10_max_abs_change": 0.025101919381171012,
+        "p90_mean_abs_change": 0.006109946759001502,
+        "p90_median_abs_change": 0.0022165744661379883,
+        "p90_max_abs_change": 0.025861000175207982
+      },
+      "10": {
+        "consecutive_pairs": 12,
+        "p10_mean_abs_change": 0.004562178804422399,
+        "p10_median_abs_change": 0.004581792274279628,
+        "p10_max_abs_change": 0.009232421940756574,
+        "p90_mean_abs_change": 0.003141264457669305,
+        "p90_median_abs_change": 0.0013590996926800547,
+        "p90_max_abs_change": 0.009959266020122981
+      }
+    },
+    "ETH-USD": {
+      "1": {
+        "consecutive_pairs": 21,
+        "p10_mean_abs_change": 0.025436531102084287,
+        "p10_median_abs_change": 0.02260517660551309,
+        "p10_max_abs_change": 0.09068927313844188,
+        "p90_mean_abs_change": 0.014080117819604207,
+        "p90_median_abs_change": 0.006906259556360594,
+        "p90_max_abs_change": 0.07078019645130262
+      },
+      "3": {
+        "consecutive_pairs": 19,
+        "p10_mean_abs_change": 0.017143536460341828,
+        "p10_median_abs_change": 0.012151065495935365,
+        "p10_max_abs_change": 0.05041996871310961,
+        "p90_mean_abs_change": 0.005707872732307638,
+        "p90_median_abs_change": 0.005110121501500808,
+        "p90_max_abs_change": 0.023773522965191196
+      },
+      "5": {
+        "consecutive_pairs": 17,
+        "p10_mean_abs_change": 0.00968372523569618,
+        "p10_median_abs_change": 0.007753743581412675,
+        "p10_max_abs_change": 0.0342582516359321,
+        "p90_mean_abs_change": 0.005593330139558317,
+        "p90_median_abs_change": 0.0014342200809519534,
+        "p90_max_abs_change": 0.03363803902091511
+      },
+      "10": {
+        "consecutive_pairs": 12,
+        "p10_mean_abs_change": 0.004196442800764449,
+        "p10_median_abs_change": 0.0035445043996398806,
+        "p10_max_abs_change": 0.016414837754536116,
+        "p90_mean_abs_change": 0.002944512432443915,
+        "p90_median_abs_change": 0.0008045863954826982,
+        "p90_max_abs_change": 0.020988895797665275
+      }
+    }
+  }
+}

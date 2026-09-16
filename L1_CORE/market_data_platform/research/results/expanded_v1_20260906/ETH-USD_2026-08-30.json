@@ -1,0 +1,582 @@
+{
+  "methodology": "trade_flow_vs_momentum_screen_v2_multi_partition",
+  "instrument": "ETH-USD",
+  "date": "2026-08-30",
+  "source_root": "/mnt/lrs001/data/market_data_platform/canonical/trades",
+  "source_partitions": [
+    {
+      "date": "2026-08-29",
+      "file_count": 8433,
+      "target_instrument_rows": 107753,
+      "in_range_rows": 0,
+      "out_of_range_rows": 107753
+    },
+    {
+      "date": "2026-08-30",
+      "file_count": 8437,
+      "target_instrument_rows": 165001,
+      "in_range_rows": 165001,
+      "out_of_range_rows": 0
+    },
+    {
+      "date": "2026-08-31",
+      "file_count": 1833,
+      "target_instrument_rows": 45442,
+      "in_range_rows": 1,
+      "out_of_range_rows": 45441
+    }
+  ],
+  "total_in_range_rows": 165002,
+  "sample_every_nth": 20,
+  "lookback_s": 10.0,
+  "horizons_s": [
+    5,
+    15,
+    30,
+    60
+  ],
+  "git_sha": "9667563b4886026ee744d1e9df5b8fef4a19e8ac",
+  "elapsed_seconds": 230.28208541870117,
+  "results_by_horizon": {
+    "5": {
+      "n": 8032,
+      "imbalance": {
+        "decile_summary": [
+          {
+            "decile": 0,
+            "n": 804,
+            "mean_return": -0.00011611269338728708,
+            "mean_return_bp": -1.161126933872871
+          },
+          {
+            "decile": 1,
+            "n": 803,
+            "mean_return": -0.00010561045118881462,
+            "mean_return_bp": -1.0561045118881462
+          },
+          {
+            "decile": 2,
+            "n": 803,
+            "mean_return": -4.0886792478012616e-05,
+            "mean_return_bp": -0.4088679247801262
+          },
+          {
+            "decile": 3,
+            "n": 803,
+            "mean_return": -4.396674482635103e-05,
+            "mean_return_bp": -0.43966744826351034
+          },
+          {
+            "decile": 4,
+            "n": 803,
+            "mean_return": -2.2724693438407062e-05,
+            "mean_return_bp": -0.22724693438407062
+          },
+          {
+            "decile": 5,
+            "n": 804,
+            "mean_return": -1.750502396898423e-05,
+            "mean_return_bp": -0.1750502396898423
+          },
+          {
+            "decile": 6,
+            "n": 803,
+            "mean_return": 5.34065664009715e-06,
+            "mean_return_bp": 0.0534065664009715
+          },
+          {
+            "decile": 7,
+            "n": 803,
+            "mean_return": 3.0474082564283413e-05,
+            "mean_return_bp": 0.3047408256428341
+          },
+          {
+            "decile": 8,
+            "n": 803,
+            "mean_return": 5.2200161447297034e-05,
+            "mean_return_bp": 0.5220016144729703
+          },
+          {
+            "decile": 9,
+            "n": 803,
+            "mean_return": 5.21844432092368e-05,
+            "mean_return_bp": 0.521844432092368
+          }
+        ],
+        "d9_minus_d0_raw": 0.0001682971365965239,
+        "d9_minus_d0_bp": 1.682971365965239
+      },
+      "momentum": {
+        "decile_summary": [
+          {
+            "decile": 0,
+            "n": 804,
+            "mean_return": -0.00018383938560216783,
+            "mean_return_bp": -1.8383938560216784
+          },
+          {
+            "decile": 1,
+            "n": 803,
+            "mean_return": -8.928008582117714e-05,
+            "mean_return_bp": -0.8928008582117714
+          },
+          {
+            "decile": 2,
+            "n": 803,
+            "mean_return": -3.539982740871884e-05,
+            "mean_return_bp": -0.3539982740871884
+          },
+          {
+            "decile": 3,
+            "n": 803,
+            "mean_return": -3.1151943151969745e-05,
+            "mean_return_bp": -0.31151943151969747
+          },
+          {
+            "decile": 4,
+            "n": 803,
+            "mean_return": -1.9776781884516098e-05,
+            "mean_return_bp": -0.19776781884516098
+          },
+          {
+            "decile": 5,
+            "n": 804,
+            "mean_return": 3.0250607533473548e-05,
+            "mean_return_bp": 0.3025060753347355
+          },
+          {
+            "decile": 6,
+            "n": 803,
+            "mean_return": 1.9425863108712486e-05,
+            "mean_return_bp": 0.19425863108712485
+          },
+          {
+            "decile": 7,
+            "n": 803,
+            "mean_return": 7.291940991935789e-06,
+            "mean_return_bp": 0.07291940991935789
+          },
+          {
+            "decile": 8,
+            "n": 803,
+            "mean_return": 5.231627661468537e-05,
+            "mean_return_bp": 0.5231627661468538
+          },
+          {
+            "decile": 9,
+            "n": 803,
+            "mean_return": 4.3581150754085933e-05,
+            "mean_return_bp": 0.43581150754085934
+          }
+        ],
+        "d9_minus_d0_raw": 0.00022742053635625378,
+        "d9_minus_d0_bp": 2.2742053635625377
+      }
+    },
+    "15": {
+      "n": 8246,
+      "imbalance": {
+        "decile_summary": [
+          {
+            "decile": 0,
+            "n": 825,
+            "mean_return": -0.0001130204959340554,
+            "mean_return_bp": -1.130204959340554
+          },
+          {
+            "decile": 1,
+            "n": 825,
+            "mean_return": -0.00016273374494778684,
+            "mean_return_bp": -1.6273374494778683
+          },
+          {
+            "decile": 2,
+            "n": 824,
+            "mean_return": -4.936686622531153e-05,
+            "mean_return_bp": -0.49366866225311534
+          },
+          {
+            "decile": 3,
+            "n": 825,
+            "mean_return": -3.714851824177035e-05,
+            "mean_return_bp": -0.3714851824177035
+          },
+          {
+            "decile": 4,
+            "n": 824,
+            "mean_return": 1.648188132850043e-06,
+            "mean_return_bp": 0.01648188132850043
+          },
+          {
+            "decile": 5,
+            "n": 825,
+            "mean_return": -3.0870831872078845e-05,
+            "mean_return_bp": -0.30870831872078847
+          },
+          {
+            "decile": 6,
+            "n": 825,
+            "mean_return": 9.157772325140516e-06,
+            "mean_return_bp": 0.09157772325140516
+          },
+          {
+            "decile": 7,
+            "n": 824,
+            "mean_return": 5.50293581341503e-06,
+            "mean_return_bp": 0.055029358134150295
+          },
+          {
+            "decile": 8,
+            "n": 825,
+            "mean_return": 3.244263254836446e-05,
+            "mean_return_bp": 0.32442632548364464
+          },
+          {
+            "decile": 9,
+            "n": 824,
+            "mean_return": 5.3210636648613955e-05,
+            "mean_return_bp": 0.5321063664861395
+          }
+        ],
+        "d9_minus_d0_raw": 0.00016623113258266937,
+        "d9_minus_d0_bp": 1.6623113258266937
+      },
+      "momentum": {
+        "decile_summary": [
+          {
+            "decile": 0,
+            "n": 825,
+            "mean_return": -0.00022436312416870523,
+            "mean_return_bp": -2.2436312416870523
+          },
+          {
+            "decile": 1,
+            "n": 825,
+            "mean_return": -8.451714770712233e-05,
+            "mean_return_bp": -0.8451714770712233
+          },
+          {
+            "decile": 2,
+            "n": 824,
+            "mean_return": -4.714553791489068e-05,
+            "mean_return_bp": -0.4714553791489068
+          },
+          {
+            "decile": 3,
+            "n": 825,
+            "mean_return": -3.0379012763496835e-05,
+            "mean_return_bp": -0.3037901276349683
+          },
+          {
+            "decile": 4,
+            "n": 824,
+            "mean_return": 4.4128437396682323e-07,
+            "mean_return_bp": 0.0044128437396682325
+          },
+          {
+            "decile": 5,
+            "n": 825,
+            "mean_return": 4.235837645314123e-05,
+            "mean_return_bp": 0.42358376453141233
+          },
+          {
+            "decile": 6,
+            "n": 825,
+            "mean_return": 3.073733179112959e-05,
+            "mean_return_bp": 0.3073733179112959
+          },
+          {
+            "decile": 7,
+            "n": 824,
+            "mean_return": 3.4110936567683797e-06,
+            "mean_return_bp": 0.0341109365676838
+          },
+          {
+            "decile": 8,
+            "n": 825,
+            "mean_return": 2.2135856783598307e-05,
+            "mean_return_bp": 0.22135856783598307
+          },
+          {
+            "decile": 9,
+            "n": 824,
+            "mean_return": -3.927977143550387e-06,
+            "mean_return_bp": -0.03927977143550387
+          }
+        ],
+        "d9_minus_d0_raw": 0.00022043514702515485,
+        "d9_minus_d0_bp": 2.2043514702515488
+      }
+    },
+    "30": {
+      "n": 8249,
+      "imbalance": {
+        "decile_summary": [
+          {
+            "decile": 0,
+            "n": 825,
+            "mean_return": -0.00010960553311786376,
+            "mean_return_bp": -1.0960553311786376
+          },
+          {
+            "decile": 1,
+            "n": 825,
+            "mean_return": -0.00019260993239650985,
+            "mean_return_bp": -1.9260993239650985
+          },
+          {
+            "decile": 2,
+            "n": 825,
+            "mean_return": -0.0001215216369645699,
+            "mean_return_bp": -1.215216369645699
+          },
+          {
+            "decile": 3,
+            "n": 825,
+            "mean_return": -2.4810436128240552e-05,
+            "mean_return_bp": -0.2481043612824055
+          },
+          {
+            "decile": 4,
+            "n": 825,
+            "mean_return": -1.6794102720403742e-05,
+            "mean_return_bp": -0.16794102720403742
+          },
+          {
+            "decile": 5,
+            "n": 825,
+            "mean_return": -2.5767982692274395e-05,
+            "mean_return_bp": -0.25767982692274394
+          },
+          {
+            "decile": 6,
+            "n": 825,
+            "mean_return": 4.536627730503935e-05,
+            "mean_return_bp": 0.4536627730503935
+          },
+          {
+            "decile": 7,
+            "n": 825,
+            "mean_return": 3.786944339429583e-06,
+            "mean_return_bp": 0.03786944339429583
+          },
+          {
+            "decile": 8,
+            "n": 825,
+            "mean_return": 3.840518146335795e-05,
+            "mean_return_bp": 0.3840518146335795
+          },
+          {
+            "decile": 9,
+            "n": 824,
+            "mean_return": 3.942133058484534e-05,
+            "mean_return_bp": 0.3942133058484534
+          }
+        ],
+        "d9_minus_d0_raw": 0.0001490268637027091,
+        "d9_minus_d0_bp": 1.490268637027091
+      },
+      "momentum": {
+        "decile_summary": [
+          {
+            "decile": 0,
+            "n": 825,
+            "mean_return": -0.00016987558460534771,
+            "mean_return_bp": -1.698755846053477
+          },
+          {
+            "decile": 1,
+            "n": 825,
+            "mean_return": -0.00011350923025302713,
+            "mean_return_bp": -1.1350923025302713
+          },
+          {
+            "decile": 2,
+            "n": 825,
+            "mean_return": -0.00010842400385960425,
+            "mean_return_bp": -1.0842400385960425
+          },
+          {
+            "decile": 3,
+            "n": 825,
+            "mean_return": -5.517314025224599e-05,
+            "mean_return_bp": -0.5517314025224599
+          },
+          {
+            "decile": 4,
+            "n": 825,
+            "mean_return": -3.324088810857076e-05,
+            "mean_return_bp": -0.3324088810857076
+          },
+          {
+            "decile": 5,
+            "n": 825,
+            "mean_return": 4.917900141975139e-05,
+            "mean_return_bp": 0.49179001419751395
+          },
+          {
+            "decile": 6,
+            "n": 825,
+            "mean_return": 1.9993531955759007e-05,
+            "mean_return_bp": 0.19993531955759006
+          },
+          {
+            "decile": 7,
+            "n": 825,
+            "mean_return": -3.4020830611193015e-05,
+            "mean_return_bp": -0.34020830611193015
+          },
+          {
+            "decile": 8,
+            "n": 825,
+            "mean_return": -1.8816572676720946e-05,
+            "mean_return_bp": -0.18816572676720947
+          },
+          {
+            "decile": 9,
+            "n": 824,
+            "mean_return": 9.983105056701814e-05,
+            "mean_return_bp": 0.9983105056701814
+          }
+        ],
+        "d9_minus_d0_raw": 0.00026970663517236586,
+        "d9_minus_d0_bp": 2.6970663517236586
+      }
+    },
+    "60": {
+      "n": 8249,
+      "imbalance": {
+        "decile_summary": [
+          {
+            "decile": 0,
+            "n": 825,
+            "mean_return": -0.000123977317459828,
+            "mean_return_bp": -1.23977317459828
+          },
+          {
+            "decile": 1,
+            "n": 825,
+            "mean_return": -0.00021410719290460134,
+            "mean_return_bp": -2.141071929046013
+          },
+          {
+            "decile": 2,
+            "n": 825,
+            "mean_return": -0.00020174965514890928,
+            "mean_return_bp": -2.017496551489093
+          },
+          {
+            "decile": 3,
+            "n": 825,
+            "mean_return": 2.395416315778705e-05,
+            "mean_return_bp": 0.2395416315778705
+          },
+          {
+            "decile": 4,
+            "n": 825,
+            "mean_return": 0.0001115510010256933,
+            "mean_return_bp": 1.115510010256933
+          },
+          {
+            "decile": 5,
+            "n": 825,
+            "mean_return": -3.3862552408814643e-06,
+            "mean_return_bp": -0.033862552408814646
+          },
+          {
+            "decile": 6,
+            "n": 825,
+            "mean_return": 2.3332488006660418e-05,
+            "mean_return_bp": 0.23332488006660418
+          },
+          {
+            "decile": 7,
+            "n": 825,
+            "mean_return": -4.476424879435599e-06,
+            "mean_return_bp": -0.04476424879435599
+          },
+          {
+            "decile": 8,
+            "n": 825,
+            "mean_return": 0.00010341570492527872,
+            "mean_return_bp": 1.0341570492527872
+          },
+          {
+            "decile": 9,
+            "n": 824,
+            "mean_return": 8.394603645034469e-06,
+            "mean_return_bp": 0.0839460364503447
+          }
+        ],
+        "d9_minus_d0_raw": 0.00013237192110486247,
+        "d9_minus_d0_bp": 1.3237192110486247
+      },
+      "momentum": {
+        "decile_summary": [
+          {
+            "decile": 0,
+            "n": 825,
+            "mean_return": -3.0118004473285232e-05,
+            "mean_return_bp": -0.3011800447328523
+          },
+          {
+            "decile": 1,
+            "n": 825,
+            "mean_return": -0.00019671932128593437,
+            "mean_return_bp": -1.9671932128593437
+          },
+          {
+            "decile": 2,
+            "n": 825,
+            "mean_return": -0.00017473327020223761,
+            "mean_return_bp": -1.7473327020223761
+          },
+          {
+            "decile": 3,
+            "n": 825,
+            "mean_return": -9.463492488056389e-05,
+            "mean_return_bp": -0.9463492488056389
+          },
+          {
+            "decile": 4,
+            "n": 825,
+            "mean_return": -4.453992403865906e-05,
+            "mean_return_bp": -0.4453992403865906
+          },
+          {
+            "decile": 5,
+            "n": 825,
+            "mean_return": 6.236816179405113e-05,
+            "mean_return_bp": 0.6236816179405114
+          },
+          {
+            "decile": 6,
+            "n": 825,
+            "mean_return": -6.429544473364695e-06,
+            "mean_return_bp": -0.06429544473364696
+          },
+          {
+            "decile": 7,
+            "n": 825,
+            "mean_return": -7.431095714608891e-05,
+            "mean_return_bp": -0.7431095714608891
+          },
+          {
+            "decile": 8,
+            "n": 825,
+            "mean_return": 2.7899548178911472e-05,
+            "mean_return_bp": 0.2789954817891147
+          },
+          {
+            "decile": 9,
+            "n": 824,
+            "mean_return": 0.000254467621979223,
+            "mean_return_bp": 2.5446762197922297
+          }
+        ],
+        "d9_minus_d0_raw": 0.0002845856264525082,
+        "d9_minus_d0_bp": 2.8458562645250822
+      }
+    }
+  }
+}

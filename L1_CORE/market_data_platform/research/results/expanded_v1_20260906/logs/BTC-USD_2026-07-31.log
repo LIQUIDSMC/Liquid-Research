@@ -1,0 +1,64 @@
+===== BTC-USD 2026-07-31 (multi-partition, trade_time-defined day) =====
+Source partitions required and present: ['2026-07-30', '2026-07-31', '2026-08-01']
+Pass 1: counting in-range target-instrument rows across all 3 partitions...
+  Pass 1 [2026-07-30]: 3000/8471 files scanned
+  Pass 1 [2026-07-30]: 6000/8471 files scanned
+  Pass 1 [2026-07-30] complete: target_instrument_rows=462389, in_range_rows=0
+  Pass 1 [2026-07-31]: 3000/8772 files scanned
+  Pass 1 [2026-07-31]: 6000/8772 files scanned
+  Pass 1 [2026-07-31] complete: target_instrument_rows=491640, in_range_rows=491640
+  Pass 1 [2026-08-01]: 3000/8263 files scanned
+  Pass 1 [2026-08-01]: 6000/8263 files scanned
+  Pass 1 [2026-08-01] complete: target_instrument_rows=354399, in_range_rows=2
+Pass 1 complete: total in-range N=491642
+  [RSS checkpoint: after_pass1_counting] 127.8 MiB (high-water mark)
+Pass 2: preallocating arrays and loading across all 3 partitions...
+  [RSS checkpoint: after_preallocation (virtual reservation; see docstring)] 127.8 MiB (high-water mark)
+  Pass 2 [2026-07-30] complete, running offset=0
+  Pass 2 [2026-07-31]: 3000/8772 files processed, offset=167202
+  Pass 2 [2026-07-31]: 6000/8772 files processed, offset=335889
+  Pass 2 [2026-07-31] complete, running offset=491640
+  Pass 2 [2026-08-01] complete, running offset=491642
+Pass 2 complete: loaded 491642 rows
+  [RSS checkpoint: after_loading] 144.9 MiB (high-water mark)
+Validating day integrity (finite/positive values, UTC in-range invariant)...
+Integrity validation passed.
+Sorting by (trade_time, trade_id)...
+  [RSS checkpoint: before_sort] 144.9 MiB (high-water mark)
+  [RSS checkpoint: after_order_created] 148.9 MiB (high-water mark)
+  [RSS checkpoint: after_sorted_arrays] 150.9 MiB (high-water mark)
+Sort validated.
+Running kernel (compute_screen)...
+Kernel complete: 24582 sampled observations
+  [RSS checkpoint: after_compute_screen] 154.8 MiB (high-water mark)
+Summarizing per-horizon comparative deciles...
+  Horizon 5s: n=24548 imbalance_D9-D0_bp=0.7243427122938696 momentum_D9-D0_bp=-0.26607741711204164
+  Horizon 15s: n=24578 imbalance_D9-D0_bp=0.8202143919345051 momentum_D9-D0_bp=-0.14090988531851723
+  Horizon 30s: n=24578 imbalance_D9-D0_bp=0.8227877256915753 momentum_D9-D0_bp=-0.3694316022116589
+  Horizon 60s: n=24578 imbalance_D9-D0_bp=0.8778860535007862 momentum_D9-D0_bp=-0.3728078136894963
+  [RSS checkpoint: after_summarization] 154.8 MiB (high-water mark)
+
+COMPLETE (334.4s). Result written to /tmp/expanded_screen_results/BTC-USD_2026-07-31.json
+	Command being timed: "/mnt/lrs001/liquid-research-l0l4/venv/bin/python3 -m L1_CORE.market_data_platform.research.run_trade_flow_vs_momentum_screen --instrument BTC-USD --date 2026-07-31 --output-dir /tmp/expanded_screen_results"
+	User time (seconds): 384.29
+	System time (seconds): 29.97
+	Percent of CPU this job got: 123%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 5:36.18
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 158464
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 39633
+	Voluntary context switches: 418081
+	Involuntary context switches: 1930
+	Swaps: 0
+	File system inputs: 302616
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
