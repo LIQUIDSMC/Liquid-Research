@@ -38,3 +38,5 @@ collector_systemd.log
 !L3_RESEARCH_ENGINES/wallet_intelligence/data/.gitkeep
 !L1_CORE/logs/.gitkeep
 L2_DOMAINS/prediction_markets/data/kill_log.csv
+L1_CORE/market_data_platform/data/canonical_fork_backup_20260901/
+logs/daily_cycle/
