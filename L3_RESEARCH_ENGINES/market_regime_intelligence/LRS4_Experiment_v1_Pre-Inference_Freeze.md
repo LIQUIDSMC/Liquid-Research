@@ -1074,3 +1074,457 @@ The following control and provenance objects also retain distinct authority and 
 Objects with different index arity or semantic type are non-substitutable even when their realized values are predictably related. Each authoritative object has one authoritative producer within a Window Evaluation or final-path projection. Derived evidence may validate, reconcile, or report an authoritative result but may not acquire downstream decision authority from numerical agreement alone. Discriminated result variants must remain explicit and may not be coerced into synthetic equivalents.
 
 These authority rules supplement the local invariants attached to individual methodology objects; they do not supersede or remove those local invariants.
+
+## 3. Worked Boundary and Dependency Examples
+
+Status: NON-NORMATIVE / ILLUSTRATIVE ONLY
+
+The examples in this section illustrate already-defined Experiment-v2 rules and create no new methodology. If any example conflicts with a normative Experiment-v2 clause or an inherited clause not superseded by Experiment v2, the normative clause controls.
+
+These examples may not create, modify, or resolve populations, thresholds, authority relationships, failure reasons, applicability states, Instrument Path transitions, censoring rules, source-history rules, observation-eligibility rules, or final observation dispositions. Their purpose is traceability and boundary verification only.
+
+The `Illustrates:` field identifies the normative objects or clauses being exercised. It is a cross-reference, not an additional source of authority.
+
+### Group A -- Strict-C10 Mapping and Candidate Endpoints
+
+**Example 1 -- Observation immediately after a grid endpoint**
+Illustrates: C10 strict predecessor mapping; C11 forward temporal cell; D1 candidate-endpoint construction.
+
+Suppose completed 5-minute grid endpoints include `10:00` and `10:05`, and an inherited LRS-3 observation occurs at `T = 10:05:01`.
+
+Strict C10 maps the observation to:
+
+`G(T) = 10:05`.
+
+The observation may consume the already-completed `10:05` endpoint because `10:05 < T`. Any current-Window source-history or D3 lookup for that observation therefore uses the authoritative `(10:05,W)` object.
+
+This example does not establish whether that endpoint is source-history authorized or D3-admissible; it establishes only the strict-C10 mapping.
+
+**Example 2 -- Observation exactly on the grid**
+Illustrates: C10 exact-grid rule; C11 temporal-cell convention.
+
+Suppose `T = 10:05:00` exactly.
+
+The `10:05` endpoint does not satisfy `G < T` and therefore cannot be consumed by this observation. Assuming `10:00` is the immediately preceding completed endpoint:
+
+`G(T) = 10:00`.
+
+The newly calculated `10:05` state cannot be used for the observation occurring exactly at `10:05`.
+
+**Example 3 -- Multiple observations map to one endpoint**
+Illustrates: D1 `G_candidate(s,d,W)` construction; K1.2-A v2 candidate-evidence scope.
+
+Suppose three candidate observations on the same research day map under strict C10 to the same endpoint `G`.
+
+All three observations remain members of `O_candidate(s,d,W)`, but `G_candidate(s,d,W)` contains `G` only once for aggregate source-history authorization.
+
+Deduplicating the endpoint set does not deduplicate or otherwise modify the observation population.
+
+**Example 4 -- Required strict predecessor is unavailable**
+Illustrates: D1 integrity rule; failure-layer preservation.
+
+Suppose a candidate observation exists but no required strict-C10 predecessor can be obtained.
+
+This is a methodology-integrity failure.
+
+It is not converted into:
+
+`LRS4_SOURCE_HISTORY_INELIGIBLE`
+
+or
+
+`LRS4_REGIME_INELIGIBLE`.
+
+No downstream status may be used to disguise failure to construct the required upstream mapping.
+
+### Group B -- Candidate Population, Source History, and D0
+
+**Example 5 -- Candidate observations exist and the day passes W-specific source history**
+Illustrates: `O_candidate`; `SH(s,d,W)`; `D1_W(s)`.
+
+Suppose day `d` contains candidate observations for entered window `W`, so `O_candidate(s,d,W)` is nonempty. Every unique endpoint in `G_candidate(s,d,W)` satisfies the required W-specific endpoint source-history authorization.
+
+Then:
+
+`SH(s,d,W) = ELIGIBLE`.
+
+The day's candidate observations are admitted to `D1_W(s)`.
+
+This does not imply that their mapped endpoints are D3-admissible.
+
+**Example 6 -- Candidate observations exist but the day fails W-specific source history**
+Illustrates: D0 provenance C1; aggregate `SH(s,d,W)`; D1 exclusion.
+
+Suppose candidate observations exist for `W`, but at least one required unique candidate endpoint fails W-specific source-history authorization.
+
+Then:
+
+`SH(s,d,W) = INELIGIBLE`.
+
+That instrument-day contributes no observations to `D1_W(s)` for that Window Evaluation.
+
+If candidate observations existed across the relevant target population but every candidate-bearing day is excluded this way, `D1_W(s)` becomes empty and D0 terminates with:
+
+`NO_TARGET_OBSERVATION_POPULATION`.
+
+Its provenance records the C1 case: candidates existed, but source-history qualification excluded all of them.
+
+**Example 7 -- No candidate observations exist**
+Illustrates: D0 provenance C2; partial `SH(s,d,W)` semantics.
+
+Suppose the entered window has no inherited LRS-3 candidate observations in the target population.
+
+No empty candidate set is treated as positive source-history evidence. `SH(s,d,W)` is undefined wherever its candidate set is empty.
+
+If `D1_W(s)` is consequently empty, D0 terminates with the same controlling reason:
+
+`NO_TARGET_OBSERVATION_POPULATION`.
+
+Its provenance records C2: no candidate observations existed.
+
+Examples 6 and 7 therefore share a terminal D0 reason but preserve different provenance.
+
+### Group C -- D2 Geometry and D3 Admissibility
+
+**Example 8 -- D2 is fixed from D1 extrema**
+Illustrates: D2 construction; strict-C10 extrema; D2 immutability.
+
+Suppose the earliest observation in nonempty `D1_W(s)` maps to `G_first = 09:00`, and the latest maps to `G_last = 10:00`.
+
+The authoritative discrete D2 grid is every 5-minute endpoint from `09:00` through `10:00`, inclusive.
+
+The corresponding continuous temporal domain is:
+
+`(09:00, 10:05]`.
+
+Once constructed, later D3 outcomes cannot move either boundary.
+
+**Example 9 -- Interior D3 failure does not shrink D2**
+Illustrates: D2 immutability; D3 totality; D3 internal inadmissibility.
+
+Using the D2 from Example 8, suppose the `09:30` endpoint is D3-inadmissible.
+
+`09:30` remains part of D2.
+
+The domain does not become two smaller evaluation domains and does not remove `09:30`. Instead:
+
+`D3_ADMISSIBLE(09:30,W) = FALSE`.
+
+That endpoint becomes an internal terminating discontinuity for D4 topology.
+
+**Example 10 -- D3 validity resumes after an internal gap**
+Illustrates: C10 invalid-state continuity; D3; D4 no-bridging rule.
+
+Suppose:
+
+`09:20 = HIGH / D3-admissible`
+
+`09:25 = D3-inadmissible`
+
+`09:30 = HIGH / D3-admissible`.
+
+The two HIGH cells do not form one episode.
+
+The inadmissible `09:25` cell terminates the earlier episode, and the HIGH state at `09:30` begins a new episode. Neither D3 nor observation assignment may search backward across `09:25` to recover the earlier HIGH run.
+
+### Group D -- Structural Episodes and Censoring
+
+**Example 11 -- State transition terminates an episode without censoring**
+Illustrates: D4 `STATE_CHANGE`; inherited F4 as superseded for v2 boundary semantics.
+
+Suppose consecutive D3-admissible cells inside D2 are:
+
+`HIGH, HIGH, HIGH, LOW, LOW`.
+
+The transition from HIGH to LOW normally terminates the HIGH episode and begins a LOW episode.
+
+The transition itself creates no censoring.
+
+**Example 12 -- Internal D3 inadmissibility terminates but does not censor**
+Illustrates: D4 `D3_INADMISSIBILITY`; v2 F4 supersession.
+
+Suppose a HIGH episode is followed by a D3-inadmissible cell and later another HIGH cell.
+
+The first HIGH episode terminates at the internal discontinuity. The inadmissible cell is not an episode and is not a censor boundary. The later HIGH cell belongs to a new episode.
+
+No episode may bridge the inadmissible cell.
+
+**Example 13 -- Left D2 edge resolved by auditable prehistory**
+Illustrates: D4 `D2_BOUNDARY`; inherited F4 left trace.
+
+Suppose the first D2 cell is HIGH. The authorized pre-D2 trace encounters an earlier LOW-to-HIGH transition before reaching the earliest auditable prehistory boundary.
+
+The origin of the HIGH episode is therefore observed. The episode is not left-censored merely because part of its observed run precedes D2.
+
+The prehistory trace resolves censoring status but does not enlarge D2.
+
+**Example 14 -- Left D2 edge remains censored**
+Illustrates: D4 left censoring; inherited validity-discontinuity/state-transition trace.
+
+Suppose the first D2 cell is HIGH and the authorized pre-D2 trace remains continuously valid and HIGH through the earliest auditable prehistory boundary without exposing either a state transition or inherited validity discontinuity.
+
+The episode is:
+
+`LEFT_CENSORED`.
+
+No assumed earlier start time is fabricated.
+
+**Example 15 -- Right D2 boundary is terminal for duration knowledge**
+Illustrates: D4 right censoring; prohibition on post-D2 rescue.
+
+Suppose an episode remains active through `G_last`.
+
+That episode is:
+
+`RIGHT_CENSORED`.
+
+Post-D2 observations, states, or source-history information cannot be used to complete its duration for the current Window Evaluation.
+
+**Example 16 -- One-cell episode can be censored at both literal D2 edges**
+Illustrates: independent left/right censoring; one-cell D2 minimum.
+
+Suppose D2 contains exactly one grid cell and the episode represented by that cell cannot have its origin resolved through authorized prehistory.
+
+Because the same episode also reaches `G_last`, it may simultaneously be:
+
+`LEFT_CENSORED = TRUE`
+
+and
+
+`RIGHT_CENSORED = TRUE`.
+
+Its observed duration remains one 5-minute grid interval. Right censoring does not by itself certify the episode as SHORT.
+
+### Group E -- Gate-2 Zero States and Reconciliation
+
+**Example 17 -- Z1 only: zero current-Window eligible observations but structural episodes exist**
+Illustrates: D1/D3 current-Window observation eligibility; G-NUMERIC v2 Z1; G-NUMERIC.1; G-NUMERIC.4 applicability; independent G-NUMERIC.5 structural support.
+
+Suppose `D1_W(s)` is nonempty, but every current-Window observation maps to a D3-inadmissible endpoint:
+
+`N_LRS4_ELIGIBLE(s,W) = 0`.
+
+Assume the complete D2/D3 environmental timeline nevertheless contains D3-admissible cells elsewhere, so:
+
+`K_total > 0`.
+
+G-NUMERIC.4 resolves:
+
+`NOT_APPLICABLE_ZERO_ELIGIBLE_OBSERVATIONS`.
+
+`p_min` is not instantiated, and G-NUMERIC.4 contributes no reason to `R_W`.
+
+G-NUMERIC.1 remains independently operative and controls its own result. G-NUMERIC.5 also resolves independently from the authoritative D4 structural episode topology; `K_total > 0` does not imply that either HIGH or LOW satisfies its frozen per-state episode-support requirement. Z1 therefore neither determines nor suppresses the G-NUMERIC.5 result.
+
+Other applicable structural episode diagnostics continue from the authoritative D3/D4 topology.
+
+**Example 18 -- Z1 + Z2: no eligible observations and no structural episodes**
+Illustrates: G-NUMERIC v2 Z1/Z2; G5 independent state diagnostics; diagnostic totality.
+
+Suppose every D2 endpoint is D3-inadmissible.
+
+Then:
+
+`K_total = 0`
+
+and
+
+`T_classified = 0`.
+
+No current-Window observation can be regime-eligible, so:
+
+`N_LRS4_ELIGIBLE(s,W) = 0`.
+
+G-NUMERIC.4 is not applicable because the eligible-observation population is zero.
+
+Turnover and persistence independently resolve:
+
+`NOT_APPLICABLE_ZERO_STRUCTURAL_EPISODES`.
+
+Neither morphology ratio nor its censoring bounds is instantiated.
+
+Because `K_HIGH = K_LOW = 0`, the HIGH and LOW G-NUMERIC.5 support diagnostics independently fail. Their shared `INSUFFICIENT_STATE_EPISODE_SUPPORT` reason is retained once in `R_W`.
+
+**Example 19 -- Z2 without Z1 is forbidden**
+Illustrates: D3 totality over D2; D4 construction exclusively from D3-admissible cells; D1/D3 current-Window observation-eligibility rule; G-NUMERIC v2 Z2 reconciliation; failure-layer preservation.
+
+Suppose an implementation reports:
+
+`K_total = 0`
+
+but also:
+
+`N_LRS4_ELIGIBLE(s,W) > 0`.
+
+This state is impossible under the authoritative dependency model. `K_total = 0` means the authoritative D4 topology contains no structural episode, which under D3/D4 construction means no D3-admissible cell exists in D2. But every current-Window eligible observation in `D1_W(s)` requires its strict-C10 endpoint `G(T)` to satisfy:
+
+`D3_ADMISSIBLE(G(T),W) = TRUE`.
+
+The two reported conditions therefore cannot coexist under the normative D1/D3/D4 dependency chain.
+
+The result is a methodology-integrity failure. It is not processed as ordinary Gate-2 output.
+
+### Group F -- Instrument Path and Final Projection
+
+**Example 20 -- Primary window is the realized window**
+Illustrates: `InstrumentPathResult`; `W*`; final projection.
+
+Suppose the Instrument Path completes with:
+
+`InstrumentPathResult = VIABLE`
+
+and its unique realized window is the primary 4h window.
+
+Then:
+
+`W* = 4h`.
+
+Final observation projection may proceed only after the final `SH_path(s,d)` stage gate. For a projected observation whose day has `SH_path = ELIGIBLE`, strict C10 maps `T` to `G(T)`, and final disposition reads the same authoritative 4h D3 artifact produced during that Window Evaluation.
+
+No D3 object is recomputed during final projection.
+
+**Example 21 -- A fallback becomes the realized window**
+Illustrates: `InstrumentPathResult`; exclusive `W*`; historical-only non-realized D3 artifacts.
+
+Suppose the primary Window Evaluation requires a 24h fallback, the 24h Window Evaluation is entered, and the completed Instrument Path is:
+
+`InstrumentPathResult = VIABLE`
+
+with realized window:
+
+`W* = 24h`.
+
+The earlier 4h D3 artifact remains historical Window-Evaluation evidence only.
+
+It cannot rescue, veto, average with, or otherwise alter final observation disposition under the authoritative 24h D3 artifact.
+
+This example makes no claim about legacy `H_path` labels or their mapping to `InstrumentPathResult`.
+
+**Example 22 -- Gate-2-terminal path has no realized window**
+Illustrates: non-VIABLE path; `W*` exclusivity.
+
+Suppose the primary evaluation leads to a fallback, the fallback is evaluated, and that fallback terminates on a structural Gate-2 failure.
+
+The completed path is:
+
+`InstrumentPathResult = GATE2_TERMINAL`.
+
+There is no `W*`.
+
+The fallback is merely the last evaluated window; it is not a realized window. No final observation projection occurs.
+
+**Example 23 -- D0-terminal path has no realized window**
+Illustrates: D0 path termination; `InstrumentPathResult`; no final projection.
+
+Suppose an entered Window Evaluation reaches D0 because its authoritative `D1_W(s)` is empty.
+
+The completed path is:
+
+`InstrumentPathResult = D0_TERMINAL`.
+
+There is no `W*`, no synthetic Gate-2 result for that window, and no final observation projection.
+
+The D0 provenance remains separately recorded as C1 or C2.
+
+**Example 24 -- Final source-history exclusion precedes realized-window D3 disposition**
+Illustrates: `SH_path`; `FinalObservationDisposition`; failure-layer preservation.
+
+Suppose the completed path is VIABLE and establishes `W*`, but for research day `d`:
+
+`SH_path(s,d) = INELIGIBLE`.
+
+For an inherited LRS-3-eligible observation `T` on that day:
+
+`FinalObservationDisposition(T) = LRS4_SOURCE_HISTORY_INELIGIBLE`.
+
+Final projection does not consult D3 to replace that final source-history exclusion with a regime-ineligibility result.
+
+**Example 25 -- Final regime ineligibility under the realized window**
+Illustrates: realized-window D3 reuse; `FinalObservationDisposition`.
+
+Suppose:
+
+`InstrumentPathResult = VIABLE`
+
+`SH_path(s,d) = ELIGIBLE`
+
+and strict C10 maps observation `T` to endpoint `G(T)` under `W*`.
+
+If the already-authoritative realized-window artifact contains:
+
+`D3_ADMISSIBLE(G(T),W*) = FALSE`
+
+then:
+
+`FinalObservationDisposition(T) = LRS4_REGIME_INELIGIBLE`.
+
+Final projection does not search backward for an older admissible endpoint and does not consult D3 from another entered window.
+
+**Example 26 -- Final LRS-4 eligibility**
+Illustrates: final-path stage ordering; `FinalEligible` derived-only authority.
+
+Suppose:
+
+`InstrumentPathResult = VIABLE`
+
+`SH_path(s,d) = ELIGIBLE`
+
+and:
+
+`D3_ADMISSIBLE(G(T),W*) = TRUE`.
+
+Then:
+
+`FinalObservationDisposition(T) = LRS4_ELIGIBLE`.
+
+Consequently:
+
+`FinalEligible(T) = TRUE`.
+
+The Boolean is derived from the categorical disposition; it does not independently authorize or redefine that disposition.
+
+**Example 27 -- Empty entered window abstains from `SH_path`; defined failure does not**
+Illustrates: K1.2-A v2 `W_evidence`; final source-history aggregation.
+
+Suppose a VIABLE path entered both 4h and 24h.
+
+On day `d`:
+
+`|O_candidate(s,d,4h)| > 0`
+
+but:
+
+`|O_candidate(s,d,24h)| = 0`.
+
+Then 24h supplies no `SH(s,d,24h)` value and abstains from `SH_path(s,d)` aggregation.
+
+If instead the 24h candidate set were nonempty and:
+
+`SH(s,d,24h) = INELIGIBLE`,
+
+that result would participate in the AND and could make:
+
+`SH_path(s,d) = INELIGIBLE`.
+
+An empty contributor and a defined failure are therefore not interchangeable.
+
+**Example 28 -- Undefined `SH_path` is day-level bookkeeping, not an observation status**
+Illustrates: K1.2-A v2 empty `W_evidence`; final-disposition population boundary.
+
+Suppose:
+
+`W_evidence(s,d) = empty`.
+
+Then:
+
+`SH_path(s,d) = UNDEFINED`.
+
+Under the frozen path architecture, this implies the day contains zero inherited LRS-3-eligible observations requiring LRS-4 final disposition.
+
+`UNDEFINED` is not converted into:
+
+`LRS4_SOURCE_HISTORY_INELIGIBLE`,
+
+`LRS4_REGIME_INELIGIBLE`,
+
+or any new observation-level status.
