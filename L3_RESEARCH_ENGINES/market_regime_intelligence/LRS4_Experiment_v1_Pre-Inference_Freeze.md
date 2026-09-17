@@ -844,3 +844,23 @@ Under the existing Experiment-v1 change-control rule, Parts A-J are CLOSED and a
 Resolution of the Gate-2 evaluation-domain definition is deferred to Experiment v2 under outcome-blind change control.
 
 End of Experiment v1 methodology freeze. This document is the canonical LRS-4 Experiment-v1 research-design specification.
+
+---
+
+# EXPERIMENT v2 -- PRE-INFERENCE METHODOLOGY REVISION
+
+**Status:** DRAFT / OUTCOME-BLIND / NOT FROZEN / IMPLEMENTATION NOT AUTHORIZED
+
+## Section 1 -- Scope and Reason for Experiment v2
+
+Experiment v2 exists to resolve the implementation-blocking Gate-2 evaluation-domain specification omission documented above. Frozen Experiment v1 requires a current Gate-2 evaluation domain for episode censoring, `K_total`, `T_classified`, turnover, persistence, and related Gate-2 resolution, but does not deterministically define that domain's temporal boundaries. Because those quantities can alter Window Evaluation and Instrument Path disposition, resolving the omission requires an Experiment-v2 methodology revision rather than an implementation-level interpretation.
+
+Experiment v2 is being specified under outcome-blind change control. No conditioned LRS-4 HIGH-versus-LOW comparison, `Delta_regime`, conditioned forward-return result, bootstrap interval, K7 conditioned result, leave-one-instrument-day-out conditioned effect, or reconstructible equivalent has been inspected or used to select the Experiment-v2 methodology.
+
+Experiment v1 remains frozen as the historical predecessor specification. Experiment v2 does not retroactively repair, reinterpret, or reopen Experiment v1. Where Experiment v2 explicitly identifies a frozen Experiment-v1 rule as `SUPERSEDED ONLY WHERE SPECIFIED` or otherwise supplies an explicit v2 resolution, that v2 rule governs Experiment-v2 execution only. Frozen Experiment-v1 methodology not explicitly superseded remains inherited unchanged where applicable.
+
+Previously completed Stage-1 primitives remain reusable only to the extent that their frozen behavior is unaffected by the Experiment-v2 revision and their interfaces satisfy the final Experiment-v2 dependency and authority model. Reuse does not itself establish authorization for Gate-2 implementation or conditioned-outcome access.
+
+Experiment v2 is not frozen by the presence of this section or by completion of any individual subsection. Gate-2-dependent implementation remains unauthorized until the complete Experiment-v2 methodology, inheritance/interface audit, implementation invariants, and required-test specification have undergone the final whole-document consistency audit and Experiment v2 has been explicitly declared `FROZEN`.
+
+Until that declaration, any newly identified methodological ambiguity that could alter population membership, temporal-domain construction, regime admissibility, episode topology, Gate-2 diagnostics, Instrument Path routing, final observation disposition, or downstream inferential authorization must be resolved in the methodology before implementation proceeds.
