@@ -179,6 +179,18 @@ P_long,time bounds: T_classified = valid classified time inside the evaluation d
 
 Indeterminacy: bounds straddling the frozen threshold -> that statistic's directional verdict is suppressed (not emitted PASS/FAIL) -> INDETERMINATE_EPISODE_MORPHOLOGY_FROM_BOUNDARY_CENSORING (epistemic terminal, distinct from the four structural terminal codes; see Part G). Suppression is local to the affected statistic only.
 
+### F4 -- EXPERIMENT v2 SUPERSESSION (D2 boundary censoring vs D3 internal inadmissibility)
+
+Status: SUPERSEDED ONLY WHERE SPECIFIED. Experiment v2 supplies the deterministic evaluation-domain and admissibility objects that frozen v1 F4 lacked. All F4 censoring-duration, morphology-certainty, bound-construction, denominator, and indeterminacy rules remain INHERITED UNCHANGED except for the boundary semantics specified below.
+
+For Experiment v2, censoring authority comes only from the literal D2 temporal boundary. An observed state transition is a normally resolved episode boundary and does not create censoring. D3 inadmissibility at a D2 grid cell is an internal terminating discontinuity: it breaks episode continuity, is not itself an episode, and never creates a censor boundary. Censoring may not jump across or bridge any D3-inadmissible gap.
+
+At the left D2 edge, the inherited F4 backward trace through already-audited prehistory remains operative. If that trace encounters a terminating state transition or D3 inadmissibility, the episode origin is resolved normally and the episode is not left-censored on that basis. If the same state remains continuously admissible through the earliest auditable prehistory boundary, the episode is `LEFT_CENSORED`.
+
+At the right D2 edge, an episode that reaches the literal `G_last` endpoint is `RIGHT_CENSORED`; no post-D2 observation, state, or source-history information may be used to rescue or complete that duration. A one-cell episode may independently be left-censored, right-censored, both, or neither according to these rules. Its observed duration remains one grid interval; right censoring does not by itself certify the episode as SHORT.
+
+Experiment v2 F6 remains INHERITED UNCHANGED. Its statement that invalid regime time breaks episodes is governed by the authoritative v2 D3 topology: D3-inadmissible cells break episodes and contribute to neither episode count nor classified-time denominators.
+
 ## F5. Episode-Duration Tail Boundaries (CLOSED)
 q_e = tau_e/W. SHORT: q_e<0.5. MIDDLE: 0.5<=q_e<=2. LONG: q_e>2. Equality -> MIDDLE.
 Derivation: symmetric multiplicative departure from q=1 (log-symmetric: log0.5=-log2), chosen absent an independent basis for asymmetry. Not derived from local-coverage/warm-up logic or from fallback-window lengths (rejected -- would create soft circularity, since 24h is itself a consequence of a turnover failure). A surprising Stage-1 distribution never authorizes changing these within v1.
