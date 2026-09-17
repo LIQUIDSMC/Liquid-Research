@@ -1,0 +1,101 @@
+{
+  "delta_ms": 1000,
+  "scope_note": "Adverse-move distributions include only N10-eligible LONG/SHORT signals with observable entry prices at BOTH Delta=0 and this Delta. Unavailable pairs are not assigned synthetic adverse moves; they are explicitly counted in availability_accounting.",
+  "availability_accounting": {
+    "pooled": {
+      "signal_total_n": 25357,
+      "signal_both_available_n": 25357,
+      "signal_unavailable_pair_n": 0
+    },
+    "btc": {
+      "signal_total_n": 21284,
+      "signal_both_available_n": 21284,
+      "signal_unavailable_pair_n": 0
+    },
+    "eth": {
+      "signal_total_n": 4073,
+      "signal_both_available_n": 4073,
+      "signal_unavailable_pair_n": 0
+    },
+    "long": {
+      "signal_total_n": 9411,
+      "signal_both_available_n": 9411,
+      "signal_unavailable_pair_n": 0
+    },
+    "short": {
+      "signal_total_n": 15946,
+      "signal_both_available_n": 15946,
+      "signal_unavailable_pair_n": 0
+    }
+  },
+  "pooled": {
+    "n": 25357,
+    "median": 0.0,
+    "mean": 0.027481618480578875,
+    "p75": 0.03095322147927959,
+    "p90": 0.6597919478079649,
+    "p95": 1.158438425001851,
+    "p99": 2.416589340139552,
+    "worst": 39.70281850701696,
+    "pct_worse_than_0bp": 34.23512245139409,
+    "pct_worse_than_1bp": 5.986512600070986,
+    "pct_worse_than_2bp": 1.518318413061482,
+    "pct_worse_than_5bp": 0.18140947272942384
+  },
+  "pooled_long": {
+    "n": 9411,
+    "median": 0.0,
+    "mean": 0.026617920124629352,
+    "p75": 0.03820707931367906,
+    "p90": 0.6400793698402296,
+    "p95": 1.119612922279023,
+    "p99": 2.302572684285794,
+    "worst": 39.70281850701696,
+    "pct_worse_than_0bp": 32.377005631707576,
+    "pct_worse_than_1bp": 5.822973116565721,
+    "pct_worse_than_2bp": 1.4557432791414302,
+    "pct_worse_than_5bp": 0.24439485708213793
+  },
+  "pooled_short": {
+    "n": 15946,
+    "median": 0.0,
+    "mean": 0.027991355419487746,
+    "p75": 0.026716734178866552,
+    "p90": 0.6658828939998251,
+    "p95": 1.1728235430424894,
+    "p99": 2.4305612314138134,
+    "worst": 11.387216146987456,
+    "pct_worse_than_0bp": 35.331744638153765,
+    "pct_worse_than_1bp": 6.08303022701618,
+    "pct_worse_than_2bp": 1.555248965257745,
+    "pct_worse_than_5bp": 0.14423679919729085
+  },
+  "btc_pooled": {
+    "n": 21284,
+    "median": 0.0,
+    "mean": 0.026816662693219112,
+    "p75": 0.0038748011160771867,
+    "p90": 0.5982948737839335,
+    "p95": 1.0183275935544667,
+    "p99": 2.1462234990224593,
+    "worst": 11.387216146987456,
+    "pct_worse_than_0bp": 34.683330201090016,
+    "pct_worse_than_1bp": 5.135312911106935,
+    "pct_worse_than_2bp": 1.1745912422476978,
+    "pct_worse_than_5bp": 0.07987220447284345
+  },
+  "eth_pooled": {
+    "n": 4073,
+    "median": 0.0,
+    "mean": 0.030956432862647397,
+    "p75": 0.19696981634620414,
+    "p90": 1.0388531061700235,
+    "p95": 1.6851300819613606,
+    "p99": 4.066012915571182,
+    "worst": 39.70281850701696,
+    "pct_worse_than_0bp": 31.892953596857353,
+    "pct_worse_than_1bp": 10.434569113675424,
+    "pct_worse_than_2bp": 3.314510189049841,
+    "pct_worse_than_5bp": 0.7120058924625583
+  }
+}

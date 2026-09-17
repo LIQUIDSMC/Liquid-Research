@@ -1,0 +1,30 @@
+[
+  {
+    "instrument": "BTC-USD",
+    "date": "2026-08-05",
+    "status": "PASS",
+    "n10_eligible": true,
+    "note": "N10-eligible: contributes to direction-adjusted adverse-move statistics."
+  },
+  {
+    "instrument": "BTC-USD",
+    "date": "2026-08-22",
+    "status": "PASS",
+    "n10_eligible": true,
+    "note": "N10-eligible: contributes to direction-adjusted adverse-move statistics."
+  },
+  {
+    "instrument": "ETH-USD",
+    "date": "2026-08-27",
+    "status": "PASS",
+    "n10_eligible": true,
+    "note": "N10-eligible: contributes to direction-adjusted adverse-move statistics."
+  },
+  {
+    "instrument": "BTC-USD",
+    "date": "2026-09-03",
+    "status": "PASS",
+    "n10_eligible": false,
+    "note": "N10-INELIGIBLE: structural diagnostics PASS only. Frozen N10 reference-date gate failed (2026-09-01, 2026-09-02, 2026-08-31 did not pass audit). EXCLUDED from all direction-adjusted adverse-move statistics and from pooled/BTC/ETH/LONG/SHORT aggregates."
+  }
+]

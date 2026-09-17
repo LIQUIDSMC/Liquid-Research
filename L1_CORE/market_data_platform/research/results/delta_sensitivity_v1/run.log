@@ -1,0 +1,156 @@
+
+==================== BTC-USD 2026-08-05 ====================
+
+[GATE 2] Target population: 483034 -- structural checks PASS
+Boundary (derived): ddfe319d-ca45-47d7-8a11-ac24b9df1ef2.parquet, row_ordinal=0, receipt=1785974400047
+
+[GATE 3] K5 E_position reproduced from validated 200-arrival context: PASS
+
+[GATE 4] Frozen-kernel sample alignment: 24151 samples, 0 mismatches vs independent every-20th population -- PASS
+
+[GATE 5] Invariant combined_tr[F_position]==R: 0 mismatches / 24151 -- PASS
+[GATE 6] A_position dominance assertions: PASS
+
+[GATE 7] Required extended horizon: max(A_receipt)=1785974398652 + Delta_max=2000 + safety=60000 = 1785974460652
+[GATE 7] PASS -- extended stream: 239 arrivals through required horizon
+
+[GATE 8] Delta=0: implements locked validated NEW rule (no receipt condition). 24151/24151 available, causal predicates verified -- PASS. (Implementation of the locked rule; not an independent comparison against a separately retained baseline artifact.)
+
+[GATE 9] Delta=150ms: 24151/24151 available (0 unavailable, explicitly counted), causality PASS
+[GATE 9] Delta=250ms: 24151/24151 available (0 unavailable, explicitly counted), causality PASS
+[GATE 9] Delta=500ms: 24151/24151 available (0 unavailable, explicitly counted), causality PASS
+[GATE 9] Delta=1000ms: 24151/24151 available (0 unavailable, explicitly counted), causality PASS
+[GATE 9] Delta=2000ms: 24151/24151 available (0 unavailable, explicitly counted), causality PASS
+
+N10-eligible: P10=-0.9124993108067109, P90=0.995520576372723
+Direction counts: SHORT=2875, LONG=1243, NONE=20033
+
+[Delta=0ms] avail=24151/24151 (100.00%)
+[Delta=150ms] avail=24151/24151 (100.00%) | adverse(pooled) median=0.000bp p90=0.002bp n=4118
+[Delta=250ms] avail=24151/24151 (100.00%) | adverse(pooled) median=0.000bp p90=0.002bp n=4118
+[Delta=500ms] avail=24151/24151 (100.00%) | adverse(pooled) median=0.000bp p90=0.155bp n=4118
+[Delta=1000ms] avail=24151/24151 (100.00%) | adverse(pooled) median=0.000bp p90=0.374bp n=4118
+[Delta=2000ms] avail=24151/24151 (100.00%) | adverse(pooled) median=0.000bp p90=0.633bp n=4118
+
+BTC-USD 2026-08-05: ALL STRUCTURAL GATES PASS
+
+==================== BTC-USD 2026-08-22 ====================
+
+[GATE 2] Target population: 1909553 -- structural checks PASS
+Boundary (derived): b1dc73fe-831a-4e41-983d-70d3ee26a7e6.parquet, row_ordinal=1, receipt=1787443200084
+
+[GATE 3] K5 E_position reproduced from validated 200-arrival context: PASS
+
+[GATE 4] Frozen-kernel sample alignment: 95477 samples, 0 mismatches vs independent every-20th population -- PASS
+
+[GATE 5] Invariant combined_tr[F_position]==R: 0 mismatches / 95477 -- PASS
+[GATE 6] A_position dominance assertions: PASS
+
+[GATE 7] Required extended horizon: max(A_receipt)=1787443197891 + Delta_max=2000 + safety=60000 = 1787443259891
+[GATE 7] PASS -- extended stream: 517 arrivals through required horizon
+
+[GATE 8] Delta=0: implements locked validated NEW rule (no receipt condition). 95477/95477 available, causal predicates verified -- PASS. (Implementation of the locked rule; not an independent comparison against a separately retained baseline artifact.)
+
+[GATE 9] Delta=150ms: 95477/95477 available (0 unavailable, explicitly counted), causality PASS
+[GATE 9] Delta=250ms: 95477/95477 available (0 unavailable, explicitly counted), causality PASS
+[GATE 9] Delta=500ms: 95477/95477 available (0 unavailable, explicitly counted), causality PASS
+[GATE 9] Delta=1000ms: 95477/95477 available (0 unavailable, explicitly counted), causality PASS
+[GATE 9] Delta=2000ms: 95477/95477 available (0 unavailable, explicitly counted), causality PASS
+
+N10-eligible: P10=-0.8916056119723363, P90=0.9638883167380699
+Direction counts: SHORT=11024, LONG=6142, NONE=78311
+
+[Delta=0ms] avail=95477/95477 (100.00%)
+[Delta=150ms] avail=95477/95477 (100.00%) | adverse(pooled) median=0.000bp p90=0.001bp n=17166
+[Delta=250ms] avail=95477/95477 (100.00%) | adverse(pooled) median=0.000bp p90=0.136bp n=17166
+[Delta=500ms] avail=95477/95477 (100.00%) | adverse(pooled) median=0.000bp p90=0.393bp n=17166
+[Delta=1000ms] avail=95477/95477 (100.00%) | adverse(pooled) median=0.000bp p90=0.665bp n=17166
+[Delta=2000ms] avail=95477/95477 (100.00%) | adverse(pooled) median=0.000bp p90=1.069bp n=17166
+
+BTC-USD 2026-08-22: ALL STRUCTURAL GATES PASS
+
+==================== ETH-USD 2026-08-27 ====================
+
+[GATE 2] Target population: 326986 -- structural checks PASS
+Boundary (derived): 967580cc-c978-4ef0-9602-02cd85d060d9.parquet, row_ordinal=54, receipt=1787875199372
+
+[GATE 3] K5 E_position reproduced from validated 200-arrival context: PASS
+
+[GATE 4] Frozen-kernel sample alignment: 16349 samples, 0 mismatches vs independent every-20th population -- PASS
+
+[GATE 5] Invariant combined_tr[F_position]==R: 0 mismatches / 16349 -- PASS
+[GATE 6] A_position dominance assertions: PASS
+
+[GATE 7] Required extended horizon: max(A_receipt)=1787875199372 + Delta_max=2000 + safety=60000 = 1787875261372
+[GATE 7] PASS -- extended stream: 86 arrivals through required horizon
+
+[GATE 8] Delta=0: implements locked validated NEW rule (no receipt condition). 16349/16349 available, causal predicates verified -- PASS. (Implementation of the locked rule; not an independent comparison against a separately retained baseline artifact.)
+
+[GATE 9] Delta=150ms: 16349/16349 available (0 unavailable, explicitly counted), causality PASS
+[GATE 9] Delta=250ms: 16349/16349 available (0 unavailable, explicitly counted), causality PASS
+[GATE 9] Delta=500ms: 16349/16349 available (0 unavailable, explicitly counted), causality PASS
+[GATE 9] Delta=1000ms: 16349/16349 available (0 unavailable, explicitly counted), causality PASS
+[GATE 9] Delta=2000ms: 16349/16349 available (0 unavailable, explicitly counted), causality PASS
+
+N10-eligible: P10=-0.8260489240979522, P90=0.9047507863169619
+Direction counts: SHORT=2047, LONG=2026, NONE=12276
+
+[Delta=0ms] avail=16349/16349 (100.00%)
+[Delta=150ms] avail=16349/16349 (100.00%) | adverse(pooled) median=0.000bp p90=0.040bp n=4073
+[Delta=250ms] avail=16349/16349 (100.00%) | adverse(pooled) median=0.000bp p90=0.239bp n=4073
+[Delta=500ms] avail=16349/16349 (100.00%) | adverse(pooled) median=0.000bp p90=0.562bp n=4073
+[Delta=1000ms] avail=16349/16349 (100.00%) | adverse(pooled) median=0.000bp p90=1.039bp n=4073
+[Delta=2000ms] avail=16349/16349 (100.00%) | adverse(pooled) median=0.000bp p90=1.441bp n=4073
+
+ETH-USD 2026-08-27: ALL STRUCTURAL GATES PASS
+
+==================== BTC-USD 2026-09-03 ====================
+
+[GATE 2] Target population: 644236 -- structural checks PASS
+Boundary (derived): 9f95e28b-7ec6-40e0-a6f6-671f219519aa.parquet, row_ordinal=62, receipt=1788479999381
+
+[GATE 3] K5 E_position reproduced from validated 200-arrival context: PASS
+
+[GATE 4] Frozen-kernel sample alignment: 32211 samples, 0 mismatches vs independent every-20th population -- PASS
+
+[GATE 5] Invariant combined_tr[F_position]==R: 0 mismatches / 32211 -- PASS
+[GATE 6] A_position dominance assertions: PASS
+
+[GATE 7] Required extended horizon: max(A_receipt)=1788479996583 + Delta_max=2000 + safety=60000 = 1788480058583
+[GATE 7] PASS -- extended stream: 496 arrivals through required horizon
+
+[GATE 8] Delta=0: implements locked validated NEW rule (no receipt condition). 32211/32211 available, causal predicates verified -- PASS. (Implementation of the locked rule; not an independent comparison against a separately retained baseline artifact.)
+
+[GATE 9] Delta=150ms: 32211/32211 available (0 unavailable, explicitly counted), causality PASS
+[GATE 9] Delta=250ms: 32211/32211 available (0 unavailable, explicitly counted), causality PASS
+[GATE 9] Delta=500ms: 32211/32211 available (0 unavailable, explicitly counted), causality PASS
+[GATE 9] Delta=1000ms: 32211/32211 available (0 unavailable, explicitly counted), causality PASS
+[GATE 9] Delta=2000ms: 32211/32211 available (0 unavailable, explicitly counted), causality PASS
+
+SIGNAL_CLASSIFICATION_INELIGIBLE -- frozen N10 reference-date gate failed for BTC-USD 2026-09-03. Structural diagnostics only; EXCLUDED from all direction-adjusted adverse-move statistics and pooled/BTC/LONG/SHORT aggregates.
+
+[Delta=0ms] avail=32211/32211 (100.00%)
+[Delta=150ms] avail=32211/32211 (100.00%)
+[Delta=250ms] avail=32211/32211 (100.00%)
+[Delta=500ms] avail=32211/32211 (100.00%)
+[Delta=1000ms] avail=32211/32211 (100.00%)
+[Delta=2000ms] avail=32211/32211 (100.00%)
+
+BTC-USD 2026-09-03: ALL STRUCTURAL GATES PASS
+
+
+==================== AGGREGATE BREAKDOWNS ====================
+
+[AGGREGATE Delta=150ms] signals=25357 both_available=25357 unavailable_pairs=0 | POOLED adverse_n=25357 median=0.0bp | LONG n=9411 median=0.0bp | SHORT n=15946 median=0.0bp
+[AGGREGATE Delta=250ms] signals=25357 both_available=25357 unavailable_pairs=0 | POOLED adverse_n=25357 median=0.0bp | LONG n=9411 median=0.0bp | SHORT n=15946 median=0.0bp
+[AGGREGATE Delta=500ms] signals=25357 both_available=25357 unavailable_pairs=0 | POOLED adverse_n=25357 median=0.0bp | LONG n=9411 median=0.0bp | SHORT n=15946 median=0.0bp
+[AGGREGATE Delta=1000ms] signals=25357 both_available=25357 unavailable_pairs=0 | POOLED adverse_n=25357 median=0.0bp | LONG n=9411 median=0.0bp | SHORT n=15946 median=0.0bp
+[AGGREGATE Delta=2000ms] signals=25357 both_available=25357 unavailable_pairs=0 | POOLED adverse_n=25357 median=0.0bp | LONG n=9411 median=0.0bp | SHORT n=15946 median=0.0bp
+
+==================== SUMMARY ====================
+BTC-USD 2026-08-05: PASS [N10-ELIGIBLE]
+BTC-USD 2026-08-22: PASS [N10-ELIGIBLE]
+ETH-USD 2026-08-27: PASS [N10-ELIGIBLE]
+BTC-USD 2026-09-03: PASS [N10-INELIGIBLE (structural only, excluded from aggregates)]
+
+Output: /tmp/delta_sensitivity_v1_results
