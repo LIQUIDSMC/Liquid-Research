@@ -1000,3 +1000,77 @@ Left- and right-censor status are independent attributes. A one-cell episode may
 D4 is constructed from the full D3 timeline, not by filtering the timeline back through `D1_W(s)`. Structural episode counts, including `K_HIGH`, `K_LOW`, and `K_total`, and the classified-time quantity `T_classified` are therefore derived from the authoritative D3/D4 environmental timeline. D1 remains the separate current-Window observation population for observation-based Gate-2 diagnostics.
 
 D4 may partition and summarize the fixed D2 domain but may not resize D2, alter any D3 value, or rebuild either upstream object. Gate-2 morphology diagnostics must consume this authoritative D4 topology rather than independently reconstructing episodes from observations or regime labels.
+
+### Final-Path Observation Projection
+
+Final observation projection occurs only after the Instrument Path has completed. `InstrumentPathResult` is a discriminated path-level result whose detailed routing and terminal-state interface is specified later in Experiment v2. For the purposes of final observation projection, only `InstrumentPathResult = VIABLE` establishes a realized regime window.
+
+Define `W*` exclusively as the unique realized regime window of a `VIABLE` Instrument Path. A D0-terminal or Gate-2-terminal path has no `W*`. The last window evaluated on a non-VIABLE path is not `W*`, and no non-VIABLE path receives final observation projection.
+
+For a VIABLE path, final day-level `SH_path(s,d)` is evaluated as the source-history stage gate before projecting observations on research day `d`. `SH_path(s,d)` is defined according to the Experiment-v2 evidentiary-window aggregation rule specified by the K1.2-A v2 supersession. Undefined `SH_path(s,d)` is permitted only for a day containing zero inherited LRS-3-eligible observations requiring final disposition; it is day-level bookkeeping and must never be coerced into an observation status.
+
+For an inherited LRS-3-eligible observation `T` on a VIABLE path:
+
+1. If `SH_path(s,d) = INELIGIBLE`, then
+
+   `FinalObservationDisposition(T) = LRS4_SOURCE_HISTORY_INELIGIBLE`.
+
+2. If `SH_path(s,d) = ELIGIBLE`, map `T` to `G(T)` using the inherited strict-C10 rule and read the authoritative realized-window D3 value at `(G(T), W*)`.
+
+   If `D3_ADMISSIBLE(G(T),W*) = FALSE`, then
+
+   `FinalObservationDisposition(T) = LRS4_REGIME_INELIGIBLE`.
+
+   If `D3_ADMISSIBLE(G(T),W*) = TRUE`, then
+
+   `FinalObservationDisposition(T) = LRS4_ELIGIBLE`.
+
+`LRS3_INELIGIBLE` remains an upstream inherited status and is not reclassified by the LRS-4 final projection.
+
+The realized-window D3 value used here must be the same authoritative D3 artifact produced during the Window Evaluation of `W*`. Final projection may invoke the same low-level strict-C10 observation-to-grid mapping primitive, but it must not recompute, regenerate, or independently reinterpret endpoint source-history authorization, RVOL, threshold history, regime state, or D3 admissibility. A missing realized-window D3 artifact, a missing required `(G,W*)` entry, or disagreement between final projection and the authoritative current-Window artifact is a methodology-integrity failure and must fail closed.
+
+Only the authoritative D3 artifact from `W*` governs the regime component of final observation projection. Every D3 artifact from an entered window other than `W*` -- including the primary window when a fallback window becomes `W*` -- is historical Window-Evaluation evidence only; it may neither rescue nor veto the final disposition under `W*`.
+
+Final `SH_path(s,d) = ELIGIBLE` does not replace or erase the endpoint-level source-history conjunct already embedded in `D3_ADMISSIBLE(G,W*)`. The final source-history stage gate and realized-window D3 authority remain methodologically distinct even when their expected Boolean implications are predictable.
+
+`FinalObservationDisposition(T)` is categorical, not Boolean. Define the convenience predicate
+
+`FinalEligible(T) := [FinalObservationDisposition(T) = LRS4_ELIGIBLE]`.
+
+`FinalEligible(T)` is derived evidence only and does not replace the categorical final disposition as the authoritative observation-level result.
+
+### Authority and Vocabulary
+
+Experiment v2 applies three standing authority principles throughout the methodology.
+
+**P1 -- Membership-language discipline.** A downstream result, diagnostic, disposition, or derived status must not define, reconstruct, or retroactively alter membership in an upstream population. When multiple eligibility layers are in scope, the bare term `eligibility` is insufficient; the applicable layer must be identified explicitly, such as inherited LRS-3 eligibility, source-history eligibility, current-Window regime eligibility, or final observation eligibility.
+
+**P2 -- R-AUTHORITY.** Predictable equivalence or implication between two methodological objects does not make those objects interchangeable. Each object retains the authority assigned by its definition, index domain, dependency stage, and producer. A downstream consumer must use the authoritative object required by its interface rather than substitute another object merely because their values are expected to agree in a particular state.
+
+**P3 -- Failure-layer preservation.** Window constructibility failure, source-history exclusion, endpoint environmental inadmissibility, Gate-2 failure, Instrument Path termination, and final observation exclusion are distinct methodological layers. They must retain their own provenance and must not be silently collapsed, promoted, or translated into one another.
+
+`W*` is reserved exclusively for the unique realized window of a `VIABLE` `InstrumentPathResult`. A D0-terminal or Gate-2-terminal path has no `W*`; the last evaluated window on such a path is not a realized window.
+
+The canonical Experiment-v2 authority vocabulary is:
+
+- `SH_AUTHORIZED(G,W)` -- endpoint/window source-history authorization; authoritative permission for the W-specific classifier to interpret endpoint `G`.
+- `SH(s,d,W)` -- partial instrument/day/window aggregate source-history result over the nonempty current-W candidate endpoint set; authoritative for D1 day inclusion only.
+- `D1_W(s)` -- authoritative current-W target-observation population after W-specific aggregate source-history qualification.
+- `D2_W(s)` -- authoritative fixed current-W Gate-2 temporal geometry constructed from D1 extrema.
+- `REGIME_STATE_VALID(G,W)` -- conditional result of the inherited measurement, RVOL, threshold-learning, and regime-classification validity machinery after endpoint source-history authorization.
+- `D3_ADMISSIBLE(G,W)` -- authoritative endpoint environmental-admissibility conjunction on D2.
+- `D4_W(s)` -- authoritative current-W structural episode topology constructed from the complete D3 timeline.
+- `Eligibility(T,W)` -- current-W observation regime-eligibility result for `T in D1_W(s)`, obtained from authoritative `D3_ADMISSIBLE(G(T),W)` after strict-C10 mapping; it is a Window-Evaluation object, not a final-path disposition.
+- `E_W = (R_W, A_W, H_W)` -- completed Gate-2 result for the current Window Evaluation; `R_W` retains the complete Gate-2 reason set, `A_W` is the sole Instrument Path routing authority, and `H_W` is retained diagnostic evidence rather than an independent routing authority.
+- `WindowEvaluationResult` -- discriminated current-W result: either D0 termination or completed Gate-2 result `E_W`; the two variants are non-coercible.
+- `InstrumentPathResult` -- discriminated final path-level result. Its final interface distinguishes `VIABLE`, `GATE2_TERMINAL`, and `D0_TERMINAL`; only `VIABLE` establishes `W*`.
+- `SH_path(s,d)` -- final day-level path-conditioned source-history stage gate, constructed only after the Instrument Path is finalized from the evidentiary-window aggregation rule.
+- `W*` -- unique realized regime window on a VIABLE path only.
+- `FinalObservationDisposition(T)` -- authoritative categorical final LRS-4 observation-level result after the finalized path, `SH_path` stage gate, strict-C10 mapping, and reuse of the authoritative realized-window D3 artifact.
+- `FinalEligible(T)` -- derived Boolean convenience predicate equal to TRUE if and only if `FinalObservationDisposition(T) = LRS4_ELIGIBLE`; it has no independent decision authority.
+
+The following control and provenance objects also retain distinct authority and must not be coerced into one another: `D0Termination`, `DiagnosticRecord`, `R_W`, `A_W`, `H_W`, `ApplicabilityStatus`, `BoundaryCause`, `CensoringStatus`, and `Episode`.
+
+Objects with different index arity or semantic type are non-substitutable even when their realized values are predictably related. Each authoritative object has one authoritative producer within a Window Evaluation or final-path projection. Derived evidence may validate, reconcile, or report an authoritative result but may not acquire downstream decision authority from numerical agreement alone. Discriminated result variants must remain explicit and may not be coerced into synthetic equivalents.
+
+These authority rules supplement the local invariants attached to individual methodology objects; they do not supersede or remove those local invariants.
