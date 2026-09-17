@@ -864,3 +864,139 @@ Previously completed Stage-1 primitives remain reusable only to the extent that 
 Experiment v2 is not frozen by the presence of this section or by completion of any individual subsection. Gate-2-dependent implementation remains unauthorized until the complete Experiment-v2 methodology, inheritance/interface audit, implementation invariants, and required-test specification have undergone the final whole-document consistency audit and Experiment v2 has been explicitly declared `FROZEN`.
 
 Until that declaration, any newly identified methodological ambiguity that could alter population membership, temporal-domain construction, regime admissibility, episode topology, Gate-2 diagnostics, Instrument Path routing, final observation disposition, or downstream inferential authorization must be resolved in the methodology before implementation proceeds.
+
+## Section 2 -- Gate-2 Evaluation-Domain Object Model
+
+Experiment v2 resolves the missing Gate-2 evaluation-domain specification through an ordered set of authoritative objects. These objects define current-Window target-observation membership, temporal-domain geometry, environmental admissibility, structural episode topology, and the later final-path observation projection without allowing a downstream result to redefine an upstream population.
+
+### D0 -- Window Constructibility
+
+For instrument `s` and an entered regime window `W`, construct `D1_W(s)` according to D1 below. Window constructibility is then determined solely by whether that current-Window target-observation population is nonempty.
+
+If
+
+`|D1_W(s)| = 0`,
+
+then
+
+`WINDOW_CONSTRUCTIBILITY = FAIL`
+
+with reason
+
+`NO_TARGET_OBSERVATION_POPULATION`.
+
+D0 is evaluated before Gate 2. It is not a Gate-2 diagnostic, is distinct from excessive regime ineligibility, and introduces no additional numeric minimum-observation threshold. Any nonempty `D1_W(s)` passes D0 constructibility and proceeds to D2 and the remaining current-Window evaluation machinery, subject to their own independent requirements.
+
+A D0 failure is terminal for the currently entered Window Evaluation and for the Instrument Path. It does not invoke the F1 directional fallback mechanism and does not synthesize a Gate-2 disposition, directional trigger, or fallback authorization.
+
+The terminal reason remains `NO_TARGET_OBSERVATION_POPULATION` under either of two distinct provenance cases: (C1) candidate observations existed for one or more relevant instrument-days but every such day was excluded from `D1_W(s)` by the W-specific aggregate source-history requirement; or (C2) no candidate observations existed for the entered window. These provenance cases must remain distinguishable in diagnostics even though they share the same D0 terminal reason.
+
+No downstream regime-validity result, D3 admissibility result, Gate-2 diagnostic, Instrument Path result, or final observation disposition may alter whether D0 passed or failed.
+
+### D1 -- Current-Window Target-Observation Population
+
+For instrument `s`, research day `d`, and a regime window `W` that has been legitimately entered by the Instrument Path, define `O_candidate(s,d,W)` as the inherited frozen LRS-3 observations on day `d` that enter the current Window Evaluation solely because `W` was entered. Candidate membership is upstream of source-history authorization, regime classification, and Gate-2 resolution.
+
+Accordingly, membership in `O_candidate(s,d,W)` must not depend on endpoint source-history authorization, aggregate `SH(s,d,W)`, `REGIME_STATE_VALID`, `D3_ADMISSIBLE`, any Gate-2 diagnostic or disposition, `SH_path`, or any final-path observation result.
+
+For every `T in O_candidate(s,d,W)`, obtain `G(T)` using the inherited C10 mapping: the latest completed 5-minute grid endpoint satisfying strict `G < T`. Define
+
+`G_candidate(s,d,W) = {G(T) : T in O_candidate(s,d,W)}`,
+
+with duplicate grid endpoints represented once for aggregate source-history authorization. Failure to obtain the required strict-C10 predecessor for a candidate observation is an integrity failure; it must not be converted into ordinary source-history or regime ineligibility.
+
+`SH(s,d,W)` is a partial instrument-day-window function. It is defined only when `|O_candidate(s,d,W)| > 0`. For a nonempty candidate set,
+
+`SH(s,d,W) = ELIGIBLE`
+
+if and only if every unique endpoint in `G_candidate(s,d,W)` satisfies the inherited W-specific endpoint source-history authorization requirements. Otherwise,
+
+`SH(s,d,W) = INELIGIBLE`.
+
+When `|O_candidate(s,d,W)| = 0`, `SH(s,d,W)` is undefined. Undefined `SH(s,d,W)` must not be coerced to `ELIGIBLE` or `INELIGIBLE`.
+
+The authoritative current-Window target-observation population is
+
+`D1_W(s) = union over d such that |O_candidate(s,d,W)| > 0 and SH(s,d,W) = ELIGIBLE of O_candidate(s,d,W)`.
+
+Thus an instrument-day contributes either all of its current-W candidate observations to `D1_W(s)` or none of them according to the aggregate W-specific source-history requirement. `D1_W(s)` contains observations, not grid endpoints or instrument-days.
+
+Candidate membership does not imply membership in `D1_W(s)`, and membership in `D1_W(s)` does not imply valid regime classification or D3 admissibility. Those are downstream questions. `SH_path` is also downstream of final Instrument Path resolution and has no authority over construction of `O_candidate`, `G_candidate`, `SH(s,d,W)`, or `D1_W(s)`.
+
+For the current Window Evaluation, `D1_W(s)` is the observation population from which the G-NUMERIC.1-.3 observation counts and exposures are derived. No regime-assignment result may be used to construct or filter `D1_W(s)`.
+
+### D2 -- Fixed Gate-2 Temporal Domain
+
+D2 is defined only after D0 has established that `D1_W(s)` is nonempty. Let
+
+`T_first = min D1_W(s)`
+
+and
+
+`T_last = max D1_W(s)`.
+
+Using the inherited strict-C10 mapping, define
+
+`G_first = G(T_first)`
+
+and
+
+`G_last = G(T_last)`.
+
+With the frozen grid interval `Delta = 5 minutes`, the authoritative discrete Gate-2 temporal domain is
+
+`D2_W(s) = {G_first, G_first + Delta, ..., G_last}`,
+
+including both endpoints. The corresponding continuous temporal domain is
+
+`(G_first, G_last + Delta]`.
+
+D2 is constructed exactly once from the D1 extrema using the inherited C10/C11 temporal conventions. Because C10 requires strict `G < T`, an observation occurring exactly on a grid timestamp maps to the preceding completed endpoint and cannot use the state calculated at its own timestamp.
+
+The D2 grid is temporally continuous from `G_first` through `G_last`. Interior observations, instrument-days, or endpoints excluded from D1 by aggregate source-history qualification do not create holes in D2 once its boundaries have been established. Conversely, candidate observations excluded from D1 cannot establish or extend the leading or trailing D2 boundary.
+
+D2 is immutable for the remainder of the current Window Evaluation. D3 admissibility, regime invalidity, episode construction, Gate-2 diagnostics, and downstream observation eligibility may classify or partition time within D2 but may not shrink, expand, re-anchor, or otherwise reconstruct its temporal boundaries.
+
+A nonempty D1 may legitimately produce the minimum D2 geometry of a single grid cell when `G_first = G_last`. This one-cell domain remains subject to the same D3, episode-boundary, censoring, and Gate-2 rules as any larger D2 domain.
+
+### D3 -- Endpoint Environmental Admissibility
+
+For every grid endpoint `G in D2_W(s)`, Experiment v2 defines one authoritative current-Window environmental-admissibility value:
+
+`D3_ADMISSIBLE(G,W) = SH_AUTHORIZED(G,W) AND REGIME_STATE_VALID(G,W)`.
+
+`SH_AUTHORIZED(G,W)` is the inherited endpoint-level, W-specific source-history authorization. It determines whether the classifier is authorized to interpret the endpoint at all. Aggregate instrument-day `SH(s,d,W)` is not a substitute for this endpoint-level object, and final-path `SH_path` has no authority in D3 construction.
+
+Conditional on `SH_AUTHORIZED(G,W) = TRUE`, `REGIME_STATE_VALID(G,W)` indicates that the inherited measurement, RVOL, threshold-learning, and E4 classification machinery validly produces a HIGH or LOW regime state rather than INVALID. The dependency order is therefore source-history authorization first, followed by the inherited measurement/threshold/classification validity machinery, followed by the D3 conjunction.
+
+If `SH_AUTHORIZED(G,W) = FALSE`, `D3_ADMISSIBLE(G,W) = FALSE` regardless of whether a HIGH or LOW state could be mechanically computed from available values. Such a mechanically computed state has no Experiment-v2 classification authority. If source history is authorized but the inherited regime-state machinery is invalid, `D3_ADMISSIBLE(G,W) = FALSE` for that independent reason.
+
+D3 must be instantiated for every endpoint in the fixed D2 grid. It is not restricted to endpoints represented by observations in `D1_W(s)`. Consequently, interior time associated with observations or instrument-days excluded from D1 may still contribute to Gate-2 structural morphology when its endpoint is independently D3-admissible.
+
+D3 does not resize or reconstruct D2. A FALSE D3 cell remains part of D2 but is environmentally inadmissible for regime classification and structural episode continuity. Its underlying failure provenance must remain auditable so that source-history unauthorized, measurement-invalid, threshold-invalid, and other inherited regime-invalid causes are not silently collapsed into an interchangeable upstream or downstream exclusion class.
+
+Current-Window observation regime eligibility is downstream of both D1 membership and authoritative D3. For `T in D1_W(s)`, the strict-C10 endpoint `G(T)` is regime-eligible for that Window Evaluation if and only if `D3_ADMISSIBLE(G(T),W) = TRUE`. This observation-level use of D3 does not alter D1 membership or D2 geometry.
+
+### D4 -- Structural Episode Topology and Boundary Censoring
+
+For each instrument `s` and entered window `W` that reaches D4, construct one authoritative structural episode topology by a single chronological sweep over the complete D3 timeline on `D2_W(s)`. An episode is a maximal contiguous run of D3-admissible grid cells carrying the same authoritative HIGH or LOW regime state.
+
+Every structural episode boundary must have one of exactly three causes:
+
+- `STATE_CHANGE`
+- `D3_INADMISSIBILITY`
+- `D2_BOUNDARY`
+
+A HIGH-to-LOW or LOW-to-HIGH `STATE_CHANGE` is an observed episode termination and does not create censoring.
+
+A D3-inadmissible grid cell is an internal terminating discontinuity. It breaks episode continuity, is not itself an episode, and never creates a censor boundary. Episode construction must not bridge, search backward across, or otherwise join same-state runs across a D3-inadmissible cell.
+
+Only a literal `D2_BOUNDARY` may create censoring. Left-edge censoring is resolved using the inherited F4 prehistory-trace logic without extending D2 itself. If the inherited F4 prehistory trace identifies a state transition or an inherited validity discontinuity before the left-edge episode, that episode's origin is observed rather than left-censored. If the same state persists through the earliest auditable pre-D2 boundary without an observed terminating event, the episode is left-censored.
+
+Any episode that reaches `G_last` is right-censored at the literal right D2 boundary. No information after D2 may be used to rescue, remove, or reinterpret that right-censor flag.
+
+Left- and right-censor status are independent attributes. A one-cell episode may therefore be left-censored, right-censored, both, or neither according to its actual boundary evidence. Its observed duration remains one grid interval, `5 minutes`; however, right censoring prevents the unobserved terminal duration from being inferred solely from that observed one-cell duration.
+
+D4 is constructed from the full D3 timeline, not by filtering the timeline back through `D1_W(s)`. Structural episode counts, including `K_HIGH`, `K_LOW`, and `K_total`, and the classified-time quantity `T_classified` are therefore derived from the authoritative D3/D4 environmental timeline. D1 remains the separate current-Window observation population for observation-based Gate-2 diagnostics.
+
+D4 may partition and summarize the fixed D2 domain but may not resize D2, alter any D3 value, or rebuild either upstream object. Gate-2 morphology diagnostics must consume this authoritative D4 topology rather than independently reconstructing episodes from observations or regime labels.
