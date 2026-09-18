@@ -1,7 +1,7 @@
 """
-Program B — Market Microstructure Research
+LRS-2 — Market Microstructure Research
 Historical Market View
-programs/program_b/analysis/history.py
+L3_RESEARCH_ENGINES/market_microstructure/analysis/history.py
 
 PURPOSE:
 Read-only retrieval layer. Reads already-logged observations from
@@ -48,7 +48,7 @@ NEAR_BOOK_LOG_PATH = os.path.join("L3_RESEARCH_ENGINES", "market_microstructure"
 
 def _load_logs() -> tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Load both Program B logs from disk.
+    Load both LRS-2 microstructure logs from disk.
 
     Returns:
         tuple: (obi_df, near_book_df), each a pandas DataFrame.
