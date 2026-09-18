@@ -1,14 +1,23 @@
 # Liquid Research — Operating Manual
 
-This document is the single source of truth for how Liquid Research
-is built, how decisions are made, and how future Claude sessions
-should collaborate on this project.
+This document is the operating manual for Liquid Research. It defines
+project-wide research integrity, engineering discipline, documentation
+standards, and operating workflow.
 
-Read this before writing any code, moving any files, or making any
-architectural decisions. If anything here conflicts with another
-document, this document takes precedence — then update the other
-document to match.
+Authority is scoped rather than concentrated in one document:
 
+- `zHANDOFF.md` — operating principles and workflow.
+- `zARCHITECTURE.md` — architecture, ownership, boundaries, and data contracts.
+- `zROADMAP.md` — portfolio priorities and planned work.
+- Engine-specific control documents — methodology, research state, and
+  engine-specific operations.
+- `L4_KNOWLEDGE/` — shared findings, hypotheses, open questions, and
+  historical research knowledge.
+
+Read the relevant authority before writing code, moving files, changing
+architecture, or modifying research methodology. When documents conflict,
+verify the implementation and evidence first, then reconcile the documents
+through a deliberate change rather than assuming one stale document wins.
 ---
 
 # PART 1 — STABLE PRINCIPLES
@@ -18,31 +27,30 @@ document to match.
 
 ## What Liquid Research Is
 
-Liquid Research is a multi-program research platform whose purpose
-is to discover statistically defensible, monetizable trading edges
-in prediction markets.
+Liquid Research is an independent software and quantitative-research project
+for building reproducible market-data pipelines, testing market hypotheses,
+and preserving the evidence required to distinguish observations from
+defensible findings.
 
-It is:
-- A prediction market research platform
-- A market scanner
-- A paper trading simulator
-- A pattern discovery engine
-- A multi-program research incubator
+It includes:
+- Market-domain acquisition and canonical publication.
+- Shared market-data and orchestration infrastructure.
+- Independent research engines for market selection, microstructure,
+  trade-flow, regime analysis, and other evidence-backed questions.
+- Paper-research and historical experimental workflows.
+- A shared knowledge layer for findings, hypotheses, open questions, and
+  future research concepts.
 
 It is NOT:
-- A trading bot
-- An execution engine
-- A wallet copier
-- A get-rich-quick system
-- A single-experiment project
+- A live trading system.
+- A claim of a validated profitable strategy.
+- A production execution platform.
+- A get-rich-quick system.
+- A single-experiment project.
 
-Every feature, every research program, every line of code must
-connect back to one question:
-"Does this increase the probability of discovering a repeatable
-edge that can eventually generate meaningful income?"
-
-If the answer is unclear, challenge the feature before building it.
-
+Every feature, research engine, and infrastructure change should connect to
+a defensible research or engineering purpose. If that connection is unclear,
+challenge the work before building it.
 ---
 
 ## Core Research Philosophy
@@ -135,33 +143,39 @@ returns. Challenge me when I drift toward these.
 ## Architecture Principles
 
 **Ownership is the organizing principle.**
-Every file, every folder, every document has one clear owner:
-- Platform (universal knowledge, shared across all programs)
-- Program A (operational knowledge specific to Scanner One)
-- Program B (operational knowledge specific to OBI research)
-- Future programs as they are created
+Every file, folder, document, dataset, and service should have a clear owner
+within the L0-L4 architecture defined by `zARCHITECTURE.md`:
 
-If ownership isn't immediately obvious from the folder structure,
-the architecture is probably wrong.
+- `L0_PLATFORM` — governance and canonical project authority.
+- `L1_CORE` — shared infrastructure, orchestration, and platform services.
+- `L2_DOMAINS` — domain-specific acquisition, selection, publication, and
+  context.
+- `L3_RESEARCH_ENGINES` — independent research systems and their methodology,
+  implementation, tests, and engine state.
+- `L4_KNOWLEDGE` — shared findings, hypotheses, questions, and future concepts.
 
-**Two kinds of knowledge:**
-1. Platform / Universal — lives in research/ and root-level docs.
-   Shared by every program. Never duplicated.
-2. Program-Specific — lives in programs/program_x/. Owned entirely
-   by that program. Not shared.
+If ownership is not clear from the architecture and documented boundaries,
+investigate before moving or creating files.
 
-**The idea lifecycle:**
-Idea → Research Vault → Hypothesis → Experiment → Program →
-Finding → Platform Knowledge
+**Knowledge has an owner and a lifecycle.**
+Engine-specific methodology and operational state remain with the owning
+engine. Reusable findings and cross-project knowledge belong in
+`L4_KNOWLEDGE` when they satisfy the applicable evidence standard. Do not
+duplicate the same authority across multiple locations.
 
-Programs execute research. The vault discovers research.
-These are different responsibilities and should never be confused.
+A useful research lifecycle is:
+
+Idea → Research Knowledge → Hypothesis → Experiment → Research Engine →
+Finding → Shared Knowledge
+
+Research Engines execute bounded research. Shared knowledge preserves what
+can be reused across the project. These responsibilities should not be
+confused.
 
 **Do not over-engineer.**
 Do not create folders or files because they might be useful someday.
-Do not write documentation that doesn't reflect current reality.
-Do not build infrastructure before the data justifies it.
-
+Do not write documentation that does not reflect reality.
+Do not build infrastructure before the evidence or operating need justifies it.
 ---
 
 ## Research Integrity Rules
@@ -411,30 +425,27 @@ Do not include STEP numbers, TYPE:, WHERE:, RUN:, terminal prompts,
 or any other text inside the code block.
 
 **"Run the daily cycle" convention:**
-When the person says "run the daily cycle," this means: run the
-normal daily operational workflow for every currently active
-program, not just Program A. As of 2026-07-08 that means Program A
-and Program B. Any future program added to Liquid Research
-automatically becomes part of the daily cycle unless explicitly
-excluded — no separate reminder needed to include it.
+When the person says "run the daily cycle," first determine which automated
+or manual operational workflows are currently authoritative. Do not infer
+the workflow from historical Program A/B documentation.
 
-As of 2026-07-10, the daily cycle also includes publishing the
-Prediction Markets Domain's canonical output (Step 2.5 in
-programs/program_a/DAILY_OPERATIONS.md) between the scanner and
-Program B's diagnostics. This step was missing from the daily
-cycle for one full day (2026-07-10 to 2026-07-11) before being
-caught and fixed — Program B was silently analyzing a stale
-canonical output during that window. Never skip this step when
-running the daily cycle.
+The Prediction Markets / Market Selection workflow is primarily automated
+through shared orchestration. Engine-specific operational procedures remain
+owned by their current control documents, including
+`L3_RESEARCH_ENGINES/market_selection/zDAILY_OPERATIONS.md` where applicable.
 
-Running the daily cycle does NOT imply any program needs code
-changes. The correct sequence is: (1) run each program's normal
-daily workflow, (2) verify everything completed correctly, (3)
-update operational artifacts (MISSION_CONTROL.md, research
-checkpoints, program logs) only if the day's results actually
-justify an update, (4) only then consider whether any program
-needs maintenance — and only recommend maintenance backed by a
-real observation from that day's run, not for its own sake.
+Running an operational cycle does NOT imply that code or methodology needs
+to change. The sequence is:
+
+1. Run or verify the authoritative operational workflow.
+2. Verify that expected stages and publications completed correctly.
+3. Update operational or research artifacts only when new evidence justifies
+   an update.
+4. Recommend maintenance only when supported by an observed operational
+   defect or an approved engineering requirement.
+
+Never modify a frozen research methodology merely because an operational
+cycle ran.
 
 **Commit message convention:**
 Keep commit messages short and focused on what changed, not why or
@@ -448,167 +459,188 @@ reasoning lives in conversation history, not the commit log.
 ---
 
 # PART 2 — CURRENT OPERATING STATE
-## (As of 2026-07-03. Update this section as the project evolves.)
+## (Current authority map — updated 2026-09-17)
 
 ---
 
-## Current Platform Status
+## Portfolio State
 
-Liquid Research has transitioned from a single-experiment project
-to a multi-program research platform. Program A (Scanner One)
-continues its daily data collection cycle. Program B (Market
-Microstructure Research) is active, with OBI/Micro-Price and
-Near-Book Depth Imbalance both collecting daily observations.
+Liquid Research now uses the L0-L4 ownership model defined in
+`L0_PLATFORM/zARCHITECTURE.md`.
 
-Full program registry: zROADMAP.md — Active Research Programs section.
+Current implemented areas include:
 
----
+- `L1_CORE` shared orchestration and market-data infrastructure.
+- `L2_DOMAINS/prediction_markets` for prediction-market domain acquisition,
+  selection, and canonical publication.
+- `L2_DOMAINS/crypto` for crypto-specific research context.
+- `L3_RESEARCH_ENGINES/market_selection` for Market Selection research.
+- `L3_RESEARCH_ENGINES/market_microstructure` for Market Microstructure research.
+- `L3_RESEARCH_ENGINES/market_regime_intelligence` for Market Regime research.
+- `L3_RESEARCH_ENGINES/wallet_intelligence` as a retained research area.
+- `L4_KNOWLEDGE` for shared findings, hypotheses, questions, and future concepts.
 
-## Program A — Current State
-**What it is:** Testing whether tradeability_score (combining
-liquidity, spread quality, and volume) predicts better paper-trade
-outcomes on Polymarket. Also the current implementation of the
-Prediction Markets Domain's producer, per zARCHITECTURE.md.
-
-**Daily cycle:** Runs every day. Collect → Scan → Paper Trade →
-Resolve → Review. See programs/program_a/DAILY_OPERATIONS.md.
-
-**Domain producer role (added 2026-07-10):** Publishes the
-Prediction Markets Domain's canonical output
-(data/approved_markets/prediction_markets_latest.csv), the
-interface and data contract for downstream Programs, per
-zARCHITECTURE.md. Program B is currently the only downstream
-consumer. See programs/program_a/domain/README.md.
-
-**Current dataset:** 96 total trades, 39 closed, 57 open.
-
-**Key finding to date:** First median-split analysis (n=32, 2026-07-02)
-showed low-score trades outperforming high-score trades, but ~85%
-of the low-score group's P&L came from two high-payout trades
-entered near 50% implied probability. A follow-up checkpoint
-(n=36, 2026-07-08) found weak correlation between tradeability
-score and entry price (Pearson 0.078, Spearman 0.103), which does
-not support entry_price as the explanation for the original
-median-split result. Primary research question remains open. See
-research/validated_findings.md.
-
-**Next milestone:** 100 closed trades — bucket comparisons become
-meaningful.
-
-**Do not modify Program A's methodology** while it is collecting
-data toward the 100-trade milestone. The experiment must remain
-frozen for the results to be interpretable.
+This section intentionally does not duplicate rapidly changing experiment
+counts, checkpoints, or research conclusions. Those belong to the owning
+engine's current authority.
 
 ---
 
-## Program B — Current State
+## Current Authority by System
 
-**What it is:** Market Microstructure Research. Studies order-book
-indicators as a class. Indicator 1 (OBI/Micro-Price) and Indicator 2
-(Near-Book Depth Imbalance) are both actively collecting data.
+### Market Selection
 
-**Status:** ACTIVE. Both indicators logging daily observations
-(data/program_b/obi_log.csv, data/program_b/near_book_depth_log.csv).
-Review checkpoints scheduled for approximately 2026-07-10 (1-week),
-2026-07-17 (2-week), and 2026-08-03 (1-month). See
-programs/program_b/README.md for full detail.
+Primary control documents:
 
-**Do not modify Program B's methodology** while indicators are
-collecting data toward their review checkpoints, for the same
-reason Program A's methodology stays frozen.
+- `L3_RESEARCH_ENGINES/market_selection/zMISSION_CONTROL.md`
+- `L3_RESEARCH_ENGINES/market_selection/zDAILY_OPERATIONS.md`
+- `L3_RESEARCH_ENGINES/market_selection/zHISTORY.md`
+
+The Prediction Markets Domain publishes the upstream canonical market set from:
+
+`L2_DOMAINS/prediction_markets/data/canonical/prediction_markets_latest.csv`
+
+Historical Program A terminology may remain in historical records, but current
+ownership follows the L2 Prediction Markets / L3 Market Selection boundary.
+
+### Market Microstructure
+
+Primary control documents:
+
+- `L3_RESEARCH_ENGINES/market_microstructure/zREADME.md`
+- `L3_RESEARCH_ENGINES/market_microstructure/zPROGRAM_ROADMAP.md`
+- `L3_RESEARCH_ENGINES/market_microstructure/zRESEARCH_BACKLOG.md`
+
+Market Microstructure consumes documented upstream canonical publications.
+Historical Program B terminology remains valid when describing earlier project
+state.
+
+### Market Data Platform / Crypto Research
+
+Shared market-data infrastructure is owned by `L1_CORE`. Crypto-specific
+research context is owned by `L2_DOMAINS/crypto`.
+
+Current control documents include:
+
+- `L1_CORE/market_data_platform/market_data/zROADMAP.md`
+- `L2_DOMAINS/crypto/zREADME.md`
+- `L2_DOMAINS/crypto/zMISSION_CONTROL.md`
+- `L2_DOMAINS/crypto/zROADMAP.md`
+
+Research and incident artifacts may intentionally preserve exact historical
+paths, commands, assumptions, and environment details when those details are
+part of reproducibility or provenance.
+
+### Market Regime Intelligence
+
+Current implementation and methodology live under:
+
+`L3_RESEARCH_ENGINES/market_regime_intelligence/`
+
+The current methodology record includes:
+
+`L3_RESEARCH_ENGINES/market_regime_intelligence/LRS4_Experiment_v1_Pre-Inference_Freeze.md`
+
+Methodology status and implementation authorization must be determined from
+the current methodology authority rather than inferred from the existence of
+source files or tests.
+
+### Shared Knowledge
+
+Shared project knowledge lives in `L4_KNOWLEDGE/`.
+
+Important current locations include:
+
+- `L4_KNOWLEDGE/validated_findings.md`
+- `L4_KNOWLEDGE/market_hypotheses.md`
+- `L4_KNOWLEDGE/future_experiments.md`
+- `L4_KNOWLEDGE/open_questions.md`
+- `L4_KNOWLEDGE/zREADME.md`
+
+Historical references inside knowledge artifacts should not be globally
+rewritten merely because paths or terminology later changed. Distinguish
+historical provenance from current navigation before editing.
 
 ---
 
-## Key Architectural Decisions Made
+## Session Start Procedure
+
+1. Read the relevant L0 authority for the work being performed.
+2. Identify the owning Domain, Research Engine, or shared service.
+3. Read that owner's current control document or methodology authority.
+4. Inspect the implementation and evidence needed for the requested change.
+5. State which files are expected to change before writing.
+6. Preserve frozen methodology and historical provenance unless a deliberate
+   supersession or migration has been authorized.
+7. Verify each completed stage before expanding scope.
+
+Do not begin implementation from remembered state when current repository
+evidence is available.
+
+---
+
+## Historical Operating Record
+
+The following decisions are retained as historical project provenance. They
+describe the architecture and research state that existed at the time and
+should not be interpreted as current paths, ownership, or experiment status.
 
 **2026-07-03 — Platform reframe**
-Liquid Research restructured from single-experiment project to
-multi-program research platform. programs/ folder created.
-Program A documentation moved to programs/program_a/.
-zROADMAP.md restructured as platform document.
-zHANDOFF.md rewritten as unified operating manual.
-zPHILOSOPHY.md deleted (content migrated here).
+
+Liquid Research moved from a single-experiment structure toward a multi-program
+research platform. The then-current `programs/` structure and Program A/B
+terminology were later superseded by the L0-L4 ownership architecture.
 
 **2026-06-25 — Classifier proper-noun decision**
-Remaining Other/Unknown trades (Starmer, Mojtaba Khamenei,
-aliens-type) accepted as permanently Other/Unknown. No name-to-
-category lookup table. See research/validated_findings.md.
+
+The then-current classifier investigation accepted remaining Other/Unknown
+cases without introducing a name-to-category lookup table. Later classifier
+and decomposition work must be interpreted from the owning engine's current
+research authority.
 
 **2026-06-25 — Gamma events/series metadata investigation**
-Investigated as a classifier fix. Found not viable — series
-absent on all tested markets, events helped only 1/6 cases.
-Full findings in research/validated_findings.md.
+
+Events/series metadata was investigated as a possible classifier improvement
+and was not promoted as the general solution. Gamma-related research remains
+separate from current Market Selection authority unless deliberately revived.
 
 **2026-07-03 — Program B selected**
-Order Book Imbalance / Micro-Price Research selected as Program B
-after full architectural review of the research vault. Promoted
-from research/future_experiments.md. No infrastructure blocker.
+
+Order Book Imbalance / Micro-Price Research was selected as the second
+lettered research program under the architecture that existed at that time.
 
 **2026-07-04 — Program B reframed as Market Microstructure Research**
-Program B's identity broadened from "OBI Research" to "Market
-Microstructure Research," with OBI established as Indicator 1
-rather than the entire scope. Folder structure split into
-indicators/, diagnostics/, and analysis/ to support multiple
-independent indicators cleanly.
 
-**2026-07-04 — Indicator 2 added: Near-Book Depth Imbalance**
-Second Program B indicator added, testing whether volume near the
-current price (top N book levels) diverges meaningfully from
-total-book OBI. Logs independently to
-data/program_b/near_book_depth_log.csv. Both indicators now
-collecting data in parallel under the same review cadence.
+The research identity broadened from OBI alone to Market Microstructure, with
+OBI treated as one indicator within the larger research question.
 
----
+**2026-07-04 — Near-Book Depth Imbalance added**
 
-## Files to Know
+Near-Book Depth Imbalance was added as another Market Microstructure indicator
+and collected alongside OBI under the methodology and review process then in
+effect.
 
-**Root level:**
-- `zHANDOFF.md` — this file. The operating manual.
-- `zROADMAP.md` — platform roadmap and program registry.
-- `README.md` — public-facing project summary.
-
-**Program A:**
-- `programs/program_a/MISSION_CONTROL.md` — current state scorecard.
-- `programs/program_a/DAILY_OPERATIONS.md` — daily cycle procedure.
-- `programs/program_a/HISTORY.md` — Phase 0-9 build history.
-
-**Program B:**
-- `programs/program_b/README.md` — status and hypothesis only.
-
-**Research Vault (universal, shared):**
-- `research/validated_findings.md` — verified findings, platform-wide.
-- `research/market_hypotheses.md` — all testable hypotheses.
-- `research/future_experiments.md` — experiment designs not yet running.
-- `research/open_questions.md` — important unanswered questions.
-- `research/README.md` — vault governance and research funnel rules.
-
----
-
-## What to Do at the Start of Every Session
-
-1. Read zHANDOFF.md (this file) to understand the project and the person.
-2. Read zROADMAP.md to understand where the platform is going.
-3. Check programs/program_a/MISSION_CONTROL.md for Program A's current state.
-4. Ask what today's goal is before writing any code.
-5. List files expected to change before changing them.
-6. Checkpoint every stage. Confirm before continuing.
-
-Do not immediately start generating code. Understand first.
+These records preserve development history. Current engine documents and
+methodology authorities govern present research state.
 
 ---
 
 ## What To Challenge
 
-Challenge me when:
-- I want to build something before the data justifies it.
-- I want to start a new program before existing ones have produced findings.
-- I want to add documentation that duplicates something that already exists.
-- I'm using exciting language about a result that could be explained by noise.
-- I'm about to make an architectural decision based on assumption rather than evidence.
+Challenge work when:
 
-Do not challenge me when:
-- I make an explicit decision after hearing your honest assessment.
-- I choose a simpler approach over a technically impressive one.
-- I defer something that isn't ready yet.
+- Infrastructure or features are proposed before evidence or operating need
+  justifies them.
+- A new research effort would contaminate or silently alter a frozen experiment.
+- Documentation would duplicate an authority that already exists elsewhere.
+- A result is described more strongly than the evidence supports.
+- An architectural decision is being made from assumption rather than verified
+  implementation evidence.
+- Historical evidence is about to be rewritten as though it were current state.
+- Current state is being inferred from stale historical documentation.
 
-The goal is honest collaboration, not agreement.
+Do not challenge a deliberate decision merely because a simpler or less
+technically impressive approach was chosen after the evidence and tradeoffs
+were considered.
+
+The goal is disciplined, evidence-backed research and engineering.
