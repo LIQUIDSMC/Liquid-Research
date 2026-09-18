@@ -1,51 +1,48 @@
 """
-Liquid Research — Paper Trader (Phase 5, Research Improvements)
+Liquid Research — Market Selection Paper Trader
 
-Creates hypothetical paper trade entries from ALL markets that
-passed the scanner's filters — not just the top-ranked ones. This
-is a deliberate research design decision: studying only the
-highest tradeability_score markets would eliminate score diversity
-and make it impossible to ever answer the project's primary
-research question ("does higher tradeability_score produce better
-outcomes?"). Widening the sample now, narrowing later once
-evidence justifies a threshold.
+Creates hypothetical paper-trade entries from ALL markets that pass
+the Prediction Markets scanner filters, rather than only the
+highest-ranked markets. This preserves Tradeability Score diversity
+for Market Selection research.
 
-Read-only, no wallet, no private key, no execution, no real money.
-Mechanical side selection only — NOT a prediction signal. Fixed
-$100 position size, no risk sizing.
+Read-only market interaction: no wallet, no private key, no live
+execution, and no real money. Mechanical side selection only; it is
+not a prediction signal. Fixed $100 paper position size, with no
+risk sizing.
 
-Joins two existing, already-validated data sources:
-  - data/scanner/scanner_run_*.csv (Phase 4 output: tradeability_score,
-    spread_label, liquidity, volume_24h)
-  - data/markets/snapshot_*.csv (Phase 1 output: yes_price/no_price,
-    days_left)
-since the scanner run alone does not carry pricing or timing data
-needed for side selection and category classification.
+Joins two current L2 Prediction Markets data sources:
+  - L2_DOMAINS/prediction_markets/data/scanner/scanner_run_*.csv
+  - L2_DOMAINS/prediction_markets/data/markets/snapshot_*.csv
 
-Side selection rule (v1): paper-buy whichever side (Yes/No) has
-the higher implied probability per the market snapshot's own
-price. This is a mechanical bookkeeping rule, not a prediction.
+The scanner output supplies Tradeability Score and related market
+metadata. The market snapshot supplies pricing, slug, and timing
+fields required by this simulator.
 
-Category classification reuses analyzers/market_classifier.py
-directly — no new classification logic is invented here.
+Side selection rule (v1): paper-buy whichever side (Yes/No) has the
+higher implied probability in the market snapshot. This is a
+mechanical bookkeeping rule, not a prediction.
 
-Every new trade records the metadata needed for future category
-and score-bucket analysis: category, category_tier, the exact
-scanner_run_id it came from, spread_label, liquidity, volume_24h,
-and a recurrence_count showing how many times this exact market_id
-has appeared in prior paper trades (to detect oversampling of a
-small set of persistently liquid markets).
+Category classification reuses the existing Prediction Markets
+classifier; this module does not define a separate taxonomy.
 
-Avoids creating duplicate OPEN paper trades for the same slug on
-rerun. A market whose prior trade has already closed is eligible
-to be traded again (recurrence_count will reflect this).
+Paper-trade admission follows the frozen LRS-1 D1/D2 invariant:
+one market_id may create at most one Market Selection paper trade,
+ever. market_id is admission identity; slug is metadata only; and
+scanner_run_id is provenance only. Closing a prior paper trade does
+not make that market_id eligible for re-entry.
 
-No mark-to-market. No early exit. No fake P&L. Trades start
-status=open and stay that way until paper_resolver.py confirms
-real resolution.
+recurrence_count is retained in the historical output schema and is
+used as a fail-closed invariant check during new admission. A valid
+new admission must have zero prior occurrences of its market_id.
+Historical duplicate rows are preserved rather than rewritten.
 
-Usage:
-    python3 simulator/paper_trader.py
+No mark-to-market. No early exit. No fake P&L. New trades begin with
+status=open and remain open until paper_resolver.py confirms actual
+market resolution.
+
+Run from the repository root:
+    python3 L3_RESEARCH_ENGINES/market_selection/simulator/paper_trader.py
 """
 
 import sys
@@ -202,12 +199,12 @@ def main() -> None:
 
     scanner_path = find_latest_file(SCANNER_DIR, "scanner_run_*.csv")
     if not scanner_path:
-        console.print("[red]No scanner run found in data/scanner/. Run scanner/scanner.py first.[/red]")
+        console.print("[red]No scanner run found in L2_DOMAINS/prediction_markets/data/scanner/. Run L2_DOMAINS/prediction_markets/selection/scanner.py first.[/red]")
         return
 
     snapshot_path = find_latest_file(MARKETS_DIR, "snapshot_*.csv")
     if not snapshot_path:
-        console.print("[red]No market snapshot found in data/markets/.[/red]")
+        console.print("[red]No market snapshot found in L2_DOMAINS/prediction_markets/data/markets/.[/red]")
         return
 
     scanner_run_id = os.path.basename(scanner_path)
