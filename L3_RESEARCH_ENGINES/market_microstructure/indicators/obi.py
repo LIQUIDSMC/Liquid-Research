@@ -1,7 +1,7 @@
 """
-Program B — Market Microstructure Research
+LRS-2 — Market Microstructure Research
 Indicator: Order Book Imbalance (OBI) and Micro-Price
-programs/program_b/indicators/obi.py
+L3_RESEARCH_ENGINES/market_microstructure/indicators/obi.py
 
 PURPOSE:
 Pure calculation logic only. No I/O, no CLOB fetching, no printing.
