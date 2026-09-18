@@ -1,7 +1,7 @@
 """
-Program B — Market Microstructure Research
+LRS-2 — Market Microstructure Research
 Divergence Detection
-programs/program_b/analysis/divergence_detector.py
+L3_RESEARCH_ENGINES/market_microstructure/analysis/divergence_detector.py
 
 PURPOSE:
 Measure the divergence between the latest OBI observation and the
@@ -38,7 +38,7 @@ import os
 import pandas as pd
 
 # sys.path.insert is required here because this module imports
-# another Program B module directly (history.py). Modules that
+# another LRS-2 module directly (history.py). Modules that
 # only import third-party/stdlib packages do not need this.
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
