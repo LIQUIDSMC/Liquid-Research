@@ -1,7 +1,7 @@
 """
-Program B — Market Microstructure Research
+LRS-2 — Market Microstructure Research
 Diagnostic Runner: Order Book Imbalance (OBI) and Micro-Price
-programs/program_b/diagnostics/run_obi.py
+L3_RESEARCH_ENGINES/market_microstructure/collection/run_obi.py
 
 PURPOSE:
 Feasibility and stability check. Answers:
@@ -10,17 +10,17 @@ collect, and are they stable across markets and over time?"
 
 This script:
 - Reads the Prediction Markets Domain's canonical output
-  (data/approved_markets/prediction_markets_latest.csv) — no
+  (L2_DOMAINS/prediction_markets/data/canonical/prediction_markets_latest.csv) — no
   count limit, analyzes every approved instrument
-- Uses existing scanner/clob_client.py with no modifications
-- Uses programs/program_b/indicators/obi.py for calculation
+- Uses L2_DOMAINS/prediction_markets/market_data/clob_client.py
+- Uses L3_RESEARCH_ENGINES/market_microstructure/indicators/obi.py for calculation
 - Prints results in a readable table
-- Appends each run to data/program_b/obi_log.csv
-- Creates data/program_b/ if it does not exist
+- Appends each run to L3_RESEARCH_ENGINES/market_microstructure/data/obi_log.csv
+- Creates the LRS-2 data directory if it does not exist
 - Places no trades
 - Introduces no new dependencies
 
-THREE-QUESTION CHECK (must pass before any further Program B work):
+THREE-QUESTION CHECK (must pass before any further LRS-2 research work):
 1. Is it mathematically correct?   <- confirmed
 2. Is it stable across many markets? <- testing now, this script's purpose
 3. Does it improve a trading decision? <- do NOT assume yes yet
@@ -65,7 +65,7 @@ def load_approved_slugs() -> tuple:
     if not os.path.exists(canonical_path):
         console.print(
             f"[red]No canonical output found at {canonical_path}. "
-            f"Run programs/program_a/domain/publish_canonical_output.py first.[/red]"
+            f"Run L2_DOMAINS/prediction_markets/publication/publish_canonical_output.py first.[/red]"
         )
         return [], ""
     console.print(f"[dim]Reading approved instruments from: {canonical_path}[/dim]")
@@ -84,12 +84,12 @@ def load_approved_slugs() -> tuple:
 
 def log_to_csv(row: dict) -> None:
     """
-    Append one row to data/program_b/obi_log.csv.
+    Append one row to the LRS-2 OBI log.
 
     Schema uses publication_id as the canonical identifier
-    for the Program A publication cycle.
+    for the Prediction Markets canonical publication cycle.
 
-    Creates data/program_b/ and the CSV header if they do not exist.
+    Creates the LRS-2 data directory and CSV header if they do not exist.
     """
     os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
     write_header = not os.path.exists(LOG_PATH)
@@ -102,7 +102,7 @@ def log_to_csv(row: dict) -> None:
 
 
 def main() -> None:
-    console.print("\n[bold cyan]Program B — Market Microstructure Research[/bold cyan]")
+    console.print("\n[bold cyan]LRS-2 — Market Microstructure Research[/bold cyan]")
     console.print("[dim]Indicator: OBI / Micro-Price — stability check[/dim]\n")
     table = Table(show_lines=True)
     table.add_column("Market", max_width=28)
