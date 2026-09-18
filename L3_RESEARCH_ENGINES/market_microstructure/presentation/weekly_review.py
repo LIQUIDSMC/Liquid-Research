@@ -1,7 +1,7 @@
 """
-Program B — Market Microstructure Research
+LRS-2 — Market Microstructure Research
 Weekly Review Packaging
-programs/program_b/presentation/weekly_review.py
+L3_RESEARCH_ENGINES/market_microstructure/presentation/weekly_review.py
 
 PURPOSE:
 Assemble existing evidence from every known market into one
@@ -228,7 +228,7 @@ def build_weekly_review() -> str:
 
     sections = [
         "=" * 64,
-        "PROGRAM B — WEEKLY REVIEW",
+        "LRS-2 — WEEKLY REVIEW",
         "=" * 64,
         "",
         _render_dataset_summary(index_df),
