@@ -1,7 +1,7 @@
 """
-Program B — Market Microstructure Research
+LRS-2 — Market Microstructure Research
 Indicator: Near-Book Depth Imbalance
-programs/program_b/indicators/near_book_depth.py
+L3_RESEARCH_ENGINES/market_microstructure/indicators/near_book_depth.py
 
 PURPOSE:
 Pure calculation logic only. No I/O, no CLOB fetching, no printing.
