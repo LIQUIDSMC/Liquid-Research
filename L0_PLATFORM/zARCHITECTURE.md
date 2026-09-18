@@ -1,9 +1,9 @@
 # Liquid Research
 ## Architecture Specification
 
-Version: 1.0
+Version: 1.1
 Status: Canonical
-Last Updated: 2026-07-09
+Last Updated: 2026-09-17
 
 This document is the authoritative architectural reference for
 Liquid Research. Architectural decisions should be made here before
@@ -39,24 +39,26 @@ It intentionally does not specify research methodologies, trading
 strategies, statistical models, or implementation details except
 where necessary to explain architectural boundaries.
 
-## Architecture Hierarchy
+## Governance and Implementation Hierarchy
 
-The project is organized into four complementary layers:
+Project authority and implementation are separated into four complementary levels:
 
-1. Philosophy
-   Defines engineering values and decision-making principles
-   (`zHANDOFF.md`).
+1. **Operating principles** — `zHANDOFF.md`
+   Defines research integrity, engineering discipline, documentation rules,
+   and project-wide operating standards.
 
-2. Architecture
-   Defines responsibilities, boundaries, and contracts
-   (`zARCHITECTURE.md`).
+2. **Architecture** — `zARCHITECTURE.md`
+   Defines ownership, responsibilities, boundaries, and stable contracts.
 
-3. Roadmap
-   Defines priorities, planned work, and future initiatives
-   (`zROADMAP.md`).
+3. **Roadmap** — `zROADMAP.md`
+   Defines current priorities, active systems, and planned work.
 
-4. Implementation
-   Source code implementing the architecture.
+4. **Implementation**
+   Source code, tests, runtime infrastructure, and research artifacts
+   implementing those decisions.
+
+This governance hierarchy is distinct from the repository's physical
+**L0-L4 architecture**, described below.
 
 ## Non-Goal
 This document does not prescribe the internal implementation
@@ -65,72 +67,76 @@ provided they preserve their canonical interface and documented data
 contract.
 
 ---
-## 2. System Architecture — Domain/Program Separation
+## 2. System Architecture — L0-L4 Ownership Model
 
-Liquid Research is organized around two distinct roles.
+Liquid Research uses an ownership-based L0-L4 repository architecture:
 
-**Domains** own market selection. A Domain understands one category
-of financial market — its data sources, its instruments, what makes
-an instrument worth researching — and is responsible for producing a
-canonical list of currently-approved instruments.
+- **L0_PLATFORM** — governance, canonical architecture, roadmap, and
+  project-wide operating authority.
+- **L1_CORE** — shared engineering infrastructure, orchestration, and
+  venue-agnostic platform services.
+- **L2_DOMAINS** — market-domain acquisition, selection, publication,
+  and domain-specific context.
+- **L3_RESEARCH_ENGINES** — independent research systems with isolated
+  questions, methodology, implementation, and tests.
+- **L4_KNOWLEDGE** — shared findings, hypotheses, open questions, and
+  future research concepts.
 
-**Programs** consume a Domain's canonical output to answer a specific
-research question. Programs never perform their own market selection,
-never re-filter a Domain's decisions, and never read a Domain's raw
-internal files as a required input.
+The durable architectural principle established in v1.0 remains:
+**market/domain ownership is separate from downstream research ownership.**
 
-This separation exists so that market-selection logic is written
-exactly once, in exactly one place, regardless of how many downstream
-research programs eventually depend on it.
+A Domain owns the logic required to understand and publish its market
+universe. A Research Engine consumes documented upstream interfaces to
+answer a specific research question. Research Engines should not silently
+reconstruct or override a Domain's market-selection decisions.
 
----
+The older term **Program** appears throughout historical records and ADRs.
+For current architecture, **Research Engine** is the preferred term.
 
 ## 3. Domains
 
-A **Domain** represents a distinct category of financial market with
-its own data sources, instruments, and internal logic for determining
-which instruments are worth researching.
+A **Domain** represents a market universe with its own data sources,
+instruments, acquisition requirements, and domain-specific logic.
 
-Today, exactly one Domain exists: **Prediction Markets** (Polymarket).
-Crypto, Futures, and Equities are named as future possibilities in
-the project's long-term vision, but none are designed or implemented.
-Nothing in this document should be read as a commitment about how
-they will work — see Section 7, Architectural Questions for Future Domains.
+Current L2 domain ownership includes:
 
-A Domain owns:
-- Its own data collection
-- Its own filtering logic (what counts as "approved" or research-worthy)
-- Its own scoring/evaluation logic
-- Translating its internal representation into its canonical output
+- **Prediction Markets** — owns prediction-market acquisition, selection,
+  classification/resolution support, and canonical publication.
+- **Crypto** — owns crypto-specific research context while shared
+  venue-agnostic market-data infrastructure remains in `L1_CORE`.
 
----
+The existence of multiple domains does not imply that every domain must
+publish an identical schema or use identical internal architecture.
+Generalization should follow implementation evidence rather than precede it.
 
-## 4. Programs
+## 4. Research Engines
 
-A Program answers a specific research question using one or more
-Domains' canonical output.
+A **Research Engine** answers a specific research question using documented
+upstream data and contracts while maintaining its own methodology and
+research state.
 
-Today:
-- **Program A** is the current implementation of the Prediction
-  Markets Domain's producer. There is no separate "Domain layer"
-  distinct from Program A yet, because only one Domain exists — but
-  the Domain role and the Program A implementation are conceptually
-  separate, and the architecture does not assume they remain
-  permanently identical.
-- **Program B** (Market Microstructure Research) is a consumer of
-  the Prediction Markets Domain's canonical output.
-- **Program C** (future — Entry/Execution Research) will be the same
-  kind of consumer.
+Current L3 research systems include:
 
-Program identity is an implementation detail. The Domain/Program
-architecture does not depend on any specific program's name, module
-structure, or internal organization remaining fixed over time.
+- **Market Selection** — successor identity for the research role historically
+  associated with Program A. Prediction Markets publication now belongs
+  explicitly to `L2_DOMAINS/prediction_markets/`.
+- **Market Microstructure** — successor identity for Program B; consumes the
+  Prediction Markets canonical publication for order-book research.
+- **Market Regime** — independent regime-research engine with explicit
+  methodology freeze and supersession controls.
+- **Wallet Intelligence** — retained L3 research area; expansion remains
+  dependent on evidence and project priority.
 
----
+Additional research concepts may remain parked in `L4_KNOWLEDGE` until they
+justify implementation.
+
+Historical references to Program A, Program B, Program C, or other lettered
+program concepts should remain intact when they document the state or
+decision that existed at that time.
 
 ## 5. Data Contracts
 The canonical output is both the public interface and the canonical
-data contract of a Domain. Downstream Programs interact with a
+data contract of a Domain. Downstream Research Engines interact with a
 Domain exclusively through this published contract. Everything else
 produced by a Domain—including snapshots, scanner runs, logs,
 intermediate calculations, and implementation-specific files—is
@@ -140,7 +146,7 @@ contract remains intact.
 
 **Canonical output definition:** The canonical output represents the
 authoritative set of instruments approved by the Domain for research
-at the time it was generated. Downstream Programs should assume every
+at the time it was generated. Downstream Research Engines should assume every
 instrument in this file is eligible for analysis and should not
 perform additional market-selection filtering.
 
@@ -150,7 +156,7 @@ that produced it. This field is part of the universal publication
 contract, not a Domain-specific extension: every Domain Publisher
 is expected to generate one, since publication identity is a
 property of the publishing process itself, not of any particular
-Domain's internal data. `publication_id` allows downstream Programs
+Domain's internal data. `publication_id` allows downstream Research Engines
 to correctly group or pair observations that originated from the
 same publication cycle, without depending on filenames or
 timestamps embedded in unrelated internal artifacts. This
@@ -182,41 +188,33 @@ These are architectural responsibilities, not implementation
 details.
 
 ### Prediction Markets Domain — Current Canonical Output Implementation
-**Producer:** Prediction Markets Domain (currently implemented by
-Program A)
-**File (current implementation):** `data/approved_markets/prediction_markets_latest.csv`
-**`publication_id` generation (current implementation):** the
-Prediction Markets Publisher generates this using the existing
-`YYYYMMDD_HHMMSS` convention already used throughout the repository
-(matching `scanner_run_*.csv` and `snapshot_*.csv` naming). This is
-an implementation choice, not an architectural requirement — a
-future Domain, or a future revision of this Domain's implementation,
-may generate `publication_id` differently as long as it remains
-unique per publication cycle.
 
-**Schema — fully specified, this is what ships:**
-| Field | Description |
-|---|---|
-| `publication_id` | Unique identifier for the publication cycle that produced this canonical output. || `resolution_id` | Maps to `market_id` / conditionId. Used for resolution and historical tracking. |
-| `instrument_name` | Maps to `question`. Human-readable label. |
-| `tradeability_score` | Prediction Markets' scanner-computed evaluation score. Not assumed comparable across future Domains. |
-| `category` | Prediction Markets' classifier output. |
-| `liquidity` | Prediction Markets' scanner-computed liquidity figure. |
-| `volume_24h` | Prediction Markets' scanner-computed 24-hour volume. |
-| `spread_pct` | Prediction Markets' scanner-computed spread percentage. |
-| `spread_label` | Prediction Markets' scanner-computed spread quality label. |
-| `days_left` | Days remaining until the instrument's resolution date. |
+**Producer:** `L2_DOMAINS/prediction_markets/`
 
-**Consumers today:** Program B reads this file directly, with zero
-joins and zero access to Prediction Markets' internal diagnostic
-files as a required input.
+**Publisher:** `L2_DOMAINS/prediction_markets/publication/publish_canonical_output.py`
+
+**Canonical output:**
+`L2_DOMAINS/prediction_markets/data/canonical/prediction_markets_latest.csv`
+
+The Prediction Markets Domain owns publication. Downstream research engines
+consume the canonical output rather than requiring Prediction Markets'
+internal scanner or diagnostic files.
+
+The canonical publication includes `publication_id` as required by ADR-006.
+Concrete fields may evolve through deliberate contract revision; downstream
+consumers should depend only on documented fields and meanings required by
+their interface.
+
+**Current consumers include:** Market Microstructure and other research
+workflows whose documented contracts explicitly depend on the Prediction
+Markets canonical publication.
 
 ### Diagnostic Artifacts
 
 Diagnostic artifacts are a Domain's raw, internal collection and
 scoring history. They remain fully preserved and available for
 debugging, auditing, or genuinely domain-specific investigation —
-they are never a required input for any Program's normal operation.
+they are never a required input for any Research Engine's normal operation.
 
 For Prediction Markets, the current diagnostic artifacts are the
 collector's market snapshots and the scanner's timestamped scoring
@@ -232,7 +230,7 @@ These are architecture-specific applications of the broader
 engineering philosophy in `zHANDOFF.md`. See that document for the
 complete set (Research Integrity Rules, Read-Before-Patch, etc.).
 
-- Domains own market selection; Programs never duplicate it.
+- Domains own market selection; Research Engines never duplicate it.
 - One producer, many consumers, per Domain.
 - Downstream research never writes back into a canonical output.
 - Internal artifacts stay available but are never a required input.
@@ -246,44 +244,27 @@ complete set (Research Integrity Rules, Read-Before-Patch, etc.).
 
 ---
 
-## 7. Architectural Questions for Future Domains
+## 7. Current Architectural Questions
 
-These are explicitly unresolved. They should not be treated as
-implied commitments — they are questions to answer with evidence
-once a second Domain actually exists.
+The following remain deliberately unresolved and should be answered from
+implementation evidence rather than speculative design:
 
-- Whether `instrument_id`, `resolution_id`, `instrument_name`, and
-  `tradeability_score` as named, typed fields would transfer cleanly
-  to a second Domain, or whether the *concepts* transfer but the
-  concrete shape needs to change.
-- Whether a second Domain needs a `domain` column, a separate
-  namespace, or something else entirely to let a Program distinguish
-  which Domain a row came from, if that's ever needed.
-- Whether `tradeability_score` should ever be comparable across
-  Domains, and if so, what normalization that would require.
-- Whether the current canonical-output file convention fits a Domain
-  with a different update cadence than Prediction Markets' daily
-  cycle.
-- Any architectural implications from an unreviewed backlog of
-  external research (bookmarked material on crypto, market
-  microstructure, quantitative trading, and system design) not yet
-  incorporated into this document.
-- Crypto is the first candidate second Domain. Its vision, research
-  framework, and open questions are captured at domains/crypto/
-  (see domains/crypto/README.md), but it remains entirely
-  unimplemented — Phase 0 (documentation only) per
-  domains/crypto/zROADMAP.md. Nothing about this Domain has been
-  built, and none of the schema/architecture questions above have
-  been answered by its existence.
+- Whether future domains require a common cross-domain instrument schema or
+  only stable domain-specific publication contracts.
+- Which canonical fields, if any, should be universal beyond publication
+  identity.
+- Whether tradeability or comparable selection metrics can be meaningfully
+  normalized across unrelated market domains.
+- How domains with different publication cadences should expose stable
+  producer/consumer interfaces.
+- Whether runtime data should ultimately be organized centrally, per owner,
+  or through a hybrid model separating canonical data, domain publications,
+  engine state, diagnostics, and archives.
+- Which shared market-data capabilities belong permanently in `L1_CORE`
+  versus domain-specific implementations in `L2_DOMAINS`.
 
-**Revision trigger:** Sections 3-5 (Domain/Program specifics, the
-Prediction Markets schema) get revisited when a second Domain is
-actually implemented, using real evidence from that implementation.
-Sections 2 and 6 (the durable Domain/Program principles) only change
-if real implementation experience shows one of them doesn't actually
-hold — which would itself be a significant, deliberate finding.
-
----
+These questions are not commitments. Architectural changes require evidence,
+explicit ownership, and deliberate revision of this specification.
 
 ## Architecture Decisions
 
@@ -360,6 +341,13 @@ canonical outputs generally, not a Program B-specific requirement.
 **Status:** Accepted (v1)
 ---
 ## Version History
+
+**v1.1 — 2026-09-17** — Modernized the canonical architecture around the
+implemented L0-L4 ownership model. Replaced obsolete current-state Program
+A/B and single-Domain descriptions, updated the Prediction Markets canonical
+publication boundary and path, and preserved the accepted v1 ADRs and
+historical terminology where they document earlier project state.
+
 
 **v1.0 — 2026-07-09** — Initial architecture specification. Domain/
 Program separation established. Prediction Markets canonical schema
