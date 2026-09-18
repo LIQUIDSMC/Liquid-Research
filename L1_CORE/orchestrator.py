@@ -2,10 +2,11 @@
 Liquid Research — Daily Cycle Orchestrator (Phase 1)
 orchestrator.py
 
-Runs the existing, unmodified daily cycle exactly as documented in
-programs/program_a/DAILY_OPERATIONS.md, as a single, unattended,
-sequential process. Wraps the existing system — does not change
-Program A logic, Program B logic, paper-trading rules, or research
+Runs the existing, unmodified daily cycle documented in
+L3_RESEARCH_ENGINES/market_selection/zDAILY_OPERATIONS.md as a single,
+unattended, sequential process. Wraps the existing system — does not
+change Prediction Markets acquisition/selection/publication, Market
+Selection, Market Microstructure, paper-trading rules, or research
 methodology in any way.
 
 Sequence (fixed, no reordering, no parallelism):
@@ -29,8 +30,9 @@ full raw console output per stage, for debugging.
 
 Explicitly excluded from this phase: Git commits/pushes,
 notifications, checkpoint writing or interpretation, semantic
-per-market success validation (Program B can exit 0 even if every
-market failed — this is a known, deliberately deferred limitation,
+per-market success validation (a Market Microstructure collection stage
+can exit 0 even if every market failed — this is a known, deliberately
+deferred limitation,
 see semantic_validation field and the Phase 2 TODO markers below),
 and any scientific conclusion of any kind. This script only
 executes and records what happened — it never interprets results.
@@ -76,11 +78,13 @@ TIMEOUT_RUN_NEAR_BOOK_DEPTH = 600
 STAGES = [
     ("market_collector", lambda py: [py, "L2_DOMAINS/prediction_markets/acquisition/market_collector.py"], TIMEOUT_MARKET_COLLECTOR),
     # PHASE 2 TODO: after this stage succeeds, verify a fresh
-    # snapshot file was produced in data/markets/, and that it is
+    # snapshot file was produced in L2_DOMAINS/prediction_markets/data/markets/,
+    # and that it is
     # nonempty and readable. Not implemented in Phase 1.
     ("scanner", lambda py: [py, "L2_DOMAINS/prediction_markets/selection/scanner.py"], TIMEOUT_SCANNER),
     # PHASE 2 TODO: after this stage succeeds, verify a fresh
-    # scanner-run file was produced in data/scanner/, and that it is
+    # scanner-run file was produced in L2_DOMAINS/prediction_markets/data/scanner/,
+    # and that it is
     # nonempty and readable. Not implemented in Phase 1.
     ("publish_canonical_output", lambda py: [py, "-c", (
         "import sys; sys.path.insert(0, '.'); "
@@ -97,7 +101,8 @@ STAGES = [
     # PHASE 2 TODO: after this stage succeeds, verify the paper-trade
     # file remains readable, and that expected append/skip behavior
     # occurred (e.g. new trades created or all candidates correctly
-    # skipped as already-open). Not implemented in Phase 1.
+    # skipped under the one-market_id-one-trade-ever policy). Not
+    # implemented in Phase 1.
     ("paper_resolver", lambda py: [py, "L3_RESEARCH_ENGINES/market_selection/simulator/paper_resolver.py"], TIMEOUT_PAPER_RESOLVER),
     # PHASE 2 TODO: after this stage succeeds, verify the paper-trade
     # file remains readable, and that status counts remain internally
@@ -105,15 +110,17 @@ STAGES = [
     # Not implemented in Phase 1.
     ("run_obi", lambda py: [py, "L3_RESEARCH_ENGINES/market_microstructure/collection/run_obi.py"], TIMEOUT_RUN_OBI),
     # PHASE 2 TODO: after this stage succeeds, verify expected rows
-    # were appended to data/program_b/obi_log.csv, and detect
+    # were appended to
+    # L3_RESEARCH_ENGINES/market_microstructure/data/obi_log.csv, and detect
     # systemic per-market failures (e.g. most/all markets returning
     # FAILED status) — this stage can currently exit 0 even if every
     # market failed, per semantic_validation="not_implemented_phase_1".
     # Not implemented in Phase 1.
     ("run_near_book_depth", lambda py: [py, "L3_RESEARCH_ENGINES/market_microstructure/collection/run_near_book_depth.py"], TIMEOUT_RUN_NEAR_BOOK_DEPTH),
     # PHASE 2 TODO: same systemic-failure detection as run_obi above,
-    # applied to data/program_b/near_book_depth_log.csv. Not
-    # implemented in Phase 1.
+    # applied to
+    # L3_RESEARCH_ENGINES/market_microstructure/data/near_book_depth_log.csv.
+    # Not implemented in Phase 1.
 ]
 
 
@@ -433,8 +440,9 @@ def main() -> None:
                     break
 
                 # Verify canonical output exists immediately after the
-                # publisher stage succeeds, before paper_trader/Program B
-                # continue — not checked at preflight, since this stage
+                # publisher stage succeeds, before Market Selection and
+                # Market Microstructure continue — not checked at preflight,
+                # since this stage
                 # is what creates/updates the file.
                 if not dry_run and name == "publish_canonical_output" and result["status"] == "success":
                     if not os.path.isfile(CANONICAL_OUTPUT_PATH):
