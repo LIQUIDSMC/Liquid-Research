@@ -1,13 +1,13 @@
 """
-Program B — Market Microstructure Research
+LRS-2 — Market Microstructure Research
 Report Printer
-programs/program_b/presentation/report_printer.py
+L3_RESEARCH_ENGINES/market_microstructure/presentation/report_printer.py
 
 PURPOSE:
 Minimal presentation layer. Formats existing analysis output into
 simple, fixed-width plain text tables for terminal display. This
 module contains NO analysis logic — it only formats dicts already
-produced by programs/program_b/analysis/*.
+produced by L3_RESEARCH_ENGINES/market_microstructure/analysis/*.
 
 This module does NOT:
 - modify any analysis module or its return values
