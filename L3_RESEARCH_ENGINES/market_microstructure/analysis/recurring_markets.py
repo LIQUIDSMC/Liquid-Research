@@ -1,7 +1,7 @@
 """
-Program B — Market Microstructure Research
+LRS-2 — Market Microstructure Research
 Market Observation Index
-programs/program_b/analysis/recurring_markets.py
+L3_RESEARCH_ENGINES/market_microstructure/analysis/recurring_markets.py
 
 PURPOSE:
 Build a cross-market index of observation facts: how many times
@@ -30,7 +30,7 @@ import os
 import pandas as pd
 
 # sys.path.insert is required here because this module imports
-# other Program B modules directly. Modules that only import
+# other LRS-2 modules directly. Modules that only import
 # third-party/stdlib packages do not need this.
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
