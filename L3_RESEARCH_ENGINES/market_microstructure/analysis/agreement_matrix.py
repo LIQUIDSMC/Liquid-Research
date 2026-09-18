@@ -1,7 +1,7 @@
 """
-Program B — Market Microstructure Research
+LRS-2 — Market Microstructure Research
 Agreement Matrix
-programs/program_b/analysis/agreement_matrix.py
+L3_RESEARCH_ENGINES/market_microstructure/analysis/agreement_matrix.py
 
 PURPOSE:
 Build a historical, cross-market view of whether OBI and Near-OBI
@@ -49,7 +49,7 @@ import os
 import pandas as pd
 
 # sys.path.insert is required here because this module imports
-# other Program B modules directly. Modules that only import
+# other LRS-2 modules directly. Modules that only import
 # third-party/stdlib packages do not need this.
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
