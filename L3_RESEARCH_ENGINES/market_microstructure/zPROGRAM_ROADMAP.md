@@ -1,9 +1,9 @@
-# Program B — Research Roadmap
+# LRS-2 — Market Microstructure Research Roadmap
 
 This is a research roadmap, not an engineering roadmap. Every
 phase below exists to answer a specific research question. If an
 engineering task doesn't trace back to a question in this
-document, it doesn't belong in Program B.
+document, it doesn't belong in LRS-2.
 
 ---
 
@@ -18,7 +18,7 @@ indicators actually behave before assuming any of them are useful.
 
 ## Core Research Questions
 
-These are the reasons Program B exists. Everything below this
+These are the reasons LRS-2 exists. Everything below this
 section is in service of answering these.
 
 - Does OBI predict future midpoint movement?
@@ -40,7 +40,7 @@ Research Infrastructure (below) exists.
 
 Per the platform principle "when choosing between collecting
 better evidence and collecting more variables, prefer better
-evidence first" (see zHANDOFF.md), Program B's infrastructure
+evidence first" (see zHANDOFF.md), LRS-2's infrastructure
 priority is building the ability to observe existing indicators
 over time, not adding new indicators.
 
@@ -61,7 +61,7 @@ TERMINOLOGY NOTE (2026-07-10): entries below reference
 "snapshot_file" as it was understood at the time each item was
 completed — a raw Program A market snapshot filename. Following the
 Prediction Markets Domain refactor (see zARCHITECTURE.md ADR-006),
-Program B now reads a canonical output identified by
+LRS-2 now reads a canonical output identified by
 publication_id, and the log schema's "snapshot_file" column has
 been renamed to publication_id throughout (both code and existing
 log data). The historical entries below are left as originally
@@ -133,7 +133,7 @@ recurring market (e.g. the Fed rate markets, Hormuz markets).
 (Historical Market View, Snapshot Change Detector, Divergence
 Detection, Stability Tracking) implemented and verified against
 real recurring markets (Fed rate markets, Hormuz markets,
-China/Taiwan). Program B is ready to move to Phase 3 — Research
+China/Taiwan). LRS-2 was then ready to move to Phase 3 — Research
 Analytics & Review, which consumes this infrastructure to begin
 answering the Core Research Questions above.
 
@@ -234,7 +234,7 @@ needs more data").
 
 Goal: Make Phase 2/3 outputs easier to read.
 
-- CLI dashboard summarizing Program B's current state.
+- CLI dashboard summarizing LRS-2's current state.
 - Cross-day visualization (text-based trend view, not graphics).
 
 Do not begin until Phase 3 has produced real content worth
@@ -257,11 +257,9 @@ evaluate Indicators 1 and 2.
 ## Cross-Reference: Potential Platform Generalization
 
 The historical-retrieval pattern built in Phase 2 may generalize
-to Program A's own "Price History Tracking" backlog item (see
-zROADMAP.md, Platform Engineering Backlog) if that is ever built.
-Not generalizing now — no second consumer exists yet — but worth
-revisiting if/when Program A needs the same kind of time-series
-retrieval.
+to another engine or domain that needs the same kind of time-series
+retrieval. No generalization is authorized here; shared extraction
+should wait for a demonstrated second consumer.
 
 ---
 
