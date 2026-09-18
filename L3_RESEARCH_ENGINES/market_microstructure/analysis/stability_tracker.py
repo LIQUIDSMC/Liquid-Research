@@ -1,7 +1,7 @@
 """
-Program B — Market Microstructure Research
+LRS-2 — Market Microstructure Research
 Stability Tracking
-programs/program_b/analysis/stability_tracker.py
+L3_RESEARCH_ENGINES/market_microstructure/analysis/stability_tracker.py
 
 PURPOSE:
 Measure the stability of individual values (OBI, Near-OBI,
@@ -10,7 +10,7 @@ a MEASURE, not a CLASSIFICATION: no threshold, no "stable" or
 "unstable" label. Per the platform principle "prefer better
 evidence over more variables" (see zHANDOFF.md), classification
 requires enough historical data to justify a cutoff — that data
-does not exist yet at Program B's current volume.
+does not exist yet at LRS-2's current volume.
 
 SCOPE:
 Four independent sections, each computed from a single filtered
@@ -42,7 +42,7 @@ import statistics
 import pandas as pd
 
 # sys.path.insert is required here because this module imports
-# another Program B module directly (history.py). Modules that
+# another LRS-2 module directly (history.py). Modules that
 # only import third-party/stdlib packages do not need this.
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
