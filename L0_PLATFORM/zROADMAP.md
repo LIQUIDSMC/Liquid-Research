@@ -1,14 +1,23 @@
 # Liquid Research — Platform Roadmap
 
-## Mission
-Liquid Research is a multi-program research platform whose purpose
-is to discover statistically defensible, monetizable trading edges
-in prediction markets through disciplined, evidence-driven research.
+**Status:** Canonical Portfolio Roadmap
+**Last Updated:** 2026-09-18
 
-This is a research platform. Not a trading bot. Not an execution engine.
-Every research program must answer one question:
-"Does this increase the probability of discovering a repeatable edge
-that can eventually generate meaningful income?"
+---
+
+## Mission
+
+Liquid Research is an independent software and quantitative-research project
+for building reproducible market-data systems and testing market hypotheses
+through disciplined, evidence-first research.
+
+The platform exists to improve the quality, reliability, and scope of market
+research. It does not assume that any hypothesis will produce a profitable
+strategy.
+
+This roadmap governs portfolio-level priorities and promotion decisions.
+Detailed methodology, experiment state, and operational checkpoints belong to
+the relevant Domain, Research Engine, or shared service.
 
 ---
 
@@ -17,292 +26,349 @@ that can eventually generate meaningful income?"
 Research quality is more important than development speed.
 
 Rules:
+
 - Never trust a single API field without verification.
-- Validate assumptions using live responses whenever possible.
+- Validate assumptions against authoritative or directly observed evidence.
 - Prefer verification over convenience.
 - Treat dramatic improvements as potential bugs until proven otherwise.
 - Investigate unexpected outputs before calling them signal.
-- Spot-check results against real-world examples.
-- Avoid silent failures whenever possible.
-- Fail loudly when data appears invalid.
-- Manual verification is required before declaring a phase complete.
+- Spot-check results against real examples where possible.
+- Avoid silent failures.
+- Fail loudly when required data is invalid or ambiguous.
+- Preserve frozen methodology during active evidence collection.
+- Separate observations from validated findings.
+- Do not promote a hypothesis because it is interesting, technically complex,
+  or economically attractive.
+- Require reproducible evidence before increasing research scope.
 
-Recent lesson:
-A discovery run appeared successful but was later found to be using
-Polymarket numeric market IDs instead of conditionId hashes. The issue
-produced believable output while hiding a critical bug. This project
-should assume that plausible-looking results can still be wrong until
-verified.
-
----
-
-## Legal Notice
-Polymarket US appears to have a regulated U.S. pathway through QCX LLC
-d/b/a Polymarket US, which is listed by the CFTC as a Designated Contract
-Market. However, the international Polymarket platform and older crypto/
-on-chain tooling may still be separate and restricted for U.S. users.
-This project must remain read-only and research-only until the exact
-legal/trading pathway is confirmed.
-
-Hard rules until explicitly reviewed:
-- No wallet
-- No private key
-- No VPN
-- No live trades
-- No execution code
-- Public/read-only data only
-- Paper trading only after data collector is confirmed working
+A recurring lesson from Liquid Research is that plausible-looking output can
+still be wrong. Identifier errors, stale publications, data-path divergence,
+duplicate observations, and timing assumptions have all demonstrated why
+verification must precede interpretation.
 
 ---
 
-## Architecture Overview
+## Operating Constraints
 
-Layer 1 — Data Collection       collectors/
-Layer 2 — Market Analysis       analyzers/
-Layer 3 — Scanner Engine        scanner/
-Layer 4 — Wallet Research       analyzers/wallet_analyzer.py
-Layer 5 — Decision Engine       brain/
-Layer 6 — Paper Trading         simulator/
-Layer 7 — Research Programs     programs/
+Liquid Research is research software, not a live execution system.
 
-Research Vault (platform knowledge): research/
-Program A (active):               programs/program_a/
-Program B (active):               programs/program_b/
+Current platform-level constraints:
 
----
+- No live-trading capability is implied by research results.
+- No private keys or wallet credentials belong in research workflows.
+- Public or otherwise authorized data access does not imply authorization to
+  trade a product or use an execution interface.
+- Regulatory status, venue availability, and platform terms can change and
+  must be verified before any future live-execution capability is considered.
+- Paper or historical research must not be represented as live profitability.
 
-## Long-Term Product Direction
-
-Liquid Research should never depend on a single "magic indicator."
-The long-term design philosophy is:
-
-- Every signal must earn its place through independent validation
-  before it is ever combined with others.
-- Signals are researched individually first. Combination comes
-  later, only after each component has demonstrated standalone value.
-- Any future confidence framework should emerge from evidence,
-  not be assumed upfront.
-- This is a philosophy, not an implementation plan. No formulas,
-  no weights, no architecture decisions are implied here.
-
-The idea lifecycle:
-Idea → Research Vault → Hypothesis → Experiment → Program → Finding
-→ Platform Knowledge
-
-Programs execute research. The vault discovers research.
-Those are different responsibilities and should never be confused.
-
-Potential signals currently under investigation or planned:
-  Tradeability Score (Program A — active)
-  Order Book Imbalance / Micro-Price (Program B — active)
-  Calibration / Entry Price (Program C — queued)
-  Cross-Venue Spread (Program D — future, requires infrastructure)
-  Category-Aware Wallet Intelligence (Program E — blocked)
-  Future signals not yet discovered
+Any future execution capability requires a separate architectural, legal,
+operational, and risk review before implementation authorization.
 
 ---
 
-## Active Research Programs
+## Architecture
 
-This section is the authoritative index of all research programs.
-Each program tests an independent hypothesis. Programs do not share
-operational documentation — each program owns its own Mission Control,
-Daily Operations, and program-specific notes inside its folder under
-programs/.
+Canonical architecture is defined by `L0_PLATFORM/zARCHITECTURE.md`.
 
-Platform-wide knowledge (hypotheses, findings, vault) remains in
-research/ and is shared across all programs.
+- `L0_PLATFORM` — governance and canonical project authority.
+- `L1_CORE` — shared engineering infrastructure and orchestration.
+- `L2_DOMAINS` — market-domain acquisition, selection, publication, and
+  domain-specific context.
+- `L3_RESEARCH_ENGINES` — independent research systems.
+- `L4_KNOWLEDGE` — shared findings, hypotheses, open questions, archived
+  research state, and future concepts.
 
----
+Architecture and roadmap are separate authorities:
 
-### Program A — Tradeability Score / Scanner One
-**Status:** ACTIVE — daily cycle running
-**Folder:** programs/program_a/
-**Hypothesis:** Higher tradeability_score (combining liquidity,
-spread quality, and volume) predicts better paper-trade outcomes
-than lower-score markets on Polymarket.
-**Data:** data/simulator/paper_trades.csv
-**Current milestone:** 33 closed trades — accumulating toward 100.
-**Next checkpoint:** 100 closed trades — bucket comparisons become
-meaningful.
-**Does not interfere with:** All other programs. Program A runs
-its daily cycle independently. No other program touches Program A's
-data or methodology.
-**Details:** programs/program_a/MISSION_CONTROL.md
-**Build history:** programs/program_a/HISTORY.md
+- Architecture answers **where a responsibility belongs**.
+- Roadmap answers **what portfolio-level work is active, parked, or next**.
+- Engine-specific documents answer **how a research question is being tested
+  and what its current evidence says**.
 
 ---
 
-### Program B — Market Microstructure Research
-**Status:** ACTIVE — Indicator 1 (OBI) Phase 1 complete, Phase 2
-(stability testing) in progress.
-**Folder:** programs/program_b/
-**Identity:** Studies order-book and market-microstructure
-indicators as a class. OBI is the first indicator studied, not the
-entire scope. Governing question: which microstructure indicators
-give the most useful, stable signal for market selection or entry
-timing?
-**Indicator 1 - OBI / Micro-Price Hypothesis:** Order book imbalance
-(relative volume of bids vs. asks near the best price) predicts
-short-term price movement better than midpoint alone. A
-volume-weighted micro-price outperforms midpoint as a short-term
-reference price on Polymarket.
-**Infrastructure required:** None new. scanner/clob_client.py
-already fetches and correctly parses full bid/ask book depth.
-**Signal class:** Timing signal (when to enter) - fundamentally
-different from Program A's selection signal (which market to trade).
-**Current work:** programs/program_b/diagnostics/run_obi.py computes
-OBI and micro-price correctly (verified 2026-07-03) using
-programs/program_b/indicators/obi.py. Logging to
-data/program_b/obi_log.csv established. Two queued indicator
-candidates (near-book depth imbalance, spread-normalized OBI) noted
-but not started. Collecting daily observations before any further
-scope expansion.
-**Blocking conditions:** None.
-**Details:** programs/program_b/README.md
+## Current Portfolio
+
+### Market Selection
+
+**Location:** `L3_RESEARCH_ENGINES/market_selection/`
+**Portfolio status:** Active research
+
+Studies whether market-level characteristics provide useful evidence for
+market selection and tradeability research.
+
+Prediction-market acquisition and canonical publication are owned upstream by
+`L2_DOMAINS/prediction_markets/`.
+
+Current research state and operations are owned by the Market Selection control
+documents. This roadmap does not duplicate their changing counts or
+checkpoints.
+
+### Market Microstructure
+
+**Location:** `L3_RESEARCH_ENGINES/market_microstructure/`
+**Portfolio status:** Active research
+
+Studies order-book and microstructure behavior, including independently tested
+indicators and their stability.
+
+Current methodology, checkpoints, backlog, and evidence are owned by the
+engine's control documents.
+
+### Market Data Platform / Crypto Trade-Flow Research
+
+**Shared infrastructure:** `L1_CORE/market_data_platform/`
+**Domain context:** `L2_DOMAINS/crypto/`
+**Portfolio status:** Active engineering and research
+
+The Market Data Platform provides shared, venue-aware data infrastructure.
+Crypto-specific research uses that infrastructure without owning the shared
+platform itself.
+
+Current research has progressed beyond initial collector construction into
+controlled trade-flow experimentation. Detailed experiment status remains with
+the relevant L1/L2 research authorities and artifacts.
+
+### Market Regime Intelligence
+
+**Location:** `L3_RESEARCH_ENGINES/market_regime_intelligence/`
+**Portfolio status:** Active research — methodology controlled
+
+Studies market-regime classification and regime-conditioned research under
+explicit pre-inference methodology controls.
+
+The presence of implemented primitives or tests does not by itself authorize
+later methodology-dependent stages. Current implementation authorization must
+come from the engine's methodology authority.
+
+### Wallet Intelligence
+
+**Location:** `L3_RESEARCH_ENGINES/wallet_intelligence/`
+**Portfolio status:** Retained / dormant
+
+Existing read-only wallet discovery and analysis infrastructure is preserved.
+No current evidence supports treating Wallet Intelligence as an active
+research program.
+
+Do not expand or remove it solely because the implementation exists. Revival
+requires a current research question, evidence need, and explicit promotion.
 
 ---
 
-### Program C — Calibration / Entry Price Analysis
-**Status:** QUEUED — not yet formally started as a Program.
-**Hypothesis:** Implied probability at entry independently predicts
-paper-trade outcomes. Polymarket may systematically misprice markets
-in certain probability ranges, representing a directly actionable edge.
-**Motivation:** Emerged from Program A's 2026-07-02 median-split
-analysis — low-score trades appeared to outperform high-score trades,
-consistent with entry-price and payout structure acting as a
-confounding factor.
-**Preliminary evidence (not yet Program C itself):** Program A's own
-exploratory follow-up, programs/program_a/analysis/entry_price_analysis.py,
-produced a first checkpoint at n=36 closed trades (2026-07-08):
-weak correlation between tradeability_score and entry_price
-(Pearson 0.078, Spearman 0.103), which does not support entry_price
-as the explanation for the original median-split result. See
-research/validated_findings.md. This is exploratory work performed
-by Program A investigating its own result — not a formally launched
-Program C, which per zARCHITECTURE.md's Domain/Program model would
-require its own sustained infrastructure and roadmap, the same way
-Program B was promoted from vault idea to active Program.
-**Infrastructure required:** None yet. Uses existing paper_trades.csv.
-**Blocking conditions:** None technical. Re-evaluation planned at
-~100 closed trades (currently 39). At that point, an evidence-based
-decision should be made: continue this narrow line of analysis
-within Program A, or formally launch Program C with the broader
-Entry/Execution Research scope zARCHITECTURE.md anticipates.
-**Experiment design:** research/future_experiments.md
+## Portfolio Priorities
+
+### Priority 1 — Authority and Repository Coherence
+
+Complete the L0-L4 migration at the documentation and navigation level.
+
+Current portfolio work includes:
+
+- Remove stale current-state Program A/B terminology where it incorrectly
+  represents present architecture.
+- Repair broken post-restructure paths and authority references.
+- Preserve historical terminology where it documents actual project history.
+- Make current control documents easy to discover from the public repository.
+- Keep architecture, roadmap, engine ownership, and implementation aligned.
+
+This is a documentation and repository-coherence priority, not authorization
+to change research methodology.
+
+### Priority 2 — Preserve Active Research Integrity
+
+Allow active engines to continue under their existing methodology and evidence
+gates.
+
+Portfolio-level rules:
+
+- Do not alter frozen experiments to accelerate results.
+- Do not combine signals before standalone evidence justifies combination.
+- Do not infer predictive value from implementation completeness.
+- Do not promote paper or historical results into profitability claims.
+- Do not let repository cleanup change experimental meaning.
+
+### Priority 3 — Strengthen Shared Engineering Where Evidence Requires It
+
+Shared infrastructure should be promoted into `L1_CORE` only when multiple
+domains or engines genuinely need the capability.
+
+Examples include:
+
+- Market-data collection and normalization.
+- Orchestration and operational safeguards.
+- Deterministic validation.
+- Failure detection and observability.
+- Reusable data contracts.
+
+Avoid speculative platform engineering without a demonstrated consumer or
+operating requirement.
+
+### Priority 4 — Improve Public Technical Legibility
+
+The repository should accurately expose the engineering and research work that
+already exists.
+
+Priorities include:
+
+- Clear root navigation.
+- Accurate architecture and ownership documentation.
+- Discoverable engine entry points.
+- Visible tests and validation practices.
+- Reproducible research artifacts where appropriate.
+- Clear distinction between active research, historical evidence, and parked
+  concepts.
+
+Public presentation must not inflate Liquid Research into a company,
+institutional platform, production trading system, or validated profitable
+strategy.
 
 ---
 
-### Program D — Cross-Venue Spread Research
-**Status:** FUTURE — requires new infrastructure
-**Hypothesis:** Semantically equivalent markets on different
-prediction market venues (e.g. Polymarket vs. Kalshi) exhibit
-persistent, measurable price deviations that may be exploitable.
-**Evidence:** Gebele & Matthes (2026), arXiv:2601.01706 — roughly
-6% of events listed across platforms, with 2-4% persistent price
-deviations even in liquid markets. Strongest external evidence for
-any hypothesis in the research vault.
-**Infrastructure required:** Kalshi data collection (does not exist).
-**Blocking conditions:** Requires building an entirely new data
-pipeline for a second venue before any testing can occur.
-**Hypothesis:** research/market_hypotheses.md
+## Parked and Future Research
+
+Parked work is not scheduled implementation.
+
+A parked concept may have supporting notes, preliminary evidence, or even
+historical code. None of those automatically authorize promotion.
+
+### Gamma Research
+
+**Location:** `L4_KNOWLEDGE/future_engine_concepts/gamma_research/`
+**Status:** Parked
+
+Retained as a future research concept. Revival requires a current research
+question, data-source review, methodology definition, and explicit promotion.
+
+### Entry Calibration
+
+**Status:** Parked candidate
+
+Research into entry-price or calibration effects remains a legitimate future
+direction. Historical exploratory work does not constitute an active,
+independent research engine.
+
+### Execution Intelligence
+
+**Status:** Parked candidate
+
+Potential future research into spread, depth, slippage, queue position,
+partial fills, latency, and execution realism.
+
+Promotion should follow demonstrated need from research that requires a more
+realistic execution model.
+
+### Cross-Market / Cross-Venue Intelligence
+
+**Status:** Parked candidate
+
+Potential research into semantically related markets or instruments across
+venues and market structures.
+
+This supersedes the old assumption that a future lettered "Program D" should
+automatically represent cross-venue spread research. Any future implementation
+must earn its own current architecture and methodology.
+
+### Additional Concepts
+
+Additional hypotheses and future-system ideas belong in `L4_KNOWLEDGE/` until
+they pass deliberate review.
+
+Examples may include event intelligence, opportunity-cost analysis, research
+quality tooling, failure-mode monitoring, simulation, allocation research,
+meta-learning, and other concepts recorded in the knowledge layer.
+
+Their presence in L4 is not a build queue.
 
 ---
 
-### Program E — Category-Aware Wallet Research
-**Status:** BLOCKED — pending Phase 3 resolved trade data
-**Hypothesis:** Wallets that concentrate trading in a single
-category (specialists) outperform wallets that spread trades across
-categories (generalists). Category-aware wallet analysis can
-identify reliably profitable participants.
-**Infrastructure required:** None new. wallet_discovery.py and
-wallet_analyzer.py already exist from Phase 3.
-**Blocking conditions:** Requires wallets with meaningful resolved
-trade history. All wallets discovered during Phase 3 had only
-open/unresolved trades at time of analysis. This resolves naturally
-as Polymarket markets mature — no active work needed to unblock.
-**Hypothesis:** research/market_hypotheses.md
+## Promotion Rules
+
+A concept does not become an active Research Engine merely because:
+
+- A paper or repository describes it.
+- A preliminary analysis looks promising.
+- Infrastructure already exists.
+- The implementation would be technically interesting.
+- The expected economic payoff appears large.
+
+Promotion requires:
+
+1. A clearly stated research question.
+2. A defined owner and architecture boundary.
+3. Evidence that the required data is available and sufficiently understood.
+4. A methodology that can be tested without contaminating existing frozen
+   experiments.
+5. Explicit success, failure, and stopping criteria where applicable.
+6. A decision that the expected information value justifies the engineering
+   and research cost.
+7. Explicit authorization to move from concept to implementation.
+
+Where appropriate, methodology reproduction and independent evidence should
+remain separate promotion gates.
 
 ---
 
-## Platform Research Backlog
+## Platform Engineering Backlog
 
-### Queued Research Programs
-(Defined hypotheses, no infrastructure blocker, ready to begin)
+Engineering work should remain tied to demonstrated research or operational
+needs.
 
-See Active Research Programs section above for Programs B and C.
-Additional queued directions:
+Current classes of legitimate platform work include:
 
-**Resolution Speed Research**
-Investigate whether market duration at entry (days_left) affects
-tradeability score correlation with outcomes, expectancy, or win
-rate. Entirely self-contained — days_left already captured in
-paper_trades.csv. Testable once sufficient closed trades exist
-across varied duration buckets.
+- Observability and failure-mode detection.
+- Data-integrity validation.
+- Canonical publication and provenance safeguards.
+- Reproducible research tooling.
+- Operational automation where manual processes create demonstrated drift.
+- Portability improvements where environment coupling is an actual reusable
+  software problem.
+- Public repository navigation and documentation coherence.
 
----
-
-### Deferred / Blocked Research Programs
-
-**Sports Research Framework**
-Sports markets pass scanner and paper trading but are excluded
-from wallet research. Decision needed: dedicated framework, or
-reclassify consistently across all systems.
-Blocking condition: None technical — this is a strategic decision.
-
-**Crypto Ultra-Short Research Framework**
-Crypto Ultra-Short markets excluded entirely. Revisit whether a
-dedicated framework would be worth building or exclusion should
-remain permanent.
-Blocking condition: None technical — this is a strategic decision.
+Historical backlog items from the pre-L0-L4 architecture should not be copied
+forward automatically. Re-evaluate them against current implementation and
+current engine needs before scheduling work.
 
 ---
 
-### Platform Engineering Backlog
-(Infrastructure work not tied to a specific research program)
+## Historical Naming
 
-**Auto-generated Mission Control Status**
-Generate operational statistics directly from paper_trades.csv
-(trade counts, category counts, open/closed totals, performance
-metrics) rather than manually updating MISSION_CONTROL.md. Keep
-architecture/history documents human-authored while operational
-status is generated automatically to eliminate transcription drift.
-Small engineering task, permanent payoff.
+Earlier Liquid Research versions used lettered Programs:
 
-**Price History Tracking**
-Currently the scanner captures market state at a single daily
-snapshot. No memory of how a market was priced on prior days
-exists. Building even a simple price history tracker (appending
-daily yes_price per active market to a running file) would unlock
-an entirely new class of research questions including momentum,
-late-stage repricing, and timing signals. Medium infrastructure
-effort, high long-term research value.
+- Program A — Tradeability / Market Selection lineage.
+- Program B — Market Microstructure lineage.
+- Program C — proposed Entry Calibration research.
+- Program D — proposed Cross-Venue research.
+- Program E — proposed Category-Aware Wallet research.
 
-**Automated Reclassification on Classifier Patch**
-Dataset-wide reclassification has been run manually three times
-after classifier patches. A script that automatically re-checks
-all open trades against the current classifier after any patch
-would eliminate this recurring maintenance burden.
+These names remain valid historical terminology when describing the project at
+that time.
 
-**Resolution Cache**
-Avoid repeatedly resolving the same market across large wallet
-batches. Market resolutions should be cached locally.
+They are **not** the current portfolio namespace.
 
-**ConditionId Validation Layer**
-Prevent malformed identifiers from contaminating discovery or
-analysis. Invalid IDs should fail loudly, not silently.
+Current work should use L0-L4 ownership and descriptive system names. Do not
+perform blind global renames inside historical research evidence, incident
+records, frozen methodology, or provenance artifacts.
 
-**Combined Filter Stress Testing**
-Validate user and market filtering under larger workloads —
-multiple wallets, multiple markets, higher trade counts,
-pagination behavior, truncation and duplication checks.
+---
 
-**Proper-Noun Classification Limitation — Standing Decision**
-Remaining Other/Unknown trades (Starmer, Mojtaba Khamenei,
-aliens-type questions) are not solvable by any text-based method
-available to this project. Decision made 2026-06-25: accept as
-Other/Unknown for now. Revisit only if a maintained lookup table
-becomes worth the ongoing effort, Other/Unknown volume grows large
-enough to justify the investment, or a fundamentally different
-data source becomes available.
-See research/validated_findings.md for the full investigation record.
+## Roadmap Maintenance
+
+Update this document when:
+
+- A research concept is formally promoted, parked, revived, or retired.
+- A new Domain, shared platform service, or Research Engine becomes canonical.
+- Portfolio priorities materially change.
+- An architectural migration changes the portfolio-level ownership map.
+
+Do not update this document merely because:
+
+- A trade count changed.
+- A new daily observation arrived.
+- An engine reached an internal checkpoint.
+- A paper experiment produced another sample.
+- A methodology-specific diagnostic changed.
+
+Those belong to the owning engine's authority.
+
+The roadmap should remain a stable map of **portfolio direction**, not a
+duplicate Mission Control.
