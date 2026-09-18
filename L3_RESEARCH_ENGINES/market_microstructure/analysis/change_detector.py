@@ -1,7 +1,7 @@
 """
-Program B — Market Microstructure Research
+LRS-2 — Market Microstructure Research
 Snapshot Change Detector
-programs/program_b/analysis/change_detector.py
+L3_RESEARCH_ENGINES/market_microstructure/analysis/change_detector.py
 
 PURPOSE:
 Simplest possible consumer of Historical Market View. Validates
@@ -10,7 +10,7 @@ downstream analysis without duplicating any retrieval logic.
 
 Compares the latest observation against the immediately previous
 observation, per source (OBI, Near-Book), for a given market. This
-is NOT "today vs yesterday" — Program B logs are append-only and
+is NOT "today vs yesterday" — LRS-2 logs are append-only and
 diagnostics can be rerun against the same publication cycle, so the
 correct comparison is chronological: latest OBI vs previous OBI,
 latest Near-Book vs previous Near-Book. OBI and Near-Book rows are
@@ -28,7 +28,7 @@ import os
 import pandas as pd
 
 # sys.path.insert is required here because this module imports
-# another Program B module directly (history.py). Modules that
+# another LRS-2 module directly (history.py). Modules that
 # only import third-party/stdlib packages (e.g. history.py itself)
 # do not need this.
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
