@@ -40,3 +40,6 @@ collector_systemd.log
 L2_DOMAINS/prediction_markets/data/kill_log.csv
 L1_CORE/market_data_platform/data/canonical_fork_backup_20260901/
 logs/daily_cycle/
+
+# Local research backup snapshots
+data_backups/
