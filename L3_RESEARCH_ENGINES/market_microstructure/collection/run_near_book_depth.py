@@ -1,7 +1,7 @@
 """
-Program B — Market Microstructure Research
+LRS-2 — Market Microstructure Research
 Diagnostic Runner: Near-Book Depth Imbalance vs. Total-Book OBI
-programs/program_b/diagnostics/run_near_book_depth.py
+L3_RESEARCH_ENGINES/market_microstructure/collection/run_near_book_depth.py
 
 PURPOSE:
 Compares near-book depth imbalance (top N levels) against total-book
@@ -9,11 +9,11 @@ OBI to test whether they diverge meaningfully. Both values are
 computed and logged together so comparison requires no later join.
 
 This script:
-- Uses existing scanner/clob_client.py with no modifications
-- Uses indicators/obi.py and indicators/near_book_depth.py
+- Uses L2_DOMAINS/prediction_markets/market_data/clob_client.py
+- Uses L3_RESEARCH_ENGINES/market_microstructure/indicators/obi.py and near_book_depth.py
 - Prints both metrics side-by-side in a readable table
-- Appends each run to data/program_b/near_book_depth_log.csv
-- Does NOT modify data/program_b/obi_log.csv
+- Appends each run to L3_RESEARCH_ENGINES/market_microstructure/data/near_book_depth_log.csv
+- Does NOT modify L3_RESEARCH_ENGINES/market_microstructure/data/obi_log.csv
 - Places no trades
 - Introduces no new dependencies
 
@@ -65,7 +65,7 @@ def load_approved_slugs() -> tuple:
     if not os.path.exists(canonical_path):
         console.print(
             f"[red]No canonical output found at {canonical_path}. "
-            f"Run programs/program_a/domain/publish_canonical_output.py first.[/red]"
+            f"Run L2_DOMAINS/prediction_markets/publication/publish_canonical_output.py first.[/red]"
         )
         return [], ""
     console.print(f"[dim]Reading approved instruments from: {canonical_path}[/dim]")
@@ -84,12 +84,12 @@ def load_approved_slugs() -> tuple:
 
 def log_to_csv(row: dict) -> None:
     """
-    Append one row to data/program_b/near_book_depth_log.csv.
+    Append one row to the LRS-2 Near-Book Depth log.
 
     Schema uses publication_id as the canonical identifier
-    for the Program A publication cycle.
+    for the Prediction Markets canonical publication cycle.
 
-    Creates data/program_b/ and the CSV header if they do not exist.
+    Creates the LRS-2 data directory and CSV header if they do not exist.
     Does NOT touch obi_log.csv.
     """
     os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
@@ -103,7 +103,7 @@ def log_to_csv(row: dict) -> None:
 
 
 def main() -> None:
-    console.print("\n[bold cyan]Program B — Market Microstructure Research[/bold cyan]")
+    console.print("\n[bold cyan]LRS-2 — Market Microstructure Research[/bold cyan]")
     console.print(f"[dim]Indicator: Near-Book Depth (N={N_LEVELS}) vs. Total-Book OBI[/dim]\n")
     table = Table(show_lines=True)
     table.add_column("Market", max_width=24)
