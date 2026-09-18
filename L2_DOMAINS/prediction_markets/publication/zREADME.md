@@ -1,96 +1,147 @@
-# Prediction Markets Domain — Producer
+# Prediction Markets — Canonical Publication
 
-This folder implements the Prediction Markets Domain's producer
-responsibility, per zARCHITECTURE.md.
+**Layer:** L2 Domain
+**Domain:** Prediction Markets
+**Status:** Current
 
-## What This Is
+## Purpose
 
-Per zARCHITECTURE.md Section 2, a **Domain** owns market selection
-for one category of financial market. A **Domain producer**
-publishes exactly one canonical output — the public interface and
-canonical data contract that downstream Programs consume.
+This folder implements the canonical publication boundary for the Prediction
+Markets domain.
 
-Today, Program A is the current implementation of the Prediction
-Markets Domain's producer. This folder holds that producer's
-implementation, separate from Program A's own research logic
-(programs/program_a/analysis/) and presentation tooling
-(programs/program_a/presentation/).
+L2 Prediction Markets owns acquisition, selection, classification support, and
+publication of its approved market universe. The publication layer converts the
+domain's internal scanner and snapshot artifacts into a stable canonical
+interface for downstream research systems.
 
-## Responsibilities
+Architecture authority:
 
-Per zARCHITECTURE.md Section 5, a Domain producer is responsible
-for:
-- Producing a complete canonical output.
-- Ensuring every published instrument satisfies the Domain's
-  approval criteria.
-- Maintaining compatibility with the documented canonical schema.
-- Publishing a coherent snapshot representing a single publication
-  cycle.
+`L0_PLATFORM/zARCHITECTURE.md`
 
-These are architectural responsibilities, not implementation
-details — the how may change freely as long as the published
-contract remains intact (see zARCHITECTURE.md, Interface
-Stability).
+## Canonical Output
 
-## What Gets Published
+The current canonical publication is:
 
-File: data/approved_markets/prediction_markets_latest.csv
+`L2_DOMAINS/prediction_markets/data/canonical/prediction_markets_latest.csv`
 
-Schema (per zARCHITECTURE.md Section 5):
+The publisher is:
 
-publication_id — unique identifier for this publication cycle
-instrument_id — maps to slug
-resolution_id — maps to market_id / conditionId
-instrument_name — maps to question
-tradeability_score — Prediction Markets' scanner-computed score
-category — classifier output
-liquidity — scanner-computed liquidity figure
-volume_24h — scanner-computed 24-hour volume
-spread_pct — scanner-computed spread percentage
-spread_label — scanner-computed spread quality label
-days_left — days remaining until resolution
+`L2_DOMAINS/prediction_markets/publication/publish_canonical_output.py`
 
-## How It Works
+A publication represents the approved Prediction Markets research universe for
+one publication cycle.
 
-publish_canonical_output.py performs four responsibilities only:
-1. Load the latest scanner results.
-2. Load the latest snapshot.
-3. Build the canonical schema (including computing category).
-4. Validate the output before publishing.
+Downstream systems should consume this canonical contract rather than depending
+directly on L2's internal scanner or market-snapshot artifacts.
 
-Structural failures (missing source file, missing required column)
-raise loudly rather than publishing an invalid contract. Per-row
-failures (missing slug, missing market_id) are excluded and
-counted, not silently dropped — every publication reports how many
-instruments were approved by the scanner, how many were published,
-and how many were skipped and why.
+## Canonical Schema
 
-generate_publication_id() is isolated in its own function so the
-identifier strategy can change independently of the publishing
-logic. See zARCHITECTURE.md ADR-006 for why publication_id
-identifies the publication artifact itself, not the underlying
-scanner/snapshot data.
+The publisher currently emits these columns:
 
-## Downstream Consumers
+- `publication_id` — identifier for the publication cycle.
+- `instrument_id` — published instrument identity, currently sourced from slug.
+- `resolution_id` — resolution identity, currently sourced from `market_id`.
+- `instrument_name` — market question.
+- `tradeability_score` — scanner-computed Tradeability Score.
+- `category` — classifier output.
+- `liquidity` — scanner-provided liquidity value.
+- `volume_24h` — scanner-provided 24-hour volume.
+- `spread_pct` — scanner-computed spread percentage.
+- `spread_label` — scanner-computed spread-quality label.
+- `days_left` — days remaining until resolution.
 
-Per zARCHITECTURE.md Section 5, downstream Programs interact with
-this Domain exclusively through the published canonical output —
-never by reading Program A's internal snapshot or scanner files
-directly.
+The implementation in `publish_canonical_output.py` is the executable authority
+for the current schema and validation behavior.
 
-Program B (Market Microstructure Research) is currently the only
-downstream consumer, reading the canonical output directly with no
-joins and no artificial sample-size limit.
+## Publication Flow
 
-## What This Folder Does NOT Do
+`publish_canonical_output.py` performs four primary responsibilities:
 
-- Does not perform research or analysis (see
-  programs/program_a/analysis/).
-- Does not decide Program A's own internal trading logic —
-  paper_trader.py and scanner.py continue to use Program A's own
-  internal snapshot/scanner artifacts directly, per
-  zARCHITECTURE.md Section 5 (internal implementation details
-  rather than the published Domain interface). This is correct
-  architecture, not technical debt — the canonical output exists
-  as the interface for downstream Programs, and Program A is the
-  Domain's own producer, not a downstream consumer of itself.
+1. Load the latest Prediction Markets scanner results.
+2. Load the latest Prediction Markets market snapshot.
+3. Build the canonical schema, including category classification.
+4. Validate the canonical output before publication.
+
+The current source directories are:
+
+`L2_DOMAINS/prediction_markets/data/scanner/`
+
+`L2_DOMAINS/prediction_markets/data/markets/`
+
+## Failure Behavior
+
+Structural failures fail loudly rather than knowingly publishing an invalid
+contract.
+
+Examples include:
+
+- missing required source files;
+- missing required source columns;
+- canonical column mismatch;
+- duplicate `instrument_id` values;
+- duplicate `resolution_id` values.
+
+Per-row publication failures are handled separately. A row missing required
+publication identity such as slug or `market_id` is excluded and counted.
+
+Classification failure does not block publication. The row remains publishable
+with category `Unknown`, and the classification failure is recorded by the
+publisher.
+
+This distinction keeps structural contract failures separate from transparent
+per-row exclusions or classification fallbacks.
+
+## Publication Identity
+
+`publication_id` identifies the publication artifact/cycle rather than the
+underlying market itself.
+
+The identifier is generated independently of the publishing logic so its
+strategy can change without redefining the rest of the canonical contract.
+
+See ADR-006 in:
+
+`L0_PLATFORM/zARCHITECTURE.md`
+
+## Downstream Boundary
+
+The canonical publication is an L2 domain interface.
+
+Current downstream research includes Market Microstructure, whose collectors
+read the canonical Prediction Markets publication rather than L2 internal
+scanner or snapshot files.
+
+This publication boundary is not itself a research engine. It does not own
+downstream hypotheses, research interpretation, paper-trade methodology, or
+execution logic.
+
+Market Selection research belongs under:
+
+`L3_RESEARCH_ENGINES/market_selection/`
+
+Market Microstructure research belongs under:
+
+`L3_RESEARCH_ENGINES/market_microstructure/`
+
+## Scope and Safety
+
+This publication layer:
+
+- publishes research data;
+- validates its canonical contract;
+- exposes approved Prediction Markets instruments to downstream research;
+- contains no wallet or private-key responsibility;
+- performs no live trade execution.
+
+Changes to the canonical schema or producer/consumer boundary are architectural
+changes and require explicit review rather than being treated as local
+documentation or refactoring changes.
+
+## Historical Terminology
+
+Older documentation, logs, and Git history may refer to this producer through
+the former Program A architecture or through pre-L0-L4 paths such as
+`data/approved_markets/`.
+
+Those references may remain valid historical evidence of prior repository
+states. They are not current operating paths or current ownership terminology.
