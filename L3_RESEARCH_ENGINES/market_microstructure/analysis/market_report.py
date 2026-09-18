@@ -1,7 +1,7 @@
 """
-Program B — Market Microstructure Research
+LRS-2 — Market Microstructure Research
 Market History Report
-programs/program_b/analysis/market_report.py
+L3_RESEARCH_ENGINES/market_microstructure/analysis/market_report.py
 
 PURPOSE:
 Consolidate the four Phase 2 modules into one organized, readable
@@ -34,7 +34,7 @@ import sys
 import os
 
 # sys.path.insert is required here because this module imports
-# other Program B modules directly. Modules that only import
+# other LRS-2 modules directly. Modules that only import
 # third-party/stdlib packages do not need this.
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
@@ -71,6 +71,7 @@ def _build_observation_summary(history, slug: str) -> dict:
     obi_count = len(obi_rows)
     near_book_count = len(near_rows)
 
+    # Lexical presentation order only; publication_id is not a chronological key.
     known_snapshots = sorted(history["publication_id"].dropna().unique().tolist())
 
     warning = None
