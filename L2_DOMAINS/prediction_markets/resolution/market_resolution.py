@@ -16,7 +16,7 @@ Resolution states handled explicitly:
 No wallet. No auth. No private key. No execution. Read-only.
 
 Usage (standalone test):
-    python3 analyzers/market_resolution.py
+    python3 L2_DOMAINS/prediction_markets/resolution/market_resolution.py
 """
 
 import json

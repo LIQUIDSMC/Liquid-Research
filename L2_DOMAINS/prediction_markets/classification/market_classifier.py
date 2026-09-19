@@ -27,7 +27,7 @@ This module does not call any API — it only classifies data
 that is passed into it.
 
 Usage (standalone test):
-    python3 analyzers/market_classifier.py
+    python3 L2_DOMAINS/prediction_markets/classification/market_classifier.py
 """
 
 import re

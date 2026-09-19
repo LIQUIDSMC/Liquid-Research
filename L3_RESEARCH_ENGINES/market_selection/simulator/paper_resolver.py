@@ -2,7 +2,7 @@
 Liquid Research — Paper Resolver (Phase 5)
 
 Checks open paper trades against real market resolution status.
-Reuses analyzers/market_resolution.py's already-validated
+Reuses the Prediction Markets resolution module's already-validated
 fetch_market_by_slug() and determine_winning_outcome() — slug-
 first lookup, the confirmed-reliable method. Does NOT invent any
 new resolution logic and does NOT use conditionId lookup as a
@@ -20,7 +20,7 @@ P&L formula (paper only, no real money):
 Read-only. No wallet. No private key. No execution.
 
 Usage:
-    python3 simulator/paper_resolver.py
+    python3 L3_RESEARCH_ENGINES/market_selection/simulator/paper_resolver.py
 """
 
 import sys

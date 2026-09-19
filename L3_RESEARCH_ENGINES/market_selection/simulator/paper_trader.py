@@ -148,7 +148,7 @@ def determine_side(yes_price: Optional[float], no_price: Optional[float]) -> tup
 
 def classify_trade_category(question: str, slug: str, days_left: Optional[float]) -> dict:
     """
-    Reuses analyzers/market_classifier.py directly. No new
+    Reuses the Prediction Markets classifier directly. No new
     classification logic is invented in this file.
 
     Receives:

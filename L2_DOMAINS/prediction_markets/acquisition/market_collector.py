@@ -75,7 +75,7 @@ def fetch_markets(limit: int = MAX_RESULTS, offset: int = 0) -> list[dict]:
 def is_sports_market(question: str, slug: Optional[str] = None, days_left: Optional[float] = None) -> bool:
     """
     Determines whether a market is Sports, using the shared
-    classify_market() function from analyzers/market_classifier.py
+    classify_market() function from the Prediction Markets classifier
     rather than a locally duplicated keyword list. This was the
     root cause of the original desync: market_classifier.py checks
     title+slug combined, while this function previously checked

@@ -99,7 +99,7 @@ def fetch_wallet_trades(wallet_address: str, limit: int = 50) -> list[dict]:
 
 def load_candidate_wallets() -> pd.DataFrame:
     """
-    Load data/wallets/candidate_wallets.csv. MODE 2 ONLY.
+    Load L3_RESEARCH_ENGINES/wallet_intelligence/data/candidate_wallets.csv. MODE 2 ONLY.
 
     Receives:
         Nothing — reads from the filesystem directly.
@@ -112,7 +112,7 @@ def load_candidate_wallets() -> pd.DataFrame:
     if not os.path.exists(CANDIDATE_WALLETS_PATH):
         console.print(
             f"[red]No candidate wallet file found at {CANDIDATE_WALLETS_PATH}. "
-            f"Run analyzers/wallet_discovery.py first.[/red]"
+            f"Run L3_RESEARCH_ENGINES/wallet_intelligence/wallet_discovery.py first.[/red]"
         )
         return pd.DataFrame()
 

@@ -18,7 +18,7 @@ that all pulled trades turn out to be open/unresolved.
 No wallet. No auth. No private key. No execution. Read-only.
 
 Usage:
-    python3 analyzers/test_live_resolution.py
+    python3 L2_DOMAINS/prediction_markets/validation_history/test_live_resolution.py
 """
 
 import requests
