@@ -34,8 +34,9 @@ methodology, experiment state, and operational checkpoints.
 A hypothesis is an untested claim. Implementation is code that has
 been built, tested, and verified against real data, per the
 Research Integrity Principles in `L0_PLATFORM/zROADMAP.md`.
-Everything in this vault is a hypothesis, lead, question, or note,
-text only. No code. No automation. No scanners.
+Material in this vault may be a finding, hypothesis, lead,
+question, note, or archived research state. None of it is
+implementation. No code. No automation. No scanners.
 
 ## Research Integrity Rules
 
