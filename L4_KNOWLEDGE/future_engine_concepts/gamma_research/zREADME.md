@@ -1,8 +1,8 @@
-# Program GEX
+# Gamma Research Engine
 
 **Status: Placeholder. No implementation exists.**
 
-Program GEX is a planned downstream research Program, following the
+Gamma Research Engine (legacy: Program GEX) is a planned downstream research engine, following the
 same Domain/Program relationship established elsewhere in Liquid
 Research (see zARCHITECTURE.md). It does not own market selection
 or raw data collection — it will consume canonical options-chain
@@ -22,14 +22,14 @@ always derived, disposable analytics — never canonical data.
 If and when built, raw options-chain collection (open interest,
 exchange-reported Greeks, contract specs) would live under
 market_data_platform/, since that platform owns venue-agnostic
-canonical ingestion. Program GEX would consume that canonical
-output, the same way Program B consumes the Prediction Markets
+canonical ingestion. Gamma Research Engine would consume that canonical
+output, the same way Market Microstructure (legacy: Program B) consumes the Prediction Markets
 Domain's canonical output today.
 
 ## Current Status
 
 Architecture and placement only — see the design discussion that
 established this placement. No code, no collectors, no adapters,
-no schemas exist for this Program. Not scheduled. Will begin with
+no schemas exist for this engine. Not scheduled. Will begin with
 one real instrument/source when prioritized, generalizing only
 after a second implementation provides real evidence.

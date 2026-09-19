@@ -1,10 +1,10 @@
-# Program GEX — Roadmap
+# Gamma Research Engine — Roadmap
 
 Status: Parked. Not started. No timeline.
 
 ### Phase 0 — Research and Architecture
-Design the canonical options-chain data model and confirm Program
-GEX's boundaries relative to market_data_platform, following the
+Design the canonical options-chain data model and confirm
+Gamma Research Engine's boundaries relative to market_data_platform, following the
 same evidence-first discipline used throughout Liquid Research.
 
 ### Phase 1 — Single-Source Options Ingestion
@@ -17,8 +17,8 @@ canonical data.
 
 ### Phase 3 — Validation and Research
 First real, evidence-based research checkpoint, following the same
-honest, hedged findings discipline already established by Program
-B's checkpoints.
+honest, hedged findings discipline already established by Market Microstructure (legacy: Program
+B) checkpoints.
 
 ### Phase 4 — Multi-Venue Support
 Generalize only after Phase 1-3 provide real evidence from one
