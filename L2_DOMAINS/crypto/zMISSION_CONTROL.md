@@ -74,8 +74,8 @@ No active experiment is currently in flight.
 
 - `zREADME.md` — current Crypto Domain orientation and research boundaries.
 - `zMISSION_CONTROL.md` — current operational and research status.
-- `zROADMAP.md` — Crypto roadmap; described neutrally pending separate
-  current-state reconciliation.
+- `zROADMAP.md` — current roadmap status, with the original roadmap preserved
+  as a superseded historical snapshot.
 - `research/strategy_vision.md` — original research vision and framing.
 - `L1_CORE/market_data_platform/market_data/zROADMAP.md` — shared Market Data
   Platform architecture and implementation record.

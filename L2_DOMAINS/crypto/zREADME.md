@@ -92,15 +92,11 @@ is claimed.
 Primary Crypto Domain documents:
 
 - `zREADME.md` — current domain orientation and navigation.
-- `zMISSION_CONTROL.md` — Crypto Mission Control document; current-state
-  reconciliation pending.
-- `zROADMAP.md` — Crypto roadmap; current-state reconciliation pending.
+- `zMISSION_CONTROL.md` — current operational and research status.
+- `zROADMAP.md` — current roadmap status, with the original roadmap preserved
+  as a superseded historical snapshot.
 - `research/strategy_vision.md` — original research vision and comparison
   framework.
-
-Until `zMISSION_CONTROL.md` and `zROADMAP.md` are reconciled, this README and
-the L1 Market Data Platform roadmap take precedence where those documents
-contain conflicting current-state claims.
 
 ## Historical Research Vision
 
