@@ -1,6 +1,6 @@
 # Market Data Platform — Implementation Roadmap
 
-Status: Phase 0 (foundation) in progress. No collector exists yet.
+**Status:** Foundational collection and canonical-storage infrastructure are operational. The original Phase 0 foundation is complete. Subsequent LRS-3 work established production storage, historical trade- and depth-identity boundaries, and a causal trade-flow research sequence closed through gross-edge v1 and ETH replication v2. Historical depth prior to the established depth research epoch cannot be deterministically reconstructed. ETH LONG Post-Entry Continuation H1 was rejected under the frozen v2 replication design. Cost-stress/economic-feasibility research is not started and remains paused. Earlier phase descriptions below are retained as historical implementation context and should not be interpreted as current project status.
 
 ---
 
@@ -90,13 +90,15 @@ normalization, storage, or gap-detection logic.
 
 ---
 
-## PART 2 — CURRENT IMPLEMENTATION PLAN (Today's Engineering Decisions)
+## PART 2 — IMPLEMENTATION ROADMAP AND HISTORICAL ENGINEERING RECORD
 
-Everything in this section is today's choice, not architectural
-law. It should be revised freely as evidence justifies — without
-needing to revisit Part 1.
+The phase descriptions below preserve the implementation plan and
+engineering state recorded as the platform was built. Status statements
+inside historical checkpoints describe the state when recorded unless
+explicitly superseded by a current-status note. Part 1 remains the
+architectural authority.
 
-### Phase 0 — Single-Exchange Foundation (CURRENT)
+### Phase 0 — Single-Exchange Foundation (COMPLETE — HISTORICAL FOUNDATION)
 
 **Objective:** Prove the full pipeline — connect, capture, validate,
 normalize, store immutably, detect gaps, survive disconnects — for
@@ -138,12 +140,18 @@ sequence gap detection (derived from live evidence after implementation revealed
 implemented, tested, and verified against real Coinbase traffic.
 See git history for the complete record.
 
+**Historical checkpoint — pre-storage state:** The following Phase 0
+checklist preserves the implementation state before persistent canonical
+storage was completed. Statements such as "NOT STARTED," "console only,"
+and "no record has ever been written to disk" describe that checkpoint,
+not the current platform.
+
 Not yet built: persistent storage. All Milestone 3 work currently
 prints to console only — no record has ever been written to disk.
-This is real, remaining Phase 0 scope, not a new requirement (see
+This was remaining Phase 0 scope at this historical checkpoint (see
 Persistent Canonical Storage milestone, below).
 
-**Success criteria — Functional:**
+**Success criteria — Functional (historical pre-storage checkpoint):**
 - Live WebSocket connection to the exchange, maintained correctly.
   COMPLETE (Milestone 3).
 - Every event is validated before storage; malformed events are
@@ -167,7 +175,7 @@ Persistent Canonical Storage milestone, below).
   console logging; persistent, on-disk gap logging NOT STARTED —
   see Persistent Canonical Storage milestone, below.
 
-**Success criteria — Operational:**
+**Success criteria — Operational (historical Phase 0 checkpoint):**
 - The collector automatically reconnects on drop and resumes
   streaming without manual intervention. COMPLETE (Milestone 3),
   verified against a real forced disconnect. Currently resumes
@@ -206,14 +214,14 @@ Persistent Canonical Storage milestone, below).
 - Storage growth outpacing rotation/partition assumptions before
   they're proven correct at real volume.
 
-**Explicitly NOT built in this phase:**
+**Explicitly NOT built in this phase (historical Phase 0 scope):**
 - No order book reconstruction.
 - No OBI, spread, or any derived metric.
 - No second exchange or adapter.
 - No research dataset builder.
 - No Program or Domain code reads from this pipeline yet.
 
-### Persistent Canonical Storage — Implementation Complete, Operational Validation Ongoing
+### Persistent Canonical Storage — COMPLETE
 
 **Objective:** Persist the already-validated, already-tested
 canonical TradeRecord and DepthLevelRecord objects (Milestone 3)
@@ -295,33 +303,35 @@ test. Phase 0's Operational success criteria are now fully satisfied
 by real evidence, closing the item previously listed here as
 remaining.
 
-**Known operating constraint — Pi memory headroom:** During the
+**Historical deployment evidence — Pi 3 memory headroom:** During the
 soak test, system-wide free memory on the Pi ran low (~81MiB free,
 ~51MiB in swap, out of ~905MiB total), while the collector process's
 own memory (RSS) remained stable (~137-140MiB, no evidence of a
 leak). This is not a collector defect and did not cause the soak
-test to fail, but it is a real, documented constraint: the Pi 3 has
-limited headroom and should not casually absorb additional major
-workloads. Given the Pi 3's observed resource limits during the
+test to fail, but it is a real, documented constraint: the Pi 3 had
+limited headroom at that checkpoint and was not to casually absorb
+additional major workloads. Given the Pi 3's observed resource limits during the
 soak test, Program A/B automation (the orchestrator, built
-2026-07-21) currently remains on the Mac rather than being moved
-onto the Pi. This is the present operating architecture based on
-today's evidence and may be revisited if future hardware or
-operational evidence justifies a different deployment.
+2026-07-21) remained on the Mac rather than being moved onto the Pi.
+This records the operating architecture at that historical checkpoint;
+it is not current deployment authority.
 
-**Next operational priority — storage capacity and data layout:**
+**Historical storage-planning checkpoint:**
 The soak test's real growth rate (~1.5GB and ~189,000 files in ~24
-hours) makes storage planning a real, near-term priority rather than
-a hypothetical future concern. Before any storage migration or
-layout change, determine the true daily growth rate from further
-real runs; project 7-day, 30-day, 90-day, and 1-year usage; evaluate
-whether the file count is sustainable on the current SD-card-based
-filesystem or warrants compaction, different partitioning, or
-external storage (e.g. an SSD); and preserve all currently collected
-data safely before making any such change. Not started as of this
-writing.
+hours) made storage planning a real, near-term priority rather than a
+hypothetical future concern. The plan recorded at that checkpoint was:
+before any storage migration or layout change, determine the true daily
+growth rate from further real runs; project 7-day, 30-day, 90-day, and
+1-year usage; evaluate whether the file count was sustainable on the
+then-current SD-card-based filesystem or warranted compaction, different
+partitioning, or external storage (e.g. an SSD); and preserve all
+collected data safely before making any such change. That work had not
+been started as of that checkpoint. The platform has since moved to
+SSD-backed canonical storage; current production storage uses the
+fail-closed canonical root
+`/mnt/lrs001/data/market_data_platform/canonical`.
 
-**Evidence required to move to Phase 1:** A sustained unattended
+**Historical evidence required to move beyond Phase 0:** A sustained unattended
 soak run (multi-hour or longer) confirming long-duration stability,
 together with real accumulated canonical data on disk, so the
 results remain independently verifiable after the run rather than
@@ -329,9 +339,18 @@ existing only as live observations.
 
 ---
 
-### Phase 1 — Reconstruction Layer (NOT STARTED, BLOCKED ON PHASE 0)
+### Phase 1 — Reconstruction Layer (SUPERSEDED / CONSTRAINED BY HISTORICAL-DEPTH EVIDENCE)
 
-**Objective:** Build reconstruction of order book state from the
+**Current status:** The original reconstruction plan encountered an
+evidence boundary rather than completing as originally envisioned.
+Historical trade identity was deterministically reconstructed, while
+historical depth identity could not be deterministically reconstructed.
+Depth research therefore has an established epoch boundary at
+2026-08-20 01:09:15 PDT. Order-book state prior to that epoch cannot
+be deterministically recreated, and no full historical order-book
+reconstruction is claimed.
+
+**Original objective:** Build reconstruction of order book state from the
 canonical event history — the first downstream consumer proving
 the architectural invariant in practice, not just in principle.
 This roadmap does not prescribe one reconstruction representation
@@ -370,13 +389,24 @@ against independent ground truth.
 
 ---
 
-### Phase 2 — First Research Question (NOT STARTED, BLOCKED ON PHASE 1)
+### Phase 2 — First Research Question (SUPERSEDED BY CAUSAL TRADE-FLOW RESEARCH — CLOSED THROUGH GROSS-EDGE V1 AND ETH REPLICATION V2)
 
-**Objective:** Ask one real research question using reconstructed
+**Current status:** Research proceeded beyond this original planning
+checkpoint through the causal trade-flow research sequence, including
+expanded validation, causal thresholds, duplicate-ID research dedup,
+delayed-canonicalization/actionability work, arithmetic-fork validation,
+Delta-sensitivity, gross-edge v1, and ETH replication v2. Gross-edge v1
+is closed. Under the frozen v2 replication design, the specific ETH LONG
+Post-Entry Continuation H1 was rejected on independent replication.
+Cost-stress/economic-feasibility research has not started and remains
+paused. These findings do not establish economic viability and do not
+generalize the rejected H1 to all trade-flow hypotheses.
+
+**Original objective:** Ask one real research question using reconstructed
 data, testing whether this pipeline produces genuine research
 value, not just correct infrastructure.
 
-**Current implementation candidate:** OBI, given Program B's proven
+**Historical implementation candidate (as recorded when planned):** OBI, given Program B's proven
 methodology on Polymarket — a candidate, not a commitment. This
 phase itself should confirm or challenge whether OBI is actually
 the right first question for crypto order books.
@@ -409,12 +439,19 @@ valid evidence.
 
 ---
 
-### Phase 3 — Second Adapter (NOT STARTED, BLOCKED ON PHASE 2)
+### Phase 3 — Second Adapter (PARKED — REQUIRES EXPLICIT JUSTIFICATION)
 
 **Objective:** Add a second exchange adapter to prove the
 extensibility designed into Phase 0.
 
-**Why this phase depends on Phase 2:** Cross-exchange infrastructure should be justified by demonstrated research needs rather than built speculatively. Phase 2 provides that evidence.
+**Current status:** No second exchange adapter is documented or
+established by current evidence. This phase is parked: additional
+exchange infrastructure would require an explicit, evidence-backed
+research or infrastructure justification before work begins.
+
+**Original dependency rationale:** Cross-exchange infrastructure should
+be justified by demonstrated research needs rather than built
+speculatively.
 
 **Why this phase exists:** This is the real test of "adding a new
 venue should feel like plugging in an adapter." If it doesn't,
@@ -422,7 +459,7 @@ Phase 0's architecture wasn't as venue-agnostic as intended — real,
 valuable evidence to have before a third or fourth adapter is
 attempted.
 
-**Dependencies:** Phase 2 producing a real reason to want
+**Dependencies:** An explicit, evidence-backed reason to require
 cross-exchange data.
 
 **Success criteria:** Second adapter built without modifying the
@@ -440,10 +477,10 @@ what shared-layer assumption broke and why.
 
 ## What This Roadmap Deliberately Does Not Commit To
 
-- Which exchange comes second — decided later, with evidence.
-- Which research question comes first in Phase 2 — OBI is a
-  candidate, not a commitment.
-- Any timeline beyond Phase 0.
+- Whether a second exchange is added, and if so which — decided later, with evidence.
+- Whether, or which, future research question follows the causal
+  trade-flow sequence closed through gross-edge v1 and ETH replication v2.
+- Any fixed timeline for future phases.
 - That this platform will only ever serve the Crypto Domain — it is
   intentionally venue-agnostic infrastructure.
 - Any specific storage format, field name, or exchange choice as
