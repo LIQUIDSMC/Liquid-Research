@@ -1,0 +1,22 @@
+{
+  "frozen_dates": 9,
+  "structural_pass_dates": 9,
+  "structural_fail_dates": 0,
+  "early_frozen": 5,
+  "late_frozen": 4,
+  "early_pass": 5,
+  "late_pass": 4,
+  "pass_dates": [
+    "2026-08-01",
+    "2026-08-03",
+    "2026-08-05",
+    "2026-08-07",
+    "2026-08-09",
+    "2026-08-26",
+    "2026-08-28",
+    "2026-08-29",
+    "2026-08-30"
+  ],
+  "fail_dates": [],
+  "failure_reasons": {}
+}

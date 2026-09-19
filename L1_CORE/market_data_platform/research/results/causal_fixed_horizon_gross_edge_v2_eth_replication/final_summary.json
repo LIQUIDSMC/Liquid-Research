@@ -1,0 +1,56 @@
+[
+  {
+    "instrument": "ETH-USD",
+    "date": "2026-08-01",
+    "status": "PASS",
+    "threshold_environment": "EARLY"
+  },
+  {
+    "instrument": "ETH-USD",
+    "date": "2026-08-03",
+    "status": "PASS",
+    "threshold_environment": "EARLY"
+  },
+  {
+    "instrument": "ETH-USD",
+    "date": "2026-08-05",
+    "status": "PASS",
+    "threshold_environment": "EARLY"
+  },
+  {
+    "instrument": "ETH-USD",
+    "date": "2026-08-07",
+    "status": "PASS",
+    "threshold_environment": "EARLY"
+  },
+  {
+    "instrument": "ETH-USD",
+    "date": "2026-08-09",
+    "status": "PASS",
+    "threshold_environment": "EARLY"
+  },
+  {
+    "instrument": "ETH-USD",
+    "date": "2026-08-26",
+    "status": "PASS",
+    "threshold_environment": "LATE"
+  },
+  {
+    "instrument": "ETH-USD",
+    "date": "2026-08-28",
+    "status": "PASS",
+    "threshold_environment": "LATE"
+  },
+  {
+    "instrument": "ETH-USD",
+    "date": "2026-08-29",
+    "status": "PASS",
+    "threshold_environment": "LATE"
+  },
+  {
+    "instrument": "ETH-USD",
+    "date": "2026-08-30",
+    "status": "PASS",
+    "threshold_environment": "LATE"
+  }
+]
