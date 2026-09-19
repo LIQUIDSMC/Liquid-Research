@@ -1,5 +1,54 @@
 # Crypto Domain — Roadmap
 
+> This document records the current roadmap state for L2 Crypto.
+> See `zMISSION_CONTROL.md` for detailed operational and research status,
+> `zREADME.md` for Crypto orientation and boundaries, and
+> `L1_CORE/market_data_platform/market_data/zROADMAP.md` for shared
+> Market Data Platform authority.
+
+Last updated: 2026-09-18
+Research state anchored to closure baseline: `a622e42`
+
+## Roadmap Status
+
+### Completed
+
+- Shared L1 Coinbase BTC-USD and ETH-USD collection and canonical storage are
+  operational.
+- The causal trade-flow research sequence is closed through fixed-horizon
+  gross-edge v1 and ETH replication v2 at baseline `a622e42`. The specific
+  ETH LONG Post-Entry Continuation H1 was rejected under the frozen v2 design;
+  `zMISSION_CONTROL.md` records the scope of that result.
+
+### Paused
+
+- Cost-stress/economic-feasibility research is NOT STARTED / PAUSED.
+
+### Open
+
+- No next research experiment is selected or authorized by this document.
+
+This roadmap does not commit to a timeline or to specific future deliverables.
+
+Detailed current limitations and evidence boundaries are maintained in
+`zMISSION_CONTROL.md`.
+
+## Historical Roadmap Snapshot — SUPERSEDED
+
+The original roadmap is preserved verbatim below as historical planning
+evidence from the pre-migration layout recorded at `a930f37`.
+
+Its phases, filenames, priorities, candidate venues, Program references,
+cross-references, and implementation state are historical. Filenames such as
+`README.md` and `MISSION_CONTROL.md` predate the current `z` prefixes.
+Cross-references inside the snapshot resolve to the corresponding historical
+state of those documents.
+
+Nothing below this heading represents current status, sequencing, or
+authorization.
+
+# Crypto Domain — Roadmap
+
 Status: Phase 0 in progress. No implementation exists.
 
 This roadmap is intentionally shallow right now. It exists to give
