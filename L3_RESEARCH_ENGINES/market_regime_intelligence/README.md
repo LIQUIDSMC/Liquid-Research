@@ -80,15 +80,14 @@ the current v2 methodology.
 
 ## Documentation Map
 
-`LRS4_Experiment_v1_Pre-Inference_Freeze.md` currently contains both:
+`LRS4_Experiment_v1_Pre-Inference_Freeze.md` contains the canonical frozen
+Experiment-v1 research-design record and its preserved post-freeze Gate-2
+specification-omission history.
 
-1. the canonical frozen Experiment-v1 research-design record and its post-freeze
-   Gate-2 omission history; and
-2. the current Experiment-v2 pre-inference methodology revision.
+`LRS4_Experiment_v2_Pre-Inference_Methodology.md` contains the current
+Experiment-v2 pre-inference methodology revision. It remains **DRAFT /
+OUTCOME-BLIND / NOT FROZEN / IMPLEMENTATION NOT AUTHORIZED**.
 
-The v2 material in that document remains **DRAFT / OUTCOME-BLIND / NOT FROZEN /
-IMPLEMENTATION NOT AUTHORIZED**.
-
-A future controlled documentation migration may separate v2 authority from the
-v1 freeze record. Until that migration is explicitly completed, the existing
-experiment document remains the source for both records.
+The v1 and v2 authority records are maintained separately so that the frozen
+Experiment-v1 historical specification is not retroactively rewritten by the
+current Experiment-v2 methodology revision.
