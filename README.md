@@ -6,7 +6,7 @@ The repository combines data engineering, research infrastructure, market-domain
 
 > **Status:** Active research and engineering project. Liquid Research is not a live trading system and does not claim a validated profitable strategy.
 
-## Architecture
+## [Architecture](L0_PLATFORM/zARCHITECTURE.md)
 
 Liquid Research uses an ownership-based L0-L4 structure:
 
@@ -22,19 +22,19 @@ The architecture separates **data/domain ownership** from **research-engine owne
 
 ## Current Research Systems
 
-### Market Selection
+### [Market Selection](L3_RESEARCH_ENGINES/market_selection/zMISSION_CONTROL.md)
 
 Prediction-market selection and paper-research infrastructure for studying whether measurable market characteristics are associated with different outcomes.
 
-### Market Microstructure
+### [Market Microstructure](L3_RESEARCH_ENGINES/market_microstructure/zREADME.md)
 
 Order-book research including Order Book Imbalance, Micro-Price, Near-Book Depth Imbalance, divergence analysis, and stability tracking.
 
-### Market Data / Crypto Trade Flow
+### [Market Data / Crypto Trade Flow](L2_DOMAINS/crypto/zREADME.md)
 
 Shared market-data infrastructure plus crypto trade-flow research using Coinbase BTC-USD and ETH-USD data. Work includes trade and depth collection, instrument-identity validation, causal data-boundary design, duplicate-event analysis, and reproducible historical experiments.
 
-### Market Regimes
+### [Market Regimes](L3_RESEARCH_ENGINES/market_regime_intelligence/README.md)
 
 An independent regime-research engine studying whether pre-defined market states provide useful explanatory or conditioning information. Methodology changes are controlled through explicit freeze and supersession rules before outcome-dependent analysis is authorized.
 
@@ -83,7 +83,7 @@ Liquid Research/
 │   └── prediction_markets/
 ├── L3_RESEARCH_ENGINES/
 │   ├── market_microstructure/
-│   ├── market_regime/
+│   ├── market_regime_intelligence/
 │   ├── market_selection/
 │   └── wallet_intelligence/
 └── L4_KNOWLEDGE/
