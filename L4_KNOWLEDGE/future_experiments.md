@@ -80,7 +80,7 @@ Status: Unreviewed — the only experiment in this batch with no infrastructure 
 ---
 
 NOTE — Status update for Order Book Imbalance experiment (above):
-Reviewed and promoted to Program B (2026-07-03). Status changed from "Unreviewed" to "Promoted — Program B." No longer a future experiment — now an active queued research program. See programs/program_b/README.md and zROADMAP.md.
+Reviewed and promoted to Program B (2026-07-03). Status changed from "Unreviewed" to "Promoted — Program B." No longer a future experiment — now an active queued research program. See L3_RESEARCH_ENGINES/market_microstructure/zREADME.md and zPROGRAM_ROADMAP.md.
 
 ---
 

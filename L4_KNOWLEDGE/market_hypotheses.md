@@ -79,4 +79,4 @@ Status: Unreviewed — blocked on Phase 3 resolved-trade-data gap. Promoted from
 ---
 
 NOTE — Status update for Order Book Imbalance / Micro-Price hypothesis (above):
-The OBI hypothesis has been reviewed and promoted to Program B (active research program). Status changed from "Unreviewed" to "Promoted — Program B (2026-07-03)." See programs/program_b/README.md and zROADMAP.md for current program status.
+The OBI hypothesis has been reviewed and promoted to Program B (active research program). Status changed from "Unreviewed" to "Promoted — Program B (2026-07-03)." See L3_RESEARCH_ENGINES/market_microstructure/zREADME.md and zPROGRAM_ROADMAP.md for current program status.
