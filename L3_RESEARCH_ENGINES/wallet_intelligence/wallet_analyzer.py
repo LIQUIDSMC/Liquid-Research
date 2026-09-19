@@ -32,7 +32,7 @@ No wallet connection. No private key. No execution. No scoring.
 No rankings. No leaderboard. No dashboard. Read-only.
 
 Usage:
-    python3 analyzers/wallet_analyzer.py
+    python3 L3_RESEARCH_ENGINES/wallet_intelligence/wallet_analyzer.py
 """
 
 import requests

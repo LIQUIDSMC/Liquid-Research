@@ -14,25 +14,28 @@ not a backlog.
 
 ## Roadmap vs. Research Vault
 
-zROADMAP.md is approved, scoped, scheduled engineering work.
-research/ is unreviewed or partially-reviewed material that has
-not earned a place on the roadmap, and may never.
+`L0_PLATFORM/zROADMAP.md` is the canonical portfolio roadmap. It
+governs portfolio-level priorities and promotion decisions.
 
-An idea moves from research/ to zROADMAP.md only after deliberate
-review and an explicit decision, never automatically.
+`L4_KNOWLEDGE/` is the shared Research Vault for unreviewed or
+partially reviewed ideas, hypotheses, observations, questions,
+archived research state, and future concepts.
 
-zROADMAP.md governance is unchanged by this vault. Roadmap is
-future work only. Git history is completed work. Completed
-patches are never added to the roadmap. The roadmap is never used
-as a changelog.
+Material moves from the Research Vault into active portfolio or
+engine work only after deliberate review and an explicit promotion
+decision, never automatically.
+
+The roadmap is not a changelog. Git history records completed work,
+while engine- and domain-specific documents record detailed
+methodology, experiment state, and operational checkpoints.
 
 ## Implementation vs. Hypothesis
 
 A hypothesis is an untested claim. Implementation is code that has
 been built, tested, and verified against real data, per the
-Research Integrity Principles in zROADMAP.md. Everything in this
-vault is a hypothesis, lead, question, or note, text only. No
-code. No automation. No scanners.
+Research Integrity Principles in `L0_PLATFORM/zROADMAP.md`.
+Everything in this vault is a hypothesis, lead, question, or note,
+text only. No code. No automation. No scanners.
 
 ## Research Integrity Rules
 

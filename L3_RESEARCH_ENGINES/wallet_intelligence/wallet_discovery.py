@@ -21,7 +21,7 @@ The 'market' parameter expects the conditionId HASH, not the slug.
 No wallet connection. No private key. No execution. Read-only.
 
 Usage:
-    python3 analyzers/wallet_discovery.py
+    python3 L3_RESEARCH_ENGINES/wallet_intelligence/wallet_discovery.py
 """
 
 import requests
