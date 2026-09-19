@@ -1,7 +1,12 @@
 # Trade-Flow Imbalance Exploration (BTC/ETH)
 
-Status: EXPLORATORY — not part of the official Crypto Domain roadmap.
-No conclusions reached. Hypothesis-generating only.
+Historical checkpoint: this is the original exploratory screen, first committed
+in `c38ffbc`. At this checkpoint, the work was exploratory, hypothesis-generating
+only, and not part of the official Crypto Domain roadmap. No conclusion had been
+reached. It predates the later causal trade-flow research sequence.
+
+For current LRS-3 research status and evidence boundaries, see
+`L2_DOMAINS/crypto/zMISSION_CONTROL.md`.
 
 ## Question
 Does aggressive trade-flow imbalance (10s trailing window, signed by
@@ -47,8 +52,10 @@ sample), so these are not three independent confirmations.
 - No out-of-sample validation.
 - Not yet tested for leakage/overfitting.
 
-## Status / next steps (not yet started)
-- More instrument-days needed before any real conclusion.
-- Formal Crypto Domain Phase 1 (per zROADMAP.md) has not begun; this
-  work exists outside that official sequence.
-- No production/methodology changes made based on this exploration.
+## Historical Next Steps at This Checkpoint
+At the time of this exploration:
+- More instrument-days were needed before any real conclusion.
+- Formal Crypto Domain Phase 1 (per the Crypto roadmap as then recorded,
+  preserved in the superseded snapshot in `L2_DOMAINS/crypto/zROADMAP.md`) had
+  not begun; this work existed outside that official sequence.
+- No production or methodology changes were made based on this exploration.
