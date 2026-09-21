@@ -32,13 +32,15 @@ import asyncio
 import json
 import ssl
 import time
+import uuid
 import certifi
 from websockets.asyncio.client import connect
 from websockets.exceptions import ConnectionClosed
 
-from L1_CORE.market_data_platform.market_data.adapters.coinbase import parse_market_trades_message, parse_level2_message
+from L1_CORE.market_data_platform.market_data.adapters.coinbase import parse_market_trades_message, parse_level2_message, iso8601_to_epoch_millis
 from L1_CORE.market_data_platform.market_data.buffer import RecordBuffer
 from L1_CORE.market_data_platform.market_data.storage import write_trade_records, write_depth_level_records, partition_date_utc, verify_canonical_root_or_raise
+from L1_CORE.market_data_platform.market_data.telemetry import Telemetry
 
 COINBASE_WS_URL = "wss://advanced-trade-ws.coinbase.com"
 
@@ -59,6 +61,10 @@ LEVEL2_SUBSCRIBE_MESSAGE = {
 # (a known macOS framework-Python issue), causing
 # SSLCertVerificationError even for legitimately-signed sites.
 SSL_CONTEXT = ssl.create_default_context(cafile=certifi.where())
+
+# F2 telemetry emission thresholds (preregistered diagnostics, not cutoffs).
+LOOP_GAP_EMIT_NS = 500_000_000
+BIG_MSG_ROWS = 5000
 
 
 class SequenceGapTracker:
@@ -169,7 +175,8 @@ def _flush_if_due_or_nonempty(buffer: RecordBuffer, label: str) -> None:
     )
 
 
-def _flush_if_due(buffer: RecordBuffer, label: str) -> None:
+def _flush_if_due(buffer: RecordBuffer, label: str, telemetry=None,
+                  trigger_session=None, trigger_seq=None):
     """
     Flush the given buffer if it's due (count or time threshold
     reached), printing a summary of what was persisted. Persistence
@@ -184,12 +191,26 @@ def _flush_if_due(buffer: RecordBuffer, label: str) -> None:
         label (str): "trade" or "depth", for the summary message.
     """
     if not buffer.is_due_for_flush():
-        return
-    result = buffer.flush()
+        return None
+    rows_pending = len(buffer.records)
+    t4 = time.monotonic_ns()
+    try:
+        result = buffer.flush()
+    except Exception as exc:
+        t5 = time.monotonic_ns()
+        if telemetry is not None:
+            telemetry.flush_record(trigger_session, label, rows_pending, trigger_seq,
+                                   t4, t5, False, None, type(exc).__name__)
+        raise
+    t5 = time.monotonic_ns()
     print(
         f"Flushed {label} buffer: {result.records_persisted} record(s) "
         f"persisted across {len(result.files_written)} file(s): {result.files_written}"
     )
+    if telemetry is not None:
+        telemetry.flush_record(trigger_session, label, rows_pending, trigger_seq,
+                               t4, t5, True, len(result.files_written), None)
+    return t5
 
 
 async def _stream_messages(
@@ -197,6 +218,7 @@ async def _stream_messages(
     trade_buffer: RecordBuffer,
     depth_buffer: RecordBuffer,
     receive_timeout_seconds: float = 1.0,
+    telemetry=None,
 ) -> None:
     """
     The real, production message receive loop: waits for a message
@@ -230,39 +252,106 @@ async def _stream_messages(
         reconnect. Also propagates any exception from a buffer
         flush — persistence failure is structural.
     """
+    tel = telemetry if telemetry is not None else Telemetry.disabled()
     gap_tracker = SequenceGapTracker()
+    session_id = str(uuid.uuid4())
+    tel.session_start(session_id)
+    prev_t0 = None
+    prev_seq = None
+    last_seq = None
+    prev_end = time.monotonic_ns()
+    reason = "returned"
 
-    while True:
+    try:
+        while True:
+            try:
+                raw_message = await asyncio.wait_for(websocket.recv(), timeout=receive_timeout_seconds)
+            except asyncio.TimeoutError:
+                # No message arrived within the timeout — this is the
+                # only way a time-based flush can happen during a quiet
+                # feed, since a blocking `async for` would never return
+                # control here otherwise.
+                e1 = _flush_if_due(trade_buffer, "trade", tel, session_id, last_seq)
+                e2 = _flush_if_due(depth_buffer, "depth", tel, session_id, last_seq)
+                ends = [x for x in (e1, e2) if x is not None]
+                if ends:
+                    prev_end = max(ends)
+                continue
+
+            t0 = time.monotonic_ns()
+            wall0 = time.time_ns()
+            timestamp_received = int(time.time() * 1000)
+            message = json.loads(raw_message)
+            t1 = time.monotonic_ns()
+            channel = message.get("channel")
+            seq = message.get("sequence_num")
+
+            gap_tracker.check(message.get("sequence_num"))
+
+            if prev_t0 is not None and (t0 - prev_t0) >= LOOP_GAP_EMIT_NS:
+                tel.loop_gap(session_id, seq, prev_seq, (t0 - prev_t0) / 1e6, prev_end, t0)
+            prev_t0, prev_seq, last_seq = t0, seq, seq
+            msg_prev_end = prev_end
+
+            big = None
+            if channel == "market_trades":
+                records = parse_market_trades_message(message, timestamp_received)
+                for record in records:
+                    trade_buffer.add(record)
+                t3 = time.monotonic_ns()
+                e = _flush_if_due(trade_buffer, "trade", tel, session_id, seq)
+                end = e if e is not None else t3
+            elif channel == "l2_data":
+                records = parse_level2_message(message, timestamp_received)
+                t2 = time.monotonic_ns()
+                for record in records:
+                    depth_buffer.add(record)
+                t3 = time.monotonic_ns()
+                if tel.enabled:
+                    big = (records, t2, t3)
+                e = _flush_if_due(depth_buffer, "depth", tel, session_id, seq)
+                end = e if e is not None else t3
+            else:
+                end = time.monotonic_ns()
+
+            # end (t3 or t5) was captured above, before any telemetry write.
+            if big is not None:
+                _emit_big_msg(tel, message, big[0], session_id, seq, raw_message,
+                              wall0, t0, t1, big[1], big[2], msg_prev_end)
+            prev_end = end
+    except BaseException as exc:
+        reason = type(exc).__name__
+        raise
+    finally:
+        tel.session_end(session_id, reason)
+
+
+def _emit_big_msg(tel, message, records, session_id, seq, raw_message,
+                  wall0, t0, t1, t2, t3, prev_end) -> None:
+    # F2 telemetry only: record every snapshot and any message parsing to
+    # >= BIG_MSG_ROWS rows. Never raises into the collector.
+    try:
+        events = [e for e in (message.get("events") or []) if isinstance(e, dict)]
+        types = [e.get("type") for e in events]
+        if "snapshot" not in types and len(records) < BIG_MSG_ROWS:
+            return
+        src_ts = message.get("timestamp")
         try:
-            raw_message = await asyncio.wait_for(websocket.recv(), timeout=receive_timeout_seconds)
-        except asyncio.TimeoutError:
-            # No message arrived within the timeout — this is the
-            # only way a time-based flush can happen during a quiet
-            # feed, since a blocking `async for` would never return
-            # control here otherwise.
-            _flush_if_due(trade_buffer, "trade")
-            _flush_if_due(depth_buffer, "depth")
-            continue
-
-        timestamp_received = int(time.time() * 1000)
-        message = json.loads(raw_message)
-        channel = message.get("channel")
-
-        gap_tracker.check(message.get("sequence_num"))
-
-        if channel == "market_trades":
-            records = parse_market_trades_message(message, timestamp_received)
-            for record in records:
-                trade_buffer.add(record)
-            _flush_if_due(trade_buffer, "trade")
-        elif channel == "l2_data":
-            records = parse_level2_message(message, timestamp_received)
-            for record in records:
-                depth_buffer.add(record)
-            _flush_if_due(depth_buffer, "depth")
+            lag = wall0 // 1_000_000 - iso8601_to_epoch_millis(src_ts)
+        except Exception:
+            lag = None
+        tel.big_msg(session_id=session_id, seq=seq, channel=message.get("channel"),
+                    event_type=",".join(str(t) for t in types),
+                    product_id=events[0].get("product_id") if events else None,
+                    n_rows=len(records), msg_chars=len(raw_message),
+                    source_timestamp=src_ts, recv_wall_ns=wall0,
+                    source_timestamp_to_recv_ms=lag,
+                    t0=t0, t1=t1, t2=t2, t3=t3, prev_end=prev_end)
+    except Exception as exc:
+        tel._on_failure(exc)
 
 
-async def _connect_and_stream(trade_buffer: RecordBuffer, depth_buffer: RecordBuffer) -> None:
+async def _connect_and_stream(trade_buffer: RecordBuffer, depth_buffer: RecordBuffer, telemetry=None) -> None:
     """
     Perform a single connection attempt: connect, subscribe, and
     stream messages until the connection drops or the process is
@@ -289,7 +378,7 @@ async def _connect_and_stream(trade_buffer: RecordBuffer, depth_buffer: RecordBu
         await websocket.send(json.dumps(SUBSCRIBE_MESSAGE))
         await websocket.send(json.dumps(LEVEL2_SUBSCRIBE_MESSAGE))
         print("Connected and subscribed. Buffering parsed records for persistence (Ctrl+C to stop):\n")
-        await _stream_messages(websocket, trade_buffer, depth_buffer)
+        await _stream_messages(websocket, trade_buffer, depth_buffer, telemetry=telemetry)
 
 
 async def run() -> None:
@@ -326,6 +415,8 @@ async def run() -> None:
 
     reconnect_delay_seconds = 3
 
+    telemetry = Telemetry.from_env()
+
     trade_buffer = RecordBuffer(
         write_function=write_trade_records,
         partition_date_function=partition_date_utc,
@@ -338,7 +429,7 @@ async def run() -> None:
     try:
         while True:
             try:
-                await _connect_and_stream(trade_buffer, depth_buffer)
+                await _connect_and_stream(trade_buffer, depth_buffer, telemetry)
                 print("\nConnection ended (remote side closed cleanly).")
             except (ConnectionClosed, OSError) as e:
                 print(f"\nConnection lost: {e}")
@@ -357,6 +448,8 @@ async def run() -> None:
         except Exception as e:
             print(f"ERROR: final shutdown flush failed: {e}")
             raise
+        finally:
+            telemetry.close()
 
 
 if __name__ == "__main__":
