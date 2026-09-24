@@ -239,7 +239,7 @@ def test_pending_records_can_be_flushed_for_shutdown():
 
     assert result.records_persisted == 1
     assert buf.records == []
-    print("PASS: manually calling flush() persists all pending records (does not test collector.py's actual shutdown path — not yet integrated)")
+    print("PASS: manually calling flush() persists all pending records (RecordBuffer synchronous flush contract only; F3 production shutdown is covered separately through collector.run())")
 
 
 def test_successful_flush_resets_last_flush_time():
@@ -262,6 +262,108 @@ def test_successful_flush_resets_last_flush_time():
     print("PASS: successful flush correctly resets last_flush_time to the current clock value")
 
 
+def test_detach_transfers_exact_list_ownership():
+    clock = FakeClock(start=5.0)
+    writer = FakeWriter()
+    buf = RecordBuffer(
+        writer,
+        _fake_partition_date,
+        count_threshold=2,
+        max_interval_seconds=10.0,
+        clock=clock,
+    )
+
+    buf.add(FakeRecord(1_000_000_000_000, "a"))
+    buf.add(FakeRecord(1_000_000_000_000, "b"))
+
+    original_records = buf.records
+    detached = buf.detach_for_persistence()
+
+    assert detached is original_records, "Detach must transfer the exact active list object"
+    assert [r.label for r in detached] == ["a", "b"]
+    assert buf.records == []
+    assert buf.records is not detached, "Ingestion must receive a fresh active list"
+
+    buf.add(FakeRecord(1_000_000_000_000, "new"))
+
+    assert [r.label for r in detached] == ["a", "b"]
+    assert [r.label for r in buf.records] == ["new"]
+
+    print("PASS: detach transfers exact list ownership and ingestion continues on a fresh list")
+
+
+def test_detach_preserves_oversized_complete_message_batch():
+    clock = FakeClock()
+    writer = FakeWriter()
+    buf = RecordBuffer(
+        writer,
+        _fake_partition_date,
+        count_threshold=2,
+        max_interval_seconds=100.0,
+        clock=clock,
+    )
+
+    complete_message_records = [
+        FakeRecord(1_000_000_000_000, "a"),
+        FakeRecord(1_000_000_000_000, "b"),
+        FakeRecord(1_000_000_000_000, "c"),
+        FakeRecord(1_000_000_000_000, "d"),
+        FakeRecord(1_000_000_000_000, "e"),
+    ]
+
+    # Production parsing returns the complete exchange message first;
+    # collector ingestion then adds those records to the active buffer.
+    for record in complete_message_records:
+        buf.add(record)
+
+    assert buf.is_due_for_flush()
+    detached = buf.detach_for_persistence()
+
+    assert detached == complete_message_records
+    assert len(detached) == 5
+    assert buf.records == []
+
+    print("PASS: detach preserves an oversized complete-message batch without threshold splitting")
+
+
+def test_async_handoff_clock_is_independent_from_successful_flush_clock():
+    clock = FakeClock(start=10.0)
+    writer = FakeWriter()
+    buf = RecordBuffer(
+        writer,
+        _fake_partition_date,
+        count_threshold=1000,
+        max_interval_seconds=10.0,
+        clock=clock,
+    )
+
+    original_successful_flush_time = buf.last_flush_time
+
+    buf.add(FakeRecord(1_000_000_000_000, "a"))
+    clock.advance(10.5)
+
+    assert buf.is_due_for_flush()
+
+    detached = buf.detach_for_persistence()
+
+    assert len(detached) == 1
+    assert buf.last_flush_time == original_successful_flush_time, (
+        "Async handoff must not falsely advance the successful-persistence clock"
+    )
+    assert buf.last_handoff_time == clock(), (
+        "Async handoff must advance its own batching clock"
+    )
+
+    buf.add(FakeRecord(1_000_000_000_000, "new"))
+    assert not buf.is_due_for_handoff(), (
+        "New records must not become immediately time-due after a successful handoff"
+    )
+
+    clock.advance(10.5)
+    assert buf.is_due_for_handoff()
+
+    print("PASS: async handoff clock is distinct from successful synchronous persistence clock")
+
 if __name__ == "__main__":
     test_count_triggered_flush()
     test_time_triggered_flush_with_no_new_records()
@@ -273,5 +375,8 @@ if __name__ == "__main__":
     test_buffers_survive_simulated_reconnect()
     test_pending_records_can_be_flushed_for_shutdown()
     test_successful_flush_resets_last_flush_time()
+    test_detach_transfers_exact_list_ownership()
+    test_detach_preserves_oversized_complete_message_batch()
+    test_async_handoff_clock_is_independent_from_successful_flush_clock()
 
     print("\nAll RecordBuffer tests passed. No real storage, sleeping, or production data involved.")

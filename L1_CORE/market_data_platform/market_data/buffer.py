@@ -98,7 +98,9 @@ class RecordBuffer(Generic[T]):
         self._clock = clock
 
         self.records: List[T] = []
-        self.last_flush_time: float = self._clock()
+        initial_time = self._clock()
+        self.last_flush_time: float = initial_time
+        self.last_handoff_time: float = initial_time
 
     def add(self, record: T) -> None:
         """Append one canonical record to the buffer."""
@@ -117,6 +119,42 @@ class RecordBuffer(Generic[T]):
         if self._clock() - self.last_flush_time >= self.max_interval_seconds:
             return True
         return False
+
+    def is_due_for_handoff(self) -> bool:
+        """
+        True if the active ingestion buffer is ready for asynchronous
+        ownership transfer.
+
+        Count semantics match the existing flush threshold. Time semantics
+        use the independent handoff clock rather than the successful
+        persistence clock.
+        """
+        if not self.records:
+            return False
+
+        if len(self.records) >= self.count_threshold:
+            return True
+
+        if self._clock() - self.last_handoff_time >= self.max_interval_seconds:
+            return True
+
+        return False
+
+    def detach_for_persistence(self) -> List[T]:
+        """
+        Transfer ownership of the entire active record list.
+
+        The exact list object becomes detached persistence work and ingestion
+        immediately receives a fresh list. The nominal count threshold never
+        splits the already-accepted active batch.
+
+        This advances only the asynchronous handoff clock. It does not claim
+        successful persistence and therefore does not modify last_flush_time.
+        """
+        detached = self.records
+        self.records = []
+        self.last_handoff_time = self._clock()
+        return detached
 
     def flush(self) -> FlushResult:
         """

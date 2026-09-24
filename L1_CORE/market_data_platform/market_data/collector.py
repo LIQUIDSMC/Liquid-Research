@@ -39,6 +39,7 @@ from websockets.exceptions import ConnectionClosed
 
 from L1_CORE.market_data_platform.market_data.adapters.coinbase import parse_market_trades_message, parse_level2_message, iso8601_to_epoch_millis
 from L1_CORE.market_data_platform.market_data.buffer import RecordBuffer
+from L1_CORE.market_data_platform.market_data.async_persistence import PersistenceBatch, PersistenceWorker
 from L1_CORE.market_data_platform.market_data.storage import write_trade_records, write_depth_level_records, partition_date_utc, verify_canonical_root_or_raise
 from L1_CORE.market_data_platform.market_data.telemetry import Telemetry
 
@@ -65,6 +66,7 @@ SSL_CONTEXT = ssl.create_default_context(cafile=certifi.where())
 # F2 telemetry emission thresholds (preregistered diagnostics, not cutoffs).
 LOOP_GAP_EMIT_NS = 500_000_000
 BIG_MSG_ROWS = 5000
+F3_PERSISTENCE_QUEUE_CAPACITY = 2
 
 
 class SequenceGapTracker:
@@ -133,21 +135,20 @@ class SequenceGapTracker:
 
 def _flush_all_pending(trade_buffer: RecordBuffer, depth_buffer: RecordBuffer) -> None:
     """
-    Flush both buffers unconditionally, regardless of whether their
-    normal count/time threshold has been reached. This is the
-    single production shutdown-cleanup function — called from
-    run()'s finally block on every exit path, including task
-    cancellation, so it is the function offline tests must exercise
-    (via real cancellation) to honestly prove shutdown behavior.
+    Legacy synchronous helper that unconditionally persists both buffers.
+
+    Retained for synchronous-path compatibility and direct regression
+    coverage. F3 production shutdown does not use this helper; run()
+    transfers remaining active buffers to the persistence worker and
+    drains/stops that worker before exit.
 
     Receives:
         trade_buffer, depth_buffer (RecordBuffer): both flushed via
         _flush_if_due_or_nonempty().
 
     Raises:
-        Whatever exception either buffer's flush() raises,
-        unmodified — persistence failure at shutdown is structural
-        and must propagate, never be silently logged and ignored.
+        Whatever exception either buffer's synchronous flush() raises,
+        unmodified.
     """
     _flush_if_due_or_nonempty(trade_buffer, "trade")
     _flush_if_due_or_nonempty(depth_buffer, "depth")
@@ -157,9 +158,9 @@ def _flush_if_due_or_nonempty(buffer: RecordBuffer, label: str) -> None:
     """
     Flush the given buffer if it holds any records at all,
     regardless of whether the normal count/time threshold has been
-    reached. Used only at shutdown, where any remaining buffered
-    records must be persisted before the process exits — waiting
-    for the normal threshold would risk losing them.
+    reached. This is retained for the legacy synchronous helper
+    path and regression coverage. F3 production shutdown instead
+    hands remaining active records to the persistence worker.
 
     Receives:
         buffer (RecordBuffer): the buffer to flush, if non-empty.
@@ -174,6 +175,66 @@ def _flush_if_due_or_nonempty(buffer: RecordBuffer, label: str) -> None:
         f"persisted across {len(result.files_written)} file(s): {result.files_written}"
     )
 
+
+def _handoff_if_due(buffer: RecordBuffer, label: str, persistence_worker):
+    """
+    Detach and submit one due active buffer for asynchronous persistence.
+
+    Ownership transfers only after the complete active record list has been
+    detached. This function performs no persistence itself.
+    """
+    if not buffer.is_due_for_handoff():
+        return None
+
+    previous_handoff_time = buffer.last_handoff_time
+    detached = buffer.detach_for_persistence()
+
+    batch = PersistenceBatch(
+        records=detached,
+        write_function=buffer.write_function,
+        partition_date_function=buffer.partition_date_function,
+        label=label,
+    )
+
+    try:
+        persistence_worker.submit(batch)
+    except Exception:
+        newer_records = buffer.records
+        detached.extend(newer_records)
+        buffer.records = detached
+        buffer.last_handoff_time = previous_handoff_time
+        raise
+
+    return time.monotonic_ns()
+
+
+
+
+def _handoff_remaining(buffer: RecordBuffer, label: str, persistence_worker):
+    """Transfer any nonempty active buffer to the persistence worker at shutdown."""
+    if not buffer.records:
+        return None
+
+    previous_handoff_time = buffer.last_handoff_time
+    detached = buffer.detach_for_persistence()
+
+    batch = PersistenceBatch(
+        records=detached,
+        write_function=buffer.write_function,
+        partition_date_function=buffer.partition_date_function,
+        label=label,
+    )
+
+    try:
+        persistence_worker.submit(batch)
+    except Exception:
+        newer_records = buffer.records
+        detached.extend(newer_records)
+        buffer.records = detached
+        buffer.last_handoff_time = previous_handoff_time
+        raise
+
+    return batch
 
 def _flush_if_due(buffer: RecordBuffer, label: str, telemetry=None,
                   trigger_session=None, trigger_seq=None):
@@ -219,6 +280,7 @@ async def _stream_messages(
     depth_buffer: RecordBuffer,
     receive_timeout_seconds: float = 1.0,
     telemetry=None,
+    persistence_worker=None,
 ) -> None:
     """
     The real, production message receive loop: waits for a message
@@ -271,11 +333,18 @@ async def _stream_messages(
                 # only way a time-based flush can happen during a quiet
                 # feed, since a blocking `async for` would never return
                 # control here otherwise.
-                e1 = _flush_if_due(trade_buffer, "trade", tel, session_id, last_seq)
-                e2 = _flush_if_due(depth_buffer, "depth", tel, session_id, last_seq)
-                ends = [x for x in (e1, e2) if x is not None]
-                if ends:
-                    prev_end = max(ends)
+                if persistence_worker is None:
+                    e1 = _flush_if_due(trade_buffer, "trade", tel, session_id, last_seq)
+                    e2 = _flush_if_due(depth_buffer, "depth", tel, session_id, last_seq)
+                    ends = [x for x in (e1, e2) if x is not None]
+                    if ends:
+                        prev_end = max(ends)
+                else:
+                    e1 = _handoff_if_due(trade_buffer, "trade", persistence_worker)
+                    e2 = _handoff_if_due(depth_buffer, "depth", persistence_worker)
+                    ends = [x for x in (e1, e2) if x is not None]
+                    if ends:
+                        prev_end = max(ends)
                 continue
 
             t0 = time.monotonic_ns()
@@ -299,7 +368,10 @@ async def _stream_messages(
                 for record in records:
                     trade_buffer.add(record)
                 t3 = time.monotonic_ns()
-                e = _flush_if_due(trade_buffer, "trade", tel, session_id, seq)
+                if persistence_worker is None:
+                    e = _flush_if_due(trade_buffer, "trade", tel, session_id, seq)
+                else:
+                    e = _handoff_if_due(trade_buffer, "trade", persistence_worker)
                 end = e if e is not None else t3
             elif channel == "l2_data":
                 records = parse_level2_message(message, timestamp_received)
@@ -309,7 +381,10 @@ async def _stream_messages(
                 t3 = time.monotonic_ns()
                 if tel.enabled:
                     big = (records, t2, t3)
-                e = _flush_if_due(depth_buffer, "depth", tel, session_id, seq)
+                if persistence_worker is None:
+                    e = _flush_if_due(depth_buffer, "depth", tel, session_id, seq)
+                else:
+                    e = _handoff_if_due(depth_buffer, "depth", persistence_worker)
                 end = e if e is not None else t3
             else:
                 end = time.monotonic_ns()
@@ -351,7 +426,12 @@ def _emit_big_msg(tel, message, records, session_id, seq, raw_message,
         tel._on_failure(exc)
 
 
-async def _connect_and_stream(trade_buffer: RecordBuffer, depth_buffer: RecordBuffer, telemetry=None) -> None:
+async def _connect_and_stream(
+    trade_buffer: RecordBuffer,
+    depth_buffer: RecordBuffer,
+    telemetry=None,
+    persistence_worker=None,
+) -> None:
     """
     Perform a single connection attempt: connect, subscribe, and
     stream messages until the connection drops or the process is
@@ -378,7 +458,13 @@ async def _connect_and_stream(trade_buffer: RecordBuffer, depth_buffer: RecordBu
         await websocket.send(json.dumps(SUBSCRIBE_MESSAGE))
         await websocket.send(json.dumps(LEVEL2_SUBSCRIBE_MESSAGE))
         print("Connected and subscribed. Buffering parsed records for persistence (Ctrl+C to stop):\n")
-        await _stream_messages(websocket, trade_buffer, depth_buffer, telemetry=telemetry)
+        await _stream_messages(
+            websocket,
+            trade_buffer,
+            depth_buffer,
+            telemetry=telemetry,
+            persistence_worker=persistence_worker,
+        )
 
 
 async def run() -> None:
@@ -426,10 +512,20 @@ async def run() -> None:
         partition_date_function=partition_date_utc,
     )
 
+    persistence_worker = PersistenceWorker(
+        max_queue_size=F3_PERSISTENCE_QUEUE_CAPACITY,
+    )
+    persistence_worker.start()
+
     try:
         while True:
             try:
-                await _connect_and_stream(trade_buffer, depth_buffer, telemetry)
+                await _connect_and_stream(
+                    trade_buffer,
+                    depth_buffer,
+                    telemetry,
+                    persistence_worker=persistence_worker,
+                )
                 print("\nConnection ended (remote side closed cleanly).")
             except (ConnectionClosed, OSError) as e:
                 print(f"\nConnection lost: {e}")
@@ -437,27 +533,46 @@ async def run() -> None:
             print(f"Reconnecting in {reconnect_delay_seconds} seconds...\n")
             await asyncio.sleep(reconnect_delay_seconds)
     finally:
-        # Runs on every exit from the while loop above, including
-        # task cancellation (Ctrl+C, via asyncio.run()'s handling).
-        # Parquet writes are synchronous, so this cannot be
-        # interrupted mid-write by cancellation — it runs to
-        # completion as ordinary code once entered.
-        print("\nFlushing remaining buffered records before shutdown...")
+        # F3 shutdown ownership:
+        #   1. ingestion has stopped before this block is entered;
+        #   2. transfer every remaining active record batch to the worker,
+        #      regardless of ordinary count/time handoff thresholds;
+        #   3. drain all accepted persistence work and stop/join the worker;
+        #   4. surface any persistence failure rather than reporting success;
+        #   5. close telemetry last.
+        print("\nHanding off remaining buffered records before shutdown...")
+        shutdown_error = None
+
         try:
-            _flush_all_pending(trade_buffer, depth_buffer)
+            _handoff_remaining(trade_buffer, "trade", persistence_worker)
+            _handoff_remaining(depth_buffer, "depth", persistence_worker)
         except Exception as e:
-            print(f"ERROR: final shutdown flush failed: {e}")
-            raise
-        finally:
-            telemetry.close()
+            shutdown_error = e
+
+        try:
+            persistence_worker.drain_and_stop()
+        except Exception as e:
+            if shutdown_error is None:
+                shutdown_error = e
+            else:
+                print(
+                    "ERROR: F3 persistence worker drain also failed after "
+                    f"an earlier shutdown failure: {e}"
+                )
+
+        telemetry.close()
+
+        if shutdown_error is not None:
+            print(f"ERROR: F3 persistence shutdown failed: {shutdown_error}")
+            raise shutdown_error
 
 
 if __name__ == "__main__":
     try:
         asyncio.run(run())
     except KeyboardInterrupt:
-        print("\nShutting down (Ctrl+C received). All buffered records flushed successfully.")
-    # Any other exception (e.g. a final-flush persistence failure,
+        print("\nShutting down (Ctrl+C received). All accepted persistence work drained successfully.")
+    # Any other exception (e.g. a persistence-worker drain failure,
     # re-raised deliberately in run()'s finally block) is NOT caught
     # here — it propagates and crashes the process with a real
     # traceback. This is intentional: persistence failure at

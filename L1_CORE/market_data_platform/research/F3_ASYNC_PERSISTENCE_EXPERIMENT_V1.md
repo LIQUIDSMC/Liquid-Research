@@ -281,3 +281,21 @@ The experiment sequence is:
 12. Record the result whether positive, negative, or inconclusive.
 
 Changes to this methodology after implementation begins must be explicitly versioned and justified rather than silently edited in place.
+
+---
+
+## 15. F3 v1 Implementation Parameter — Persistence Queue Capacity
+
+Selected before production validation:
+
+- `F3_PERSISTENCE_QUEUE_CAPACITY = 2`
+- Unit: detached persistence batches waiting in the bounded queue.
+- This is an experimental implementation parameter, not an empirically optimized production value.
+- One persistence batch may additionally be actively processed by the single persistence worker.
+- When both queue slots are occupied, the next ingestion-thread submission blocks until capacity becomes available or worker failure becomes visible.
+- The purpose of this deliberately small capacity is limited burst absorption while causing sustained persistence-throughput mismatch to become explicit backpressure rather than being hidden behind a large backlog.
+- Queue capacity does not impose a fixed record-count or byte-memory ceiling because complete-message batching is preserved and one detached batch may contain substantially more than the nominal 200-record trigger.
+- Production validation must measure queue wait/backlog/backpressure behavior before any later capacity change is considered.
+- Any later capacity change requires explicit documentation and must not be presented as if it were part of the original frozen F3 v1 validation.
+
+This selection fills the implementation parameter explicitly reserved by Section 11. It does not change the F3 hypothesis, correctness invariants, Gate-1 failure conditions, or performance-success criterion.
