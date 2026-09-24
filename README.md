@@ -109,3 +109,7 @@ Those stages are not treated as interchangeable.
 The repository is under active development. Some historical documents and research artifacts intentionally preserve terminology, paths, or assumptions from earlier project phases because they are part of the research record.
 
 Current operational and architectural documentation is being consolidated around the L0-L4 structure while historical evidence is preserved rather than silently rewritten.
+
+## License
+
+No open-source license is currently granted for this repository. All rights are reserved unless explicitly stated otherwise.
