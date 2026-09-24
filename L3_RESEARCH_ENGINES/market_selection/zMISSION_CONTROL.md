@@ -172,24 +172,28 @@ Historical checkpoints at n=32, n=36, and n=117 are preserved in
 Tradeability Score is predictive, inverted, harmful, or causally related to
 paper-trade outcomes.
 
-## Immediate Research Priority — Audit E
+## Current Research State — Audit E Completed
 
-### What is inside `Other/Unknown`, and what explains its observed economics?
+Audit E's decomposition-first review was completed at the overdue
+250-closed-trade checkpoint, performed at n=396 closed trades on 2026-09-23.
 
-Audit E is the immediate research priority, not a replacement for the engine's
-core research question.
+The review established that `Other/Unknown` is heterogeneous and contains
+substantial latent event-family concentration. Removing `Other/Unknown` did
+not restore the earlier n=117 lower-score economic pattern, and entry-price
+stratification plus recorded-category diagnostics did not reveal a stable,
+uniform Tradeability Score relationship.
 
-The next analytical sequence is deliberately decomposition-first:
+The evidence does not currently support changing the taxonomy or classifier
+solely to improve this research result.
 
-1. Characterize the current `Other/Unknown` population.
-2. Identify recurring latent market families.
-3. Measure their composition and observed economics.
-4. Determine whether the label is masking materially different populations.
-5. Decide whether any taxonomy or classifier intervention is warranted.
+The primary research question remains unresolved. Event-family dependence,
+effective independent sample size, entry-price effects, and market composition
+remain material interpretation issues. No new raw closed-trade milestone is
+currently defined; any subsequent checkpoint should be prospectively defined
+from a research-relevant trigger.
 
-This sequence prevents a taxonomy change from being chosen before the
-population being changed is understood.
-
+Detailed checkpoint measurements and limitations are preserved in
+`L4_KNOWLEDGE/validated_findings.md`.
 ---
 
 ## Secondary Research Questions

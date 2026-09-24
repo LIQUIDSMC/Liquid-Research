@@ -303,9 +303,8 @@ def _render_conclusions_section() -> str:
         "  - Sample size is small (see Dataset section).",
         "  - Correlation and median-split results can shift",
         "    substantially as more trades close.",
-        "  - This report should be re-run periodically (e.g. at the",
-        "    next milestone: 100 closed trades) rather than treated",
-        "    as a final answer.",
+        "  - This report should be re-run at a prospectively defined",
+        "    research checkpoint rather than treated as a final answer.",
     ]
     return "\n".join(lines)
 
