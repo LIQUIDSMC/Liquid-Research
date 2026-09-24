@@ -42,7 +42,7 @@ Date raised: 2026-06-19
 Question: Why are most discovered wallets showing only unresolved trades?
 Why it matters: Phase 3 validation requires resolved outcomes.
 Current evidence: KickstandBot, poRussky, and the Mode 2 candidate
-wallet (0x1abf0a...) all primarily traded currently active markets.
+wallet (0x1abf0a579401ebf4c44f919755ad20b6ae23f38d) all primarily traded currently active markets.
 Potential test: Analyze additional candidate wallets and look for
 older resolved markets. Better approach identified: search markets
 for resolution status first, then find which discovered wallets
