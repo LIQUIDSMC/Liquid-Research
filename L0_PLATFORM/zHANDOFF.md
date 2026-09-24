@@ -178,6 +178,81 @@ Do not write documentation that does not reflect reality.
 Do not build infrastructure before the evidence or operating need justifies it.
 ---
 
+## AI / Thread Operating Contract
+
+This document is intended to provide continuity when work moves between
+ChatGPT, Claude, or a replacement thread. A new AI should use this operating
+contract together with the repository authority owned by the system being
+worked on. Do not treat remembered conversation state as a substitute for
+current repository evidence.
+
+**Evidence first:**
+
+Never guess repository state, file contents, paths, research results,
+deployment state, or whether something exists. If evidence is missing, inspect
+or request it first.
+
+When useful, distinguish explicitly between:
+
+- VERIFIED FACT — directly established from current evidence.
+- HISTORICAL EVIDENCE — valid evidence about an earlier state.
+- CURRENT AUTHORITY — the document, implementation, or evidence that governs
+  the present state.
+- INFERENCE — a reasoned interpretation that has not been directly verified.
+- UNRESOLVED QUESTION — something the available evidence does not establish.
+
+**Cleanup/adjudication vocabulary:**
+
+Use these classifications when reviewing existing material:
+
+- KEEP — current or historically valuable and should remain.
+- FIX — wrong or inconsistent and supported evidence justifies correction.
+- STALE — no longer current but not automatically disposable.
+- INVESTIGATE — insufficient evidence to adjudicate safely.
+- PARKED — intentionally inactive or deferred.
+- REMOVE CANDIDATE — potentially removable, but deletion still requires
+  verification and deliberate approval.
+
+Never delete or rewrite material merely because it looks old. Historical
+methodology, incidents, negative findings, checkpoints, limitations, and
+superseded architecture may remain legitimate evidence.
+
+**Small, controlled changes:**
+
+Prefer:
+
+Minimal change -> Verify -> Inspect diff -> Audit -> Commit
+
+Do not silently expand scope. A bounded surgical edit is preferred over a
+whole-file rewrite when it can accomplish the same goal safely.
+
+**GM and specialist boundaries:**
+
+The General Manager owns cross-LRS architecture and governance, master cleanup
+sequencing, cross-engine coordination and routing, shared monitoring, and
+repository-wide/public-GitHub readiness.
+
+Each specialist owns its engine's research methodology, research
+adjudication, engine-specific implementation, and normal engineering workflow.
+That workflow may include writes, verification, commits, and pushes when
+appropriate. Specialists do not require GM permission merely to perform
+legitimate engine-owned work.
+
+If GM discovers an engine-specific methodology or research question, GM should
+record and route it to the owning specialist rather than absorbing that
+specialist's research workflow.
+
+Likewise, a specialist should not independently alter unrelated engines,
+cross-LRS architecture, or another owner's methodology.
+
+**Failure discipline:**
+
+If something goes wrong, stop and establish the actual state before applying
+another write. Verify files, Git state, process state, or runtime evidence as
+appropriate. Correctness and recoverability take priority over speed.
+
+---
+
 ## Research Integrity Rules
 
 - Never trust a single API field without verification.
@@ -413,18 +488,144 @@ Assume nothing. Verify everything.
 ## Instruction Format Standards
 
 **File instructions must always state:**
+
 - TYPE: New File / Replace Entire File / Patch Existing File
 - LOCATION: Exact folder path and filename
 - ACTION: Numbered step-by-step instructions
 - EXPECTED RESULT: What success looks like
 
 **Terminal command delivery standard:**
-Every command must be in its own isolated bash code block.
-Place any explanation before or after the block — never inside it.
-Do not include STEP numbers, TYPE:, WHERE:, RUN:, terminal prompts,
-or any other text inside the code block.
+
+When the user is expected to run a terminal command, optimize for safe,
+low-friction execution.
+
+- Prefer one complete, fluid code block per command/action whenever practical.
+- Do not fragment one logical action across several code blocks.
+- Keep explanatory prose outside the command block.
+- When there is one thing to run, give one thing to run and inspect its result
+  before jumping several steps ahead.
+- Every command the user is expected to run must include both:
+  - an estimated runtime; and
+  - a concern-after threshold.
+- Include these even for commands expected to complete almost instantly.
+
+Example:
+
+`EST. <1 sec · CONCERN AFTER 5 sec`
+
+**Terminal headings:**
+
+Place the terminal heading after the command block.
+
+Mac:
+
+`# 🖥️ MAC TERMINAL · 👁️ READ-ONLY · <OWNER> · <AREA/FILE>`
+
+`# 🖥️ MAC TERMINAL · ✍️ WRITE · <OWNER> · <AREA/FILE>`
+
+Raspberry Pi:
+
+`# 🍓 PI TERMINAL · 👁️ READ-ONLY · <OWNER> · <AREA/FILE>`
+
+`# 🍓 PI TERMINAL · ✍️ WRITE · <OWNER> · <AREA/FILE>`
+
+Append the runtime estimate and concern threshold to the heading when
+practical.
+
+Do not add separate decorative engine/project emojis to terminal headings.
+`git add` is WRITE because it modifies the Git index.
+
+**Heredoc rules:**
+
+If a command uses a heredoc such as `<<'PY'` or `<<'EOF'`, keep the entire
+heredoc in one uninterrupted terminal code block from the opening command
+through the closing delimiter. Never place nested Markdown fences inside it,
+and never require the user to assemble heredoc fragments manually.
+
+If the terminal becomes stuck at a `heredoc>` prompt, instruct the user to use
+Ctrl+C first. Then verify whether the target file changed before retrying.
+Never assume an interrupted heredoc was harmless.
+
+**Terminal-output rendering:**
+
+Terminal output pasted through ChatGPT or Claude may visually escape
+characters such as `#`, `_`, `*`, backslashes, or HTML entities. Do not infer
+repository corruption from chat rendering alone. Judge actual shell behavior
+and verify the underlying file when necessary.
+
+**Pager handling:**
+
+Avoid commands that unnecessarily strand the user inside `less`. Prefer
+bounded output or `git --no-pager` / `GIT_PAGER=cat` where appropriate. If a
+pager does appear with `:` at the bottom, `q` exits it.
+
+**Fail-closed writes:**
+
+For scripted replacements or documentation patches, use exact anchors,
+assertions, count checks, or equivalent safeguards so an unexpected repository
+state aborts before writing.
+
+If a write aborts or behaves unexpectedly, inspect the file and Git diff/status
+before retrying. Do not stack another write on top of uncertain state.
+
+**Git change-control workflow:**
+
+Commits should represent coherent completed work. Do not manufacture noise
+commits merely to show activity. Keep commit messages short and focused.
+
+Before every commit, use this sequence:
+
+WRITE -> VERIFY -> DIFF -> AI TEAM AUDIT -> FIX IF NEEDED ->
+RE-AUDIT -> PASS -> STAGE EXACT FILE(S) -> INSPECT STAGED DIFF -> COMMIT
+
+Before the commit is prepared, stop with exactly:
+
+`# 🚨🚨🚨 STOP — AI TEAM AUDIT BEFORE COMMIT 🚨🚨🚨`
+
+`DO NOT COMMIT YET.`
+
+Where practical, send the formal pre-commit diff/audit to the independent
+Claude reviewer. For high-risk engine methodology or research changes, include
+the relevant specialist when appropriate.
+
+The formal audit verdict must be exactly one of:
+
+`VERDICT: PASS`
+
+or
+
+`VERDICT: CHANGES REQUIRED`
+
+If changes are required, fix them, verify the resulting diff, and repeat the
+audit. A previous failed audit does not authorize the corrected commit.
+
+After PASS, stage only the intended file(s), inspect the staged diff, and only
+then commit.
+
+**Mac / GitHub / Raspberry Pi source discipline:**
+
+Normal development authority flows:
+
+Mac source repository -> GitHub -> Raspberry Pi deployment/runtime checkout
+
+Normal Mac source repository:
+
+`/Users/kristo/Desktop/Liquid Research`
+
+The Raspberry Pi is primarily a deployment/runtime environment, not the normal
+source-editing environment. Do not create Pi-side commits merely to make the
+Pi match GitHub.
+
+Before updating a Pi checkout, inspect/fetch/compare first. Never blindly pull
+a dirty Pi. Preserve legitimate runtime evidence and distinguish runtime data
+changes from source changes.
+
+If legitimate source work is ever performed on the Pi, reconcile it
+deliberately with canonical Git history rather than assuming either checkout
+should overwrite the other.
 
 **"Run the daily cycle" convention:**
+
 When the person says "run the daily cycle," first determine which automated
 or manual operational workflows are currently authoritative. Do not infer
 the workflow from historical Program A/B documentation.
@@ -448,18 +649,17 @@ Never modify a frozen research methodology merely because an operational
 cycle ran.
 
 **Commit message convention:**
-Keep commit messages short and focused on what changed, not why or
-how the review happened. Typically 3-6 words, longer only when
-genuinely necessary. Style: "scanner.py: typing cleanup",
-"market_collector.py: add type hints", "filters.py: docstring
-cleanup". Avoid multi-sentence messages, explanations of the
-review process, or restating "zero behavioral change" — that
-reasoning lives in conversation history, not the commit log.
+
+Keep commit messages short and focused on what changed, not why or how the
+review happened. Typically 3-6 words, longer only when genuinely necessary.
+Avoid multi-sentence messages, explanations of the review process, or
+restating "zero behavioral change" — that reasoning belongs in review
+evidence rather than the commit log.
 
 ---
 
 # PART 2 — CURRENT OPERATING STATE
-## (Current authority map — updated 2026-09-17)
+## (Current authority map — updated 2026-09-24)
 
 ---
 
@@ -560,6 +760,77 @@ Important current locations include:
 Historical references inside knowledge artifacts should not be globally
 rewritten merely because paths or terminology later changed. Distinguish
 historical provenance from current navigation before editing.
+
+---
+
+## Monitoring and Research Checkpoint Governance
+
+Liquid Research distinguishes operational monitoring from research-checkpoint
+monitoring. They solve different problems and must not be treated as
+interchangeable.
+
+**Operational monitoring:**
+
+Operational watchdogs monitor engineering/runtime health such as collectors,
+data freshness, scheduled workflows, telemetry, failures, and recovery.
+An operational alert does not itself authorize a research conclusion,
+methodology change, or research checkpoint.
+
+**Research checkpoint monitoring:**
+
+The Research Checkpoint Sentinel monitors only checkpoint triggers that are
+already documented by the owning research authority.
+
+The sentinel must never invent a threshold merely because an engine is active,
+data is accumulating, or a previous checkpoint used a convenient round number.
+
+If an engine has no documented active trigger, monitoring must represent that
+state explicitly rather than manufacture one.
+
+A checkpoint trigger is a collection/re-evaluation condition unless the owning
+research methodology explicitly establishes something stronger. Reaching a
+trigger does not itself establish significance, predictive value,
+profitability, causality, or a validated edge.
+
+**Checkpoint lifecycle:**
+
+1. The owning specialist prospectively defines and documents a research
+   checkpoint trigger when the research justifies one.
+2. GM may configure shared monitoring to enforce that documented trigger.
+3. When the trigger fires, the alert is routed to the owning specialist.
+4. The specialist performs the research checkpoint under the applicable
+   methodology and evidence rules.
+5. The specialist determines and documents the next evidence-based trigger,
+   if another trigger is warranted.
+6. GM updates shared monitoring to match the newly documented authority.
+
+Do not automatically advance thresholds by a fixed increment such as +500.
+The next trigger must come from the research need, not from the monitoring
+implementation.
+
+Engines that are still in development, parked, or otherwise lack an
+authorized checkpoint trigger should not receive invented research alerts.
+
+**Alert-state discipline:**
+
+Monitoring should be observable and fail-safe. Where practical, distinguish
+NOT_DUE, DUE, and ERROR states, suppress duplicate notifications for an
+unchanged state, and identify the affected engine in research-checkpoint
+alerts.
+
+A DUE research state and an operational ERROR are different conditions.
+Do not describe a research checkpoint becoming due as an infrastructure
+failure.
+
+**Authority boundary:**
+
+Monitoring enforces documented research authority; it does not create it.
+Research methodology, checkpoint adjudication, and conclusions remain with
+the owning specialist. Shared monitoring implementation and cross-engine
+routing remain GM responsibilities.
+
+Rapidly changing counts and checkpoint results belong in the owning engine's
+current authority rather than this operating manual.
 
 ---
 
