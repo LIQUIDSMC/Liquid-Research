@@ -47,12 +47,14 @@ The current research sequence is:
 
 1. Preserve the existing paper-trade methodology and admission invariant.
 2. Continue accumulating and resolving observations.
-3. Characterize the `Other/Unknown` population.
-4. Determine whether latent categories or composition effects explain its
-   observed economics.
-5. Only then decide whether taxonomy or classifier changes are justified.
+3. Treat the completed n=396 Audit E review as the current diagnostic checkpoint.
+4. Continue evaluating event-family dependence, effective independent sample
+   size, entry-price effects, and market composition without changing methodology
+   solely to improve the observed result.
+5. Define any subsequent checkpoint prospectively from a research-relevant trigger.
 
-Classifier redesign is therefore **not** the standing immediate blocker.
+Classifier or taxonomy redesign is **not** currently supported by the Audit E
+evidence and is not the standing immediate blocker.
 
 No classifier, scoring, sampling, or trade-admission change is authorized by
 this document.
