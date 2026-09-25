@@ -12,6 +12,7 @@ import os
 import subprocess
 import time
 from datetime import datetime, timezone
+from threading import RLock
 
 DEFAULT_DIR = "/mnt/lrs001/data/market_data_platform/telemetry"
 MAX_RECORDS = 200
@@ -51,6 +52,7 @@ class Telemetry:
         self._emit_ms = None
         self._file_bytes = {}
         self._flush_id = 0
+        self._lock = RLock()
 
     @classmethod
     def disabled(cls):
@@ -81,6 +83,16 @@ class Telemetry:
         rec.update(fields)
         self.emit(rec)
 
+    def f3_persistence(self, record):
+        """Emit one F3 persistence observation without mutating the caller's record."""
+        rec = dict(record)
+        event_type = rec.get("type")
+        if event_type not in ("persistence_handoff", "persistence_complete"):
+            return
+        rec["type"] = "f3_" + event_type
+        rec["wall_ns"] = time.time_ns()
+        self.emit(rec)
+
     def flush_record(self, session_id, buffer, rows_pending, trigger_seq, t4, t5,
                      ok, n_files, exc):
         if not self.enabled:
@@ -94,34 +106,37 @@ class Telemetry:
                    "prev_emit_ms": self.take_emit_ms(), "dropped": self.dropped})
 
     def take_emit_ms(self):
-        v, self._emit_ms = self._emit_ms, None
-        return v
+        with self._lock:
+            v, self._emit_ms = self._emit_ms, None
+            return v
 
     def emit(self, rec):
-        if not self.enabled or self.compromised:
-            return
-        try:
-            line = json.dumps(rec, separators=(",", ":")) + "\n"
-            if not self._batch:
-                self._batch_started = time.monotonic()
-            self._batch.append(line)
-            self._batch_bytes += len(line.encode())
-            if (len(self._batch) >= MAX_RECORDS or self._batch_bytes >= MAX_BYTES
-                    or time.monotonic() - self._batch_started >= MAX_AGE_S):
-                self._write()
-            while self._batch and (len(self._batch) > MAX_RECORDS
-                                   or self._batch_bytes > MAX_BYTES):
-                old = self._batch.pop(0)
-                self._batch_bytes -= len(old.encode())
-                self.dropped += 1
-        except Exception as exc:
-            self._on_failure(exc)
+        with self._lock:
+            if not self.enabled or self.compromised:
+                return
+            try:
+                line = json.dumps(rec, separators=(",", ":")) + "\n"
+                if not self._batch:
+                    self._batch_started = time.monotonic()
+                self._batch.append(line)
+                self._batch_bytes += len(line.encode())
+                if (len(self._batch) >= MAX_RECORDS or self._batch_bytes >= MAX_BYTES
+                        or time.monotonic() - self._batch_started >= MAX_AGE_S):
+                    self._write()
+                while self._batch and (len(self._batch) > MAX_RECORDS
+                                       or self._batch_bytes > MAX_BYTES):
+                    old = self._batch.pop(0)
+                    self._batch_bytes -= len(old.encode())
+                    self.dropped += 1
+            except Exception as exc:
+                self._on_failure(exc)
 
     def close(self):
-        try:
-            self._write()
-        except Exception as exc:
-            self._on_failure(exc)
+        with self._lock:
+            try:
+                self._write()
+            except Exception as exc:
+                self._on_failure(exc)
 
     def _write(self):
         if not self._batch or not self.enabled or self.compromised:

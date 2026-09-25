@@ -6,6 +6,7 @@ import json
 import os
 import tempfile
 import time
+from threading import Event, Thread
 from contextlib import redirect_stdout
 from pathlib import Path
 
@@ -182,6 +183,187 @@ def test_failed_flush_is_recorded_and_reraised():
     print("failed flush recorded and re-raised OK")
 
 
+
+
+def test_concurrent_emit_is_serialized():
+    d = tempfile.mkdtemp()
+    tel = T.Telemetry(directory=d)
+
+    n_threads = 4
+    per_thread = 500
+
+    def producer(producer_id):
+        for i in range(per_thread):
+            tel.emit({
+                "type": "concurrency_probe",
+                "producer": producer_id,
+                "i": i,
+            })
+
+    threads = [
+        Thread(target=producer, args=(producer_id,))
+        for producer_id in range(n_threads)
+    ]
+
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+
+    tel.close()
+
+    recs = [
+        r for r in lines(d)
+        if r["type"] == "concurrency_probe"
+    ]
+
+    expected = {
+        (producer_id, i)
+        for producer_id in range(n_threads)
+        for i in range(per_thread)
+    }
+    actual = [
+        (r["producer"], r["i"])
+        for r in recs
+    ]
+
+    assert len(actual) == n_threads * per_thread
+    assert len(set(actual)) == len(actual)
+    assert set(actual) == expected
+
+    assert tel.dropped == 0
+    assert tel.compromised is False
+    assert tel.enabled is True
+    assert tel._batch == []
+    assert tel._batch_bytes == 0
+
+    print("concurrent telemetry emission serialized without loss or duplication")
+
+
+
+
+def test_take_emit_ms_uses_telemetry_lock():
+    tel = T.Telemetry(directory=tempfile.mkdtemp())
+    tel._emit_ms = 12.5
+
+    entered = Event()
+    completed = Event()
+    result = []
+
+    def consumer():
+        entered.set()
+        result.append(tel.take_emit_ms())
+        completed.set()
+
+    with tel._lock:
+        thread = Thread(target=consumer)
+        thread.start()
+
+        assert entered.wait(timeout=1.0)
+        assert not completed.wait(timeout=0.05), (
+            "take_emit_ms() completed while another thread owned telemetry lock"
+        )
+        assert tel._emit_ms == 12.5
+
+    assert completed.wait(timeout=1.0)
+    thread.join(timeout=1.0)
+    assert not thread.is_alive()
+
+    assert result == [12.5]
+    assert tel._emit_ms is None
+
+    print("take_emit_ms serialized by telemetry lock")
+
+
+def test_f3_persistence_bridge():
+    d = tempfile.mkdtemp()
+    tel = T.Telemetry(directory=d)
+
+    handoff = {
+        "type": "persistence_handoff",
+        "batch_id": 17,
+        "label": "trade",
+        "rows": 25,
+        "submit_start_ns": 100,
+        "accepted_ns": 200,
+        "submit_block_ms": 0.0001,
+        "queue_depth_before": 0,
+        "queue_depth_after_accept": 1,
+        "queue_capacity": 2,
+        "queue_full_at_submit_start": False,
+        "accepted_count": 1,
+        "persisted_count": 0,
+        "unpersisted_count": 1,
+        "previous_observer_callback_ms": None,
+        "previous_observer_event_type": None,
+        "previous_observer_batch_id": None,
+    }
+    original_handoff = dict(handoff)
+
+    completion = {
+        "type": "persistence_complete",
+        "batch_id": 17,
+        "label": "trade",
+        "rows": 25,
+        "submit_start_ns": 100,
+        "accepted_ns": 200,
+        "worker_start_ns": 300,
+        "worker_end_ns": 400,
+        "submit_to_worker_start_ms": 0.0002,
+        "queue_wait_after_accept_ms": 0.0001,
+        "worker_persist_ms": 0.0001,
+        "ok": True,
+        "exc": None,
+        "queue_depth_at_completion": 0,
+        "queue_capacity": 2,
+        "accepted_count": 1,
+        "persisted_count": 1,
+        "unpersisted_count": 0,
+        "previous_observer_callback_ms": 1.25,
+        "previous_observer_event_type": "persistence_handoff",
+        "previous_observer_batch_id": 17,
+    }
+    original_completion = dict(completion)
+
+    tel.f3_persistence(handoff)
+    tel.f3_persistence(completion)
+    tel.f3_persistence({"type": "not_an_f3_persistence_event", "batch_id": 99})
+    tel.close()
+
+    assert handoff == original_handoff
+    assert completion == original_completion
+
+    recs = lines(d)
+    assert len(recs) == 2
+
+    h, c = recs
+    assert h["type"] == "f3_persistence_handoff"
+    assert c["type"] == "f3_persistence_complete"
+    assert h["batch_id"] == c["batch_id"] == 17
+    assert h["label"] == c["label"] == "trade"
+    assert h["rows"] == c["rows"] == 25
+    assert isinstance(h["wall_ns"], int) and h["wall_ns"] > 0
+    assert isinstance(c["wall_ns"], int) and c["wall_ns"] > 0
+
+    assert h["previous_observer_callback_ms"] is None
+    assert h["previous_observer_event_type"] is None
+    assert h["previous_observer_batch_id"] is None
+
+    assert c["previous_observer_callback_ms"] == 1.25
+    assert c["previous_observer_event_type"] == "persistence_handoff"
+    assert c["previous_observer_batch_id"] == 17
+
+    for key, value in original_handoff.items():
+        if key != "type":
+            assert h[key] == value
+
+    for key, value in original_completion.items():
+        if key != "type":
+            assert c[key] == value
+
+    print("F3 persistence bridge preserves observations and namespaces event types")
+
+
 if __name__ == "__main__":
     test_bounds()
     test_failure_and_disable()
@@ -189,4 +371,7 @@ if __name__ == "__main__":
     test_kill_switch_and_size()
     test_semantic_equivalence_and_records()
     test_failed_flush_is_recorded_and_reraised()
-    print("ALL F2 TESTS PASSED")
+    test_concurrent_emit_is_serialized()
+    test_take_emit_ms_uses_telemetry_lock()
+    test_f3_persistence_bridge()
+    print("ALL F2 + THREAD-SAFETY + F3 BRIDGE TESTS PASSED")

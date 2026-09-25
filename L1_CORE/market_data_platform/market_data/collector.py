@@ -514,6 +514,7 @@ async def run() -> None:
 
     persistence_worker = PersistenceWorker(
         max_queue_size=F3_PERSISTENCE_QUEUE_CAPACITY,
+        observation_callback=telemetry.f3_persistence,
     )
     persistence_worker.start()
 

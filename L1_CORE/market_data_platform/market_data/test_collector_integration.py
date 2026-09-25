@@ -677,8 +677,9 @@ def test_run_owns_one_persistence_worker_across_reconnects():
         pass
 
     class FakePersistenceWorker:
-        def __init__(self, max_queue_size):
+        def __init__(self, max_queue_size, observation_callback=None):
             self.max_queue_size = max_queue_size
+            self.observation_callback = observation_callback
             observed["workers_created"].append(self)
 
         def start(self):
@@ -701,8 +702,13 @@ def test_run_owns_one_persistence_worker_across_reconnects():
         return None
 
     class FakeTelemetry:
+        def f3_persistence(self, record):
+            pass
+
         def close(self):
             pass
+
+    fake_telemetry = FakeTelemetry()
 
     original_worker = getattr(collector, "PersistenceWorker", None)
     had_worker = hasattr(collector, "PersistenceWorker")
@@ -715,7 +721,7 @@ def test_run_owns_one_persistence_worker_across_reconnects():
     collector.PersistenceWorker = FakePersistenceWorker
     collector._connect_and_stream = fake_connect_and_stream
     collector.asyncio.sleep = fake_sleep
-    collector.Telemetry.from_env = staticmethod(lambda: FakeTelemetry())
+    collector.Telemetry.from_env = staticmethod(lambda: fake_telemetry)
     collector.verify_canonical_root_or_raise = lambda: None
     collector._flush_all_pending = lambda trade_buffer, depth_buffer: None
 
@@ -753,6 +759,17 @@ def test_run_owns_one_persistence_worker_across_reconnects():
 
     assert observed["workers_created"][0].max_queue_size == 2, (
         "run() must use the frozen F3 v1 persistence queue capacity of 2"
+    )
+
+    callback = observed["workers_created"][0].observation_callback
+    assert callback is not None, (
+        "run() must wire F3 persistence observations into telemetry"
+    )
+    assert callback.__self__ is fake_telemetry, (
+        "PersistenceWorker must receive the exact Telemetry instance owned by run()"
+    )
+    assert callback.__func__ is FakeTelemetry.f3_persistence, (
+        "PersistenceWorker must receive Telemetry.f3_persistence as its observation callback"
     )
 
     print(
