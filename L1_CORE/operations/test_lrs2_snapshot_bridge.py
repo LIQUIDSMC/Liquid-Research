@@ -76,6 +76,7 @@ class BridgeTests(unittest.TestCase):
                 remote_host="192.0.2.5",
                 remote_repo=Path("/repo"),
                 remote_publication_root=Path("/incoming"),
+                expected_remote_commit="b" * 40,
             )
 
     def test_success_and_exact_sequence(self):
@@ -83,20 +84,24 @@ class BridgeTests(unittest.TestCase):
 
         def runner(command):
             calls.append(command)
-            if len(calls) == 4:
+            if len(calls) == 1:
+                return Result("b" * 40 + "\n")
+            if len(calls) == 5:
                 return Result(self.receiver_json())
             return Result()
 
         result = self.invoke(runner)
         self.assertEqual(result["status"], "PASS")
-        self.assertEqual(len(calls), 4)
+        self.assertEqual(result["receiver_commit"], "b" * 40)
+        self.assertEqual(len(calls), 5)
         self.assertEqual(calls[0][0], "ssh")
-        self.assertIn("mkdir", calls[1])
-        self.assertEqual(calls[2][0], "scp")
-        self.assertEqual(calls[3][0], "ssh")
-        self.assertIn("--expected-snapshot-id", calls[3])
-        self.assertIn("--expected-source-host", calls[3])
-        self.assertIn("--expected-source-commit", calls[3])
+        self.assertIn("rev-parse", calls[0][-1])
+        self.assertIn("mkdir", calls[2][-1])
+        self.assertEqual(calls[3][0], "scp")
+        self.assertEqual(calls[4][0], "ssh")
+        self.assertIn("--expected-snapshot-id", calls[4][-1])
+        self.assertIn("--expected-source-host", calls[4][-1])
+        self.assertIn("--expected-source-commit", calls[4][-1])
 
     def test_source_expectation_rejections(self):
         cases = [
@@ -129,20 +134,59 @@ class BridgeTests(unittest.TestCase):
 
         def runner(command):
             calls.append(command)
-            if len(calls) == 2:
+            if len(calls) == 1:
+                return Result("b" * 40 + "\n")
+            if len(calls) == 3:
                 raise RuntimeError("mkdir failed")
             return Result()
 
         with self.assertRaisesRegex(RuntimeError, "mkdir failed"):
             self.invoke(runner)
-        self.assertEqual(len(calls), 2)
+        self.assertEqual(len(calls), 3)
+
+    def test_remote_commit_mismatch_stops_before_staging(self):
+        calls = []
+
+        def runner(command):
+            calls.append(command)
+            return Result("c" * 40 + "\n")
+
+        with self.assertRaisesRegex(ValueError, "remote receiver commit mismatch"):
+            self.invoke(runner)
+        self.assertEqual(len(calls), 1)
+
+    def test_scp_failure_stops_before_receiver(self):
+        calls = []
+
+        def runner(command):
+            calls.append(command)
+            if len(calls) == 1:
+                return Result("b" * 40 + "\n")
+            if len(calls) == 4:
+                raise RuntimeError("scp failed")
+            return Result()
+
+        with self.assertRaisesRegex(RuntimeError, "scp failed"):
+            self.invoke(runner)
+        self.assertEqual(len(calls), 4)
+
+    def test_remote_command_quotes_shell_metacharacters(self):
+        command = bridge.remote_command(
+            "python3",
+            "-c",
+            "print('x')",
+            "/path with spaces/$HOME;touch nope",
+        )
+        self.assertIn("'/path with spaces/$HOME;touch nope'", command)
 
     def test_receiver_non_pass_rejected(self):
         calls = []
 
         def runner(command):
             calls.append(command)
-            if len(calls) == 4:
+            if len(calls) == 1:
+                return Result("b" * 40 + "\n")
+            if len(calls) == 5:
                 payload = json.loads(self.receiver_json())
                 payload["status"] = "FAIL"
                 return Result(json.dumps(payload) + "\n")
@@ -156,7 +200,9 @@ class BridgeTests(unittest.TestCase):
 
         def runner(command):
             calls.append(command)
-            if len(calls) == 4:
+            if len(calls) == 1:
+                return Result("b" * 40 + "\n")
+            if len(calls) == 5:
                 return Result("noise\n" + self.receiver_json())
             return Result()
 
@@ -177,6 +223,7 @@ class BridgeTests(unittest.TestCase):
                     "--remote-host", "192.0.2.5",
                     "--remote-repo", "/repo",
                     "--remote-publication-root", "/incoming",
+                    "--expected-remote-commit", "b" * 40,
                 ])
 
         self.assertEqual(code, 1)

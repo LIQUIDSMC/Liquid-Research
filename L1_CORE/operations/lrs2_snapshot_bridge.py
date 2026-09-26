@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shlex
 import socket
 import subprocess
 import sys
@@ -115,6 +116,11 @@ def scp_base(key: Path) -> list[str]:
     ]
 
 
+def remote_command(*arguments) -> str:
+    """Build one explicitly quoted command for OpenSSH's remote shell."""
+    return " ".join(shlex.quote(str(argument)) for argument in arguments)
+
+
 def bridge_snapshot(
     outgoing_root: Path,
     obi_source: Path,
@@ -124,9 +130,14 @@ def bridge_snapshot(
     remote_host: str,
     remote_repo: Path,
     remote_publication_root: Path,
+    expected_remote_commit: str,
 ) -> dict:
     key = key.expanduser().resolve(strict=True)
     require(key.is_file(), "SSH key must be a regular file")
+    require(
+        re.fullmatch(r"[0-9a-f]{40}", expected_remote_commit) is not None,
+        "invalid expected remote commit",
+    )
 
     snapshot = create_snapshot(
         output_root=outgoing_root.resolve(),
@@ -142,26 +153,46 @@ def bridge_snapshot(
 
     ssh = ssh_base(key, remote_user, remote_host)
 
+    # Pin the receiver-side code epoch before creating staging or transferring bytes.
+    remote_head_result = run_checked(
+        ssh + [remote_command("git", "-C", remote_repo, "rev-parse", "HEAD")]
+    )
+    remote_head_lines = [
+        line.strip() for line in remote_head_result.stdout.splitlines() if line.strip()
+    ]
+    require(len(remote_head_lines) == 1, "remote HEAD check must emit exactly one line")
+    remote_head = remote_head_lines[0]
+    require(
+        re.fullmatch(r"[0-9a-f]{40}", remote_head) is not None,
+        "remote HEAD is not a commit hash",
+    )
+    require(remote_head == expected_remote_commit, "remote receiver commit mismatch")
+
     # Refuse resume, overwrite, or implicit success. Both paths must be absent.
     preflight = run_checked(
         ssh
         + [
-            "python3",
-            "-c",
-            (
-                "import os,sys;"
-                "s=sys.argv[1];f=sys.argv[2];"
-                "sys.exit(0 if not os.path.lexists(s) and not os.path.lexists(f) else 23)"
-            ),
-            str(remote_staging),
-            str(remote_final),
+            remote_command(
+                "python3",
+                "-c",
+                (
+                    "import os,sys;"
+                    "s=sys.argv[1];f=sys.argv[2];"
+                    "sys.exit(0 if not os.path.lexists(s) and not os.path.lexists(f) else 23)"
+                ),
+                remote_staging,
+                remote_final,
+            )
         ]
     )
     require(preflight.returncode == 0, "remote destination preflight failed")
 
-    run_checked(ssh + ["mkdir", "--", str(remote_staging)])
+    run_checked(ssh + [remote_command("mkdir", "--", remote_staging)])
 
-    remote_target = f"{remote_user}@{remote_host}:{remote_staging}/"
+    remote_target = (
+        f"{remote_user}@{remote_host}:"
+        f"{shlex.quote(str(remote_staging) + '/')}"
+    )
     run_checked(
         scp_base(key)
         + [
@@ -178,18 +209,20 @@ def bridge_snapshot(
     result = run_checked(
         ssh
         + [
-            str(python),
-            str(receiver),
-            "--staging",
-            str(remote_staging),
-            "--publication-root",
-            str(remote_publication_root),
-            "--expected-snapshot-id",
-            snapshot_id,
-            "--expected-source-host",
-            expected["source_host"],
-            "--expected-source-commit",
-            expected["source_commit"],
+            remote_command(
+                python,
+                receiver,
+                "--staging",
+                remote_staging,
+                "--publication-root",
+                remote_publication_root,
+                "--expected-snapshot-id",
+                snapshot_id,
+                "--expected-source-host",
+                expected["source_host"],
+                "--expected-source-commit",
+                expected["source_commit"],
+            )
         ]
     )
 
@@ -213,6 +246,7 @@ def bridge_snapshot(
         "published_destination": evidence.get("destination"),
         "source_host": expected["source_host"],
         "source_commit": expected["source_commit"],
+        "receiver_commit": remote_head,
         "manifest_sha256": evidence.get("manifest_sha256"),
         "research_checkpoint": False,
         "cp15": False,
@@ -231,6 +265,7 @@ def main(argv=None):
     parser.add_argument("--remote-host", required=True)
     parser.add_argument("--remote-repo", type=Path, required=True)
     parser.add_argument("--remote-publication-root", type=Path, required=True)
+    parser.add_argument("--expected-remote-commit", required=True)
     args = parser.parse_args(argv)
 
     evidence = {
@@ -252,6 +287,7 @@ def main(argv=None):
             remote_host=args.remote_host,
             remote_repo=args.remote_repo,
             remote_publication_root=args.remote_publication_root,
+            expected_remote_commit=args.expected_remote_commit,
         )
     except Exception as exc:
         evidence["error"] = f"{type(exc).__name__}: {exc}"
