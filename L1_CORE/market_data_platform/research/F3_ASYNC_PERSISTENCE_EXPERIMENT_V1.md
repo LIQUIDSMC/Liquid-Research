@@ -386,3 +386,87 @@ A Gate-2 result must distinguish:
 Production evidence must not present accepted-batch queue residence or backlog as if it were generated exclusively by canonical persistence unless the evidence independently supports that conclusion.
 
 This addendum was frozen before production Gate-2 evidence collection. It is a measurement-boundary clarification discovered during instrumentation validation, not a retroactive modification of collected results.
+
+---
+
+## 17. Gate-2 Primary Production Observation Protocol v1
+
+**Frozen:** 2026-09-27
+
+**Status:** Prospective protocol repair frozen after production collection began but before primary Gate-2 performance analysis.
+
+### Reason for protocol repair
+
+Section 15 requires production Gate-2 observation under a separately frozen observation protocol.
+
+Repository review performed before primary Gate-2 performance analysis established that no separate production observation stop protocol had been created before production collection began.
+
+This section closes that methodology-control gap prospectively. It does not claim that this protocol existed before production collection began, does not alter previously collected telemetry, and does not use Gate-2 performance outcomes to select the primary evidence window.
+
+### Outcome-blind freeze boundary
+
+The protocol-freeze boundary was established on Pi3 (`liquid-pi`) at:
+
+- local time: 2026-09-27 00:22:28 PDT;
+- UTC time: 2026-09-27 07:22:28 UTC;
+- collector epoch start: 2026-09-26 22:43:18 PDT;
+- collector PID at boundary inspection: 26953;
+- collector restart count: 0;
+- latest structurally completed persistence batch observed at the boundary: batch_id 7036.
+
+The boundary was established using collector continuity, time, and batch-identity information without inspecting Gate-2 latency or performance distributions.
+
+### Pre-protocol evidence
+
+Batches 1 through 7036 are preserved as pre-protocol observational evidence.
+
+They must not be deleted or rewritten.
+
+They are not the primary confirmatory Gate-2 evaluation population.
+
+### Primary prospective window
+
+The primary prospective population begins at batch_id 7037.
+
+The observation duration is 24 consecutive hours from the protocol-freeze boundary.
+
+The planned endpoint is:
+
+- local time: 2026-09-28 00:22:28 PDT;
+- UTC time: 2026-09-28 07:22:28 UTC.
+
+The 24-hour duration is an evidence-collection boundary, not a performance-success threshold. It was selected prospectively to span one complete diurnal cycle of the continuously operating crypto collector and permit naturally varying production activity and load conditions without outcome-dependent stopping.
+
+There is no outcome-dependent early stopping.
+
+### Deterministic window membership
+
+At the 24-hour endpoint, let N be the last structurally completed batch_id in the same uninterrupted worker epoch at or before the endpoint.
+
+For this protocol, "structurally completed" means a persistence batch accepted as a valid handoff/completion pair under the already-frozen G2-8A `validate_and_pair()` structural-validation rules.
+
+The frozen primary population is every structurally complete persistence batch in the inclusive batch-id range:
+
+`[7037, N]`
+
+Evidence after N is outside the primary window.
+
+Window membership must not be selected using latency, queue, persistence-duration, observer-overhead, or other Gate-2 performance values.
+
+### Interruption rule
+
+If, before the 24-hour endpoint, the collector restarts or an instrumentation/schema change, queue-capacity change, code deployment, or other defined environmental boundary changes the production conditions being evaluated, the interrupted candidate window must be preserved as historical evidence but does not qualify as the primary Gate-2 evaluation window.
+
+A fresh prospective 24-hour primary window must then be established in a stable subsequent epoch before primary Gate-2 analysis.
+
+Interrupted or environmentally incompatible epochs must not be silently concatenated.
+
+### Interpretation boundary
+
+Gate-2 remains governed by the existing frozen structural performance criterion.
+
+This protocol defines evidence collection only.
+
+It introduces no latency threshold, performance score, profitability criterion, economic criterion, or new Gate-2 success threshold.
+
+Primary Gate-2 performance distributions must not be inspected before the primary evidence window closes and the evidence is frozen.
