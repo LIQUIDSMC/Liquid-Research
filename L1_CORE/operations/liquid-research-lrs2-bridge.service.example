@@ -1,0 +1,19 @@
+# Reference copy. Production unit lives at:
+# /etc/systemd/system/liquid-research-lrs2-bridge.service
+[Unit]
+Description=Liquid Research LRS2 verified snapshot bridge
+After=network-online.target mnt-lrs001.mount
+Wants=network-online.target
+Requires=mnt-lrs001.mount
+RequiresMountsFor=/mnt/lrs001
+
+[Service]
+Type=oneshot
+User=kristo
+WorkingDirectory=/mnt/lrs001/liquid-research-l0l4
+StateDirectory=liquid-research/operations/lrs2_bridge
+StateDirectoryMode=0750
+ExecStart=/mnt/lrs001/liquid-research-l0l4/venv/bin/python3 /mnt/lrs001/liquid-research-l0l4/L1_CORE/operations/lrs2_snapshot_runner.py --repo /mnt/lrs001/liquid-research-l0l4
+TimeoutStartSec=600
+StandardOutput=journal
+StandardError=journal

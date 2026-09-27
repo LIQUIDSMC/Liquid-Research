@@ -1,0 +1,8 @@
+# Reference drop-in. Production copy lives at:
+# /etc/systemd/system/liquid-research-orchestrator.service.d/lrs2-bridge.conf
+#
+# OnSuccess starts the infrastructure bridge only after the daily orchestrator
+# service has completed successfully. It does not alter research methodology,
+# create a checkpoint, or transfer analytical authority.
+[Unit]
+OnSuccess=liquid-research-lrs2-bridge.service

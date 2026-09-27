@@ -59,3 +59,22 @@ checks only and do not constitute checkpoint or research conclusions.
 
 Run `python -m unittest discover -s L1_CORE/operations -p 'test_lrs2_snapshot_receiver.py'`.
 Fixtures use temporary directories and synthetic CSVs only.
+
+## Standing bridge runtime evidence
+
+The unattended bridge is wrapped by `lrs2_snapshot_runner.py`. The runner derives
+the expected Pi5 receiver commit from the Pi3 checkout HEAD, invokes the existing
+verified bridge, and appends exactly one compact JSON event per attempt to:
+
+`/var/lib/liquid-research/operations/lrs2_bridge/events.jsonl`
+
+The append is fsynced before the runner reports success. Bridge failures are also
+recorded as `FAIL` events when the runner can reach the evidence path. The full
+process output remains available through the systemd journal.
+
+The reference systemd service and orchestrator `OnSuccess=` drop-in live beside
+this document as `.example` files. Production systemd configuration remains
+outside the Git checkout under `/etc/systemd/system/`.
+
+This operational wiring does not run a research checkpoint, does not create
+CP15, and does not transfer LRS2 analytical authority.
