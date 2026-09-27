@@ -1,9 +1,9 @@
 # Liquid Research
 ## Architecture Specification
 
-Version: 1.1
+Version: 1.2
 Status: Canonical
-Last Updated: 2026-09-17
+Last Updated: 2026-09-26
 
 This document is the authoritative architectural reference for
 Liquid Research. Architectural decisions should be made here before
@@ -242,6 +242,37 @@ complete set (Research Integrity Rules, Read-Before-Patch, etc.).
   output contract remains unchanged.
 - Prefer documented contracts over implicit behavior.
 
+### Runtime Node Architecture
+
+Liquid Research uses a hybrid runtime-node model. Runtime placement is
+independent of L0-L4 ownership: a Domain, Research Engine, or shared service is
+not architecturally identified with the machine on which a particular workload
+currently runs.
+
+Current node roles are:
+
+- **Pi3 (`liquid-pi`)** — continuity / lightweight / predictable always-on
+  production.
+- **Pi5 (`liquid-pi5`)** — high-capacity / analytical / heavier compute.
+
+The stable cross-node constraints are:
+
+- One authoritative live writer per data product.
+- Live writers should normally write to storage local to their runtime node.
+- Cross-node analytical consumers should use bounded, immutable,
+  provenance-bearing snapshots rather than analyze changing network-mounted
+  source files.
+- Runtime authority moves only through an explicit staged cutover with
+  verification; dual authority is not a normal operating state.
+- Hardware placement does not redefine research methodology, checkpoint state,
+  or engine ownership.
+
+The implemented LRS2 snapshot handoff is the first concrete realization of this
+model: authoritative live collection/writing remains on Pi3 while a verified
+frozen snapshot can be transported and atomically published on Pi5 for
+analytical consumption. Infrastructure validation of that transport does not
+itself transfer research or analytical authority.
+
 ---
 
 ## 7. Current Architectural Questions
@@ -341,6 +372,11 @@ canonical outputs generally, not a Program B-specific requirement.
 **Status:** Accepted (v1)
 ---
 ## Version History
+
+**v1.2 — 2026-09-26** — Added the evidence-backed hybrid Pi3/Pi5 runtime-node
+architecture, including writer locality, bounded snapshot transfer, and explicit
+runtime-authority boundaries. Research ownership and methodology remain
+independent of hardware placement.
 
 **v1.1 — 2026-09-17** — Modernized the canonical architecture around the
 implemented L0-L4 ownership model. Replaced obsolete current-state Program

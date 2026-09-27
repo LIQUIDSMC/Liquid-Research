@@ -23,8 +23,8 @@ Research methodology and current research priorities are governed separately by:
 
 ## Normal Automated Operation
 
-The production Raspberry Pi currently schedules the shared daily orchestrator
-through systemd:
+Pi3 (`liquid-pi`) currently schedules the shared daily orchestrator through
+systemd:
 
 - Timer: `liquid-research-orchestrator.timer`
 - Service: `liquid-research-orchestrator.service`

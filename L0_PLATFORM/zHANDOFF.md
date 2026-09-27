@@ -624,6 +624,42 @@ If legitimate source work is ever performed on the Pi, reconcile it
 deliberately with canonical Git history rather than assuming either checkout
 should overwrite the other.
 
+**Runtime node convention:**
+
+Liquid Research currently uses a hybrid Raspberry Pi deployment. Machine
+identity is separate from Domain, Research Engine, and service ownership:
+
+- **Pi3 (`liquid-pi`)** — continuity / lightweight / predictable always-on
+  production.
+- **Pi5 (`liquid-pi5`)** — high-capacity / analytical / heavier compute.
+
+These are operating roles, not permanent assignments of every service. Workload
+placement should follow measured operating evidence and the owning system's
+authority rather than machine labels alone.
+
+Cross-node operation follows these rules:
+
+- Maintain one authoritative live writer for each data product.
+- Prefer co-locating a live writer with the storage it writes.
+- Do not make changing network-mounted files the normal analytical interface
+  between nodes.
+- When one node analyzes data produced on another, prefer a bounded, immutable
+  snapshot with explicit provenance and verification.
+- Stage and verify migrations before transferring runtime authority; avoid
+  dual-authority cutovers.
+- Hardware migration must not silently alter research methodology, checkpoint
+  state, or experimental boundaries.
+
+The current LRS2 infrastructure implements a verified Pi3-to-Pi5 frozen-snapshot
+handoff for analytical input. Pi3 remains the authoritative live collector/writer
+for that input. The Pi5 receiver/publication path is implemented and manually
+verified. LRS2 analytical authority has not yet transferred.
+
+Final watchdog, notification, and machine-health placement should be reconciled
+after workload authority is settled so monitoring follows the runtime it is
+responsible for observing. Research-checkpoint monitoring remains governed
+separately by the checkpoint rules below.
+
 **"Run the daily cycle" convention:**
 
 When the person says "run the daily cycle," first determine which automated
@@ -659,7 +695,7 @@ evidence rather than the commit log.
 ---
 
 # PART 2 — CURRENT OPERATING STATE
-## (Current authority map — updated 2026-09-24)
+## (Current authority map — updated 2026-09-26)
 
 ---
 
