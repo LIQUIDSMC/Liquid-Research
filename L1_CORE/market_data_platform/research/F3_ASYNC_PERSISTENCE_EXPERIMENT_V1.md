@@ -470,3 +470,84 @@ This protocol defines evidence collection only.
 It introduces no latency threshold, performance score, profitability criterion, economic criterion, or new Gate-2 success threshold.
 
 Primary Gate-2 performance distributions must not be inspected before the primary evidence window closes and the evidence is frozen.
+
+## 18. Gate-2 Primary Evidence Closeout Procedure v1
+
+**Purpose:** Operationalize the already-frozen Section 17 production observation protocol without changing its methodology, endpoint, population rule, interruption rule, or Gate-2 success criterion.
+
+This procedure defines how the primary evidence window is closed, preserved, and prepared for analysis after the planned endpoint. It does not introduce a new evidence-selection rule.
+
+### Closeout authority
+
+Section 17 remains authoritative for primary-window membership.
+
+The fixed prospective boundary remains:
+
+- primary start: batch_id 7037;
+- endpoint: 2026-09-28 00:22:28 PDT / 2026-09-28 07:22:28 UTC;
+- N: the last structurally completed batch_id in the same uninterrupted worker epoch at or before the endpoint;
+- primary population: inclusive batch-id range `[7037, N]`.
+
+No latency, queue, persistence-duration, observer-overhead, or other Gate-2 performance value may be used to choose N or alter the population.
+
+### Closeout sequence
+
+After the endpoint has passed:
+
+1. Verify the production collector remained in the same uninterrupted worker epoch through the endpoint.
+2. Verify no instrumentation/schema change, queue-capacity change, code deployment, collector restart, or other Section 17 environmental boundary occurred before the endpoint.
+3. Determine the candidate endpoint batch N using only timestamp, batch identity, completion identity, and structural evidence.
+4. Preserve sufficient raw F3 telemetry to reconstruct the complete worker epoch from batch_id 1 through N.
+5. Record evidence provenance, including source telemetry files, source host, collector epoch identity, evidence boundary, file sizes, and SHA-256 hashes.
+6. Transfer the frozen evidence to the analysis host without modifying the source telemetry.
+7. Run the already-frozen G2-8A structural validation over the complete preserved epoch evidence.
+8. Require the epoch to validate as a complete, contiguous worker epoch under `validate_and_pair()`.
+9. Only after complete-epoch structural validation succeeds, select validated pairs in the inclusive primary range `[7037, N]`.
+10. Run descriptive Gate-2 reporting only on that primary population.
+11. Preserve batches 1 through 7036 as pre-protocol observational evidence; do not reinterpret them as part of the primary confirmatory population.
+12. Preserve evidence after N as outside-window observational evidence.
+
+### Complete-epoch validation boundary
+
+The frozen G2-8A analyzer requires enough evidence to reconstruct the worker epoch from batch_id 1. A telemetry fragment beginning at batch_id 7037 is therefore not a valid direct input to complete-epoch structural validation.
+
+Accordingly, evidence preservation and primary-population selection are separate operations:
+
+`complete epoch evidence [1, N]`
+→ `G2-8A validate_and_pair()`
+→ `validated pairs`
+→ `primary selection [7037, N]`
+→ `Gate-2 descriptive reporting`
+
+The complete epoch prefix exists to preserve and validate structural provenance. It does not expand the Section 17 primary population.
+
+### Fail-closed conditions
+
+Primary Gate-2 analysis must not proceed if closeout establishes any of the following before the endpoint:
+
+- collector restart or worker-epoch discontinuity;
+- instrumentation/schema change;
+- queue-capacity change;
+- code deployment affecting the evaluated environment;
+- another Section 17 environmental boundary;
+- inability to establish N deterministically;
+- missing or non-contiguous evidence required for complete-epoch structural validation;
+- broken previous-observer provenance;
+- unmatched handoff/completion evidence through N;
+- evidence-integrity failure during preservation or transfer.
+
+If the Section 17 interruption rule applies, the interrupted candidate window remains historical evidence and a fresh prospective window is required. This procedure does not authorize concatenating epochs or repairing missing production evidence.
+
+### Analysis boundary
+
+Closeout metadata and evidence-integrity information may be inspected before descriptive analysis.
+
+Gate-2 performance distributions are inspected only after:
+
+1. the observation endpoint has passed;
+2. continuity through the endpoint has been established;
+3. N has been determined;
+4. evidence has been frozen and integrity-verified; and
+5. complete-epoch G2-8A structural validation has passed.
+
+This closeout procedure does not alter F2, select or optimize queue capacity, create a latency threshold, or establish profitability, execution, network, physical-disk, or economic claims.
