@@ -780,3 +780,41 @@ total comparable pairs reaching at least 2,500; or additional markets reaching
 n>=15. The 2,500-pair threshold remains a checkpoint collection trigger, not
 a statistical significance threshold.
 
+
+CP15 provenance addendum (2026-09-28; documentation only, no CP15
+result changed):
+
+  Checkpoint 15 statistics were computed from an immutable bounded
+  snapshot of the LRS-2 logs, not from the live files:
+
+  - Snapshot ID: 20260927T120247.079559Z
+  - Source host: liquid-pi (Pi3)
+  - Source/code commit: 601b813046c79d6ae0ec2511b56521dc23a8e29f
+  - Verified SHA-256 (snapshot CSVs, matched against the manifest):
+      near_book_depth_log.csv:
+        930f3939f081b24518e6dac1a832521a83d953b8ad1fe9f225482f0f7cb395f6
+      obi_log.csv:
+        298ec5be0cdfb67854b22b05d3a532823d26c1c6886cfa36b3a5557decab86fe
+  - Computation: the canonical build_agreement_matrix() was run on
+    liquid-pi5 (Pi5) against this snapshot as verification compute
+    only.
+  - Pi3 remained the sole authoritative live collector and writer.
+    No analytical or runtime authority was transferred to Pi5.
+  - No methodology change. This was the first checkpoint run through
+    the bounded Pi3-to-Pi5 snapshot path.
+  - The CP15 figures describe this snapshot, not the later live
+    sentinel readings.
+
+  The 27th deep market was identified from the canonical matrix on
+  this snapshot. A date-boundary comparison (rows on or before
+  2026-09-24) gave 2,251 pairs rather than CP14's recorded 2,213, so
+  it is corroborating evidence only and is not an exact
+  reconstruction of the CP14 population.
+
+  CP16 trigger, stated mechanically from the frozen CP15 baseline
+  (2,313 comparable pairs, 27 markets at n>=15): total comparable
+  pairs >= 2,500, OR the count of markets at n>=15 exceeds 27. The
+  2,500 pair milestone was set before CP15 and is retained; it was
+  not chosen from CP15 results. This supersedes the looser wording
+  "additional markets reaching n>=15" above. The qualitative watch
+  items recorded in CP15 are unchanged.
