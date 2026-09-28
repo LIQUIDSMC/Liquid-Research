@@ -8,9 +8,9 @@ Phase 1 — Core Indicators: COMPLETE, FROZEN
 Phase 2 — Research Infrastructure: COMPLETE
 Phase 3 — Research Analytics & Review: COMPLETE
 
-Current research checkpoint: CP14 (2026-09-24).
+Current research checkpoint: CP15 (2026-09-27).
 
-At CP14, the research dataset contained 2,213 comparable OBI/Near-Book pairs across 568 markets, with 26 markets at n>=15. The aggregate same-sign rate was 60.14% (1,331/2,213), compared with 58.97% (1,039/1,762) at CP13 across 451 additional comparable pairs.
+At CP15, the research dataset contained 2,313 comparable OBI/Near-Book pairs across 595 markets, with 27 markets at n>=15. The aggregate same-sign rate was 60.48% (1,399/2,313), compared with 60.14% (1,331/2,213) at CP14 across 100 additional comparable pairs.
 
 This describes the observed checkpoint interval only. No frozen statistical threshold has been established for classifying the movement as a trend, stability, instability, or predictive signal.
 
@@ -134,19 +134,19 @@ The checkpoint statistics are based on real comparable OBI/Near-Book observation
 
 ## Current Research State
 
-CP14 is the current frozen research checkpoint.
+CP15 is the current frozen research checkpoint.
 
-CP14 recorded:
+CP15 recorded:
 
-- 2,213 comparable pairs;
-- 568 markets;
-- 26 markets with n>=15;
-- 1,331 same-sign pairs;
-- 60.14% aggregate same-sign;
-- CP13 aggregate same-sign: 58.97%;
-- 451 additional comparable pairs between CP13 and CP14.
+- 2,313 comparable pairs;
+- 595 markets;
+- 27 markets with n>=15;
+- 1,399 same-sign pairs;
+- 60.48% aggregate same-sign;
+- CP14 aggregate same-sign: 60.14%;
+- 100 additional comparable pairs between CP14 and CP15.
 
-The aggregate same-sign rate increased by 1.17 percentage points over that interval. No frozen statistical threshold has been established for classifying this movement as a trend, stability, instability, or predictive signal.
+The aggregate same-sign rate increased by 0.34 percentage points over that interval. No frozen statistical threshold has been established for classifying this movement as a trend, stability, instability, or predictive signal.
 
 It is not evidence that OBI, Near-Book Depth Imbalance, or their agreement predicts future market outcomes.
 

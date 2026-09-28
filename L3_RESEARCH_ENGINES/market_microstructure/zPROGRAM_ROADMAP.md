@@ -698,3 +698,85 @@ observed rates persist or shift with additional observations; total
 comparable pairs reaching at least 2,500; or additional markets reaching
 n>=15. The 2,500-pair threshold is the next checkpoint collection trigger,
 not a statistical significance threshold.
+
+- Fifteenth checkpoint (2026-09-27, n=2,313 pairs, 595 markets): triggered
+  by the alternate population condition -- the deep-market roster grew from
+  26 to 27 markets at n>=15. Total comparable pairs reached 2,313, still
+  below the 2,500-pair trigger. All 26 checkpoint-14 deep markets remained
+  in the deep roster, and exactly one additional market crossed the threshold:
+  "Will the US confirm that aliens exist before 2027?" at 46.7% same-sign
+  (7/15).
+
+  The aggregate same-sign rate increased from 60.14% (1,331/2,213) to
+  60.48% (1,399/2,313), a change of +0.34 percentage points across 100
+  additional comparable pairs. Those 100 added pairs contained 68 same-sign
+  observations (68.00%). These figures describe the observed interval only;
+  no frozen statistical threshold has been established for classifying this
+  movement as a trend, stability, instability, or predictive signal.
+
+  US Invade Iran added four observations, all same-sign, moving from 91.2%
+  (62/68) to 91.7% (66/72). Putin out before 2027 remained 100.0% at 29/29,
+  and Iranian regime fall remained 100.0% at 20/20. These are descriptive
+  persistence records only and do not establish predictive value.
+
+  The individually tracked low-agreement markets did not provide a new
+  uniform-cluster result. Fed decrease 25bps after the September 2026 meeting
+  remained 25.8% (8/31), Fed increase 25bps after the July 2026 meeting
+  remained 33.3% (7/21), and Renan Santos remained 38.2% (13/34).
+
+  Several other checkpoint-14 deep markets accumulated observations.
+  Strait of Hormuz normal by December 31 moved from 79.6% (39/49) to
+  81.1% (43/53), adding four same-sign observations. Luiz Inácio Lula da
+  Silva moved from 33.3% (9/27) to 29.0% (9/31), adding four observations
+  without an additional same-sign observation. Flávio Bolsonaro moved from
+  65.4% (17/26) to 62.1% (18/29). US end of Iranian blockade by September
+  30 extended its perfect record from 23/23 to 27/27. Israel x Iran ceasefire
+  through September 30 moved from 78.9% (15/19) to 76.2% (16/21), and China
+  invade Taiwan by end of 2026 moved from 58.8% (10/17) to 63.2% (12/19).
+  These interval movements were heterogeneous and are recorded descriptively.
+
+  Full deep-market roster (n>=15) and same-sign rates:
+
+  | Market | n | Same-sign | % |
+  |---|---:|---:|---:|
+  | Will the U.S. invade Iran before 2027? | 72 | 66 | 91.7% |
+  | Clarity Act (H.R.3633) signed into law in 2026? | 57 | 36 | 63.2% |
+  | Strait of Hormuz traffic returns to normal by December 31? | 53 | 43 | 81.1% |
+  | Will there be no change in Fed interest rates after the September 2026 meeting? | 50 | 45 | 90.0% |
+  | Will the Fed increase interest rates by 25 bps after the September 2026 meeting? | 48 | 31 | 64.6% |
+  | Strait of Hormuz traffic returns to normal by September 30? | 45 | 28 | 62.2% |
+  | Strait of Hormuz traffic returns to normal by August 31? | 37 | 29 | 78.4% |
+  | Will Renan Santos win the 2026 Brazilian presidential election? | 34 | 13 | 38.2% |
+  | Will Luiz Inácio Lula da Silva win the 2026 Brazilian presidential election? | 31 | 9 | 29.0% |
+  | Will the Fed decrease interest rates by 25 bps after the September 2026 meeting? | 31 | 8 | 25.8% |
+  | Will United Russia (ER) gain the most seats in the next Russian parliamentary election? | 31 | 24 | 77.4% |
+  | Fed rate hike in 2026? | 30 | 18 | 60.0% |
+  | Putin out as President of Russia by December 31, 2026? | 29 | 29 | 100.0% |
+  | Will Flávio Bolsonaro win the 2026 Brazilian presidential election? | 29 | 18 | 62.1% |
+  | US announces end of Iranian blockade by September 30, 2026? | 27 | 27 | 100.0% |
+  | Will there be no change in Fed interest rates after the July 2026 meeting? | 25 | 15 | 60.0% |
+  | Will Bitcoin dip to $45,000 by December 31, 2026? | 24 | 19 | 79.2% |
+  | Israel x Iran ceasefire continues through September 30? | 21 | 16 | 76.2% |
+  | US announces end of Iranian blockade by August 31, 2026? | 21 | 16 | 76.2% |
+  | Will the Fed increase interest rates by 25 bps after the July 2026 meeting? | 21 | 7 | 33.3% |
+  | Will the Iranian regime fall before 2027? | 20 | 20 | 100.0% |
+  | Will China invade Taiwan by end of 2026? | 19 | 12 | 63.2% |
+  | Israel closes its airspace by September 30? | 17 | 10 | 58.8% |
+  | Israel x Iran ceasefire continues through August 31? | 17 | 9 | 52.9% |
+  | Israel x Iran ceasefire continues through August 15? | 16 | 7 | 43.8% |
+  | Strait of Hormuz traffic returns to normal by July 31? | 15 | 14 | 93.3% |
+  | Will the US confirm that aliens exist before 2027? | 15 | 7 | 46.7% |
+
+  The previously explored magnitude-only |top5_skew| diagnostic was not
+  repeated because its exact mechanics remain absent from checkpoint
+  repository authority. No new methodology was reconstructed for CP15.
+
+Next re-evaluation trigger: whether US Invade Iran remains above 90% as its
+sample deepens; whether Putin-out, Iranian-regime-fall, and the September-30
+Iranian-blockade market retain their 100% records; whether the individually
+tracked low-agreement markets remain low or move independently; whether the
+newly-deep US-confirm-aliens market shifts materially as it gains observations;
+total comparable pairs reaching at least 2,500; or additional markets reaching
+n>=15. The 2,500-pair threshold remains a checkpoint collection trigger, not
+a statistical significance threshold.
+
