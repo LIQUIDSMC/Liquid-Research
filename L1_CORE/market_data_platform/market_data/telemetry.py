@@ -23,6 +23,10 @@ DISABLE_AFTER = 20
 WARN_EVERY = 100
 
 
+def _utc_day():
+    return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+
 def resolve_code_commit() -> str:
     env = os.environ.get("LRS_CODE_COMMIT")
     if env:
@@ -43,6 +47,7 @@ class Telemetry:
         self.directory = directory or DEFAULT_DIR
         self.code_commit = code_commit
         self.compromised = False
+        self._compromised_day = None
         self.dropped = 0
         self._batch = []
         self._batch_bytes = 0
@@ -112,8 +117,21 @@ class Telemetry:
 
     def emit(self, rec):
         with self._lock:
-            if not self.enabled or self.compromised:
+            if not self.enabled:
                 return
+            if self.compromised:
+                try:
+                    current_day = _utc_day()
+                    if current_day == self._compromised_day:
+                        return
+                    previous_day = self._compromised_day
+                    print("TELEMETRY-RECOVERED: UTC day advanced from %s to %s" % (
+                        previous_day, current_day), flush=True)
+                except Exception as exc:
+                    self._on_failure(exc)
+                    return
+                self.compromised = False
+                self._compromised_day = None
             try:
                 line = json.dumps(rec, separators=(",", ":")) + "\n"
                 if not self._batch:
@@ -144,7 +162,7 @@ class Telemetry:
         t_start = time.monotonic_ns()
         try:
             os.makedirs(self.directory, exist_ok=True)
-            day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+            day = _utc_day()
             path = os.path.join(self.directory, "telemetry_%s.jsonl" % day)
             data = "".join(self._batch)
             n = len(data.encode())
@@ -153,6 +171,7 @@ class Telemetry:
                 size = os.path.getsize(path) if os.path.exists(path) else 0
             if size + n > FILE_CAP_BYTES:
                 self.compromised = True
+                self._compromised_day = day
                 self._batch.clear()
                 self._batch_bytes = 0
                 print("TELEMETRY-CAP-REACHED: %s - run is COMPROMISED, telemetry stopped" % path,

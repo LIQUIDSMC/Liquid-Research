@@ -49,20 +49,90 @@ def test_failure_and_disable():
 
 
 def test_cap():
-    old = T.FILE_CAP_BYTES
+    old_cap = T.FILE_CAP_BYTES
+    old_utc_day = T._utc_day
     T.FILE_CAP_BYTES = 5000
+    day = ["2026-09-28"]
+    T._utc_day = lambda: day[0]
     try:
         d = tempfile.mkdtemp()
         tel = T.Telemetry(directory=d)
         buf = io.StringIO()
+
         with redirect_stdout(buf):
             for i in range(1000):
                 tel.emit({"type": "x", "i": i})
-        assert tel.compromised and "TELEMETRY-CAP-REACHED" in buf.getvalue()
-        assert sum(p.stat().st_size for p in Path(d).glob("*.jsonl")) <= 5000
+
+        day1 = Path(d) / "telemetry_2026-09-28.jsonl"
+        assert tel.compromised
+        assert tel._compromised_day == "2026-09-28"
+        assert tel._batch == []
+        assert tel._batch_bytes == 0
+        assert "TELEMETRY-CAP-REACHED" in buf.getvalue()
+        assert day1.stat().st_size <= T.FILE_CAP_BYTES
+
+        capped_size = day1.stat().st_size
+        tel.emit({"type": "same_day_after_cap"})
+        tel.close()
+        assert day1.stat().st_size == capped_size
+        assert tel.compromised
+        assert tel._compromised_day == "2026-09-28"
+
+        day[0] = "2026-09-29"
+        with redirect_stdout(buf):
+            tel.emit({"type": "new_day_after_cap", "i": 1})
+            tel.close()
+
+        day2 = Path(d) / "telemetry_2026-09-29.jsonl"
+        assert day2.exists()
+        recovered = [json.loads(x) for x in day2.read_text().splitlines()]
+        assert [r["type"] for r in recovered] == ["new_day_after_cap"]
+        assert day2.stat().st_size <= T.FILE_CAP_BYTES
+        assert tel.compromised is False
+        assert tel._compromised_day is None
+        assert "TELEMETRY-RECOVERED: UTC day advanced from 2026-09-28 to 2026-09-29" in buf.getvalue()
+
+        T.FILE_CAP_BYTES = 100
+        with redirect_stdout(buf):
+            for i in range(1000):
+                tel.emit({"type": "x", "i": i, "pad": "z" * 20})
+                if tel.compromised:
+                    break
+
+        assert tel.compromised
+        assert tel._compromised_day == "2026-09-29"
+        assert day2.stat().st_size <= 100
     finally:
-        T.FILE_CAP_BYTES = old
-    print("cap OK")
+        T.FILE_CAP_BYTES = old_cap
+        T._utc_day = old_utc_day
+
+    print("cap / same-day suppression / UTC rollover recovery OK")
+
+
+def test_recovery_failure_is_fail_safe():
+    old_utc_day = T._utc_day
+    d = tempfile.mkdtemp()
+    tel = T.Telemetry(directory=d)
+    tel.compromised = True
+    tel._compromised_day = "2026-09-28"
+
+    def broken_utc_day():
+        raise RuntimeError("forced recovery failure")
+
+    T._utc_day = broken_utc_day
+    try:
+        tel.emit({"type": "must_not_escape"})
+    finally:
+        T._utc_day = old_utc_day
+
+    assert tel.compromised is True
+    assert tel._compromised_day == "2026-09-28"
+    assert tel._batch == []
+    assert tel._batch_bytes == 0
+    assert tel._total_fail == 1
+    assert tel.enabled is True
+
+    print("recovery failure remains fail-safe and compromised")
 
 
 def test_kill_switch_and_size():
@@ -368,10 +438,11 @@ if __name__ == "__main__":
     test_bounds()
     test_failure_and_disable()
     test_cap()
+    test_recovery_failure_is_fail_safe()
     test_kill_switch_and_size()
     test_semantic_equivalence_and_records()
     test_failed_flush_is_recorded_and_reraised()
     test_concurrent_emit_is_serialized()
     test_take_emit_ms_uses_telemetry_lock()
     test_f3_persistence_bridge()
-    print("ALL F2 + THREAD-SAFETY + F3 BRIDGE TESTS PASSED")
+    print("ALL F2 + THREAD-SAFETY + F3 BRIDGE + TELEMETRY LIFECYCLE TESTS PASSED")
