@@ -650,15 +650,40 @@ Cross-node operation follows these rules:
 - Hardware migration must not silently alter research methodology, checkpoint
   state, or experimental boundaries.
 
-The current LRS2 infrastructure implements a verified Pi3-to-Pi5 frozen-snapshot
-handoff for analytical input. Pi3 remains the authoritative live collector/writer
-for that input. The Pi5 receiver/publication path is implemented and manually
-verified. LRS2 analytical authority has not yet transferred.
+The current LRS2 infrastructure implements a verified Pi3-to-Pi5 bounded,
+immutable snapshot handoff for analytical input. Pi3 remains the authoritative
+live collector/writer for that input. Pi5 is the standing LRS2 analytical-compute
+host for verified snapshots. The unattended bridge is operational; research
+methodology and checkpoint authority remain with the owning specialist.
 
-Final watchdog, notification, and machine-health placement should be reconciled
-after workload authority is settled so monitoring follows the runtime it is
-responsible for observing. Research-checkpoint monitoring remains governed
-separately by the checkpoint rules below.
+Pi3 remains the authoritative runtime node for live market-data collection and
+canonical persistence. Pi5 is the preferred host for heavier historical analysis,
+research analyzers, and forensic compute. Moving live collector authority to Pi5
+would require a separate staged and verified migration.
+
+Repo-wide machine-health monitoring is deployed independently on Pi3 and Pi5.
+Both nodes run `/home/kristo/lrs_machine_watchdog/watchdog.sh` every five minutes
+with host-local node-specific configuration. The canonical source is
+`L1_CORE/operations/lrs_machine_watchdog.sh`.
+
+The watchdog monitors memory availability, swap pressure, disk capacity,
+temperature, active throttling/undervoltage, and new OOM evidence. Pi3 also
+requires `/mnt/lrs001` from its configured storage source and verifies the
+authoritative collector service; Pi5 does not inherit those Pi3-specific
+requirements. Load-average alerting is intentionally not part of the current
+watchdog.
+
+Both nodes may use the same notification topic, but they use separate external
+Healthchecks endpoints so one node cannot satisfy the other's freshness signal.
+A healthy external heartbeat is an operational liveness signal, not research
+evidence. Research-checkpoint monitoring remains governed separately by the
+checkpoint rules below.
+
+Runtime Git epochs may intentionally differ from Mac/GitHub and from each other.
+A Pi checkout is not stale merely because its HEAD differs from `origin/main`;
+deployment authority, runtime dirt, and workload-specific compatibility must be
+inspected before updating it. Host-local operational deployment may also come
+from a verified canonical Git object without advancing the runtime checkout HEAD.
 
 **"Run the daily cycle" convention:**
 
@@ -695,7 +720,7 @@ evidence rather than the commit log.
 ---
 
 # PART 2 — CURRENT OPERATING STATE
-## (Current authority map — updated 2026-09-26)
+## (Current authority map — updated 2026-09-30)
 
 ---
 

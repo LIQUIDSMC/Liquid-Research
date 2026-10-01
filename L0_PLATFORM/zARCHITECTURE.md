@@ -1,9 +1,9 @@
 # Liquid Research
 ## Architecture Specification
 
-Version: 1.2
+Version: 1.3
 Status: Canonical
-Last Updated: 2026-09-26
+Last Updated: 2026-09-30
 
 This document is the authoritative architectural reference for
 Liquid Research. Architectural decisions should be made here before
@@ -268,10 +268,27 @@ The stable cross-node constraints are:
   or engine ownership.
 
 The implemented LRS2 snapshot handoff is the first concrete realization of this
-model: authoritative live collection/writing remains on Pi3 while a verified
-frozen snapshot can be transported and atomically published on Pi5 for
-analytical consumption. Infrastructure validation of that transport does not
-itself transfer research or analytical authority.
+model: authoritative live collection/writing remains on Pi3 while verified,
+bounded, immutable snapshots are transported and atomically published on Pi5
+for analytical consumption. Pi5 is the standing LRS2 analytical-compute host
+for those verified snapshots; research methodology and checkpoint authority
+remain with the owning research engine.
+
+The Market Data Platform follows the same placement principles without using
+the LRS2 snapshot bridge: Pi3 remains the authoritative live market-data
+collector and canonical persistence node, while Pi5 is the preferred host for
+heavier historical analysis, research analyzers, and forensic compute. Any
+future transfer of collector authority is a separate staged migration rather
+than an implication of Pi5 analytical placement.
+
+Repo-wide machine health is monitored independently on both runtime nodes.
+Each node runs the shared L1 machine-health watchdog locally every five minutes
+using node-specific configuration. The watchdog covers memory availability,
+swap pressure, disk capacity, temperature, active throttling/undervoltage, and
+new OOM evidence. Pi3 additionally verifies its required `/mnt/lrs001` storage
+source and authoritative collector service. Each node uses an independent
+external heartbeat so loss of monitoring on one node cannot be hidden by the
+other node's health.
 
 ---
 
@@ -372,6 +389,11 @@ canonical outputs generally, not a Program B-specific requirement.
 **Status:** Accepted (v1)
 ---
 ## Version History
+
+**v1.3 — 2026-09-30** — Reconciled the implemented Pi3/Pi5 runtime architecture
+after production deployment. Recorded Pi3 live-writer authority, Pi5 analytical
+placement, the verified LRS2 immutable-snapshot handoff, and independent
+repo-wide machine-health monitoring on both nodes.
 
 **v1.2 — 2026-09-26** — Added the evidence-backed hybrid Pi3/Pi5 runtime-node
 architecture, including writer locality, bounded snapshot transfer, and explicit
