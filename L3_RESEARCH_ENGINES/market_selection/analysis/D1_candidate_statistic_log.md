@@ -283,7 +283,119 @@ executed under this protocol.**
 
 | ID | State | Candidate family | Registered question | Outcome metric(s) | Execution artifact | Result state |
 | --- | --- | --- | --- | --- | --- | --- |
-| — | — | — | — | — | — | No D1 tests registered yet |
+| D1-001 | REGISTERED / NOT YET EXECUTED | Tradeability feature family — score/outcome relationship | Does Tradeability Score exhibit a stable relationship with paper-trade outcomes inside frozen D? | trade_won; trade_pnl | Not yet created | PENDING EXECUTION |
+
+---
+
+
+## D1-001 — Tradeability Score vs paper outcomes
+
+### PRE-EXECUTION REGISTRATION
+
+- **State:** REGISTERED / NOT YET EXECUTED
+- **Candidate family:** Tradeability feature family — score/outcome relationship.
+  Tradeability Score, spread label, liquidity, and volume_24h remain one
+  correlated conceptual feature family; aligned results among them will not be
+  counted as independent discoveries.
+- **Exact question:** Within frozen D, does `tradeability_score_at_entry`
+  exhibit a stable relationship with paper-trade outcomes, and does any
+  observed relationship survive the frozen entry-price, temporal,
+  family/dependence, and P&L-outlier sensitivity checks?
+- **Prior exposure / novelty limitation:** This relationship is not a fresh,
+  independent hypothesis. Historical Audit E already examined Tradeability
+  Score against outcomes, including a median score split and entry-price
+  stratification. D1-001 is a prospectively specified discovery analysis on
+  frozen D intended to characterize robustness under the now-frozen D1
+  protocol, not to erase or reset that prior exposure.
+- **Predictor(s):** Primary predictor =
+  `tradeability_score_at_entry`. `spread_label`, `liquidity`, and
+  `volume_24h` may be reported only as correlated-feature-family context or
+  decomposition and may not be promoted as separate independent discoveries
+  from D1-001 without their own prospective registry entries.
+- **Transformation / comparison rule:** Two prespecified score views:
+  (1) continuous score using Pearson and Spearman association with numeric
+  outcomes where mathematically applicable; and
+  (2) fixed outcome-blind D0 median split:
+  Low = score < 93.70 and High = score >= 93.70.
+  The 93.70 threshold is frozen from D0 predictor-only characterization and
+  may not be moved after outcomes are inspected. No outcome-optimized score
+  threshold, alternate bucket boundary, or post-hoc subgroup split is allowed
+  under D1-001.
+- **Outcome metric(s):** `trade_won` and `trade_pnl`. For the fixed Low/High
+  comparison report win rate and P&L ordinary mean, median, and frozen 10%
+  symmetric trimmed mean when eligible. For continuous score report Pearson
+  and Spearman association with numeric `trade_won` and `trade_pnl`, with
+  interpretation separating statistical association from economic magnitude.
+- **Population:** Frozen D only: n=396, `resolution_date <= 2026-09-23`,
+  trade-id SHA-256
+  `ad6efd9801c8f18fba47769ba49f42f37ee59f7b2a9454709d18e8e9c65b2f4e`.
+- **Exclusions:** No discretionary exclusions. A row is excluded from a
+  specific statistic only when a field required for that statistic is missing
+  or invalid; every such exclusion must be counted and disclosed. No exclusion
+  based on outcome magnitude, family membership, category, month, side, or
+  whether the result supports the candidate.
+- **Required fields:** `trade_id`, `resolution_date`,
+  `tradeability_score_at_entry`, `entry_price`, `trade_won`, `trade_pnl`,
+  `entry_date`, `category`, plus the frozen v1.1 event-family assignment.
+  `spread_label`, `liquidity`, and `volume_24h` are required only if the
+  correlated-feature context/decomposition section is executed.
+- **Missing-data rule:** No silent deletion. Report missing count and usable n
+  separately for every statistic. Frozen family derivation uses explicit
+  `unclassified` where applicable rather than dropping difficult markets.
+- **Raw n before exclusions:** 396.
+- **Family/dependence treatment:** Report raw-trade results and frozen
+  event-family structure. Report represented-family count, largest-family
+  concentration, and whether the apparent direction is solely attributable
+  to one family. Family-aware results are sensitivity analyses and are not
+  treated as proof of independent observations.
+- **Temporal treatment:** Use the outcome-blind D0 calendar-month cohorts
+  already fixed by entry date: June, July, August, September 2026. Report
+  direction/magnitude by month where usable n permits; do not create
+  outcome-driven date cutoffs.
+- **Entry-price treatment:** Primary result is unadjusted. Sensitivity uses the
+  fixed outcome-blind D0 entry-price boundaries:
+  Q1 = 0.7025, median = 0.8675, Q3 = 0.9537.
+  Examine the prespecified score relationship within those four entry-price
+  strata. These strata may not be moved after outcome inspection. A changed
+  or weakened result is evidence about robustness, not automatic evidence of
+  entry-price causality.
+- **P&L outlier treatment:** Ordinary mean + median + frozen 10% symmetric
+  trimmed mean when n >= 10; absolute-P&L concentration separately. The trim
+  percentage may not vary by group or candidate.
+- **Planned outputs:** Raw/usable n; missingness; Low/High group sizes; win
+  rates; P&L mean/median/10%-trimmed mean; continuous score associations;
+  absolute-P&L concentration; represented-family count and concentration;
+  calendar-month sensitivity; fixed entry-price-stratum sensitivity;
+  category composition; correlated-feature-family context; adverse/null
+  findings; economic magnitude; interpretation limits. No candidate ranking
+  or V1 promotion is implied by execution.
+- **Execution artifact/code:**
+  `L3_RESEARCH_ENGINES/market_selection/analysis/d1_001_score_outcomes.py`
+  and
+  `L3_RESEARCH_ENGINES/market_selection/analysis/D1_001_score_outcomes.md`.
+  Neither artifact exists at registration time.
+- **Registered before execution:** YES
+- **V1 accessed:** NO
+
+### POST-EXECUTION RECORD
+
+- **State:** NOT YET EXECUTED
+- **Execution date/time:** —
+- **Code/artifact SHA or commit:** —
+- **Usable n:** —
+- **Families represented:** —
+- **Category composition:** —
+- **Temporal coverage:** —
+- **Observed result:** —
+- **Economic magnitude:** —
+- **Entry-price sensitivity:** —
+- **Family/dependence sensitivity:** —
+- **Temporal sensitivity:** —
+- **Outlier sensitivity:** —
+- **Null/adverse findings:** —
+- **Interpretation limits:** —
+- **Candidate status:** PENDING EXECUTION
+- **V1 accessed:** NO
 
 ---
 
