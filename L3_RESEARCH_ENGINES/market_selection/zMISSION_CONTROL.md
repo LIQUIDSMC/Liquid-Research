@@ -174,7 +174,7 @@ Historical checkpoints at n=32, n=36, and n=117 are preserved in
 Tradeability Score is predictive, inverted, harmful, or causally related to
 paper-trade outcomes.
 
-## Current Research State — Audit E Completed
+## Current Research State — Audit E Complete / Discovery 4a Frozen
 
 Audit E's decomposition-first review was completed at the overdue
 250-closed-trade checkpoint, performed at n=396 closed trades on 2026-09-23.
@@ -185,17 +185,35 @@ not restore the earlier n=117 lower-score economic pattern, and entry-price
 stratification plus recorded-category diagnostics did not reveal a stable,
 uniform Tradeability Score relationship.
 
+Discovery-protocol step 4a is now closed. The outcome-blind latent event-family
+detector v1.1 is frozen at:
+
+`analysis/latent_event_family_detector_v1_1.py`
+
+Exact reproduction against the authoritative Pi3 runtime ledger recovered the
+frozen n=396 discovery population, family assignments, checksums, and all 17
+regression assertions. The detector provides a deterministic conservative
+approximation of event dependence for family-aware sensitivity analysis. It
+does not establish mathematically independent observations or an exact
+effective sample size.
+
 The evidence does not currently support changing the taxonomy or classifier
 solely to improve this research result.
 
-The primary research question remains unresolved. Event-family dependence,
-effective independent sample size, entry-price effects, and market composition
-remain material interpretation issues. No new raw closed-trade milestone is
-currently defined; any subsequent checkpoint should be prospectively defined
-from a research-relevant trigger.
+The primary research question remains unresolved. Event-family dependence
+remains a material interpretation issue, but a frozen family-aware sensitivity
+apparatus is now available. Entry-price effects and market composition also
+remain material interpretation issues.
 
-Detailed checkpoint measurements and limitations are preserved in
-`L4_KNOWLEDGE/validated_findings.md`.
+The next research step is D0 descriptive population characterization. D0 is
+outcome-blind and precedes hypothesis-generating outcome discovery.
+
+No new raw closed-trade milestone is currently defined; any subsequent
+checkpoint should be prospectively defined from a research-relevant trigger.
+
+Detailed checkpoint measurements, detector checksums, reporting discipline,
+and limitations are preserved in `L4_KNOWLEDGE/validated_findings.md`.
+
 ---
 
 ## Secondary Research Questions
