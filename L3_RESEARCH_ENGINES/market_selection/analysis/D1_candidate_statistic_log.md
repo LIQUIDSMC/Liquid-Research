@@ -283,7 +283,7 @@ executed under this protocol.**
 
 | ID | State | Candidate family | Registered question | Outcome metric(s) | Execution artifact | Result state |
 | --- | --- | --- | --- | --- | --- | --- |
-| D1-001 | REGISTERED / NOT YET EXECUTED | Tradeability feature family — score/outcome relationship | Does Tradeability Score exhibit a stable relationship with paper-trade outcomes inside frozen D? | trade_won; trade_pnl | Not yet created | PENDING EXECUTION |
+| D1-001 | EXECUTED | Tradeability feature family — score/outcome relationship | Does Tradeability Score exhibit a stable relationship with paper-trade outcomes inside frozen D? | trade_won; trade_pnl | `analysis/D1_001_score_outcomes.md` | INCONCLUSIVE |
 
 ---
 
@@ -392,22 +392,73 @@ executed under this protocol.**
 
 ### POST-EXECUTION RECORD
 
-- **State:** NOT YET EXECUTED
-- **Execution date/time:** —
-- **Code/artifact SHA or commit:** —
-- **Usable n:** —
-- **Families represented:** —
-- **Category composition:** —
-- **Temporal coverage:** —
-- **Observed result:** —
-- **Economic magnitude:** —
-- **Entry-price sensitivity:** —
-- **Family/dependence sensitivity:** —
-- **Temporal sensitivity:** —
-- **Outlier sensitivity:** —
-- **Null/adverse findings:** —
-- **Interpretation limits:** —
-- **Candidate status:** PENDING EXECUTION
+- **State:** EXECUTED
+- **Execution date/time:** 2026-10-02; exact execution time was not captured in
+  the execution artifact.
+- **Code/artifact SHA or commit:** Frozen execution methodology commit
+  `3d6979928279d168338bf424ea43ccc53a60a58d`; executed script SHA-256
+  `ae1a0e699c4ec1149cf2b12b7e77b337ed6459d476fdb8f5c930f428eddcfa09`;
+  report SHA-256
+  `df42a6eeda2065d38dd91eb54418b9a8bda65002e6e16d315e4f1eb4aa15092c`.
+- **Usable n:** 396/396 for all registered required fields and reported primary
+  statistics; no missing values in the reported required/context fields.
+- **Families represented:** 207 frozen v1.1 families; largest family n=14
+  (3.54% of D).
+- **Category composition:** Other/Unknown 180 (45.45%); Geopolitical 105
+  (26.52%); Crypto Long-Duration 64 (16.16%); Sports 17 (4.29%);
+  Political 15 (3.79%); Macro/Economic 14 (3.54%); Entertainment 1
+  (0.25%).
+- **Temporal coverage:** Frozen D calendar-month cohorts: June 2026 n=45;
+  July n=108; August n=163; September n=80.
+- **Observed result:** Continuous score associations were weak: score vs
+  `trade_won` Pearson=-0.0627, Spearman=-0.0298; score vs `trade_pnl`
+  Pearson=0.0326, Spearman=0.1129. At the frozen 93.70 split, Low n=196
+  had win rate 82.65% and High n=200 had win rate 82.50%, providing
+  essentially no Low/High win-rate separation.
+- **Economic magnitude:** Low mean P&L=-3.8311, median=6.3550, frozen
+  10%-trimmed mean=-0.4607. High mean P&L=6.1219, median=8.1100,
+  frozen 10%-trimmed mean=9.7947. Thus pooled D contains an economically
+  meaningful High-vs-Low P&L separation, but that separation is not by itself
+  evidence of a stable general score/outcome relationship.
+- **Entry-price sensitivity:** Materially heterogeneous across the four frozen
+  D0 strata. Q1 favored High strongly; Q2 favored Low on mean and trimmed-mean
+  P&L; Q3 mildly favored High; Q4 showed little economic separation and mixed
+  continuous rank behavior. The pooled score/P&L relationship therefore does
+  not remain directionally/magnitude-stable across entry-price contexts.
+- **Family/dependence sensitivity:** Equal-weight family-level associations
+  remained weak: family-mean score vs mean `trade_won` Pearson=-0.0627,
+  Spearman=0.0158; family-mean score vs mean `trade_pnl` Pearson=0.0484,
+  Spearman=0.1257. Family weighting did not materially strengthen the
+  continuous relationship.
+- **Temporal sensitivity:** Heterogeneous. June and July did not show a
+  High-score P&L advantage; August and September did. Monthly score/P&L
+  Pearson values ranged from -0.1067 to 0.0800 and Spearman values from
+  -0.0426 to 0.1779. The pooled economic separation is therefore not
+  temporally stable across the prespecified D0 month cohorts.
+- **Outlier sensitivity:** Total realized P&L=473.48. The three largest
+  absolute P&L magnitudes sum to 300.00 and represent 2.10% of total absolute
+  P&L under the prospectively frozen D1-001 concentration definition.
+  The pooled Low/High contrast remains present under the frozen 10% symmetric
+  trimmed mean (Low=-0.4607; High=9.7947), so the pooled difference is not
+  solely an ordinary-mean artifact.
+- **Null/adverse findings:** Win-rate separation at the fixed score split was
+  effectively absent; continuous score/outcome associations were weak;
+  entry-price-stratum direction was inconsistent; temporal direction was
+  inconsistent; and family equal-weighting did not materially strengthen the
+  continuous result.
+- **Interpretation limits:** D is discovery evidence with historical outcome
+  exposure, and D1-001 does not erase Audit E. The pooled P&L contrast cannot
+  be treated as an independently validated score edge because robustness is
+  heterogeneous across prespecified contexts. Entry-price results are
+  sensitivity analyses, not evidence of entry-price causality. Family-aware
+  results do not prove independence. Correlated liquidity, volume, and
+  spread-label context are not independent discoveries. No threshold,
+  subgroup, or candidate may be changed post hoc from these results.
+- **Candidate status:** INCONCLUSIVE — pooled P&L separation is economically
+  nontrivial and survives the frozen trimmed-mean sensitivity, but the
+  registered requirement of a stable score/outcome relationship is not
+  supported consistently across continuous, entry-price, temporal, and
+  family-aware views. This status does not promote D1-001 to V1.
 - **V1 accessed:** NO
 
 ---
