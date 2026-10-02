@@ -346,8 +346,14 @@ executed under this protocol.**
 - **Family/dependence treatment:** Report raw-trade results and frozen
   event-family structure. Report represented-family count, largest-family
   concentration, and whether the apparent direction is solely attributable
-  to one family. Family-aware results are sensitivity analyses and are not
-  treated as proof of independent observations.
+  to one family. For the prespecified family-equal-weight sensitivity,
+  aggregate frozen D to one row per frozen v1.1 `family_key` using the
+  within-family arithmetic mean of `tradeability_score_at_entry`,
+  `trade_won`, and `trade_pnl`; then report Pearson and Spearman associations
+  between family-mean score and each family-mean outcome. Each represented
+  family receives one row regardless of family size. Family-aware results are
+  sensitivity analyses, are not a separate candidate, and are not treated as
+  proof of independent observations.
 - **Temporal treatment:** Use the outcome-blind D0 calendar-month cohorts
   already fixed by entry date: June, July, August, September 2026. Report
   direction/magnitude by month where usable n permits; do not create
@@ -360,8 +366,15 @@ executed under this protocol.**
   or weakened result is evidence about robustness, not automatic evidence of
   entry-price causality.
 - **P&L outlier treatment:** Ordinary mean + median + frozen 10% symmetric
-  trimmed mean when n >= 10; absolute-P&L concentration separately. The trim
-  percentage may not vary by group or candidate.
+  trimmed mean when n >= 10; absolute-P&L concentration separately. For
+  D1-001, the concentration statistic is fixed prospectively as the sum of
+  the three largest absolute `trade_pnl` magnitudes and that amount as a
+  share of total absolute P&L. The top-three count preserves the previously
+  used Audit E focus on the three largest absolute observations, while the
+  total-absolute-P&L denominator is explicitly the D1-001 concentration
+  definition and should not be represented as Audit E's denominator. The
+  number three and the trim percentage may not vary after D1-001 execution
+  begins.
 - **Planned outputs:** Raw/usable n; missingness; Low/High group sizes; win
   rates; P&L mean/median/10%-trimmed mean; continuous score associations;
   absolute-P&L concentration; represented-family count and concentration;
