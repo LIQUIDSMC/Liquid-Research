@@ -174,7 +174,7 @@ Historical checkpoints at n=32, n=36, and n=117 are preserved in
 Tradeability Score is predictive, inverted, harmful, or causally related to
 paper-trade outcomes.
 
-## Current Research State — Audit E Complete / Discovery 4a Frozen
+## Current Research State — D0 Audited / D1 Governance Frozen
 
 Audit E's decomposition-first review was completed at the overdue
 250-closed-trade checkpoint, performed at n=396 closed trades on 2026-09-23.
@@ -205,8 +205,18 @@ remains a material interpretation issue, but a frozen family-aware sensitivity
 apparatus is now available. Entry-price effects and market composition also
 remain material interpretation issues.
 
-The next research step is D0 descriptive population characterization. D0 is
-outcome-blind and precedes hypothesis-generating outcome discovery.
+D0 descriptive population characterization is complete and audited. It
+characterized the frozen n=396 discovery population without loading economic
+outcome fields and established the descriptive geometry required before D1.
+Its accepted summary is preserved in `L4_KNOWLEDGE/validated_findings.md`.
+
+The D1 candidate/statistic logging protocol is now frozen at
+`analysis/D1_candidate_statistic_log.md`. Before any materially distinct
+outcome-facing D1 question is executed, it must be registered prospectively
+in that append-only log. Protected V1 outcomes remain unopened. The next
+research step is prospectively registered D1 hypothesis-generating discovery
+on frozen D; no D1 outcome-facing statistic has yet been executed under this
+protocol.
 
 No new raw closed-trade milestone is currently defined; any subsequent
 checkpoint should be prospectively defined from a research-relevant trigger.

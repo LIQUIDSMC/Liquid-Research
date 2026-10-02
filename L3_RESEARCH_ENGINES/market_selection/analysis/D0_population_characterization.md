@@ -1,6 +1,6 @@
 # LRS-1 D0 — Population Characterization
 
-**EXECUTION EVIDENCE — PENDING AUDIT, NOT A VALIDATED FINDING**
+**AUDITED EXECUTION EVIDENCE — ACCEPTED FOR DESCRIPTIVE D0 FINDINGS**
 
 D0 is descriptive and outcome-blind. It characterizes the frozen D population geometry before D1 outcome discovery.
 
@@ -287,7 +287,7 @@ These relationships are descriptive predictor/context geometry only. No economic
 - Recorded recurrence greater than recurrence visible within D: **9**
 - Recorded recurrence less than recurrence visible within D: **0**
 
-This is a structural provenance cross-check, not an equality invariant. recurrence_count records historical recurrence state at trade creation, whereas the computed ordinal only counts occurrences visible inside frozen D. Therefore recorded recurrence may legitimately exceed within-D recurrence when earlier occurrences are outside D.
+This is a structural provenance cross-check, not an equality invariant. The recurrence implementation counts prior paper-trade rows with the same market_id at trade creation, whereas the D0 ordinal counts only occurrences visible inside frozen D. A follow-up read-only verification against the authoritative Pi3 ledger reproduced all 9 mismatches and confirmed that every affected row had the required number of earlier same-market_id rows in the full ledger (9/9 supported). Therefore the observed recorded-greater-than-within-D cases are explained by prior ledger occurrences outside the frozen D subset, not by a recurrence-count inconsistency.
 
 ## D0 boundary
 

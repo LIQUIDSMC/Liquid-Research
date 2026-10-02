@@ -274,3 +274,67 @@ Date verified: 2026-10-01
 Evidence: `L3_RESEARCH_ENGINES/market_selection/analysis/latent_event_family_detector_v1_1.py`; exact Mac-to-Pi3 scratch reproduction against the authoritative runtime ledger; frozen detector and population checksums above.
 
 Affects: Closes Market Selection discovery-protocol step 4a. Event-family dependence remains an interpretation limitation, but a frozen family-aware sensitivity apparatus is now available for the protected discovery workflow. This does not change canonical Tradeability Score methodology, scanner filters, admission identity, taxonomy/classifier behavior, paper-trading behavior, or the unresolved primary research question. The next research step is D0 descriptive population characterization; D0 remains outcome-blind.
+
+---
+
+## LRS-1 D0 — Audited Outcome-Blind Population Characterization
+
+**Status:** Market Selection discovery-methodology checkpoint — D0 descriptive
+population characterization completed and audited before D1 outcome discovery.
+
+**Finding:** Frozen discovery population D contains 396 trades and was
+characterized without loading economic outcome fields into the D0 analysis
+dataframe. All 13 authorized D0 ledger fields had zero missing values. The
+population contained 207 frozen latent event families: 149 singleton families
+and 58 multi-trade families, with 247 of 396 observations (62.37%) belonging to
+multi-trade families. Other/Unknown was the largest recorded category at
+180/396 (45.45%). Entry dates spanned 2026-06-22 through 2026-09-22.
+
+Descriptive predictor geometry showed:
+
+- Tradeability Score vs entry price: Pearson -0.2074; Spearman -0.1866.
+- Tradeability Score vs liquidity: Pearson +0.3604; Spearman +0.7855.
+- Tradeability Score vs 24-hour volume: Pearson +0.0477; Spearman +0.2408.
+- Entry price vs liquidity: Pearson -0.0840; Spearman +0.0309.
+
+Spread-label score distributions were also structurally separated in D:
+`excellent` n=173, mean score 94.5139; `acceptable` n=127, mean 90.3276;
+`wide` n=64, mean 85.1016; `extreme` n=32, mean 66.1000. These are descriptive
+predictor/context relationships only and are not economic-outcome findings.
+
+**Recurrence provenance verification:** D0 found 387/396 rows whose recorded
+`recurrence_count` equaled the independently computed recurrence ordinal visible
+inside D, with 9 rows where recorded recurrence was greater and zero where it
+was less. Follow-up read-only verification against the authoritative Pi3 ledger
+reproduced frozen D at n=396 with the expected trade-id fingerprint and
+confirmed all 9 affected rows had the required earlier same-`market_id` ledger
+history (9/9 supported). The production recurrence implementation counts prior
+paper-trade rows with the same `market_id`; therefore these nine differences are
+explained by prior ledger occurrences outside the frozen D subset rather than a
+recurrence-count inconsistency.
+
+**How it was verified:** Executed
+`L3_RESEARCH_ENGINES/market_selection/analysis/d0_population_characterization.py`
+against the authoritative Pi3 runtime ledger using the frozen latent
+event-family detector v1.1. D reproduced at n=396 with trade-id SHA-256
+`ad6efd9801c8f18fba47769ba49f42f37ee59f7b2a9454709d18e8e9c65b2f4e`.
+The audited D0 script SHA-256 was
+`c3d3a2d003b73525fcaa1aef401af5b682146828c87696c4ec3b97a2f2eb70e7`;
+the original execution report SHA-256 was
+`37e9f762569335e520ead1c9f505f31d1a5efbcafd2b768211763a3dfe36abab`.
+The recurrence follow-up loaded only structural identity/status/date/recurrence
+fields and no economic outcome values.
+
+**Interpretation limits:** D0 is descriptive, not hypothesis-testing. It does
+not establish that Tradeability Score, liquidity, volume, spread label,
+entry price, category, side, time, or latent family predicts win rate or P&L.
+Correlations among Tradeability Score and its component/context variables do
+not represent independent discoveries. Family assignments remain a
+conservative dependence sensitivity rather than an exact independent-event
+count.
+
+**Affects:** Closes D0 and establishes the audited descriptive baseline for D1.
+Canonical LRS-1 methodology remains unchanged. Protected V1 remains unopened.
+D1 outcome discovery may proceed only through the prospectively registered,
+append-only candidate/statistic protocol; no D1 economic candidate is promoted
+by this D0 checkpoint.
