@@ -284,6 +284,7 @@ executed under this protocol.**
 | ID | State | Candidate family | Registered question | Outcome metric(s) | Execution artifact | Result state |
 | --- | --- | --- | --- | --- | --- | --- |
 | D1-001 | EXECUTED | Tradeability feature family — score/outcome relationship | Does Tradeability Score exhibit a stable relationship with paper-trade outcomes inside frozen D? | trade_won; trade_pnl | `analysis/D1_001_score_outcomes.md` | INCONCLUSIVE |
+| D1-002 | REGISTERED / NOT YET EXECUTED | Trade-side family — YES/NO outcome relationship | Does trade side exhibit a stable relationship with paper-trade outcomes inside frozen D? | trade_won; trade_pnl | Not yet created | PENDING EXECUTION |
 
 ---
 
@@ -508,6 +509,132 @@ executed under this protocol.**
 - **Null/adverse findings:**
 - **Interpretation limits:**
 - **Candidate status:** RETAIN / REJECT / INCONCLUSIVE / DESCRIPTIVE ONLY
+- **V1 accessed:** NO
+
+---
+
+
+---
+
+## D1-002 — Trade Side vs paper outcomes
+
+### PRE-EXECUTION REGISTRATION
+
+- **State:** REGISTERED / NOT YET EXECUTED
+- **Candidate family:** Trade-side family — YES/NO outcome relationship.
+  `side` is not part of the Tradeability Score / spread / liquidity /
+  volume_24h correlated feature family tested in D1-001.
+- **Exact question:** Within frozen D, does recorded trade side (`Yes` versus
+  `No`) exhibit a stable relationship with paper-trade outcomes, and does any
+  observed side difference survive the frozen entry-price, temporal,
+  family/dependence, and P&L-outlier sensitivity checks?
+- **Prior exposure / novelty limitation:** D0 characterized side composition
+  without outcomes: No n=264 (66.67%) and Yes n=132 (33.33%). D1-001 did not
+  test side against outcomes. No directional YES-versus-NO profitability
+  hypothesis is claimed from D0. D1-002 is exploratory discovery on frozen D,
+  not independent validation.
+- **Predictor(s):** Primary predictor = `side`, using the existing recorded
+  binary values `Yes` and `No`. No recoding, optimized subgroup, or
+  outcome-derived side definition is permitted.
+- **Expected direction:** None prespecified. D1-002 is two-sided with respect
+  to which recorded side, if either, has better paper outcomes. Direction may
+  be described after execution but may not be retroactively represented as
+  prospectively predicted.
+- **Transformation / comparison rule:** Compare the two existing side groups
+  directly: `Yes` versus `No`. No threshold search, alternate grouping, or
+  post-hoc side interaction becomes part of the primary comparison.
+- **Outcome metric(s):** `trade_won` and `trade_pnl`. For each side report win
+  rate and P&L ordinary mean, median, and frozen 10% symmetric trimmed mean
+  when eligible. Report the raw between-side difference in win rate, ordinary
+  mean P&L, median P&L, and trimmed-mean P&L as descriptive economic contrasts.
+  No p-value or nominal significance result alone constitutes validation.
+- **Population:** Frozen D only: n=396,
+  `resolution_date <= 2026-09-23`, trade-id SHA-256
+  `ad6efd9801c8f18fba47769ba49f42f37ee59f7b2a9454709d18e8e9c65b2f4e`.
+- **Exclusions:** No discretionary exclusions. A row is excluded from a
+  statistic only if a field required for that statistic is missing or invalid;
+  every exclusion must be counted and disclosed. No exclusion based on
+  outcome magnitude, family, category, month, entry price, or whether the
+  result supports a side difference.
+- **Required fields:** `trade_id`, `resolution_date`, `side`, `entry_price`,
+  `trade_won`, `trade_pnl`, `entry_date`, `category`, plus the frozen v1.1
+  event-family assignment.
+- **Missing-data rule:** No silent deletion. Report missing count and usable n
+  for every required statistic. Frozen family derivation uses explicit
+  `unclassified` where applicable rather than dropping difficult markets.
+- **Raw n before exclusions:** 396.
+- **Family/dependence treatment:** Report raw-trade results and frozen
+  event-family structure. Report represented-family count and largest-family
+  concentration. For the primary family-equal-weight sensitivity, aggregate
+  each `family_key × side` combination to one row containing that cell's
+  arithmetic-mean `trade_won` and arithmetic-mean `trade_pnl`. Then, for each
+  side separately, report the unweighted arithmetic mean across its represented
+  family cells for each outcome, so every family represented on that side
+  receives one equal contribution regardless of its trade count. A family
+  represented on both sides contributes one family cell to each side; a family
+  represented on only one side contributes only to that side. Report the
+  number of frozen families represented by each side and the number containing
+  both sides. As an additional paired-family sensitivity, restrict to frozen
+  families containing both sides, compute within each family the difference
+  `Yes family-cell mean - No family-cell mean` separately for `trade_won` and
+  `trade_pnl`, then report the unweighted arithmetic mean and median of those
+  family-level differences. Do not outcome-filter or otherwise select paired
+  families beyond the structural requirement that both sides are represented.
+  Family-aware and paired-family results are sensitivity analyses only, are
+  not separate candidates, and are not proof of independent observations.
+- **Temporal treatment:** Use the outcome-blind D0 calendar-month cohorts
+  already fixed by entry date: June, July, August, September 2026. Report
+  Yes/No direction and economic magnitude within each month where usable n
+  permits. No outcome-driven temporal cutoffs.
+- **Entry-price treatment:** Primary side comparison is unadjusted. Robustness
+  uses the fixed outcome-blind D0 entry-price boundaries:
+  Q1=0.7025, median=0.8675, Q3=0.9537. Compare Yes/No outcomes within those
+  four fixed strata. Boundaries may not be moved after outcome inspection.
+  Changed side performance across strata is evidence about robustness, not
+  evidence of entry-price causality.
+- **P&L outlier treatment:** Ordinary mean + median + frozen 10% symmetric
+  trimmed mean when n >= 10. Also report the sum of the three largest absolute
+  `trade_pnl` magnitudes and its share of total absolute P&L for the complete
+  usable D1-002 population, using the same prospectively fixed D1 concentration
+  convention as D1-001. This concentration statistic is contextual and does
+  not replace side-specific robust estimators.
+- **Category treatment:** Category composition may be reported by side as
+  context/concentration diagnostics. Category-specific outcome comparisons
+  are not separate D1-002 candidates and may not be promoted from this test
+  without prospective registration.
+- **Planned outputs:** Raw/usable n; missingness; Yes/No group sizes; win rates;
+  P&L mean/median/10%-trimmed mean; between-side descriptive contrasts;
+  absolute-P&L concentration; represented-family counts and family-aware
+  sensitivity; fixed calendar-month sensitivity; fixed entry-price-stratum
+  sensitivity; category composition by side; adverse/null findings; economic
+  magnitude; interpretation limits. No candidate ranking or V1 promotion is
+  implied by execution.
+- **Execution artifact/code:**
+  `L3_RESEARCH_ENGINES/market_selection/analysis/d1_002_side_outcomes.py`
+  and
+  `L3_RESEARCH_ENGINES/market_selection/analysis/D1_002_side_outcomes.md`.
+  Neither artifact exists at registration time.
+- **Registered before execution:** YES
+- **V1 accessed:** NO
+
+### POST-EXECUTION RECORD
+
+- **State:** NOT YET EXECUTED
+- **Execution date/time:** —
+- **Code/artifact SHA or commit:** —
+- **Usable n:** —
+- **Families represented:** —
+- **Category composition:** —
+- **Temporal coverage:** —
+- **Observed result:** —
+- **Economic magnitude:** —
+- **Entry-price sensitivity:** —
+- **Family/dependence sensitivity:** —
+- **Temporal sensitivity:** —
+- **Outlier sensitivity:** —
+- **Null/adverse findings:** —
+- **Interpretation limits:** —
+- **Candidate status:** PENDING EXECUTION
 - **V1 accessed:** NO
 
 ---
