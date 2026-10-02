@@ -818,3 +818,131 @@ result changed):
   not chosen from CP15 results. This supersedes the looser wording
   "additional markets reaching n>=15" above. The qualitative watch
   items recorded in CP15 are unchanged.
+
+
+- Sixteenth checkpoint (2026-10-01, n=2,431 pairs, 630 markets): triggered
+  naturally by the alternate population condition. At the scheduled 06:05 PDT
+  Sentinel run, the canonical live calculation reported 2,431 comparable pairs
+  and 29 markets at n>=15. The 2,500-pair condition had not fired; the
+  deep-market condition fired because 29 exceeded the frozen CP15 baseline of
+  27.
+
+  Checkpoint analysis used an immutable bounded snapshot captured later that
+  day. The canonical build_agreement_matrix() calculation on that frozen
+  population produced 2,431 comparable pairs across 630 markets, with 29
+  markets at n>=15, 1,469 same-sign pairs, and a 60.43% aggregate same-sign
+  rate (1,469/2,431). The maximum per-market sample was n=75.
+
+  Relative to CP15, the checkpoint population increased by 118 comparable
+  pairs, 35 markets, two deep markets, and 70 same-sign observations. The
+  aggregate same-sign rate moved from 60.48% (1,399/2,313) to 60.43%
+  (1,469/2,431), a change of -0.06 percentage points using the underlying
+  checkpoint fractions. The 118 additional comparable pairs contained 70
+  same-sign observations (59.32%). These figures are descriptive only. No
+  frozen statistical threshold has been established for classifying this
+  movement as a trend, stability, instability, or predictive signal.
+
+  The CP15-to-CP16 deep-market identity audit used canonical slug identity.
+  All 27 CP15 deep markets remained in the roster, exactly two additional
+  markets crossed n>=15, and no CP15 deep market was lost. The two newly-deep
+  markets were:
+
+  - Will the Fed increase interest rates by 25 bps after the October 2026
+    meeting? -- 46.7% same-sign (7/15).
+  - Will there be no change in Fed interest rates after the October 2026
+    meeting? -- 86.7% same-sign (13/15).
+
+  Several previously tracked records changed as their samples deepened. US
+  Invade Iran moved from 91.7% (66/72) to 92.0% (69/75). Putin out before
+  2027 moved from 100.0% (29/29) to 96.9% (31/32). Iranian regime fall
+  remained 100.0%, moving from 20/20 to 21/21. US end of Iranian blockade by
+  September 30 moved from 100.0% (27/27) to 96.6% (28/29). Flávio Bolsonaro
+  moved from 62.1% (18/29) to 54.5% (18/33), while Luiz Inácio Lula da Silva
+  moved from 29.0% (9/31) to 32.4% (11/34). These movements are heterogeneous
+  descriptive observations and do not establish predictive value.
+
+  Full deep-market roster (n>=15) and same-sign rates:
+
+  | Market | n | Same-sign | % |
+  |---|---:|---:|---:|
+  | Will the U.S. invade Iran before 2027? | 75 | 69 | 92.0% |
+  | Clarity Act (H.R.3633) signed into law in 2026? | 59 | 38 | 64.4% |
+  | Strait of Hormuz traffic returns to normal by December 31? | 55 | 45 | 81.8% |
+  | Will there be no change in Fed interest rates after the September 2026 meeting? | 50 | 45 | 90.0% |
+  | Will the Fed increase interest rates by 25 bps after the September 2026 meeting? | 48 | 31 | 64.6% |
+  | Strait of Hormuz traffic returns to normal by September 30? | 45 | 28 | 62.2% |
+  | Strait of Hormuz traffic returns to normal by August 31? | 37 | 29 | 78.4% |
+  | Will Luiz Inácio Lula da Silva win the 2026 Brazilian presidential election? | 34 | 11 | 32.4% |
+  | Will Renan Santos win the 2026 Brazilian presidential election? | 34 | 13 | 38.2% |
+  | Will Flávio Bolsonaro win the 2026 Brazilian presidential election? | 33 | 18 | 54.5% |
+  | Putin out as President of Russia by December 31, 2026? | 32 | 31 | 96.9% |
+  | Will the Fed decrease interest rates by 25 bps after the September 2026 meeting? | 31 | 8 | 25.8% |
+  | Will United Russia (ER) gain the most seats in the next Russian parliamentary election? | 31 | 24 | 77.4% |
+  | Fed rate hike in 2026? | 30 | 18 | 60.0% |
+  | US announces end of Iranian blockade by September 30, 2026? | 29 | 28 | 96.6% |
+  | Will there be no change in Fed interest rates after the July 2026 meeting? | 25 | 15 | 60.0% |
+  | Will Bitcoin dip to $45,000 by December 31, 2026? | 24 | 19 | 79.2% |
+  | Israel x Iran ceasefire continues through September 30? | 22 | 16 | 72.7% |
+  | US announces end of Iranian blockade by August 31, 2026? | 21 | 16 | 76.2% |
+  | Will China invade Taiwan by end of 2026? | 21 | 14 | 66.7% |
+  | Will the Fed increase interest rates by 25 bps after the July 2026 meeting? | 21 | 7 | 33.3% |
+  | Will the Iranian regime fall before 2027? | 21 | 21 | 100.0% |
+  | Israel closes its airspace by September 30? | 17 | 10 | 58.8% |
+  | Israel x Iran ceasefire continues through August 31? | 17 | 9 | 52.9% |
+  | Israel x Iran ceasefire continues through August 15? | 16 | 7 | 43.8% |
+  | Strait of Hormuz traffic returns to normal by July 31? | 15 | 14 | 93.3% |
+  | Will the Fed increase interest rates by 25 bps after the October 2026 meeting? | 15 | 7 | 46.7% |
+  | Will the US confirm that aliens exist before 2027? | 15 | 7 | 46.7% |
+  | Will there be no change in Fed interest rates after the October 2026 meeting? | 15 | 13 | 86.7% |
+
+  The previously explored magnitude-only |top5_skew| diagnostic was not
+  repeated because its exact mechanics remain absent from checkpoint
+  repository authority. No new methodology was reconstructed for CP16.
+
+  CP16 provenance:
+
+  - Natural trigger: 2026-10-01 06:05 PDT, with 2,431 comparable pairs and
+    29 markets at n>=15.
+  - Snapshot ID: 20261002T030715.305900771Z.
+  - Snapshot capture: 2026-10-01 approximately 20:07 PDT
+    (2026-10-02 03:07 UTC), later than the natural Sentinel trigger.
+  - Source host: liquid-pi (Pi3).
+  - Source HEAD:
+    b44e433d90619d0442f03cb951f40f15960bc5c3.
+  - Observed origin/main at capture:
+    90f606b45b240404a0ab03743bc4fd571e685976.
+  - Pi3 was zero commits ahead and one commit behind that observed
+    origin/main. The missing commit was 90f606b, "Add repo-wide machine health
+    watchdog."
+  - The tracked LRS-2 analytical files agreement_matrix.py, history.py,
+    indicators/obi.py, and indicators/near_book_depth.py were verified
+    identical between Pi3 HEAD and that observed origin/main, and none had a
+    worktree modification.
+  - Verified SHA-256:
+      obi_log.csv:
+        ec15e609317e804e0e0ca3d7e69d0be920c8bf083a6af9f074fd4fdf18f4880f
+      near_book_depth_log.csv:
+        2c3b583da5d1d11a88c332af445111338de599acc5083365ac2ef5daa1f4c216
+  - Snapshot rows and timestamp boundaries:
+      obi_log.csv: 2,451 rows, 12 columns,
+        2026-07-04T05:56:32Z through 2026-10-01T12:03:41Z.
+      near_book_depth_log.csv: 2,441 rows, 13 columns,
+        2026-07-04T17:46:14Z through 2026-10-01T12:04:19Z.
+  - Pre-copy source hashes, snapshot hashes, and post-copy source hashes
+    matched for both CSVs.
+  - Canonical agreement-matrix SHA-256:
+    1e0bc7d2c43046b9aab0643bd8e7aad22c069a06cd951bf696ea982d8869945d.
+  - The later frozen snapshot produced the same 2,431 comparable-pair and
+    29-deep-market counts observed by the 06:05 Sentinel trigger despite the
+    later raw-log capture. The checkpoint analysis describes the frozen
+    snapshot; the trigger record establishes when the checkpoint condition
+    first fired.
+  - Pi3 remained the sole authoritative live collector/writer. No methodology,
+    indicator definition, pairing rule, N=5 setting, or research authority
+    changed.
+
+  CP17 trigger, stated mechanically from the frozen CP16 baseline
+  (2,431 comparable pairs, 29 markets at n>=15): total comparable pairs
+  >= 2,500, OR the count of markets at n>=15 exceeds 29. The 2,500-pair
+  milestone predates CP15 and remains unchanged because it has not fired.
+  This is a collection trigger, not a statistical-significance threshold.

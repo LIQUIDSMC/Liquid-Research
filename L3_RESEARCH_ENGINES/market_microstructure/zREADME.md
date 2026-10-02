@@ -8,9 +8,9 @@ Phase 1 — Core Indicators: COMPLETE, FROZEN
 Phase 2 — Research Infrastructure: COMPLETE
 Phase 3 — Research Analytics & Review: COMPLETE
 
-Current research checkpoint: CP15 (2026-09-27).
+Current research checkpoint: CP16 (2026-10-01).
 
-At CP15, the research dataset contained 2,313 comparable OBI/Near-Book pairs across 595 markets, with 27 markets at n>=15. The aggregate same-sign rate was 60.48% (1,399/2,313), compared with 60.14% (1,331/2,213) at CP14 across 100 additional comparable pairs.
+At CP16, the frozen research population contained 2,431 comparable OBI/Near-Book pairs across 630 markets, with 29 markets at n>=15. The aggregate same-sign rate was 60.43% (1,469/2,431), compared with 60.48% (1,399/2,313) at CP15 across 118 additional comparable pairs.
 
 This describes the observed checkpoint interval only. No frozen statistical threshold has been established for classifying the movement as a trend, stability, instability, or predictive signal.
 
@@ -134,25 +134,25 @@ The checkpoint statistics are based on real comparable OBI/Near-Book observation
 
 ## Current Research State
 
-CP15 is the current frozen research checkpoint.
+CP16 is the current frozen research checkpoint.
 
-CP15 recorded:
+CP16 recorded:
 
-- 2,313 comparable pairs;
-- 595 markets;
-- 27 markets with n>=15;
-- 1,399 same-sign pairs;
-- 60.48% aggregate same-sign;
-- CP14 aggregate same-sign: 60.14%;
-- 100 additional comparable pairs between CP14 and CP15.
+- 2,431 comparable pairs;
+- 630 markets;
+- 29 markets with n>=15;
+- 1,469 same-sign pairs;
+- 60.43% aggregate same-sign;
+- CP15 aggregate same-sign: 60.48%;
+- 118 additional comparable pairs between CP15 and CP16.
 
-The aggregate same-sign rate increased by 0.34 percentage points over that interval. No frozen statistical threshold has been established for classifying this movement as a trend, stability, instability, or predictive signal.
+The aggregate same-sign rate moved by -0.06 percentage points over that interval using the underlying checkpoint fractions. No frozen statistical threshold has been established for classifying this movement as a trend, stability, instability, or predictive signal.
 
 It is not evidence that OBI, Near-Book Depth Imbalance, or their agreement predicts future market outcomes.
 
 Behavior remains heterogeneous across individual markets.
 
-The next checkpoint is triggered when predefined evidence conditions in `zPROGRAM_ROADMAP.md` are met, including total comparable pairs reaching at least 2,500 or additional markets reaching n>=15.
+The next checkpoint is triggered when total comparable pairs reach at least 2,500 or the count of markets at n>=15 exceeds the frozen CP16 baseline of 29, as defined in `zPROGRAM_ROADMAP.md`. The 2,500-pair milestone is a collection trigger, not a statistical-significance threshold.
 
 ## Three-Question Check
 
