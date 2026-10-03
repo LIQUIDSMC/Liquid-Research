@@ -284,7 +284,7 @@ executed under this protocol.**
 | ID | State | Candidate family | Registered question | Outcome metric(s) | Execution artifact | Result state |
 | --- | --- | --- | --- | --- | --- | --- |
 | D1-001 | EXECUTED | Tradeability feature family — score/outcome relationship | Does Tradeability Score exhibit a stable relationship with paper-trade outcomes inside frozen D? | trade_won; trade_pnl | `analysis/D1_001_score_outcomes.md` | INCONCLUSIVE |
-| D1-002 | REGISTERED / NOT YET EXECUTED | Trade-side family — YES/NO outcome relationship | Does trade side exhibit a stable relationship with paper-trade outcomes inside frozen D? | trade_won; trade_pnl | Not yet created | PENDING EXECUTION |
+| D1-002 | EXECUTED | Trade-side family — YES/NO outcome relationship | Does trade side exhibit a stable relationship with paper-trade outcomes inside frozen D? | trade_won; trade_pnl | `analysis/D1_002_side_outcomes.md` | INCONCLUSIVE |
 
 ---
 
@@ -619,22 +619,80 @@ executed under this protocol.**
 
 ### POST-EXECUTION RECORD
 
-- **State:** NOT YET EXECUTED
-- **Execution date/time:** —
-- **Code/artifact SHA or commit:** —
-- **Usable n:** —
-- **Families represented:** —
-- **Category composition:** —
-- **Temporal coverage:** —
-- **Observed result:** —
-- **Economic magnitude:** —
-- **Entry-price sensitivity:** —
-- **Family/dependence sensitivity:** —
-- **Temporal sensitivity:** —
-- **Outlier sensitivity:** —
-- **Null/adverse findings:** —
-- **Interpretation limits:** —
-- **Candidate status:** PENDING EXECUTION
+- **State:** EXECUTED
+- **Execution date/time:** 2026-10-02; exact execution time was not captured in
+  the execution artifact.
+- **Code/artifact SHA or commit:** Frozen execution methodology commit
+  `5f84a8dc642350f2e0e344ccf3d595b95863551c`; executed script SHA-256
+  `d84d416bea44d9d70b412fe6d5f91a3220b2d372538ed4a8d0cfd9e55079f923`;
+  report SHA-256
+  `8863e3c394c99a270823c1d78fc7d3015da1de0faca46c4037dad5081194773c`.
+- **Usable n:** 396/396 for all registered required fields and primary
+  statistics; Yes n=132 and No n=264.
+- **Families represented:** 207 frozen v1.1 families; largest family n=14
+  (3.54% of D). Yes represented 99 families, No represented 132, and 24
+  frozen families contained both sides.
+- **Category composition:** The generated execution report emitted overall
+  category composition but omitted the registered by-side context diagnostic.
+  That diagnostic was subsequently completed outcome-free using the exact
+  frozen detector D identity. Yes: Other/Unknown 57 (43.18%), Geopolitical
+  34 (25.76%), Crypto Long-Duration 17 (12.88%), Sports 8 (6.06%),
+  Political 8 (6.06%), Macro/Economic 7 (5.30%), Entertainment 1 (0.76%).
+  No: Other/Unknown 123 (46.59%), Geopolitical 71 (26.89%), Crypto
+  Long-Duration 47 (17.80%), Sports 9 (3.41%), Political 7 (2.65%),
+  Macro/Economic 7 (2.65%), Entertainment 0 (0.00%). The completion read no
+  outcome columns, performed no category/outcome comparison, introduced no
+  new candidate or subgroup, wrote no artifact, and did not access V1.
+- **Temporal coverage:** June 2026 n=45; July n=108; August n=163;
+  September n=80.
+- **Observed result:** Reported pooled win rates were Yes=0.8258 and
+  No=0.8258, with reported Yes-minus-No difference=0.0000. Pooled P&L
+  favored Yes: Yes mean=10.2473, median=11.9250, trimmed mean=14.4619;
+  No mean=-3.3302, median=5.8200, trimmed mean=0.3023.
+- **Economic magnitude:** Yes-minus-No P&L differences were mean=13.5774,
+  median=6.1050, and frozen 10%-trimmed mean=14.1596. No directional side
+  hypothesis was prospectively registered.
+- **Entry-price sensitivity:** Yes-minus-No mean P&L remained positive in all
+  four frozen strata: Q1=31.9868, Q2=9.8431, Q3=1.2148, Q4=1.4526.
+  Trimmed-mean differences were also positive in all four: Q1=38.9461,
+  Q2=10.1938, Q3=0.2817, Q4=0.1628. Median P&L mildly reversed in Q3
+  (-0.3450). P&L magnitude attenuated substantially at higher entry prices.
+- **Family/dependence sensitivity:** Equal-weight family-cell mean P&L was
+  10.0715 for Yes and -4.3486 for No. Equal-weight mean `trade_won` was
+  0.8054 for Yes and 0.8146 for No. Among 24 families containing both sides,
+  mean within-family Yes-minus-No P&L=33.8805 and median=47.1262;
+  `trade_won` differences had mean=0.1156 and median=0.0000. Family-aware
+  results remain sensitivity analyses, not proof of independence.
+- **Temporal sensitivity:** Heterogeneous. June reversed against the pooled
+  P&L direction: Yes-minus-No mean=-6.5083, median=-7.4500, trimmed
+  mean=-9.7631. July favored Yes (mean=13.1271; trimmed=11.6553), August
+  favored Yes modestly (mean=1.8311; trimmed=0.7284), and September favored
+  Yes strongly (mean=41.0597; trimmed=46.6885). Win-rate differences were
+  negative in June, July, and August and positive in September.
+- **Outlier sensitivity:** Total realized P&L=473.48. The three largest
+  absolute P&L magnitudes sum to 300.00 and equal 2.10% of total absolute
+  P&L under the frozen D1 convention. The pooled Yes-minus-No trimmed-mean
+  contrast remained positive at 14.1596.
+- **Null/adverse findings:** Pooled reported win rates showed no separation;
+  family-equal-weight mean win rate mildly favored No; temporal direction was
+  inconsistent; June materially reversed the pooled P&L direction; and the
+  P&L advantage attenuated sharply in the higher entry-price strata.
+- **Interpretation limits:** D is exploratory discovery evidence, not
+  independent validation or a live-money edge claim. Entry-price analysis is
+  robustness analysis, not evidence of causality. Family-aware results do not
+  prove independence. Category remains context only. The missing registered
+  category-by-side diagnostic was completed explicitly and outcome-free
+  rather than silently altering the frozen execution report. No alternate
+  side grouping, threshold, subgroup, temporal boundary, category-outcome
+  candidate, or paired-family selection rule is introduced.
+- **Candidate status:** INCONCLUSIVE — pooled P&L separation is economically
+  nontrivial, survives trimming, remains positive across all four frozen
+  entry-price strata, and is supported by family-aware P&L sensitivities.
+  However, pooled reported win-rate separation is absent and temporal
+  robustness materially reverses in June with substantial month-to-month
+  heterogeneity. The registered stable side/outcome relationship is therefore
+  not consistently supported across the complete prespecified evidence.
+  D1-002 remains discovery evidence and is not promoted to V1.
 - **V1 accessed:** NO
 
 ---
