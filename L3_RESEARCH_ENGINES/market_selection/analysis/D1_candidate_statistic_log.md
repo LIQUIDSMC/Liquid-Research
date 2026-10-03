@@ -285,6 +285,7 @@ executed under this protocol.**
 | --- | --- | --- | --- | --- | --- | --- |
 | D1-001 | EXECUTED | Tradeability feature family — score/outcome relationship | Does Tradeability Score exhibit a stable relationship with paper-trade outcomes inside frozen D? | trade_won; trade_pnl | `analysis/D1_001_score_outcomes.md` | INCONCLUSIVE |
 | D1-002 | EXECUTED | Trade-side family — YES/NO outcome relationship | Does trade side exhibit a stable relationship with paper-trade outcomes inside frozen D? | trade_won; trade_pnl | `analysis/D1_002_side_outcomes.md` | INCONCLUSIVE |
+| D1-003 | REGISTERED / NOT YET EXECUTED | Entry-price family — entry-price/outcome relationship | Does entry price exhibit a stable relationship with paper-trade outcomes inside frozen D? | trade_won; trade_pnl | Not yet created | PENDING EXECUTION |
 
 ---
 
@@ -693,6 +694,153 @@ executed under this protocol.**
   heterogeneity. The registered stable side/outcome relationship is therefore
   not consistently supported across the complete prespecified evidence.
   D1-002 remains discovery evidence and is not promoted to V1.
+- **V1 accessed:** NO
+
+---
+
+## D1-003 — Entry Price vs paper outcomes
+
+### PRE-EXECUTION REGISTRATION
+
+- **State:** REGISTERED / NOT YET EXECUTED.
+- **Candidate family:** Entry-price family — entry-price/outcome relationship.
+  `entry_price` is not part of the Tradeability Score / spread / liquidity /
+  volume_24h correlated feature family represented by D1-001.
+- **Exact question:** Within frozen D, does recorded `entry_price` exhibit a
+  stable relationship with paper-trade outcomes, and does any observed
+  relationship remain materially coherent across the prospectively fixed
+  continuous, D0-quartile, temporal, frozen-family, trade-side, and P&L-outlier
+  views specified below?
+- **Prior exposure / novelty limitation:** D1-003 is not outcome-naive with
+  respect to entry-price context. The entry-price quartile boundaries were
+  frozen outcome-blind in D0, but D1-001 subsequently reported score/outcome
+  behavior within those entry-price strata and D1-002 subsequently reported
+  side/outcome behavior within the same strata. Those earlier analyses exposed
+  outcome behavior across entry-price contexts before D1-003 registration.
+  Therefore D1-003 must not be represented as an independently generated or
+  outcome-naive entry-price hypothesis. This registration does not infer an
+  expected direction from those previously observed D results.
+- **Predictor(s):** Primary predictor = existing recorded `entry_price`.
+  No alternate price field, transformed price proxy, outcome-derived price
+  variable, or post-hoc interaction becomes part of the primary predictor.
+- **Expected direction:** None prespecified. D1-003 is two-sided. Direction may
+  be described only after execution and may not be retroactively converted
+  into a prospectively predicted direction.
+- **Transformation / comparison rule:** Two frozen views:
+  (1) continuous `entry_price`, using Pearson and Spearman association with
+  numeric outcomes where mathematically applicable; and
+  (2) the existing outcome-blind D0 quartile boundaries:
+  Q1=0.7025, median=0.8675, Q3=0.9537, producing four fixed entry-price
+  strata. These boundaries may not be moved, merged, split, or optimized
+  after D1-003 outcomes are inspected. The quartile view is descriptive /
+  robustness evidence for the same entry-price candidate family, not four
+  independent candidates.
+- **Outcome metric(s):** `trade_won` and `trade_pnl`. For continuous
+  `entry_price`, report Pearson and Spearman association with numeric
+  `trade_won` and `trade_pnl`. For each fixed D0 entry-price stratum report
+  n, win rate, and P&L ordinary mean, median, and frozen 10% symmetric
+  trimmed mean when eligible. Nominal significance alone is not validation.
+- **Population:** Frozen D only: n=396, exact frozen trade-id SHA-256
+  `ad6efd9801c8f18fba47769ba49f42f37ee59f7b2a9454709d18e8e9c65b2f4e`.
+  D membership must be obtained from the frozen D identity already used by
+  the v1.1 family detector / D1 execution tooling; do not reconstruct D with
+  a new date-only shortcut.
+- **Exclusions:** No discretionary exclusions. A row may be excluded from a
+  specific statistic only when a field required for that statistic is missing
+  or invalid, and every such exclusion must be counted and disclosed. No
+  exclusion based on outcome magnitude, family membership, category, month,
+  side, entry-price level, or whether the result supports the candidate.
+- **Required fields:** `trade_id`, `entry_price`, `trade_won`, `trade_pnl`,
+  `entry_date`, `side`, `category`, plus the frozen v1.1 event-family
+  assignment. `resolution_date` may be carried only as frozen-D provenance,
+  not to reconstruct or alter D membership.
+- **Missing-data rule:** No silent deletion. Report required-field missingness
+  and usable n separately for each statistic. Frozen family derivation uses
+  its existing explicit handling rather than dropping difficult markets.
+- **Raw n before exclusions:** 396.
+- **Family/dependence treatment:** Report raw-trade results and frozen family
+  structure: represented-family count, largest-family concentration, and
+  whether an apparent direction is concentrated in a small number of
+  families. For the prospectively fixed family-equal-weight sensitivity,
+  aggregate frozen D to one row per frozen v1.1 `family_key` using within-family
+  arithmetic means of `entry_price`, `trade_won`, and `trade_pnl`; report
+  Pearson and Spearman associations between family-mean entry price and each
+  family-mean outcome. Each represented family receives one row regardless
+  of family size. Family-aware results are sensitivity analyses and are not
+  proof of independent observations.
+- **Temporal treatment:** Use the already-fixed D0 entry-date calendar-month
+  cohorts: June, July, August, September 2026. Within each month report
+  continuous Pearson/Spearman entry-price association with `trade_won` and
+  `trade_pnl` where mathematically usable. Also report month n and economic
+  direction/magnitude. No outcome-driven temporal boundary or scanner cohort
+  may be introduced after execution.
+- **Trade-side robustness:** Because D1-002 has already established that side
+  composition and P&L behavior can differ, report the continuous entry-price
+  association with `trade_won` and `trade_pnl` separately within the existing
+  recorded `Yes` and `No` groups where mathematically usable. This is a
+  prespecified robustness view of D1-003, not a new side candidate or a
+  post-hoc interaction search. The side labels may not be recoded or
+  regrouped.
+- **Entry-price treatment:** `entry_price` is the primary predictor in
+  D1-003; therefore there is no separate adjustment of entry price for itself.
+  The continuous view is primary and the frozen D0 quartile view is the
+  prespecified nonlinear/descriptive robustness view. No new entry-price
+  threshold may be introduced from observed D1-003 outcomes.
+- **P&L outlier treatment:** For every reported P&L grouping with usable
+  n>=10, report ordinary mean, median, and frozen 10% symmetric trimmed mean.
+  If n<10, report mean and median and mark trimmed mean unavailable. For the
+  complete usable D1-003 population, report the sum of the three largest
+  absolute `trade_pnl` magnitudes divided by total absolute P&L, using the
+  same frozen D1 concentration convention as D1-001 and D1-002. Outlier
+  sensitivity does not replace raw results.
+- **Category treatment:** Category composition may be reported as
+  context/concentration only. D1-003 does not authorize category-specific
+  outcome comparisons, category-derived thresholds, or a category/outcome
+  candidate.
+- **Multiple-testing / interpretation discipline:** D1-003 is exploratory D
+  evidence with explicit prior outcome exposure to entry-price contexts.
+  Nominal significance, a monotonic-looking quartile pattern, or an attractive
+  economic magnitude is not independent validation. Previously observed
+  D0/D1 statistics cannot be treated as external anchors for V1.
+- **Planned outputs:** Raw/usable n; missingness; continuous Pearson/Spearman
+  entry-price associations with `trade_won` and `trade_pnl`; four fixed D0
+  entry-price-stratum summaries; P&L mean/median/10%-trimmed mean; absolute
+  P&L concentration; represented-family counts and family-equal-weight
+  sensitivity; fixed calendar-month sensitivity; fixed recorded-side
+  sensitivity; category composition context; adverse/null findings; economic
+  magnitude; prior-exposure limitation; interpretation limits. No candidate
+  ranking or V1 promotion is implied by execution.
+- **Planned execution artifacts:**
+  `L3_RESEARCH_ENGINES/market_selection/analysis/d1_003_entry_price_outcomes.py`
+  and
+  `L3_RESEARCH_ENGINES/market_selection/analysis/D1_003_entry_price_outcomes.md`.
+- **Registration provenance:** Prepared after D1-002 results commit
+  `a8a312663d2825f6efe70af39dd8111e51f56ea6` and before any D1-003
+  outcome-facing execution.
+- **Outcomes accessed for D1-003 execution:** NO.
+- **D1-003 execution artifact created:** NO.
+- **V1 accessed:** NO.
+
+### POST-EXECUTION RECORD
+
+- **State:** NOT YET EXECUTED
+- **Execution date/time:** —
+- **Code/artifact SHA or commit:** —
+- **Usable n:** —
+- **Families represented:** —
+- **Category composition:** —
+- **Temporal coverage:** —
+- **Observed result:** —
+- **Economic magnitude:** —
+- **Entry-price / nonlinear sensitivity:** —
+- **Trade-side sensitivity:** —
+- **Family/dependence sensitivity:** —
+- **Temporal sensitivity:** —
+- **Outlier sensitivity:** —
+- **Prior-exposure limitation:** —
+- **Null/adverse findings:** —
+- **Interpretation limits:** —
+- **Candidate status:** PENDING EXECUTION
 - **V1 accessed:** NO
 
 ---
