@@ -66,6 +66,25 @@ EXPECTED_V1_TRADE_ID_SHA256 = (
     "a8295f43480699e98f27c87fb67e943bc7f26999529e61af4e1635fa3168e141"
 )
 
+# Exact protected-V1 identities recovered outcome-blind from the historical
+# 476-closed-trade boundary and independently verified against the already-
+# frozen EXPECTED_V1_TRADE_ID_SHA256. Runtime membership is identity-based;
+# no date cutoff participates in validation execution.
+EXPECTED_V1_TRADE_IDS = frozenset(
+    {
+        "105", "202", "212", "229", "233", "243", "288", "298",
+        "309", "313", "324", "339", "344", "353", "360", "414",
+        "456", "471", "472", "484", "487", "490", "491", "492",
+        "500", "505", "525", "540", "541", "544", "556", "557",
+        "564", "565", "570", "573", "584", "586", "592", "594",
+        "595", "596", "598", "602", "606", "614", "615", "616",
+        "617", "619", "621", "622", "625", "626", "627", "632",
+        "633", "634", "638", "639", "641", "642", "643", "644",
+        "647", "648", "649", "650", "651", "652", "656", "659",
+        "660", "663", "664", "666", "667", "671", "69", "85",
+    }
+)
+
 EXPECTED_V11_ASSIGNMENT_HASH = (
     "a0a11cd96c8d188cdab17077f38d66932c48b2f2f44acde49815a89d1a7a07c6"
 )
@@ -329,20 +348,21 @@ def load_v1_population(
     """
     This function is reachable only after execution authorization.
 
-    V1 identity is reconstructed as:
-      current closed ledger identities MINUS exact frozen-D detector identities.
+    V1 identity is the exact immutable protected trade-id manifest whose
+    fingerprint was frozen before validation execution.
 
     It is accepted only if:
       D n = 396
-      V1 n = 80
+      V1 manifest n = 80
       D hash matches
-      V1 hash matches
+      V1 manifest hash matches
+      all exact D identities remain present and closed
+      all exact V1 identities remain present and closed
       D/V1 overlap = 0
-      D + V1 = all current closed rows
 
-    No date shortcut is used.
+    Later closed trades are outside both frozen populations and are ignored.
+    No date shortcut is used at runtime.
     """
-
     require(LEDGER.exists(), f"Missing paper ledger: {LEDGER}")
 
     required_columns = {
@@ -362,6 +382,7 @@ def load_v1_population(
     require(not missing, f"Ledger missing required columns: {missing}")
 
     ledger = pd.read_csv(LEDGER)
+    ledger["trade_id"] = ledger["trade_id"].astype(str)
 
     require(
         not ledger["trade_id"].duplicated().any(),
@@ -371,12 +392,28 @@ def load_v1_population(
     status = ledger["status"].astype(str).str.strip().str.lower()
     closed = ledger.loc[status.eq("closed")].copy()
 
-    d_ids = set(family["trade_id"].tolist())
+    d_ids = set(str(x) for x in family["trade_id"].tolist())
+    v1_ids = set(EXPECTED_V1_TRADE_IDS)
+
+    require(
+        len(v1_ids) == EXPECTED_V1_N,
+        "Frozen V1 manifest n mismatch.",
+    )
+    require(
+        trade_id_hash(v1_ids) == EXPECTED_V1_TRADE_ID_SHA256,
+        "Frozen V1 manifest trade-id SHA mismatch.",
+    )
+
+    overlap = d_ids.intersection(v1_ids)
+    require(not overlap, "Frozen D/V1 identity overlap is non-zero.")
 
     d = closed.loc[closed["trade_id"].isin(d_ids)].copy()
-    v1 = closed.loc[~closed["trade_id"].isin(d_ids)].copy()
+    v1 = closed.loc[closed["trade_id"].isin(v1_ids)].copy()
 
-    require(len(d) == EXPECTED_D_N, "Current ledger no longer contains exact D n.")
+    require(
+        len(d) == EXPECTED_D_N,
+        "Current ledger no longer contains exact D n.",
+    )
     require(
         set(d["trade_id"].tolist()) == d_ids,
         "Current ledger D identities do not exactly match frozen detector identities.",
@@ -386,18 +423,17 @@ def load_v1_population(
         "Current-ledger D trade-id SHA mismatch.",
     )
 
-    require(len(v1) == EXPECTED_V1_N, "Protected V1 population n mismatch.")
+    require(
+        len(v1) == EXPECTED_V1_N,
+        "Current ledger no longer contains exact protected V1 n.",
+    )
+    require(
+        set(v1["trade_id"].tolist()) == v1_ids,
+        "Current ledger V1 identities do not exactly match frozen manifest identities.",
+    )
     require(
         trade_id_hash(v1["trade_id"]) == EXPECTED_V1_TRADE_ID_SHA256,
         "Protected V1 trade-id SHA mismatch.",
-    )
-
-    overlap = set(d["trade_id"]).intersection(set(v1["trade_id"]))
-    require(not overlap, "D/V1 identity overlap is non-zero.")
-
-    require(
-        len(d) + len(v1) == len(closed),
-        "D/V1 partition does not exhaust current closed ledger.",
     )
 
     return d, v1
