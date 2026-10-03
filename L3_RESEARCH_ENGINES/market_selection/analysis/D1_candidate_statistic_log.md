@@ -825,24 +825,83 @@ executed under this protocol.**
 
 ### POST-EXECUTION RECORD
 
-- **State:** NOT YET EXECUTED
-- **Execution date/time:** —
-- **Code/artifact SHA or commit:** —
-- **Usable n:** —
-- **Families represented:** —
-- **Category composition:** —
-- **Temporal coverage:** —
-- **Observed result:** —
-- **Economic magnitude:** —
-- **Entry-price / nonlinear sensitivity:** —
-- **Trade-side sensitivity:** —
-- **Family/dependence sensitivity:** —
-- **Temporal sensitivity:** —
-- **Outlier sensitivity:** —
-- **Prior-exposure limitation:** —
-- **Null/adverse findings:** —
-- **Interpretation limits:** —
-- **Candidate status:** PENDING EXECUTION
+- **State:** EXECUTED — Discovery D only.
+- **Execution date/time:** 2026-10-03. First authorized attempt failed on a
+  missing SciPy runtime dependency after an outcome column had been loaded into
+  memory; no outcome value was observed or persisted and no report was created.
+  After the environment-only dependency repair, the exact authorized artifact
+  was rerun successfully.
+- **Code/artifact SHA or commit:** Execution artifact SHA-256
+  `b1a83601e0b1e14c6fe520bff0ba7c87dc7142153409225471b438adb5b3e9db`;
+  runtime/dependency commit
+  `b25bb56ee6583c378e99a06bf8d893a6df3fd664`; generated report SHA-256
+  `71657984766c24eaf72d6c6f98eab3572c46c2ef18494a0a010911250ff2d711`.
+- **Usable n:** 396/396 for `entry_price`, `trade_won`, and `trade_pnl`;
+  required-field and parsed-value missingness was zero.
+- **Families represented:** 207 frozen v1.1 families; largest family n=14;
+  largest-family raw-trade concentration=3.5354%.
+- **Category composition:** Other/Unknown 180 (45.45%); Geopolitical 105
+  (26.52%); Crypto Long-Duration 64 (16.16%); Sports 17 (4.29%);
+  Political 15 (3.79%); Macro/Economic 14 (3.54%); Entertainment 1
+  (0.25%). Category is context only; no category-specific outcome comparison
+  was executed.
+- **Temporal coverage:** Frozen June-September 2026 cohorts: June n=45,
+  July n=108, August n=163, September n=80.
+- **Observed result:** Higher recorded entry price was positively associated
+  with `trade_won` (Pearson=+0.382227; Spearman=+0.379808) but showed a
+  divergent relationship with `trade_pnl`: Pearson=-0.033681 and
+  Spearman=-0.412216. The rank relationship therefore showed higher entry
+  prices associated with more frequent wins but lower-ranked realized P&L.
+- **Economic magnitude:** Fixed D0 quartile win rates rose from 63.64% in Q1
+  to 75.76%, 91.92%, and 98.99% through Q4. Median P&L moved in the opposite
+  direction from +52.67 in Q1 to +23.46, +6.95, and +2.09 in Q4. Ordinary
+  mean P&L was non-monotonic (+7.2152, -3.5734, -0.2431, +1.3840), so the
+  observed economic structure is not adequately summarized by mean P&L alone.
+- **Entry-price / nonlinear sensitivity:** The frozen D0 quartiles preserved
+  the strong monotonic rise in win rate and monotonic decline in median P&L.
+  Frozen 10% trimmed P&L means were +9.6530, +2.3401, +7.9709, and +2.3248,
+  which were not monotonic. No new threshold or transformed price predictor
+  was introduced.
+- **Trade-side sensitivity:** The positive entry-price/win rank association
+  remained in both recorded sides: Yes Spearman=+0.316642 and No
+  Spearman=+0.431057. The negative entry-price/P&L rank association also
+  remained in both: Yes Spearman=-0.464321 and No Spearman=-0.363261.
+- **Family/dependence sensitivity:** Equal-weight frozen-family results retained
+  the same directional rank pattern across 207 families: family-mean
+  entry-price vs `trade_won` Spearman=+0.382494 and vs `trade_pnl`
+  Spearman=-0.306146. These are sensitivity results and do not prove
+  independent observations.
+- **Temporal sensitivity:** All four frozen months retained positive
+  entry-price/win Spearman associations: June +0.465321, July +0.350980,
+  August +0.403768, September +0.337502. All four retained negative
+  entry-price/P&L Spearman associations: June -0.369365, July -0.548783,
+  August -0.344260, September -0.384534. Monthly ordinary P&L means and
+  trimmed means remained heterogeneous, including a negative August mean and
+  trimmed mean.
+- **Outlier sensitivity:** Total realized P&L=473.48; total absolute
+  P&L=14,273.48. The three largest absolute P&L magnitudes summed to 300.00,
+  equal to 2.1018% of total absolute P&L under the frozen D1 convention.
+- **Prior-exposure limitation:** D1-003 is not outcome-naive. D1-001 and
+  D1-002 had already exposed outcome behavior across entry-price contexts
+  before D1-003 registration. The observed direction therefore cannot be
+  represented as independently generated validation.
+- **Null/adverse findings:** Entry-price/P&L Pearson association was near zero
+  (-0.033681) despite the materially negative Spearman association
+  (-0.412216); ordinary quartile mean P&L was non-monotonic; trimmed quartile
+  P&L was also non-monotonic; monthly P&L levels were heterogeneous. The
+  positive win-rate relationship therefore does not imply monotonically
+  improving realized profitability as entry price rises.
+- **Interpretation limits:** D1-003 is exploratory Discovery-D evidence only.
+  It does not establish causality, independence, predictive superiority, or
+  live-money edge. Continuous and fixed-quartile views are one candidate
+  family; temporal, side, family, and outlier views are robustness
+  sensitivities rather than separate discoveries. No observed D1-003 effect
+  is independent validation and no V1 promotion is implied by this execution.
+- **Candidate status:** DISCOVERY SIGNAL — NOT YET RANKED / NOT PROMOTED.
+  The entry-price candidate shows a temporally, side-, and family-directionally
+  coherent divergence between win frequency and ranked P&L, but candidate
+  ranking and any decision to freeze a V1 primary remain separate governance
+  steps.
 - **V1 accessed:** NO
 
 ---
