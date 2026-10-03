@@ -285,7 +285,14 @@ executed under this protocol.**
 | --- | --- | --- | --- | --- | --- | --- |
 | D1-001 | EXECUTED | Tradeability feature family — score/outcome relationship | Does Tradeability Score exhibit a stable relationship with paper-trade outcomes inside frozen D? | trade_won; trade_pnl | `analysis/D1_001_score_outcomes.md` | INCONCLUSIVE |
 | D1-002 | EXECUTED | Trade-side family — YES/NO outcome relationship | Does trade side exhibit a stable relationship with paper-trade outcomes inside frozen D? | trade_won; trade_pnl | `analysis/D1_002_side_outcomes.md` | INCONCLUSIVE |
-| D1-003 | REGISTERED / NOT YET EXECUTED | Entry-price family — entry-price/outcome relationship | Does entry price exhibit a stable relationship with paper-trade outcomes inside frozen D? | trade_won; trade_pnl | Not yet created | PENDING EXECUTION |
+| D1-003¹ | REGISTERED / NOT YET EXECUTED | Entry-price family — entry-price/outcome relationship | Does entry price exhibit a stable relationship with paper-trade outcomes inside frozen D? | trade_won; trade_pnl | Not yet created | PENDING EXECUTION |
+
+¹ **D1-003 status correction — 2026-10-03:** This summary row preserves the
+historical pre-execution state shown when D1-003 was registered. D1-003 was
+subsequently executed in Discovery D; see its canonical POST-EXECUTION RECORD
+and the 2026-10-03 D1 Discovery Candidate Ranking below. Current governance
+state: D1-003 is executed, ranked #1, and selected as the Discovery-D primary
+for prospective V1 specification. V1 remains unopened.
 
 ---
 
