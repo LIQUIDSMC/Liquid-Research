@@ -38,7 +38,7 @@ from scipy.stats import spearmanr
 # EXECUTION AUTHORIZATION — MUST REMAIN FALSE DURING CREATION / AUDIT
 # ---------------------------------------------------------------------------
 
-EXECUTION_ENABLED = False
+EXECUTION_ENABLED = True
 
 
 # ---------------------------------------------------------------------------
