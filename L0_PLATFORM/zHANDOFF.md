@@ -245,6 +245,24 @@ specialist's research workflow.
 Likewise, a specialist should not independently alter unrelated engines,
 cross-LRS architecture, or another owner's methodology.
 
+**Automate immediately wherever possible:**
+
+Anything that can be automated should be automated immediately, as part of
+completing the work. Do not leave automatable tasks as manual instructions,
+optional suggestions, or a future backlog item. This applies to recurring
+checks, scheduled workflows, data freshness, service health, sample-size (N)
+thresholds, and documented checkpoint (CP) milestones.
+
+Build, verify, and schedule the automation within the owning thread's scope.
+GM implements shared infrastructure and routes engine-specific automation to
+the owning specialist as a precise ticket; specialists implement and audit
+those automations. Preserve frozen methodology and required human research
+judgment. If a concrete dependency or authority boundary prevents immediate
+completion, record the blocker and owner explicitly in the handoff.
+
+Reuse the existing ntfy and Healthchecks.io alert infrastructure described
+under Monitoring and Research Checkpoint Governance below.
+
 **Failure discipline:**
 
 If something goes wrong, stop and establish the actual state before applying
@@ -836,6 +854,36 @@ Operational watchdogs monitor engineering/runtime health such as collectors,
 data freshness, scheduled workflows, telemetry, failures, and recovery.
 An operational alert does not itself authorize a research conclusion,
 methodology change, or research checkpoint.
+
+**Existing notification infrastructure — reuse it:**
+
+ntfy and Healthchecks.io are already set up for project alerts. New monitors
+must reuse these channels rather than build another notification system.
+
+- **ntfy:** send push notifications when a documented N threshold or CP
+  milestone becomes due, an operational problem appears, or a service
+  recovers. Include the affected node/engine, trigger, and required action.
+  Multiple monitors may share a topic, but each must maintain independent
+  state and suppress duplicate alerts. Record successful notification state
+  only after delivery succeeds so failed sends can be retried.
+- **Healthchecks.io:** use scheduled heartbeats to detect a monitor or job
+  that stops running. Each logically independent monitor must have its own
+  check and unique ping URL; one node or job must never mask another's
+  silence. Match the expected period to the actual schedule and configure
+  an appropriate grace period. Machine-health checks run every five minutes
+  with separate endpoints for Pi3 and Pi5.
+- **Secrets:** keep notification topics and ping URLs in host-local
+  configuration with permissions restricted to the owner (mode 600). Never
+  print them in chat/logs or commit them to Git. Repository examples must use
+  placeholders such as `REPLACE_LOCALLY`.
+
+For every documented active N/CP trigger, implement and schedule a stateful
+alert immediately through the appropriate owner. Reuse the existing Research
+Checkpoint Sentinel pattern and back the monitor with its own Healthchecks
+heartbeat where applicable. Verify trigger handling, duplicate suppression,
+notification retries, and unattended scheduled execution before declaring the
+automation complete. Alerts prompt specialist review; they do not automate
+research conclusions or authorize methodology changes.
 
 **Research checkpoint monitoring:**
 
