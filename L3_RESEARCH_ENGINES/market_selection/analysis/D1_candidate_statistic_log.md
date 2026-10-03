@@ -1063,3 +1063,120 @@ retroactively rewriting the earlier summary row.
 made after completion of D1-001, D1-002, and D1-003 Discovery-D analyses and
 before any V1 outcome access. Future V1 results must not rewrite this ranking
 decision.
+
+---
+
+## D1-003 V1 VALIDATION — POST-EXECUTION RECORD — 2026-10-03
+
+### Governance state
+
+- **Discovery candidate:** D1-003 — Entry-price family.
+- **Protected validation population:** V1.
+- **Protected V1 n:** 80.
+- **V1 trade-id SHA-256:** `a8295f43480699e98f27c87fb67e943bc7f26999529e61af4e1635fa3168e141`.
+- **Frozen V1 specification SHA-256:** `96362fa3025a11a5fcc4c4cf6d21674f1ccf86a4535b4d34e6b019ba8bfb14f7`.
+- **Executed validation script SHA-256:** `b8965e37c40308801c3d7cc3b39832c8bd311ff0cf0d94370736ae336453f99d`.
+- **Sealed validation report SHA-256:** `20a3a3b5a75f5485b1ca5904dff95ad45bf8b3e90f4482e85ff3ba9fa56b39ca`.
+- **SciPy version:** `1.18.1`.
+- **Discovery-D outcomes used in V1 validation:** NO.
+- **Post-open methodology modification:** NO.
+- **V1 rerun authorized:** NO.
+
+### Execution history
+
+The first authorized V1 execution attempt, before the frozen-identity repair,
+failed closed during protected-population construction because the original
+runtime loader defined V1 as the complement of frozen D within the current
+closed ledger. Subsequent ledger growth made that complement larger than the
+already-frozen V1 n=80. That attempt produced no validation classification and
+no validation report.
+
+The original protected V1 identities were then recovered outcome-blind and
+verified against the V1 trade-id SHA-256 that had already been frozen before
+V1 execution. The validation loader was repaired to select the exact immutable
+80-trade manifest rather than a growing complement-of-D population. The repair
+did not change the frozen predictor, outcomes, statistical tests, success
+criterion, family sensitivity, or classification precedence.
+
+The repaired script was independently audited, committed, deployed to Pi3,
+verified byte-for-byte, separately authorized for the repaired SHA, and then
+executed once against the protected V1 population.
+
+### Primary validation result
+
+| Outcome | n | Pearson | Spearman | Spearman two-sided p |
+|---|---:|---:|---:|---:|
+| `trade_won` | 80 | 0.448833 | 0.404333 | 0.000199 |
+| `trade_pnl` | 80 | -0.061579 | -0.528386 | 0.000000 |
+
+The prospectively frozen hypothesis required both:
+
+1. a positive Spearman relationship between `entry_price` and `trade_won`; and
+2. a negative Spearman relationship between `entry_price` and `trade_pnl`.
+
+Both primary relationships replicated in the required directions and satisfied
+the frozen significance criterion.
+
+### Frozen family sensitivity
+
+Across 57 represented V1 families:
+
+- `entry_price` vs `trade_won` Spearman: **+0.390634**.
+- `entry_price` vs `trade_pnl` Spearman: **-0.430349**.
+- Largest family size: **8 trades**.
+- Largest-family raw-trade concentration: **10.0%**.
+
+Both family-equal-weight relationships retained the prespecified directions
+required by the frozen PASS precedence.
+
+### Disclosure-only robustness context
+
+- Fixed D0 entry-price quartile win rates increased from **66.67%** in Q1 to
+  **100.00%** in Q4.
+- Temporal P&L rank direction was negative in July, August, and September.
+  July contained only four V1 observations.
+- August `trade_won` rank association was near zero; September retained the
+  positive win and negative P&L rank directions.
+- Recorded-side sensitivity retained a positive win-rank direction for both
+  No and Yes trades. P&L rank association was strongly negative for No trades
+  and zero for Yes trades.
+- Total realized V1 P&L was **474.30**; total absolute P&L was **2,274.30**.
+  The three largest absolute P&L observations summed to **300.00**, or
+  **13.1909%** of total absolute P&L.
+- These analyses were disclosure-only under the frozen specification and did
+  not alter the primary classification.
+
+### V1 classification
+
+**PASS**
+
+Under the prospectively frozen V1 specification, D1-003 independently
+replicated the prespecified entry-price divergence structure in the protected
+V1 population: higher recorded entry price retained a positive rank
+relationship with winning and a negative rank relationship with realized P&L.
+
+### Interpretation boundary
+
+This PASS validates the prospectively frozen directional replication criterion
+for D1-003 within protected V1. It does **not** establish causality, universal
+generalization, live-money profitability, or a production trading rule.
+
+No Tradeability Score, scanner, admission, sizing, or live-trading rule is
+changed by this validation result.
+
+### Final V1 state
+
+- **V1 validation opened:** YES.
+- **V1 outcome values accessed:** YES.
+- **V1 analysis executed:** YES.
+- **V1 classification produced:** PASS.
+- **D1-003 independently validated under frozen V1 criterion:** YES.
+- **V1 report created:** YES.
+- **V1 rerun authorized:** NO.
+
+---
+
+**Append-only continuation:** preserve this V1 result and its sealed report as
+the canonical result of the one-shot protected validation. Any future research
+question, replication population, production interpretation, or methodology
+change must be governed separately and must not rewrite this V1 result.
