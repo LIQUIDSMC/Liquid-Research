@@ -771,9 +771,11 @@ executed under this protocol.**
 - **Temporal treatment:** Use the already-fixed D0 entry-date calendar-month
   cohorts: June, July, August, September 2026. Within each month report
   continuous Pearson/Spearman entry-price association with `trade_won` and
-  `trade_pnl` where mathematically usable. Also report month n and economic
-  direction/magnitude. No outcome-driven temporal boundary or scanner cohort
-  may be introduced after execution.
+  `trade_pnl` where mathematically usable. Also report month n, win rate, and
+  `trade_pnl` ordinary mean, median, and frozen 10% symmetric trimmed mean
+  when usable n >= 10; if usable n < 10, report mean and median and mark the
+  trimmed mean unavailable. No outcome-driven temporal boundary or scanner
+  cohort may be introduced after execution.
 - **Trade-side robustness:** Because D1-002 has already established that side
   composition and P&L behavior can differ, report the continuous entry-price
   association with `trade_won` and `trade_pnl` separately within the existing
