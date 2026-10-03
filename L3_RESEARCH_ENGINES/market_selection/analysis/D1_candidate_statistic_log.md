@@ -909,3 +909,150 @@ executed under this protocol.**
 **Append-only rule:** once an entry has been executed, preserve both its
 pre-execution specification and its observed result. Corrections must be
 added explicitly; do not silently rewrite the historical test.
+
+---
+
+## D1 Discovery Candidate Ranking — 2026-10-03
+
+### Governance state
+
+- **Discovery population:** frozen D only.
+- **Candidate set ranked:** D1-001, D1-002, D1-003.
+- **Additional D candidate required before ranking:** NO. The frozen protocol
+  defines how to rank multiple surviving candidate families but does not
+  prescribe a minimum candidate count beyond that condition.
+- **Ranking method:** qualitative application of the prospectively frozen
+  hierarchy, in order:
+  1. discovery-internal consistency / robustness;
+  2. breadth across time and frozen families;
+  3. economic relevance;
+  4. simplicity / interpretability;
+  5. operational usefulness.
+- **Numeric candidate score introduced:** NO.
+- **V1 accessed:** NO.
+
+### Rank 1 — D1-003: Entry-price family
+
+- **Decision:** RANK 1 / SELECTED AS DISCOVERY PRIMARY FOR V1 SPECIFICATION.
+- **Discovery-internal consistency / robustness:** strongest of the three
+  candidate families. Entry price showed a positive rank association with
+  `trade_won` and a negative rank association with `trade_pnl`. The fixed D0
+  quartiles showed monotonically increasing win rate and monotonically
+  decreasing median P&L as entry price increased. Ordinary and trimmed mean
+  P&L were not monotonic, so the candidate is specifically a divergence
+  structure rather than a claim that higher or lower entry price monotonically
+  improves realized profitability.
+- **Breadth across time and frozen families:** the directional rank structure
+  remained coherent in all four frozen calendar months, within both recorded
+  trade sides, and under the equal-weight frozen-family sensitivity across 207
+  represented families. The largest frozen family contained 14 trades
+  (3.5354% of D).
+- **Economic relevance:** the structure is economically interpretable because
+  win frequency rose sharply across the fixed entry-price quartiles while
+  median realized P&L compressed sharply. This identifies a potentially
+  important distinction between frequency of winning and economic payoff.
+- **Simplicity / interpretability:** `entry_price` is an existing directly
+  recorded scalar predictor. The primary continuous predictor requires no
+  derived model, optimized threshold, or post-hoc feature construction.
+- **Operational usefulness:** if independently replicated, entry-price/payoff
+  structure could inform how LRS-1 interprets market tradeability and paper
+  outcomes without changing the canonical Tradeability Score during this
+  discovery round.
+- **Limitations affecting promotion:** D1-003 is not outcome-naive because
+  D1-001 and D1-002 previously exposed outcomes across entry-price contexts.
+  Its Discovery-D result is not independent validation. Pearson association
+  with `trade_pnl` was near zero, quartile ordinary and trimmed mean P&L were
+  non-monotonic, and monthly P&L levels remained heterogeneous.
+- **Selection meaning:** Rank 1 selects D1-003 only as the candidate for which
+  an exact V1 validation specification may now be prospectively frozen. It
+  does not itself constitute V1 validation, successful replication, causal
+  evidence, predictive superiority, or live-money edge.
+
+### Rank 2 — D1-002: Trade-side family
+
+- **Decision:** RANK 2 / NOT SELECTED FOR V1 IN THIS ROUND.
+- **Discovery-internal consistency / robustness:** pooled P&L favored Yes and
+  survived the frozen trimmed-mean and family-aware sensitivities, but pooled
+  win-rate separation was absent and temporal robustness materially reversed
+  in June.
+- **Breadth across time and frozen families:** family-aware P&L evidence
+  supported the pooled direction and the Yes-minus-No P&L difference remained
+  positive across all four fixed entry-price strata, but calendar-month
+  direction was materially heterogeneous.
+- **Economic relevance:** pooled Yes-minus-No P&L differences were
+  economically nontrivial, but the advantage attenuated substantially at
+  higher entry prices.
+- **Simplicity / interpretability:** recorded Yes/No side is simple and
+  directly observable.
+- **Operational usefulness:** potentially useful if independently replicated,
+  but weaker temporal robustness places it below D1-003 under the frozen
+  ranking hierarchy.
+- **V1 consequence:** D1-002 is not tested on V1 if D1-003 is opened as the
+  primary. If D1-003 later fails V1, V1 fails; D1-002 may not then be tested
+  on that same V1 population.
+
+### Rank 3 — D1-001: Tradeability feature family
+
+- **Decision:** RANK 3 / NOT SELECTED FOR V1 IN THIS ROUND.
+- **Discovery-internal consistency / robustness:** continuous score/outcome
+  associations were weak and the fixed score split produced essentially no
+  win-rate separation. Although pooled High-score P&L exceeded Low-score P&L,
+  the relationship was materially heterogeneous across fixed entry-price and
+  temporal views.
+- **Breadth across time and frozen families:** family equal-weighting did not
+  materially strengthen the continuous relationship, and temporal direction
+  was inconsistent.
+- **Economic relevance:** the pooled High-versus-Low P&L difference was
+  economically nontrivial and survived trimming, but the lack of stable
+  relationship across the prespecified robustness views materially weakens
+  the candidate under the first two ranking criteria.
+- **Simplicity / interpretability:** Tradeability Score is operationally
+  interpretable but is a composite feature family rather than a single raw
+  predictor.
+- **Operational usefulness:** directly relevant to LRS-1's existing market
+  selection architecture, but operational relevance does not override the
+  higher-priority robustness and breadth criteria.
+- **V1 consequence:** D1-001 is not selected for V1 in this round.
+
+### Ranking decision
+
+The prospectively frozen ranking hierarchy therefore yields:
+
+1. **D1-003 — Entry-price family**
+2. **D1-002 — Trade-side family**
+3. **D1-001 — Tradeability feature family**
+
+D1-003 is selected as the sole Discovery-D primary candidate to proceed to
+**prospective V1 specification**.
+
+This ranking does **not** open V1 and does **not** by itself promote any
+observed D effect to validated evidence. Before any V1 outcome is accessed,
+the exact D1-003 V1 specification must separately freeze the predictor,
+transformation/buckets, expected direction, population/exclusions, family
+treatment, temporal treatment, entry-price treatment, outcome metrics,
+primary success criterion, sensitivity analyses, rejection/inconclusive
+criteria, and exact analysis code/version.
+
+Until that separate freeze is complete:
+
+- **V1 validation opened:** NO.
+- **V1 outcome values accessed:** NO.
+- **V1 analysis executed:** NO.
+- **D1-003 independently validated:** NO.
+
+### Registry-summary status clarification
+
+The summary table near the creation header still displays D1-003 as
+`REGISTERED / NOT YET EXECUTED` with result state `PENDING EXECUTION`.
+That row reflects its pre-execution registry state and was not silently
+rewritten after execution. The canonical D1-003 POST-EXECUTION RECORD records
+the executed Discovery-D result, and this ranking record uses that executed
+record. This clarification preserves the append-only history rather than
+retroactively rewriting the earlier summary row.
+
+---
+
+**Append-only continuation:** this ranking record is a governance decision
+made after completion of D1-001, D1-002, and D1-003 Discovery-D analyses and
+before any V1 outcome access. Future V1 results must not rewrite this ranking
+decision.
