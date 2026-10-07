@@ -1,0 +1,9 @@
+{
+  "grace_minutes": 60,
+  "ntfy_topic": "REPLACE_LOCALLY",
+  "healthchecks_url": "https://hc-ping.com/REPLACE_LOCALLY",
+  "state_dir": "/home/kristo/lrs2_bridge_watchdog",
+  "evidence_file": "/var/lib/liquid-research/operations/lrs2_bridge/events.jsonl",
+  "expected_daily_time": "05:00",
+  "schedule_timezone": "America/Los_Angeles"
+}

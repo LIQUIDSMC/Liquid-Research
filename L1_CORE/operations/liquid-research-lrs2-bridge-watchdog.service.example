@@ -1,0 +1,13 @@
+[Unit]
+Description=Liquid Research LRS2 bridge publication watchdog
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=kristo
+ExecStart=/usr/bin/python3 /home/kristo/lrs2_bridge_watchdog/lrs2_bridge_watchdog.py --config /home/kristo/lrs2_bridge_watchdog/config.json
+TimeoutStartSec=90
+UMask=0077
+StandardOutput=journal
+StandardError=journal
