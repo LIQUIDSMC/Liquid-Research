@@ -192,6 +192,13 @@ def manifest_header(source_root):
 
 
 def validate_source_file(source_root, relative_path):
+    """Validate an unsealed canonical file; H2 remains denied."""
+    _, partition_date = parse_canonical_path(Path(relative_path))
+    require_unsealed_h2_date(partition_date)
+    return _validate_source_file_core(source_root, relative_path)
+
+
+def _validate_source_file_core(source_root, relative_path):
     """
     Validate one canonical Parquet file without loading all rows.
 
@@ -202,7 +209,6 @@ def validate_source_file(source_root, relative_path):
     """
     relative_path = Path(relative_path)
     dataset, partition_date = parse_canonical_path(relative_path)
-    require_unsealed_h2_date(partition_date)
 
     root = Path(source_root).resolve()
     path = root / relative_path
