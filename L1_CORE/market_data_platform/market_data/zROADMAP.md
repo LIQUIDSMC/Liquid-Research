@@ -98,6 +98,51 @@ inside historical checkpoints describe the state when recorded unless
 explicitly superseded by a current-status note. Part 1 remains the
 architectural authority.
 
+### Candidate C — H2 Synthetic Snapshot Transport (Engineering Scope)
+
+**Status:** Implemented synthetic-development prototype; production transfer
+not authorized. This work is tracked separately from closure of the
+original LRS3 causal trade-flow research sequence.
+
+**Current location:** Implemented under L1_CORE Market Data Platform.
+This reflects where the code resides, not a verified governance ownership
+decision — see Open governance question below.
+
+**Contract:** `LRS3_H2_Transport_Contract.md`.
+
+**Recorded implementation checkpoints:**
+- `fd7bcba` — legacy snapshot export prototype (2026-10-08).
+- `3b9f2ae` — synthetic-development H2 transport and verifier (2026-10-08).
+- `cf90ba5` — synthetic transport remediation checkpoint (2026-10-12).
+
+**Verified engineering evidence:** The Candidate C implementation passed
+256 LRS3 snapshot regression tests at the `cf90ba5` checkpoint.
+This is test evidence, not production or scientific authorization.
+
+**Authorization boundary:** The contract cites `GM-CANDIDATE-C-002`
+for synthetic development and testing only. Production H2 transfer
+remains unauthorized; H2 predictive research remains sealed; scientific
+readiness remains pending. No production authorization record is documented.
+
+**Relationship to LRS3 closure:** Neither the current L1 roadmap nor
+the L2 Crypto Mission Control establishes Candidate C as a mandatory
+prerequisite for closing gross-edge v1 or ETH replication v2.
+Those research sequences are already documented as closed.
+Candidate C must not be used to reopen them or delay their documented
+closure without an explicit governing decision.
+
+**Open governance question:** The reviewed repository documentation
+and full commit messages do not establish the original authorization
+decision trail or a decision making Candidate C mandatory LRS3 scope.
+Preserve the implementation and contract while that relationship
+remains unverified. Do not infer that the authorization never occurred.
+
+**Release discipline:** Future changes follow the documented independent
+AI-team audit and formal pre-commit verdict process. The earlier
+`cf90ba5` checkpoint did not complete that formal protocol.
+
+---
+
 ### Phase 0 — Single-Exchange Foundation (COMPLETE — HISTORICAL FOUNDATION)
 
 **Objective:** Prove the full pipeline — connect, capture, validate,
