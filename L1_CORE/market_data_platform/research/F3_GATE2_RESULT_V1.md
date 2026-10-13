@@ -283,3 +283,38 @@ Still outstanding outside this Gate-2 scientific adjudication:
 - F2/F3 watchdog semantic-mismatch disposition;
 - final independent Claude audit of the complete closeout and migration handoff;
 - resolution of any material final-audit findings before GM handoff.
+
+---
+
+## Post-closeout status — 2026-10-12
+
+A subsequent repository review did not identify documented completion
+or formal disposition of the following Gate-2 post-closeout obligations:
+
+1. Bounded Pi3 collector liveness/progression verification —
+   completion unverified.
+2. Explicit collector-protection release decision —
+   no release record identified.
+3. F2/F3 watchdog semantic-mismatch disposition —
+   no formal disposition identified.
+4. Final independent Claude audit of the complete F3 closeout
+   and migration handoff — completion unverified.
+
+These items remain outstanding/unverified pending supporting evidence
+or formal resolution. Absence of a completion record in the inspected
+repository evidence does not establish that the work never occurred.
+
+The current governing handoff assigns authoritative live collection
+and canonical persistence to Pi3, with Pi5 serving analytical compute.
+That establishes current runtime placement but does not independently
+verify completion of the historical final placement adjudication.
+
+Resolution of material final-audit findings remains conditional on
+the required independent audit and its results.
+
+The operational/liveness significance of unmatched batch `288135`
+remains preserved by the existing Post-N evidence boundary.
+
+This addendum does not change the frozen F3 Gate-2 PASS, release
+collector protection, authorize Pi3-to-Pi5 collector migration,
+or authorize production monitoring or collector modifications.
