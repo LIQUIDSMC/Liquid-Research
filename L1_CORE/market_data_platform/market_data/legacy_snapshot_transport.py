@@ -7,6 +7,8 @@ Production transfer is not authorized.
 
 import hashlib
 import json
+import os
+import uuid
 from datetime import date, datetime, timezone
 from pathlib import Path
 
@@ -147,7 +149,7 @@ def validate_transport_authorization(record_path, source_root, destination_root)
     }
 
 
-def run_synthetic_h2_transport(
+def _run_synthetic_h2_transport_locked(
     authorization_path,
     source_root,
     destination_root,
@@ -236,7 +238,10 @@ def run_synthetic_h2_transport(
 
             current += timedelta(days=1)
 
-    destination.mkdir(parents=True, exist_ok=False)
+    staging = destination.parent / (
+        f".{destination.name}.partial-{uuid.uuid4().hex}"
+    )
+    staging.mkdir(mode=0o700)
 
     try:
         for relative in authorized_paths():
@@ -286,7 +291,7 @@ def run_synthetic_h2_transport(
             ):
                 raise ValueError("Source changed before copying")
 
-            target = destination / relative
+            target = staging / relative
             target.parent.mkdir(parents=True, exist_ok=True)
 
             with source_file.open("rb") as reader, target.open("xb") as writer:
@@ -343,23 +348,102 @@ def run_synthetic_h2_transport(
             "files": evidence,
         }
 
-        evidence_path = destination / "transport_evidence.json"
+        evidence_path = staging / "transport_evidence.json"
 
         evidence_path.write_text(
             json.dumps(result, sort_keys=True, indent=2) + "\n",
             encoding="utf-8",
         )
 
-        completion_marker = destination / "TRANSPORT_COMPLETE"
+        completion_marker = staging / "TRANSPORT_COMPLETE"
         completion_marker.write_text(
             authorization["authorization_sha256"] + "\n",
             encoding="utf-8",
         )
 
+        # The cooperative lock is held across the entire attempt.
+        # Atomic publication is local-filesystem only. Noncooperating
+        # processes can still race with the destination existence check.
+        if destination.exists() or destination.is_symlink():
+            raise FileExistsError("Transport destination already exists")
+
+        os.rename(staging, destination)
         return result
 
     except BaseException:
+        # Preserve incomplete staging for diagnosis and safe retry.
         raise
+
+
+
+def run_synthetic_h2_transport(
+    authorization_path,
+    source_root,
+    destination_root,
+    max_files,
+    max_source_bytes,
+    max_runtime_seconds,
+):
+    """Run one cooperative, synthetic-only transport attempt.
+
+    A failed attempt preserves its partial staging directory and does
+    not publish an incomplete final destination. A subsequent authorized
+    attempt may retry using the same destination.
+
+    Concurrency guarantees are cooperative and local-filesystem only.
+    The lock does not protect against noncooperating processes.
+    Publication uses an existence check followed by os.rename(), which
+    does not guarantee no-replace semantics against concurrent
+    noncooperating writers.
+
+    Crash durability is not guaranteed. Transport evidence and completion
+    marker writes are not explicitly synchronized before publication,
+    and the published directory entry is not explicitly synchronized
+    afterward.
+
+    A successful return does not authorize production transfer,
+    predictive research, or scientific readiness.
+    """
+    from L1_CORE.market_data_platform.market_data import (
+        legacy_snapshot_lock,
+    )
+
+    # Validate authorization before creating any destination directories.
+    validate_transport_authorization(
+        authorization_path,
+        source_root,
+        destination_root,
+    )
+
+    destination = Path(destination_root).resolve()
+    source = Path(source_root).resolve()
+
+    if (
+        source == destination
+        or source.is_relative_to(destination)
+        or destination.is_relative_to(source)
+    ):
+        raise ValueError("Source and destination must not overlap")
+
+    # Existing C-003 lock requires a safe, existing staging root.
+    destination.parent.mkdir(parents=True, exist_ok=True)
+
+    @legacy_snapshot_lock.exclusive_attempt_lock
+    def execute(locked_root):
+        if destination.exists() or destination.is_symlink():
+            raise ValueError("Destination must not already exist")
+
+        return _run_synthetic_h2_transport_locked(
+            authorization_path,
+            source_root,
+            destination_root,
+            max_files,
+            max_source_bytes,
+            max_runtime_seconds,
+        )
+
+    return execute(destination.parent)
+
 
 
 def verify_synthetic_h2_transport_destination(evidence_path, destination_root):

@@ -670,3 +670,40 @@ def test_full_range_orchestrator_rejects_sealed_h2(
     assert output.is_dir()
     assert not (output / "manifest.json").exists()
     assert not (output / "COMPLETE").exists()
+
+
+def test_c004_export_rejects_symlinked_output_parent_before_creation(tmp_path):
+    """Output aliases into source must be rejected without side effects."""
+    source = tmp_path / "canonical"
+    source.mkdir()
+
+    alias = tmp_path / "alias"
+    alias.symlink_to(source, target_is_directory=True)
+
+    output = alias / "export"
+
+    with pytest.raises(ValueError, match="inside source root"):
+        exp.run_candidate_c_export_prototype(
+            source_root=source,
+            output_dir=output,
+            max_files=1,
+        )
+
+    assert not (source / "export").exists()
+
+
+def test_c004_export_rejects_output_containing_source(tmp_path):
+    """Reject a reverse-containment path before creating export output."""
+    output = tmp_path / "output"
+    source = output / "canonical"
+
+    assert not output.exists()
+
+    with pytest.raises(ValueError, match="contains source root"):
+        exp.run_candidate_c_export_prototype(
+            source_root=source,
+            output_dir=output,
+            max_files=1,
+        )
+
+    assert not output.exists()

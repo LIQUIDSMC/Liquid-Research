@@ -50,8 +50,18 @@ TRANSPORT_COMPLETE contains the authorization digest.
 The marker alone is not independent proof of destination integrity.
 
 ## Limitations
-Failed runs may leave partial destination files.
+Failed attempts preserve partial staging directories rather than publishing
+incomplete final destinations. Subsequent authorized attempts may retry
+using the same destination.
 Destination must not exist before execution.
+Concurrency guarantees are cooperative and local-filesystem only.
+The lock does not protect against noncooperating processes.
+Publication checks destination existence before os.rename(), but this
+does not guarantee atomic no-replace behavior against concurrent
+noncooperating writers.
+Crash durability is not guaranteed. Transport evidence and completion
+marker writes are not explicitly synchronized before publication, and
+the published directory entry is not explicitly synchronized afterward.
 File and byte budgets are cooperative checks.
 Runtime limits are cooperative, not hard execution caps.
 Filesystem identity checks do not provide atomic snapshots.

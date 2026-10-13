@@ -23,6 +23,7 @@ from pathlib import Path
 import pyarrow.parquet as pq
 import sqlite3
 
+from L1_CORE.market_data_platform.market_data import legacy_snapshot_scope as scope
 from L1_CORE.market_data_platform.market_data.storage import (
     TRADE_SCHEMA,
     DEPTH_LEVEL_SCHEMA,
@@ -31,18 +32,21 @@ from L1_CORE.market_data_platform.market_data.storage import (
 CONTRACT_VERSION = "candidate-c-legacy-v1"
 MANIFEST_SCHEMA_VERSION = 1
 
-START_DATE = date(2026, 8, 21)
-END_DATE = date(2026, 10, 6)
+START_DATE = scope.START_DATE
+END_DATE = scope.END_DATE
 
 DATASETS = {
     "trades": TRADE_SCHEMA,
     "depth_levels": DEPTH_LEVEL_SCHEMA,
 }
 
-INSTRUMENTS = frozenset({"BTC-USD", "ETH-USD"})
+INSTRUMENTS = scope.INSTRUMENTS
 
-H2_START = date(2026, 9, 4)
-H2_END = date(2026, 10, 1)
+H2_START = scope.H2_START
+H2_END = scope.H2_END
+
+if frozenset(DATASETS) != scope.DATASETS:
+    raise RuntimeError("Export dataset schemas diverge from canonical scope")
 
 HASH_CHUNK_BYTES = 1024 * 1024
 
@@ -1146,7 +1150,7 @@ def run_candidate_c_export_prototype(
     The output is not a published or transferable snapshot.
     """
     source_root = Path(source_root).resolve()
-    output_dir = Path(output_dir).absolute()
+    output_dir = Path(output_dir).resolve()
 
     if output_dir.exists() or output_dir.is_symlink():
         raise ValueError("Export output directory already exists")
@@ -1156,6 +1160,8 @@ def run_candidate_c_export_prototype(
 
     if output_dir.is_relative_to(source_root):
         raise ValueError("Export output cannot be inside source root")
+    if source_root.is_relative_to(output_dir):
+        raise ValueError("Export output contains source root")
 
     if not isinstance(max_files, int) or isinstance(max_files, bool):
         raise ValueError("max_files must be a positive integer")

@@ -582,3 +582,177 @@ def test_transport_positive_file_budget_exceeded(
         )
 
     assert not (destination / "TRANSPORT_COMPLETE").exists()
+
+
+def _c002_retry_fixture(authorization_fixture, monkeypatch):
+    """Build two synthetic files across the authorized H2 partition tree."""
+    from datetime import timedelta
+    from L1_CORE.market_data_platform.market_data import (
+        legacy_snapshot_export as exp,
+    )
+
+    source, destination, record, write_record = authorization_fixture
+
+    current = exp.H2_START
+    while current <= exp.H2_END:
+        for dataset in exp.DATASETS:
+            (source / dataset / f"date={current.isoformat()}").mkdir(
+                parents=True, exist_ok=True
+            )
+        current += timedelta(days=1)
+
+    folder = source / "trades" / f"date={exp.H2_START.isoformat()}"
+
+    for number in (1, 2):
+        filename = f"00000000-0000-4000-8000-{number:012d}.parquet"
+        (folder / filename).write_bytes(
+            f"synthetic-retry-{number}".encode()
+        )
+
+    monkeypatch.setattr(
+        exp,
+        "_validate_source_file_core",
+        lambda root, relative: {
+            "sha256": exp.sha256_file(source / relative),
+            "size_bytes": (source / relative).stat().st_size,
+            "instruments": ["BTC-USD"],
+        },
+    )
+
+    parameters = {
+        "authorization_path": write_record(),
+        "source_root": source,
+        "destination_root": destination,
+        "max_files": 2,
+        "max_source_bytes": 1_000_000,
+        "max_runtime_seconds": 30,
+    }
+
+    return source, destination, parameters
+
+
+def test_c002_retry_after_partial_failure(
+    authorization_fixture, monkeypatch
+):
+    from L1_CORE.market_data_platform.market_data import (
+        legacy_snapshot_transport as transport,
+    )
+
+    source, destination, parameters = _c002_retry_fixture(
+        authorization_fixture, monkeypatch
+    )
+
+    # Fail after the first file has already been copied.
+    with pytest.raises(RuntimeError, match="file-count"):
+        transport.run_synthetic_h2_transport(
+            **{**parameters, "max_files": 1}
+        )
+
+    assert not destination.exists()
+
+    partials = list(
+        destination.parent.glob(f".{destination.name}.partial-*")
+    )
+    assert len(partials) == 1
+    assert any(p.is_file() for p in partials[0].rglob("*.parquet"))
+
+    # Retry at exactly the same destination.
+    result = transport.run_synthetic_h2_transport(**parameters)
+
+    assert result["file_count"] == 2
+    assert destination.is_dir()
+    assert (destination / "TRANSPORT_COMPLETE").is_file()
+
+    verified = transport.verify_synthetic_h2_transport_destination(
+        destination / "transport_evidence.json",
+        destination,
+    )
+    assert verified["verified"] is True
+
+    # Failed-attempt evidence remains outside the published destination.
+    assert partials[0].is_dir()
+
+
+def test_c002_existing_destination_cannot_be_overwritten(
+    authorization_fixture, monkeypatch
+):
+    from L1_CORE.market_data_platform.market_data import (
+        legacy_snapshot_transport as transport,
+    )
+
+    _, destination, parameters = _c002_retry_fixture(
+        authorization_fixture, monkeypatch
+    )
+
+    destination.mkdir()
+    sentinel = destination / "DO_NOT_OVERWRITE"
+    sentinel.write_text("preserve", encoding="utf-8")
+
+    with pytest.raises((ValueError, FileExistsError)):
+        transport.run_synthetic_h2_transport(**parameters)
+
+    assert sentinel.read_text(encoding="utf-8") == "preserve"
+    assert not (destination / "TRANSPORT_COMPLETE").exists()
+
+
+def test_c002_publication_failure_preserves_staging(
+    authorization_fixture, monkeypatch
+):
+    from L1_CORE.market_data_platform.market_data import (
+        legacy_snapshot_transport as transport,
+    )
+
+    _, destination, parameters = _c002_retry_fixture(
+        authorization_fixture, monkeypatch
+    )
+
+    def reject_publish(source, target):
+        raise OSError("injected publication failure")
+
+    with monkeypatch.context() as patch:
+        patch.setattr(transport.os, "rename", reject_publish)
+
+        with pytest.raises(OSError, match="publication failure"):
+            transport.run_synthetic_h2_transport(**parameters)
+
+    assert not destination.exists()
+
+    partials = list(
+        destination.parent.glob(f".{destination.name}.partial-*")
+    )
+    assert len(partials) == 1
+
+    assert (partials[0] / "transport_evidence.json").is_file()
+    assert (partials[0] / "TRANSPORT_COMPLETE").is_file()
+
+    # Publication failure must not poison a subsequent attempt.
+    result = transport.run_synthetic_h2_transport(**parameters)
+    assert result["file_count"] == 2
+    assert destination.is_dir()
+
+
+def test_c002_concurrent_attempt_fails_fast(
+    authorization_fixture, monkeypatch
+):
+    from L1_CORE.market_data_platform.market_data import (
+        legacy_snapshot_transport as transport,
+        legacy_snapshot_lock,
+    )
+
+    _, destination, parameters = _c002_retry_fixture(
+        authorization_fixture, monkeypatch
+    )
+
+    @legacy_snapshot_lock.exclusive_attempt_lock
+    def hold_lock(root):
+        with pytest.raises(
+            PermissionError, match="already in progress"
+        ):
+            transport.run_synthetic_h2_transport(**parameters)
+
+    hold_lock(destination.parent)
+
+    assert not destination.exists()
+    assert not list(
+        destination.parent.glob(f".{destination.name}.partial-*")
+    )
