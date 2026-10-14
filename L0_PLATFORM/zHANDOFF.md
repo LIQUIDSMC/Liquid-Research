@@ -512,6 +512,22 @@ Assume nothing. Verify everything.
 - ACTION: Numbered step-by-step instructions
 - EXPECTED RESULT: What success looks like
 
+**User-run commands and automatic continuation:**
+
+AI assistants provide all code and terminal commands inline in the chat.
+The user runs every command. Assistants must not execute terminal commands
+or modify repository files directly.
+
+After the user pastes command output, inspect the evidence and provide the
+next investigation, proposed edit, verification, or audit step without
+waiting for a separate "proceed" or "continue" message. Continue only within
+the authorized task scope and preserve failure discipline.
+
+Pasted output authorizes continuation of analysis and preparation of the
+next commands; it does not replace independent audit or authorize assistants
+to execute edits, staging, commits, pushes, or deployments. The user decides
+whether to execute each supplied command.
+
 **Terminal command delivery standard:**
 
 When the user is expected to run a terminal command, optimize for safe,
@@ -594,7 +610,7 @@ commits merely to show activity. Keep commit messages short and focused.
 Before every commit, use this sequence:
 
 WRITE -> VERIFY -> DIFF -> AI TEAM AUDIT -> FIX IF NEEDED ->
-RE-AUDIT -> PASS -> STAGE EXACT FILE(S) -> INSPECT STAGED DIFF -> COMMIT
+RE-AUDIT -> PASS -> STAGE EXACT FILE(S) -> INSPECT STAGED DIFF -> COMMIT -> PUSH
 
 Before the commit is prepared, stop with exactly:
 
@@ -619,6 +635,13 @@ audit. A previous failed audit does not authorize the corrected commit.
 
 After PASS, stage only the intended file(s), inspect the staged diff, and only
 then commit.
+
+The user's standing preference is to push every completed local commit to
+GitHub. After the staged diff is reviewed, provide commit and push commands
+for the user to run, then inspect the pasted output to confirm both succeeded.
+If a commit succeeds but its push fails, report the commit as local only and
+resolve the push failure without creating a duplicate commit. Do not force-push
+or bypass audit, branch protections, or deployment authorization.
 
 **Mac / GitHub / Raspberry Pi source discipline:**
 
