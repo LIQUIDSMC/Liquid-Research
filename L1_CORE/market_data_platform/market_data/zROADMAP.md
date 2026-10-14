@@ -119,6 +119,31 @@ decision — see Open governance question below.
 256 LRS3 snapshot regression tests at the `cf90ba5` checkpoint.
 This is test evidence, not production or scientific authorization.
 
+**Scoped review closure — 2026-10-14:** The independent reviewer accepted
+closure for the defects investigated in the scoped review of
+`legacy_snapshot_execution.py`, `legacy_snapshot_journal.py`,
+`legacy_snapshot_staging.py`, and `legacy_snapshot_state.py`.
+The four fixes each received independent `VERDICT: PASS` before staging
+and commit, and were subsequently pushed:
+- `6cf28b0` — reject symlinked snapshot payload roots.
+- `24d837c` — serialize committed-payload corruption verification.
+- `915bc09` — validate checkpoint version before corruption classification.
+- `a7a6a48` — reject contradictory sealed-manifest classifications.
+
+The final snapshot regression at `a7a6a48` passed 280 tests.
+The reviewer's closure verdict was `VERDICT: CLOSURE ACCEPTED`, with a
+nonblocking evidence-depth limitation: staging and state were read in full
+to inspect identity, root-validation, lock, and state boundaries; they did
+not receive the same depth of independent defect investigation as execution,
+journal, and the supporting manifest code. Closure covers the investigated
+defects, not an exhaustive certification of every behavior in those modules.
+
+This closure does not establish production readiness, hardware crash
+durability, authenticated rollback protection, or safety against
+noncooperating writers. Production transfer remains HOLD, H2 predictive
+research remains SEALED, scientific readiness remains PENDING, and the
+governance question below remains unresolved.
+
 **Authorization boundary:** The contract cites `GM-CANDIDATE-C-002`
 for synthetic development and testing only. Production H2 transfer
 remains unauthorized; H2 predictive research remains sealed; scientific
