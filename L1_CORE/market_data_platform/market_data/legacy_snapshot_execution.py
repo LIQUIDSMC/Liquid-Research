@@ -119,7 +119,7 @@ def verify_execution_gate(
 
 
 
-def verify_committed_payloads_or_fail(
+def _verify_committed_payloads_or_fail_lock_held(
     staging_root,
     *,
     expected_attempt_id,
@@ -130,7 +130,8 @@ def verify_committed_payloads_or_fail(
     """Verify committed payload bytes; publish FAILED on proven corruption.
 
     This does not implement recovery or general corruption classification.
-    The caller must first pass verify_execution_gate().
+    The caller must hold the attempt lock and first pass
+    verify_execution_gate().
     """
     root = staging._safe_directory(staging_root)
     checkpoint = json.loads(journal._read_regular(root, "checkpoint.json"))
@@ -228,6 +229,29 @@ def verify_committed_payloads_or_fail(
 
 
 from legacy_snapshot_lock import exclusive_attempt_lock
+
+
+@exclusive_attempt_lock
+def verify_committed_payloads_or_fail(
+    staging_root,
+    *,
+    expected_attempt_id,
+    expected_request_id,
+    expected_manifest_sha256,
+    expected_authorizations,
+):
+    """Serialize verification and any FAILED transition.
+
+    The caller must first pass verify_execution_gate().
+    """
+    return _verify_committed_payloads_or_fail_lock_held(
+        staging_root,
+        expected_attempt_id=expected_attempt_id,
+        expected_request_id=expected_request_id,
+        expected_manifest_sha256=expected_manifest_sha256,
+        expected_authorizations=expected_authorizations,
+    )
+
 
 @exclusive_attempt_lock
 def recover_authorized_single_suffix(

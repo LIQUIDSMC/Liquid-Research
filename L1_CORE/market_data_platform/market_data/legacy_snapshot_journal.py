@@ -420,7 +420,7 @@ def accept_manifest_file(
     }:
         raise PermissionError("Staging metadata cannot be accepted")
 
-    execution.verify_committed_payloads_or_fail(
+    execution._verify_committed_payloads_or_fail_lock_held(
         staging_root,
         expected_attempt_id=expected_attempt_id,
         expected_request_id=expected_request_id,

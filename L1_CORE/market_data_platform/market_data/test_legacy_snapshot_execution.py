@@ -1460,3 +1460,59 @@ def test_symlinked_payload_root_rejected_without_record_mutation(
     _assert_recovery_records_unchanged(root, before)
     assert (external / relative).read_bytes() == payload_before
     assert (root / "payload").is_symlink()
+
+
+def test_direct_corruption_verifier_respects_cross_process_lock(tmp_path):
+    from test_legacy_snapshot_lock_process import (
+        _start_lock_holder,
+        _stop_child,
+    )
+
+    root, kwargs = _authorized_attempt(tmp_path)
+    relative = _prepare_authorized_payload(root, kwargs)
+    journal.accept_manifest_file(root, **kwargs, relative_path=relative)
+
+    payload = root / "payload" / relative
+    payload.write_bytes(b"X" * len(payload.read_bytes()))
+    execution.verify_execution_gate(root, **kwargs)
+
+    arguments = {
+        key: kwargs[key]
+        for key in (
+            "expected_attempt_id",
+            "expected_request_id",
+            "expected_manifest_sha256",
+            "expected_authorizations",
+        )
+    }
+    before = _capture_recovery_records(root)
+    payload_before = payload.read_bytes()
+
+    child = _start_lock_holder(root)
+    try:
+        with pytest.raises(
+            PermissionError,
+            match="^Staging operation already in progress$",
+        ):
+            execution.verify_committed_payloads_or_fail(
+                root, **arguments
+            )
+
+        _assert_recovery_records_unchanged(root, before)
+        assert payload.read_bytes() == payload_before
+    finally:
+        _stop_child(child)
+
+    with pytest.raises(
+        ValueError,
+        match="^Confirmed committed payload corruption; attempt FAILED$",
+    ):
+        execution.verify_committed_payloads_or_fail(root, **arguments)
+
+    assert state.read_state(
+        root, expected_attempt_id=kwargs["expected_attempt_id"]
+    )["state"] == "FAILED"
+    for name, contents in before.items():
+        if name != "state.json":
+            assert (root / name).read_bytes() == contents
+    assert payload.read_bytes() == payload_before
