@@ -217,11 +217,17 @@ The canonical Experiment-v2 authority vocabulary is:
 - `E_W = (R_W, A_W, H_W)` -- completed Gate-2 result for the current Window Evaluation; `R_W` retains the complete Gate-2 reason set, `A_W` is the sole Instrument Path routing authority, and `H_W` is retained diagnostic evidence rather than an independent routing authority.
 - `WindowEvaluationResult` -- discriminated current-W result: D0 termination, completed Gate-2 result `E_W`, or `INTEGRITY_FAILURE`; the three variants are non-coercible.
 - `InstrumentPathResult` -- discriminated final path-level result. Its final interface distinguishes `VIABLE`, `GATE2_TERMINAL`, `D0_TERMINAL`, and `INTEGRITY_FAILURE`; only `VIABLE` establishes `W*`.
+
+- `InstrumentPathProvenance` -- new Experiment-v2 path-level provenance object, distinct from each per-window `E_W` and from `InstrumentPathResult`. It preserves the ordered sequence of entered Window Evaluations, including each completed Gate-2 `R_W`, `A_W`, and `H_W`, and records the exact inherited `H_path` whenever the Instrument Path completes through Gate 2.
+- `H_path` -- inherited six-value Gate-2 Instrument-Path disposition, resolved by the frozen G-path function: `VIABLE`, `VIABLE_AFTER_24H_FALLBACK`, `VIABLE_AFTER_1H_FALLBACK`, `PATHOLOGICALLY_FRAGMENTED`, `STRUCTURALLY_INSUFFICIENT`, or `EPISTEMICALLY_INDETERMINATE`. It is authoritative for the inherited path diagnosis and its reporting, not for independently selecting routing actions.
+
 - `SH_path(s,d)` -- final day-level path-conditioned source-history stage gate, constructed only after the Instrument Path is finalized from the evidentiary-window aggregation rule.
 - `W*` -- unique realized regime window on a VIABLE path only.
 - `FinalObservationResult(T)` -- discriminated final observation-level result: either a successfully resolved `FinalObservationDisposition(T)` or `INTEGRITY_FAILURE`; the two variants are non-coercible.
 - `FinalObservationDisposition(T)` -- authoritative categorical ordinary final LRS-4 observation disposition after the finalized path, `SH_path` stage gate, strict-C10 mapping, and reuse of the authoritative realized-window D3 artifact; defined only for a successfully resolved `FinalObservationResult(T)` and taking one of `LRS4_SOURCE_HISTORY_INELIGIBLE`, `LRS4_REGIME_INELIGIBLE`, or `LRS4_ELIGIBLE`.
 - `FinalEligible(T)` -- derived Boolean convenience predicate defined only when an ordinary `FinalObservationDisposition(T)` exists and equal to TRUE if and only if that disposition is `LRS4_ELIGIBLE`; it has no independent decision authority.
+
+`A_W` retains sole Gate-2 routing authority under the permitted Instrument Path. `InstrumentPathResult` records the final Experiment-v2 path-level control classification. Neither classification replaces `H_path` where the inherited Gate-2 path disposition is defined. For `InstrumentPathResult = GATE2_TERMINAL`, both `InstrumentPathProvenance` and any final Instrument Path disposition report must expose the exact terminal `H_path`; the broader classification must not substitute for that value. D0 and integrity-failure paths do not receive synthetic `H_path` values. This defines a methodological provenance and reporting contract, not a physical storage schema or implementation architecture.
 
 The following control and provenance objects also retain distinct authority and must not be coerced into one another: `D0Termination`, `DiagnosticRecord`, `R_W`, `A_W`, `H_W`, `ApplicabilityStatus`, `BoundaryCause`, `CensoringStatus`, and `Episode`.
 
@@ -766,6 +772,8 @@ F1's directional fallback architecture remains applicable where a Window Evaluat
 F2/F3/F5 and F6 remain inherited except where the Experiment-v2 D2/D3/D4 topology supplies the authoritative domain, admissibility, boundary, and episode objects consumed by those inherited mechanics. The numeric morphology and prevalence thresholds are not changed by Experiment v2.
 
 The inherited Gate-2 `R_W`, `A_W`, and `H_W` architecture remains operative for a Window Evaluation that reaches Gate 2. Experiment-v2 `WindowEvaluationResult` and `InstrumentPathResult` preserve D0 termination as a distinct non-coercible result layer rather than translating it into an inherited Gate-2 failure.
+
+The relationship between the inherited six-value `H_path` disposition and Experiment-v2 `InstrumentPathResult` is governed by the `InstrumentPathProvenance` interface defined in Section 2. The inherited G-path resolution and complete entered Window Evaluation history remain applicable without granting `H_path` independent routing authority.
 
 Endpoint-level source-history authorization, source-history maturity, measurement validity, threshold-learning validity, and applicable C11 temporal semantics remain inherited except where an explicit Experiment-v2 resolution states otherwise.
 
