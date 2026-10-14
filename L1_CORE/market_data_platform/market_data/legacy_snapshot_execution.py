@@ -138,6 +138,11 @@ def _verify_committed_payloads_or_fail_lock_held(
 
     if not isinstance(checkpoint, dict) or set(checkpoint) != journal.CHECKPOINT_FIELDS:
         raise ValueError("Malformed checkpoint; recovery/audit required")
+    if (
+        type(checkpoint["journal_version"]) is not int
+        or checkpoint["journal_version"] != journal.JOURNAL_VERSION
+    ):
+        raise ValueError("Invalid checkpoint version")
     if checkpoint["staging_attempt_id"] != expected_attempt_id:
         raise PermissionError("Checkpoint attempt mismatch")
 

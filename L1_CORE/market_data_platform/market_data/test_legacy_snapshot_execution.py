@@ -1516,3 +1516,39 @@ def test_direct_corruption_verifier_respects_cross_process_lock(tmp_path):
         if name != "state.json":
             assert (root / name).read_bytes() == contents
     assert payload.read_bytes() == payload_before
+
+
+@pytest.mark.parametrize("version", [True, 999])
+def test_invalid_checkpoint_version_preserves_records_despite_corruption(
+    tmp_path, version
+):
+    root, kwargs = _authorized_attempt(tmp_path)
+    relative = _prepare_authorized_payload(root, kwargs)
+    journal.accept_manifest_file(root, **kwargs, relative_path=relative)
+
+    checkpoint_path = root / "checkpoint.json"
+    checkpoint = json.loads(checkpoint_path.read_bytes())
+    checkpoint["journal_version"] = version
+    checkpoint_path.write_bytes(journal._canonical(checkpoint))
+
+    payload = root / "payload" / relative
+    payload.write_bytes(b"X" * len(payload.read_bytes()))
+    execution.verify_execution_gate(root, **kwargs)
+
+    before = _capture_recovery_records(root)
+    payload_before = payload.read_bytes()
+
+    with pytest.raises(ValueError, match="^Invalid checkpoint version$"):
+        execution.verify_committed_payloads_or_fail(
+            root,
+            expected_attempt_id=kwargs["expected_attempt_id"],
+            expected_request_id=kwargs["expected_request_id"],
+            expected_manifest_sha256=kwargs["expected_manifest_sha256"],
+            expected_authorizations=kwargs["expected_authorizations"],
+        )
+
+    _assert_recovery_records_unchanged(root, before)
+    assert payload.read_bytes() == payload_before
+    assert state.read_state(
+        root, expected_attempt_id=kwargs["expected_attempt_id"]
+    )["state"] == "INCOMPLETE"
