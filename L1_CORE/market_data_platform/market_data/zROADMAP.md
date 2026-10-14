@@ -472,6 +472,36 @@ Cost-stress/economic-feasibility research has not started and remains
 paused. These findings do not establish economic viability and do not
 generalize the rejected H1 to all trade-flow hypotheses.
 
+**Candidate D D0 evidence-location review — 2026-10-14:** The frozen
+time-conditioning feasibility analyzer is tracked at
+`L1_CORE/market_data_platform/research/candidate_d_d0_time_conditioning.py`,
+introduced by `f691225`. Its source identifies D0 as candidate-selection
+evidence only, prohibits matrix dates on or after 2026-09-04, and requires
+the predeclaration `/tmp/lrs3_candidate_d_d0_predeclared_20261004.txt`
+with SHA-256
+`9fce77d46174cd22be28bcae5d244de45cb404222f74e5c30539cb90f78c68f5`.
+
+The predeclaration and the default `run_manifest.json` and `d0_results.json`
+under `/tmp/lrs3_candidate_d_d0_results/` were absent at their recorded
+paths on the Mac, Pi3, and Pi5 when checked. Bounded filename searches of
+accessible home and `/tmp` locations on both Pis found no matching
+predeclaration or results; Pi5 returned only the analyzer source.
+System-service private temporary directories were inaccessible, and the
+searches excluded selected dependency/cache directories and did not cross
+filesystem boundaries. A filename search of the Mac repository's
+`research_out/` also found no matching artifacts. The tracked-file and
+Git-history searches performed located no preserved predeclaration or
+result record.
+
+These observations establish only that the evidence was not located in
+the searched paths and records. They do not establish whether D0 ran,
+what it concluded, or whether evidence survives elsewhere. No analyzer
+rerun or result-content inspection was performed during this review.
+Recover and verify the original predeclaration and execution evidence
+before relying on a historical D0 conclusion. Any new execution requires
+a separately authorized research design; this note does not authorize
+a rerun, H2 access, or a new experiment.
+
 **Original objective:** Ask one real research question using reconstructed
 data, testing whether this pipeline produces genuine research
 value, not just correct infrastructure.
