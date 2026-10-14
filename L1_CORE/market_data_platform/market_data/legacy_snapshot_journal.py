@@ -191,6 +191,20 @@ def _sealed_manifest_inventory(root, expected_manifest_sha256):
     ):
         raise ValueError("Sealed manifest version mismatch")
 
+    expected_flags = {
+        "export_classification": "legacy_reconciled",
+        "point_in_time_complete": False,
+        "production_transfer_authorized": False,
+        "predictive_analysis_authorized": False,
+        "scientific_readiness": "PENDING",
+    }
+    for field, expected in expected_flags.items():
+        if document[field] != expected or (
+            isinstance(expected, bool)
+            and document[field] is not expected
+        ):
+            raise ValueError(f"Invalid sealed manifest field: {field}")
+
     manifest._authorization_structure(
         document["authorizations"],
         document["snapshot_request_id"],

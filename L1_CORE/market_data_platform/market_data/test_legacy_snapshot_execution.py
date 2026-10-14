@@ -1552,3 +1552,53 @@ def test_invalid_checkpoint_version_preserves_records_despite_corruption(
     assert state.read_state(
         root, expected_attempt_id=kwargs["expected_attempt_id"]
     )["state"] == "INCOMPLETE"
+
+
+@pytest.mark.parametrize("operation", ["gate", "accept"])
+@pytest.mark.parametrize("field,value", [
+    ("export_classification", "point_in_time_complete"),
+    ("point_in_time_complete", True),
+    ("production_transfer_authorized", True),
+    ("predictive_analysis_authorized", True),
+    ("scientific_readiness", "READY"),
+    ("point_in_time_complete", 0),
+    ("production_transfer_authorized", 0),
+    ("predictive_analysis_authorized", 0),
+])
+def test_invalid_sealed_manifest_flags_rejected_without_mutation(
+    tmp_path, operation, field, value
+):
+    root, kwargs = _authorized_attempt(tmp_path)
+    relative = _prepare_authorized_payload(root, kwargs)
+
+    document = json.loads((root / "manifest.json").read_bytes())
+    document[field] = value
+    raw = journal._canonical(document)
+    (root / "manifest.json").write_bytes(raw)
+    digest = hashlib.sha256(raw).hexdigest()
+
+    identity = json.loads((root / "identity.json").read_bytes())
+    identity["manifest_sha256"] = digest
+    (root / "identity.json").write_bytes(journal._canonical(identity))
+    kwargs["expected_manifest_sha256"] = digest
+
+    before = _capture_recovery_records(root)
+    payload = root / "payload" / relative
+    payload_before = payload.read_bytes()
+
+    with pytest.raises(
+        ValueError,
+        match=f"^Invalid sealed manifest field: {field}$",
+    ):
+        if operation == "gate":
+            execution.verify_execution_gate(root, **kwargs)
+        else:
+            journal.accept_manifest_file(
+                root, **kwargs, relative_path=relative
+            )
+
+    _assert_recovery_records_unchanged(root, before)
+    assert payload.read_bytes() == payload_before
+    assert state.read_state(
+        root, expected_attempt_id=kwargs["expected_attempt_id"]
+    )["state"] == "INCOMPLETE"
