@@ -125,6 +125,8 @@ def _verified_file(root, record, required_fields):
     _digest(record["sha256"])
 
     candidate = root
+    if candidate.is_symlink():
+        raise ValueError("Symlinked destination root")
     for part in relative.parts:
         candidate = candidate / part
         if candidate.is_symlink():

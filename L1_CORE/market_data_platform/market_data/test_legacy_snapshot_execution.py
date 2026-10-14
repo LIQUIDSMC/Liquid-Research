@@ -1396,3 +1396,67 @@ def test_cross_process_recovery_rejected_during_lock(tmp_path):
         root,
         expected_attempt_id=kwargs["expected_attempt_id"],
     )["state"] == "INCOMPLETE"
+
+
+@pytest.mark.parametrize("operation", [
+    "accept_new",
+    "accept_after_commit",
+    "verify_committed",
+    "verify_execution_committed",
+    "recover",
+])
+def test_symlinked_payload_root_rejected_without_record_mutation(
+    tmp_path, operation
+):
+    if operation == "recover":
+        root, kwargs, relative = _create_recoverable_authorized_suffix(
+            tmp_path
+        )
+    else:
+        root, kwargs = _authorized_attempt(tmp_path)
+        relative = _prepare_authorized_payload(root, kwargs)
+        if operation in {
+            "accept_after_commit", "verify_committed",
+            "verify_execution_committed",
+        }:
+            journal.accept_manifest_file(
+                root, **kwargs, relative_path=relative
+            )
+
+    external = tmp_path / "external-payload"
+    (root / "payload").rename(external)
+    (root / "payload").symlink_to(external, target_is_directory=True)
+
+    before = _capture_recovery_records(root)
+    payload_before = (external / relative).read_bytes()
+
+    expected_error = (
+        "^Symlinked committed payload root$"
+        if operation == "verify_execution_committed"
+        else "Symlinked"
+    )
+    with pytest.raises(ValueError, match=expected_error):
+        if operation == "verify_execution_committed":
+            execution.verify_execution_gate(root, **kwargs)
+            execution.verify_committed_payloads_or_fail(
+                root,
+                expected_attempt_id=kwargs["expected_attempt_id"],
+                expected_request_id=kwargs["expected_request_id"],
+                expected_manifest_sha256=kwargs["expected_manifest_sha256"],
+                expected_authorizations=kwargs["expected_authorizations"],
+            )
+        elif operation == "recover":
+            execution.recover_authorized_single_suffix(root, **kwargs)
+        elif operation == "verify_committed":
+            journal.verify_committed_journal(
+                root,
+                expected_attempt_id=kwargs["expected_attempt_id"],
+            )
+        else:
+            journal.accept_manifest_file(
+                root, **kwargs, relative_path=relative
+            )
+
+    _assert_recovery_records_unchanged(root, before)
+    assert (external / relative).read_bytes() == payload_before
+    assert (root / "payload").is_symlink()

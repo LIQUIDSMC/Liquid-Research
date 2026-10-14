@@ -193,6 +193,8 @@ def verify_committed_payloads_or_fail(
         # A missing, symlinked, or unreadable file remains an ambiguous
         # operational failure here; do not automatically poison the attempt.
         candidate = root / "payload"
+        if candidate.is_symlink():
+            raise ValueError("Symlinked committed payload root")
         for component in Path(relative).parts:
             candidate = candidate / component
             if candidate.is_symlink():
