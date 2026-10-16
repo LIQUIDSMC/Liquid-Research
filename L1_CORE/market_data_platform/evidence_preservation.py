@@ -43,6 +43,10 @@ class VerificationError(ValueError):
     """Evidence is invalid, changed, or exceeds a verification limit."""
 
 
+class RuntimeLimitExceeded(VerificationError):
+    """Verification exhausted its cooperative runtime allowance."""
+
+
 def _require(condition, message):
     if not condition:
         raise VerificationError(message)
@@ -192,8 +196,8 @@ class _Reader:
         self.initial = self.scan()
 
     def tick(self):
-        _require(self.clock() - self.started < self.limits["max_runtime_seconds"],
-                 "Runtime limit exceeded")
+        if not self.clock() - self.started < self.limits["max_runtime_seconds"]:
+            raise RuntimeLimitExceeded("Runtime limit exceeded")
 
     def scan(self):
         records = {}

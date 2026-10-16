@@ -507,3 +507,41 @@ def test_path_depth_boundary():
     assert ep._path("/".join(["a"] * 128)) == "/".join(["a"] * 128)
     with pytest.raises(ep.VerificationError, match="^Path depth limit exceeded$"):
         ep._path("/".join(["a"] * 129))
+
+
+def test_runtime_exhaustion_has_distinct_compatible_exception(bundle):
+    root, kwargs = bundle
+    before = snapshot(root)
+    ticks = iter([0.0, 6.0])
+    kwargs["clock"] = lambda: next(ticks)
+
+    with pytest.raises(
+        ep.RuntimeLimitExceeded, match="^Runtime limit exceeded$"
+    ) as caught:
+        ep.verify_bundle(root, **kwargs)
+
+    assert type(caught.value) is ep.RuntimeLimitExceeded
+    assert isinstance(caught.value, ep.VerificationError)
+    assert snapshot(root) == before
+
+
+@pytest.mark.parametrize("seconds", [
+    True, False, 0, -1, math.inf, math.nan, "5", None,
+])
+def test_invalid_runtime_limit_is_not_exhaustion(bundle, seconds):
+    root, kwargs = bundle
+    before = snapshot(root)
+    kwargs["limits"]["max_runtime_seconds"] = seconds
+
+    def unexpected_clock():
+        raise AssertionError("Invalid limit must reject before clock access")
+
+    kwargs["clock"] = unexpected_clock
+    with pytest.raises(
+        ep.VerificationError, match="^Invalid limit: max_runtime_seconds$"
+    ) as caught:
+        ep.verify_bundle(root, **kwargs)
+
+    assert type(caught.value) is ep.VerificationError
+    assert not isinstance(caught.value, ep.RuntimeLimitExceeded)
+    assert snapshot(root) == before
