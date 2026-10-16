@@ -1,9 +1,30 @@
 # Research Evidence Preservation — Draft Specification
 
-Status: DRAFT / DESIGN ONLY / IMPLEMENTATION NOT AUTHORIZED
+Status: DRAFT / INCREMENT 1 IMPLEMENTED — SYNTHETIC ONLY / FURTHER IMPLEMENTATION NOT AUTHORIZED
 Initial consumer: LRS3 research workflows
 Proposed owner: L1 Market Data Platform
 Draft date: 2026-10-15
+
+## Implementation Checkpoint — Increment 1
+
+Chris explicitly authorized the bounded synthetic-only Increment 1 after
+independent proposal review. The read-only verifier and tests were
+independently audited, committed, and pushed at `23c2066`:
+- `evidence_preservation.py`
+- `test_evidence_preservation.py`
+
+Validation at that checkpoint: 83 verifier tests and 280 existing Candidate C
+snapshot regressions passed. The verifier returns only
+`INCREMENT_1_INTEGRITY_VERIFIED`; it writes no evidence or status files.
+
+Paths are limited to 128 components, including metadata-declared paths.
+This bounds ancestor-prefix validation; it is not a linear-time claim.
+
+Increment 1 does not implement copying, locking, retry orchestration,
+completion publication, second-copy verification, retention, deployment,
+or experiment adoption. The full acceptance criteria below remain the
+target for the complete preservation workflow, not a claim that Increment 1
+satisfies every criterion.
 
 ## Purpose and Scope
 
@@ -17,8 +38,8 @@ in the searches documented on 2026-10-14 in
 whether evidence survives elsewhere.
 
 This specification proposes an engineering interface, not a new research
-experiment. Initial implementation, if separately approved, uses synthetic
-fixtures only. Existing frozen analyzers remain unchanged; adoption by an
+experiment. The separately authorized Increment 1 uses synthetic fixtures
+only. Existing frozen analyzers remain unchanged; adoption by an
 existing experiment requires separate review.
 
 This work does not recover missing evidence, authorize research, access
@@ -181,7 +202,7 @@ Document changes follow WRITE -> VERIFY -> DIFF -> AI TEAM AUDIT ->
 FIX IF NEEDED -> RE-AUDIT -> PASS -> STAGE -> INSPECT STAGED DIFF ->
 COMMIT -> PUSH. Chris executes every command.
 
-Implementation requires separate explicit approval, a bounded proposal
+Further implementation requires separate explicit approval, a bounded proposal
 resolving the schemas, storage/retention choices, source-stability checks,
 lock scope, resource budgets, and reporting arrangements above, synthetic
 validation, and independent audit.
