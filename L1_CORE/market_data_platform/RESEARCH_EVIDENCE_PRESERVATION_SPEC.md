@@ -1,6 +1,6 @@
 # Research Evidence Preservation — Draft Specification
 
-Status: DRAFT / INCREMENT 1 IMPLEMENTED — SYNTHETIC ONLY / FURTHER IMPLEMENTATION NOT AUTHORIZED
+Status: DRAFT / INCREMENTS 1 AND 2 IMPLEMENTED — SYNTHETIC ONLY / FURTHER IMPLEMENTATION NOT AUTHORIZED
 Initial consumer: LRS3 research workflows
 Proposed owner: L1 Market Data Platform
 Draft date: 2026-10-15
@@ -26,6 +26,47 @@ or experiment adoption. The full acceptance criteria below remain the
 target for the complete preservation workflow, not a claim that Increment 1
 satisfies every criterion.
 
+## Implementation Checkpoint — Increment 2
+
+Chris explicitly authorized the bounded synthetic-only Increment 2 after
+independent design review. Its runtime-classification prerequisite was
+separately audited, committed, and pushed at `585c11c`:
+`RuntimeLimitExceeded` subclasses `VerificationError` and distinguishes
+cooperative verifier runtime exhaustion from malformed input.
+
+The copy implementation and tests were independently audited, committed,
+and pushed at `323089c`:
+- `evidence_copy.py`
+- `test_evidence_copy.py`
+
+Validation at the Increment 2 checkpoint: 50 copy tests, 92 verifier tests,
+and 280 existing Candidate C snapshot regressions passed.
+
+Increment 2 copies an already prepared synthetic bundle into a new attempt
+under a cooperative local-filesystem lock, checks source stability, and
+verifies the copied payload with Increment 1 and caller-supplied anchors.
+One shared cooperative deadline covers the operation. Failures after
+attempt creation retain incomplete attempts and partial payloads.
+
+The final deadline check before successful control publication gates
+`COPY_VERIFIED`. Once publication succeeds, a later elapsed deadline does
+not downgrade that state. `COPY_VERIFIED` is copy-integrity evidence, not
+preservation-complete status, scientific readiness, or cleanup eligibility.
+
+The public API classifies validation and operational failures with
+`CopyError.code`. `INVALID_INPUT` is a pre-attempt API error and is never
+written as an attempt error code.
+
+Existing attempts are never overwritten or resumed. A retry requires a
+separately prepared source bundle with a new attempt ID and the same run ID.
+No automatic retry, cleanup, source deletion, or second-copy verification
+is implemented.
+
+Production storage selection, retention, recurring monitoring, deployment,
+and experiment adoption remain separately gated. This synthetic checkpoint
+does not establish hardware crash durability or safety against
+noncooperating writers, and does not claim full-spec compliance.
+
 ## Purpose and Scope
 
 Preserve evidence identifying what was declared, executed, and concluded
@@ -38,8 +79,8 @@ in the searches documented on 2026-10-14 in
 whether evidence survives elsewhere.
 
 This specification proposes an engineering interface, not a new research
-experiment. The separately authorized Increment 1 uses synthetic fixtures
-only. Existing frozen analyzers remain unchanged; adoption by an
+experiment. The separately authorized Increments 1 and 2 use synthetic
+fixtures only. Existing frozen analyzers remain unchanged; adoption by an
 existing experiment requires separate review.
 
 This work does not recover missing evidence, authorize research, access
