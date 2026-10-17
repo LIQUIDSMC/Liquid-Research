@@ -1,6 +1,6 @@
 # Research Evidence Preservation — Draft Specification
 
-Status: DRAFT / INCREMENTS 1 AND 2 IMPLEMENTED — SYNTHETIC ONLY / FURTHER IMPLEMENTATION NOT AUTHORIZED
+Status: DRAFT / INCREMENTS 1, 2, AND 3 IMPLEMENTED — SYNTHETIC ONLY / FURTHER IMPLEMENTATION NOT AUTHORIZED
 Initial consumer: LRS3 research workflows
 Proposed owner: L1 Market Data Platform
 Draft date: 2026-10-15
@@ -67,6 +67,49 @@ and experiment adoption remain separately gated. This synthetic checkpoint
 does not establish hardware crash durability or safety against
 noncooperating writers, and does not claim full-spec compliance.
 
+## Implementation Checkpoint — Increment 3
+
+Chris explicitly authorized the bounded synthetic-only Increment 3 after
+independent design review. The read-only pair verifier and tests were
+independently audited, committed, and pushed at `bcd5104`:
+- `evidence_pair.py`
+- `test_evidence_pair.py`
+
+Validation at this checkpoint: 54 pair tests, 50 copy tests, 92 verifier
+tests, and 280 existing Candidate C snapshot regressions passed.
+
+Increment 3 verifies two existing synthetic payload bundles against the
+same caller-supplied external anchors using Increment 1. It returns an
+in-memory report only and does not modify either copy or publish status.
+
+One shared cooperative deadline covers root inspection and both verifier
+phases. Each phase receives the remaining positive runtime allowance.
+Pre-call exhaustion leaves unstarted copies `NOT_ATTEMPTED`; only a
+verifier-raised `RuntimeLimitExceeded` produces a per-copy `RESOURCE_LIMIT`.
+
+Each per-copy result reflects its own verifier call. Subsequent deadline
+exhaustion does not downgrade `VERIFIED` or relabel an unrelated validation
+or I/O failure. The sticky `budget_exhausted` flag records exhaustion
+observed by pre-call, post-call, final, or verifier runtime checks.
+
+`PAIR_VERIFIED` requires both copies to verify with no observed budget
+exhaustion. Otherwise the report returns `PAIR_NOT_VERIFIED`; this does
+not by itself establish that the copies differ or identify a winner.
+Invalid caller inputs or roots raise `PairInputError` before content
+verification; content-validation, runtime, and I/O failures are reported
+per copy. Unexpected exceptions from verifier calls propagate.
+
+Roots must be distinct, canonical, nonoverlapping directories with
+different device/inode identities. These checks do not establish
+independent storage failure domains; the report explicitly returns
+`storage_independence: NOT_ATTESTED`.
+
+This increment assumes quiescent synthetic bundles. It provides no
+concurrent-writer safety, repair, retry, deletion, persistent reporting,
+monitoring, preservation-complete status, or cleanup authorization.
+Production storage, retention, deployment, and experiment adoption remain
+separately gated. This checkpoint does not claim full-spec compliance.
+
 ## Purpose and Scope
 
 Preserve evidence identifying what was declared, executed, and concluded
@@ -79,7 +122,7 @@ in the searches documented on 2026-10-14 in
 whether evidence survives elsewhere.
 
 This specification proposes an engineering interface, not a new research
-experiment. The separately authorized Increments 1 and 2 use synthetic
+experiment. The separately authorized Increments 1, 2, and 3 use synthetic
 fixtures only. Existing frozen analyzers remain unchanged; adoption by an
 existing experiment requires separate review.
 
