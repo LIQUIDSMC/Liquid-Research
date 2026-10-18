@@ -38,6 +38,46 @@ Shared market-data infrastructure plus crypto trade-flow research using Coinbase
 
 An independent regime-research engine studying whether pre-defined market states provide useful explanatory or conditioning information. Methodology changes are controlled through explicit freeze and supersession rules before outcome-dependent analysis is authorized.
 
+## Runtime Infrastructure
+
+Runtime placement is separate from research ownership:
+
+- **Pi3 (`liquid-pi`)** is the authoritative live market-data collector and
+  canonical persistence node.
+- **Pi5 (`liquid-pi5`)** hosts heavier analytical workloads. The implemented
+  LRS2 bridge supplies verified, bounded snapshots for local analysis.
+
+Cross-node research inputs should be immutable, provenance-bearing snapshots.
+Pi5's analytical role does not transfer live-writer authority or imply that
+every engine's data-transfer workflow has been deployed.
+
+See the [runtime architecture](L0_PLATFORM/zARCHITECTURE.md) for the governing
+constraints. Runtime availability must be established from current monitoring,
+not inferred from this README.
+
+## Automation and Monitoring
+
+Automate repeatable operational work and documented threshold checks as part
+of completing the workflow. Research judgment and methodology changes remain
+with the owning research engine.
+
+Shared operations include:
+
+- Scheduled orchestration and service supervision.
+- Independent five-minute machine-health watchdogs on Pi3 and Pi5.
+- LRS2 bridge publication monitoring for failed or overdue snapshot delivery.
+- Checkpoint alerts driven by thresholds documented by the owning engine.
+
+**ntfy** provides problem, recovery, and milestone notifications.
+**Healthchecks.io** detects missing healthy heartbeats. Independent monitors
+use separate checks so one healthy process cannot mask another's silence.
+Notification secrets remain in host-local configuration, outside Git.
+
+Shared implementations and operating notes live in
+[`L1_CORE/operations/`](L1_CORE/operations/). A checkpoint alert requests review;
+it does not establish statistical significance, profitability, or a validated
+research finding.
+
 ## Engineering Principles
 
 Liquid Research follows several project-wide rules:
@@ -70,6 +110,7 @@ The repository includes work involving:
 
 ## Repository Map
 
+```text
 Liquid Research/
 ├── L0_PLATFORM/
 │   ├── zARCHITECTURE.md
@@ -77,6 +118,7 @@ Liquid Research/
 │   └── zROADMAP.md
 ├── L1_CORE/
 │   ├── market_data_platform/
+│   ├── operations/
 │   └── orchestrator.py
 ├── L2_DOMAINS/
 │   ├── crypto/
@@ -87,6 +129,7 @@ Liquid Research/
 │   ├── market_selection/
 │   └── wallet_intelligence/
 └── L4_KNOWLEDGE/
+```
 
 Individual research engines maintain their own methodology, implementation, tests, state, and research artifacts where appropriate. Shared findings and open questions belong in `L4_KNOWLEDGE/`.
 
@@ -103,6 +146,17 @@ Liquid Research deliberately preserves distinctions between:
 5. an executable trading edge.
 
 Those stages are not treated as interchangeable.
+
+## Operating Documentation
+
+- [Architecture](L0_PLATFORM/zARCHITECTURE.md) — ownership, runtime roles,
+  boundaries, and data contracts.
+- [Operating manual](L0_PLATFORM/zHANDOFF.md) — project principles and workflow.
+- [Roadmap](L0_PLATFORM/zROADMAP.md) — portfolio priorities and planned work.
+
+Engine-specific control documents govern methodology, experiment state,
+readiness, and authorized research access. Infrastructure capability does not
+itself authorize production execution or access to sealed research outcomes.
 
 ## Project Status
 
