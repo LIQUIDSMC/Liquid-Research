@@ -1,6 +1,6 @@
 # Research Evidence Preservation — Draft Specification
 
-Status: DRAFT / INCREMENTS 1, 2, AND 3 IMPLEMENTED — SYNTHETIC ONLY / FURTHER IMPLEMENTATION NOT AUTHORIZED
+Status: DRAFT / INCREMENTS 1-4 IMPLEMENTED — SYNTHETIC ONLY / FURTHER IMPLEMENTATION NOT AUTHORIZED
 Initial consumer: LRS3 research workflows
 Proposed owner: L1 Market Data Platform
 Draft date: 2026-10-15
@@ -110,6 +110,57 @@ monitoring, preservation-complete status, or cleanup authorization.
 Production storage, retention, deployment, and experiment adoption remain
 separately gated. This checkpoint does not claim full-spec compliance.
 
+## Implementation Checkpoint — Increment 4
+
+Chris authorized the bounded synthetic-only Increment 4 after independent
+design review. The report implementation and tests received an independent
+audit PASS, then were committed and pushed at `2a9c043`:
+- `evidence_report.py`
+- `test_evidence_report.py`
+
+Validation at this checkpoint: 52 report tests, 196 combined Increment 1-3
+regressions (54 pair, 50 copy, 92 verifier), and 280 existing Candidate C
+snapshot regressions passed.
+
+Increment 4 invokes Increment 3 and records its unchanged pair report in a
+separately selected report directory outside both evidence trees. The
+version-1 JSON record includes the report ID and supplied predeclaration
+and artifact-list digests; the pair report retains the manifest digest and
+run/attempt identities. The serialized record is limited to 65,536 bytes.
+
+Input-format validation precedes clock and filesystem access. A single
+cooperative deadline starts before root inspection, whose elapsed time
+reduces the allowance available for subsequent work. Root inspection is
+not itself interrupted by deadline checks. Increment 3 receives only the
+positive remaining runtime and the same clock.
+
+Reports with `budget_exhausted: true` are not published; the unchanged
+report remains available on the reporting error. A content-failed pair
+report may be recorded when the operation still has time remaining.
+Recording a report does not change its pair-verification classification.
+
+Publication uses an exclusively created temporary file, file fsync, an
+atomic no-overwrite hard link to the final report name, and directory
+fsync. Successful final-link creation is the publication commit point.
+Later deadline expiry does not remove the record or downgrade its results.
+Directory synchronization failure after linking reports
+`PUBLICATION_DURABILITY_UNCERTAIN` with `published=True`.
+
+Existing final records are never overwritten. Temporary-file cleanup is
+restricted to a temporary file successfully created by this invocation.
+Cleanup failure is reported separately without masking the original
+failure; it can also be reported after a final record has been published.
+
+The implementation requires quiescent synthetic evidence and a trusted
+local report directory. It does not modify either evidence tree, establish
+storage failure-domain independence or hardware crash durability, or
+provide safety against noncooperating directory mutation.
+
+No evidence deletion, repair, retry orchestration, monitoring, deployment,
+experiment adoption, preservation-complete status, or cleanup authorization
+is provided. Production storage and retention remain separately gated.
+This checkpoint does not claim full-spec compliance.
+
 ## Purpose and Scope
 
 Preserve evidence identifying what was declared, executed, and concluded
@@ -122,7 +173,7 @@ in the searches documented on 2026-10-14 in
 whether evidence survives elsewhere.
 
 This specification proposes an engineering interface, not a new research
-experiment. The separately authorized Increments 1, 2, and 3 use synthetic
+experiment. The separately authorized Increments 1-4 use synthetic
 fixtures only. Existing frozen analyzers remain unchanged; adoption by an
 existing experiment requires separate review.
 
