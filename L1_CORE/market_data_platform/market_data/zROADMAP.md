@@ -82,7 +82,7 @@ requires the operational rigor of something irreplaceable.
 ### Scope
 
 This platform is venue-agnostic, shared infrastructure — not part
-of any single Domain. The Crypto Domain (domains/crypto/) is its
+of any single Domain. The Crypto Domain (`L2_DOMAINS/crypto/`) is its
 first consumer, not its owner. Future market domains, whatever they
 turn out to be, are expected to plug into this same platform via
 new adapters, without requiring changes to validation,
