@@ -222,6 +222,49 @@ historical evidence adoption, and pilot execution remain unauthorized.
 Production transfer remains HOLD, H2 remains SEALED, and scientific
 readiness remains PENDING.
 
+## Compatibility Checkpoint — Isolated Pi5 Synthetic Validation
+
+Chris explicitly authorized an isolated Pi5 checkout, separate virtual
+environment, pinned dependency installation, and synthetic test execution.
+The execution transcript received independent audit PASS.
+
+Validation ran on `liquid-pi5`, Linux aarch64, Python 3.13.5, with the source
+checkout pinned to `198bb8fa36a42d1e4f6f0ffc0571a4aabc4cbd25`:
+- Workspace: `/home/kristo/lrs3-validation-198bb8f/`
+- Source checkout: `source/`
+- Separate virtual environment: `venv/`
+- Synthetic test directories: `test-tmp/`
+
+Installed primary dependencies were `pytest==9.1.1`, `pyarrow==25.0.0`,
+`numpy==2.4.6`, and `pandas==3.0.3`. `pip check` reported no broken
+requirements. Resolved package versions were recorded locally in
+`resolved-dependencies.txt` within the validation workspace.
+
+Results matched the reported Mac suite counts:
+- 57 transport tests passed.
+- 248 preservation regressions passed.
+- 280 Candidate C snapshot regressions passed.
+- Total: 585 tests passed.
+
+The isolated source checkout finished clean at the pinned revision.
+The existing Pi5 checkout at `/home/kristo/liquid-research-l0l4` remained
+at `f691225fa7fc7aada1a1f9bc41d03fd2e1a06582` and reported no tracked or
+untracked changes in its final status check. The procedure did not target
+Pi3.
+
+This establishes compatibility of the tested synthetic suites with this
+Pi5 Linux/Python environment. It does not establish compatibility of every
+repository component, cross-host protocol execution, production readiness,
+hardware crash durability, or independent storage failure domains.
+
+The local transport checkpoint above records the earlier Mac-only
+validation; this checkpoint adds isolated Pi5 test evidence. It does not
+deploy the tooling into the existing Pi5 runtime checkout. SSH evidence
+transport, runtime deployment, storage provisioning for evidence,
+historical adoption, and pilot execution remain unauthorized.
+Production transfer remains HOLD, H2 remains SEALED, and scientific
+readiness remains PENDING.
+
 ## Purpose and Scope
 
 Preserve evidence identifying what was declared, executed, and concluded
