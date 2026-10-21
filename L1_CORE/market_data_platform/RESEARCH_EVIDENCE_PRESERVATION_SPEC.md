@@ -1,6 +1,6 @@
 # Research Evidence Preservation — Draft Specification
 
-Status: DRAFT / INCREMENTS 1-4 IMPLEMENTED — SYNTHETIC ONLY / FURTHER IMPLEMENTATION NOT AUTHORIZED
+Status: DRAFT / INCREMENTS 1-4 AND LOCAL TRANSPORT IMPLEMENTED — SYNTHETIC ONLY / FURTHER IMPLEMENTATION NOT AUTHORIZED
 Initial consumer: LRS3 research workflows
 Proposed owner: L1 Market Data Platform
 Draft date: 2026-10-15
@@ -161,6 +161,67 @@ experiment adoption, preservation-complete status, or cleanup authorization
 is provided. Production storage and retention remain separately gated.
 This checkpoint does not claim full-spec compliance.
 
+## Implementation Checkpoint — Local Synthetic Transport
+
+Chris explicitly authorized the bounded Mac-local synthetic sender,
+receiver, and tests after independent design review. The implementation
+received independent audit and re-audit PASS following a source-budget
+classification correction, then was committed and pushed at `17aff66`:
+- `transport_protocol.py`
+- `transport_sender.py`
+- `transport_receiver.py`
+- `test_evidence_transport.py`
+
+Validation at this checkpoint: 57 transport tests, 248 preservation
+regressions (92 verifier, 50 copy, 54 pair, 52 report), and 280 existing
+Candidate C snapshot regressions passed.
+
+The receiver launches a local Python sender subprocess and exchanges a
+bounded JSON request and framed stdout protocol over pipes. It implements
+no SSH invocation. The sender verifies prepared synthetic source evidence
+against supplied external anchors before streaming; the receiver verifies
+the staged payload against the same anchors before publishing success.
+
+Transport accounting includes all regular bundle files. The verifier
+receives `max_artifacts = max_artifact_count - 2`, excluding the two
+control files from its artifact allowance. Optional declarations remain
+subject to that derived verifier limit. A bounded source preflight checks
+file-count, logical-byte, and metadata-byte budgets before generic
+verification; the tested over-budget cases require exactly
+`TRANSPORT_RESOURCE_LIMIT`.
+
+The protocol bounds frame sizes, path bytes/depth, JSON nesting, integer
+tokens, and diagnostic retention. It rejects duplicate JSON keys and
+nonfinite numbers. Source checks include hard-link rejection, file
+identity and digest checks, and a final inventory/identity re-scan before
+EOS. These checks do not establish an atomic source snapshot or safety
+against noncooperating mutation.
+
+The Mac receiver owns exclusively created staging attempts under a
+validated destination. Payloads and incomplete attempts are retained on
+failure; failure-control publication is attempted and may itself fail,
+exposed through `reporting_error`. Existing attempts are not overwritten
+or resumed.
+
+Success is recorded in `status.json` as `TRANSPORT_VERIFIED` with
+`published=True`. Atomic replacement of the success record is the commit
+point. Later deadline expiry does not downgrade that state. A subsequent
+directory-fsync failure reports `PUBLICATION_DURABILITY_UNCERTAIN` while
+retaining committed success.
+
+One receiver operation budget spans preparation, subprocess communication,
+and verification, with reduced runtime passed to the sender and verifier.
+Child termination has a separate two-second grace before kill and reaping;
+this is not a hard real-time completion guarantee.
+
+This checkpoint covers Mac-local synthetic subprocess tests only. It
+does not establish cross-host execution, remote interpreter compatibility,
+independent storage failure domains, hardware crash durability, or
+full-spec compliance. SSH transport, Pi deployment, storage provisioning,
+historical evidence adoption, and pilot execution remain unauthorized.
+Production transfer remains HOLD, H2 remains SEALED, and scientific
+readiness remains PENDING.
+
 ## Purpose and Scope
 
 Preserve evidence identifying what was declared, executed, and concluded
@@ -173,8 +234,9 @@ in the searches documented on 2026-10-14 in
 whether evidence survives elsewhere.
 
 This specification proposes an engineering interface, not a new research
-experiment. The separately authorized Increments 1-4 use synthetic
-fixtures only. Existing frozen analyzers remain unchanged; adoption by an
+experiment. The separately authorized Increments 1-4 and local transport
+use synthetic fixtures only. Existing frozen analyzers remain unchanged;
+adoption by an
 existing experiment requires separate review.
 
 This work does not recover missing evidence, authorize research, access
