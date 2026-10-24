@@ -98,6 +98,56 @@ inside historical checkpoints describe the state when recorded unless
 explicitly superseded by a current-status note. Part 1 remains the
 architectural authority.
 
+### Single-File Historical Engineering Inspection — 2026-10-24
+
+Chris separately authorized acquisition of one non-H2 historical canonical
+file from Pi3 to Mac for offline engineering inspection. This was a
+single-file acquisition, not execution of Candidate C or the synthetic
+transport implementation, and did not authorize a broader snapshot pilot.
+
+Source root: `/mnt/lrs001/data/market_data_platform/canonical`.
+Selected relative path:
+`trades/date=2026-08-30/03dea17a-67db-48cc-bb44-67de795a07e9.parquet`.
+
+The initial metadata-only discovery stopped after exceeding its
+2,000-entry budget. A subsequent bounded sample inspected 128 directory
+entries and found 128 eligible candidates; one was selected from that
+sample. No complete partition inventory or representative sampling claim
+is established.
+
+Acquisition checked the selected source's recorded filesystem identity
+before opening, around the read, and again by pathname afterward.
+The 5,071-byte source response and downloaded Mac file had matching
+SHA-256 digests:
+`5dc2d1fbc0c8406b8c922f79b85078da6aa99ce40b8b2a33bc4a0377f20703b3`.
+The source acquisition command did not write or delete canonical files.
+
+Offline inspection found 103 rows in one row group, containing both
+BTC-USD and ETH-USD. All inspected `timestamp_received` values mapped to
+2026-08-30 UTC. Exact Arrow-schema comparison, including metadata,
+matched the inspected canonical `TRADE_SCHEMA` definition: four int64
+fields, decimal128(18, 8) price and quantity, Boolean maker flag, and
+string instrument identity. The file digest remained unchanged through
+the final inspection.
+
+After verification, Chris-authorized cleanup deleted the Mac sample,
+its `acquisition.json`, and their dedicated Desktop directory.
+The local payload and acquisition record are therefore no longer retained;
+the terminal transcript is the evidence available for this inspection.
+Reinspection would require a separately authorized acquisition.
+
+This finding covers only the selected file's acquired-byte integrity,
+observed structure, instrument identities, and receipt-date consistency.
+It does not establish full canonical data validity, day-level completeness,
+point-in-time completeness, research value, collector health or uninterrupted
+collection, or a completed Pi5 snapshot pilot. No research statistics were
+calculated, no H2 payload was accessed by these commands, and no sample was
+transferred to Pi5.
+
+Broader production transfer and pilot execution remain HOLD, H2 remains
+SEALED, and scientific readiness remains PENDING. Candidate C's separate
+governance question below remains unresolved.
+
 ### Candidate C — H2 Synthetic Snapshot Transport (Engineering Scope)
 
 **Status:** Implemented synthetic-development prototype; production transfer
