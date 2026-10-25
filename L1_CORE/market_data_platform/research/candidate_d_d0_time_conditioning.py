@@ -170,6 +170,49 @@ def verify_frozen_matrix() -> None:
             )
 
 
+def verify_source_partition_dates(date_str: str) -> dict:
+    """Check required dates without filesystem access; never omit a partition."""
+    target = dt.date.fromisoformat(date_str)
+    required = [
+        target + dt.timedelta(days=offset)
+        for offset in (-1, 0, 1)
+    ]
+    blocked = [
+        day.isoformat() for day in required
+        if day >= SEALED_RESERVE_START
+    ]
+    if blocked:
+        raise RuntimeError(
+            "SEALED RESERVE SOURCE PARTITION VIOLATION: "
+            f"research_date={date_str}; blocked_partitions={blocked}"
+        )
+    return {
+        "research_date": date_str,
+        "required_partition_dates": [day.isoformat() for day in required],
+    }
+
+
+def verify_matrix_source_boundaries() -> dict:
+    """Preflight the entire matrix before any output or source resolution."""
+    checks = [
+        {
+            "instrument": instrument,
+            **verify_source_partition_dates(date_str),
+        }
+        for instrument, date_str in FROZEN_MATRIX
+    ]
+    return {
+        "scope": "required_partition_dates_before_source_resolution",
+        "sealed_reserve_start": SEALED_RESERVE_START.isoformat(),
+        "instrument_days_checked": len(checks),
+        "checks": checks,
+        "blocked_partition_dates": [],
+        "limitations": (
+            "Date-policy validation only; not a record of actual file access."
+        ),
+    }
+
+
 def prepare_output_dir(output_dir: Path) -> None:
     if output_dir.exists():
         if not output_dir.is_dir():
@@ -218,6 +261,7 @@ def load_complete_instrument_day(
             f"SEALED RESERVE VIOLATION before load: {instrument} {date_str}"
         )
 
+    verify_source_partition_dates(date_str)
     start_ms, end_ms = _day_bounds_ms(date_str)
     partitions = _resolve_source_partitions(date_str)
 
@@ -821,11 +865,9 @@ def main() -> None:
 
     print("Verifying frozen research matrix and sealed-reserve boundary...")
     verify_frozen_matrix()
+    source_boundary_verification = verify_matrix_source_boundaries()
     print("FROZEN MATRIX PASS: 25 dates x 2 instruments = 50")
-    print(
-        "SEALED RESERVE HARD BOUNDARY PASS: "
-        "no date >= 2026-09-04"
-    )
+    print("Required source-partition date boundary verification passed.")
 
     if HORIZONS != [5, 15, 30, 60]:
         raise RuntimeError(
@@ -858,7 +900,7 @@ def main() -> None:
         "repo_git_sha": repo_sha,
         "canonical_trades_root": str(CANONICAL_TRADES_ROOT),
         "sealed_reserve_start": SEALED_RESERVE_START.isoformat(),
-        "sealed_reserve_queried": False,
+        "source_boundary_verification": source_boundary_verification,
         "frozen_dates": FROZEN_DATES,
         "instruments": INSTRUMENTS,
         "instrument_day_count": len(FROZEN_MATRIX),
@@ -922,7 +964,7 @@ def main() -> None:
     print_primary_result(aggregate)
 
     print("\n===== D0 BOUNDARY =====")
-    print("sealed_reserve_queried=NO")
+    print("Required source-partition dates passed pre-access verification.")
     print("D0 is candidate-selection evidence only.")
     print("No H2 conclusion is authorized by this analyzer.")
 
