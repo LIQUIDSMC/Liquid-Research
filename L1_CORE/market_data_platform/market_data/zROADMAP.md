@@ -623,6 +623,33 @@ Cost-stress/economic-feasibility research has not started and remains
 paused. These findings do not establish economic viability and do not
 generalize the rejected H1 to all trade-flow hypotheses.
 
+**Candidate D source-partition boundary remediation — 2026-10-25:**
+Source review identified that the frozen September 3 research date requires
+the September 4 receipt-date partition through the shared three-partition
+loader. The former target-date guard did not prevent that source access.
+This establishes a code-path defect, not that a historical run accessed H2.
+
+Independently audited remediation was committed at `49fea8e`. Candidate D
+now checks required source-partition dates before calling the shared
+resolver, and preflights the frozen matrix before output creation.
+The unchanged 25-date / 50-instrument-day matrix is therefore blocked:
+September 3 requires a partition on the sealed side of the boundary.
+The predeclaration digest and shared loader remain unchanged.
+
+The unsupported static `sealed_reserve_queried` flag was replaced by
+a generated source-date policy verification record explicitly distinguished
+from an actual file-access log. A blocked preflight raises without writing
+a failure manifest. The historical predeclaration check remains required.
+
+The boundary and shared-consumer synthetic suites passed 34 tests on Mac
+and 34 on Pi5 (0.69 seconds on Pi5). Pi5 validation used the isolated
+checkout at `49fea8e`; no historical analyzer execution was performed.
+These tests do not establish historical H2 access or absence of access.
+D0 execution remains unauthorized and blocked. A different research matrix
+requires a separately authorized design and predeclaration. Production
+transfer and broader pilot remain HOLD, H2 remains SEALED, and scientific
+readiness remains PENDING.
+
 **Candidate D D0 evidence-location review — 2026-10-14:** The frozen
 time-conditioning feasibility analyzer is tracked at
 `L1_CORE/market_data_platform/research/candidate_d_d0_time_conditioning.py`,
