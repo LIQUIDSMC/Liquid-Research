@@ -148,6 +148,66 @@ Broader production transfer and pilot execution remain HOLD, H2 remains
 SEALED, and scientific readiness remains PENDING. Candidate C's separate
 governance question below remains unresolved.
 
+### Single-File Pi3-to-Pi5 Engineering Pilot — 2026-10-25 UTC
+
+Following the earlier Mac-only inspection, Chris separately authorized a
+bounded real-data transfer exception for the same non-H2 canonical file.
+The pilot execution transcript received independent audit PASS.
+
+Source root: `/mnt/lrs001/data/market_data_platform/canonical`.
+Selected relative path:
+`trades/date=2026-08-30/03dea17a-67db-48cc-bb44-67de795a07e9.parquet`.
+
+An operator-run one-off procedure read exactly 5,071 source bytes after
+filesystem identity checks, relayed them through Mac memory over SSH,
+and wrote them exclusively into an isolated Pi5 directory. It did not
+execute Candidate C or the synthetic transport implementation, deploy
+runtime modules, or create intermediate Desktop payload files.
+
+The source, Mac relay, and re-read Pi5 payload matched SHA-256:
+`5dc2d1fbc0c8406b8c922f79b85078da6aa99ce40b8b2a33bc4a0377f20703b3`.
+
+Pi5 verification used the isolated validation environment and found an
+exact Arrow-schema match to the previously inspected canonical trade
+definition, 103 rows, one row group, and receipt dates restricted to
+2026-08-30 UTC. Observed instruments were BTC-USD and ETH-USD.
+No research statistics were calculated and no H2 payload was accessed.
+
+Before transfer, `liquid-research-collector.service` on Pi3 was observed
+active/running at MainPID 1190 with NRestarts=0
+(2026-10-25T05:39:21Z). The source acquisition also checked those service
+properties before and after its read. The separate post-transfer check
+at 2026-10-25T07:09:45.990604+00:00 matched the same baseline.
+These observations do not prove uninterrupted collection, zero dropped
+events, or the absence of transient performance effects.
+
+At pilot completion, Pi5 retained the payload and two records under
+`/home/kristo/lrs3-single-file-pilot-03dea17a/`:
+- `03dea17a-67db-48cc-bb44-67de795a07e9.parquet`
+- `acquisition.json`
+- `collector_postcheck.json`
+
+The original acquisition record retains its pending post-transfer-check
+field. The separate collector supplement records the subsequently
+observed check, explicitly identifies its origin as operator-relayed Pi3
+terminal output, and binds to the acquisition record's SHA-256.
+It is an exclusively created ordinary file, not immutable storage or an
+independently authenticated service attestation. No pilot artifacts were
+deleted; cleanup requires a separate explicit operator decision.
+
+This completes only the authorized one-file engineering pilot. It does
+not establish complete instrument-day coverage, a point-in-time snapshot,
+general canonical validity, continuous ingestion, storage failure-domain
+independence, production readiness, or scientific readiness. It does not
+authorize further SSH evidence transfers, runtime deployment, or broader
+pilot execution.
+
+The earlier Mac-only record above describes the preceding acquisition
+and cleanup; it is not a statement about this later Pi5 transfer.
+Broader production transfer and pilot execution remain HOLD, H2 remains
+SEALED, and scientific readiness remains PENDING. Candidate C's separate
+governance question remains unresolved.
+
 ### Candidate C — H2 Synthetic Snapshot Transport (Engineering Scope)
 
 **Status:** Implemented synthetic-development prototype; production transfer
