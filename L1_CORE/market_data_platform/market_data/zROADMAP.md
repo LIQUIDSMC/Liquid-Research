@@ -208,6 +208,47 @@ Broader production transfer and pilot execution remain HOLD, H2 remains
 SEALED, and scientific readiness remains PENDING. Candidate C's separate
 governance question remains unresolved.
 
+### Single-File Input Readiness and Timestamp Ordering — 2026-10-25 UTC
+
+Chris authorized further read-only inspection of the retained Pi5 pilot
+payload identified above. Its SHA-256 remained:
+`5dc2d1fbc0c8406b8c922f79b85078da6aa99ce40b8b2a33bc4a0377f20703b3`.
+File identity checks and exact Arrow-schema comparison passed.
+
+The 103 rows comprised 57 BTC-USD and 46 ETH-USD observations.
+All eight columns had zero nulls. Price and quantity had no nonfinite
+or nonpositive values. No duplicate `(instrument_id, trade_id)` keys
+or exact duplicate rows were observed. Receipt dates remained restricted
+to 2026-08-30 UTC. These findings describe this file only.
+
+In preserved file order, receipt and event timestamps had no adjacent
+decreases. Trade timestamps had 22 adjacent decreases: 14 for BTC-USD
+and eight for ETH-USD. Every such adjacent pair shared its instrument,
+receipt timestamp, and event timestamp; its trade ID also decreased.
+Per-instrument subsequences likewise had 14 and eight trade-time
+decreases, with largest decreases of 76 and 12 stored timestamp units,
+respectively.
+
+Equal timestamps identify groups, not unique original messages or
+proven exchange batches. The inspected current Coinbase adapter iterates
+the supplied trade arrays without sorting, maps message time to
+`event_time`, and maps each trade's time to `trade_time`. This code
+inspection does not establish which historical adapter revision ran,
+the original wire-message boundaries, or the cause of the observed order.
+
+The sample demonstrates that consumers cannot assume nondecreasing
+`trade_time` in canonical file order. Any derived analytical ordering
+requires an explicit consumer-specific rule. No sorting, deduplication,
+payload changes, file writes, or network access occurred during these
+Pi5 inspections; their outputs were reported in the terminal transcript.
+
+The inspection received independent review. Its evidence supports the
+observations above, not a conclusion that exchange batching caused the
+ordering or that all collection/storage defects have been excluded.
+It establishes neither broader data completeness nor scientific readiness.
+Production transfer and broader pilot execution remain HOLD, H2 remains
+SEALED, and scientific readiness remains PENDING.
+
 ### Candidate C — H2 Synthetic Snapshot Transport (Engineering Scope)
 
 **Status:** Implemented synthetic-development prototype; production transfer
