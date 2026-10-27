@@ -138,14 +138,73 @@ include synthetic input generation and sorting; they are not isolated
 incremental kernel allocations. Address-space limits and resident-memory
 measurements are different quantities.
 
+## Synthetic Pi5 Parquet Loader Checkpoint — 2026-10-26
+
+The separately authorized synthetic-file extension was independently
+reviewed and committed at
+`9e2b0f4e76279df01c5bcad9ff93b9be919df3e2`.
+The loader-profiler and shared regression suites passed 38 tests on Mac.
+
+Both full-size cases subsequently completed successfully on Pi5, using
+Python 3.13.5, NumPy 2.4.6, and PyArrow 25.0.0. Each fresh worker used
+a 2 GiB address-space cap, single-thread settings, and a 300-second
+wall-clock limit.
+
+The generator created three synthetic partitions dated August 21–23,
+with 8,955 files per partition. Controls included ETH rows, BTC rows
+before the target day, and BTC rows exactly at its exclusive end.
+The actual shared resolver, two-pass loader, decimal-to-float conversion,
+integrity checks, lexsort, and sorted-array validation were exercised.
+Exact selected synthetic trade-ID membership was also verified.
+
+| Selected rows | Synthetic files | Generated rows including controls | Fixture file bytes | Peak process RSS, bytes | Total elapsed seconds |
+|---:|---:|---:|---:|---:|---:|
+| 678,382 | 26,865 | 758,977 | 81,831,442 | 169,328,640 | 70.973315 |
+| 1,356,764 | 26,865 | 1,437,359 | 94,531,635 | 204,832,768 | 74.220515 |
+
+Both workers exited with status zero and published COMPLETE records.
+Captured stderr contained expected shared-loader progress messages.
+The isolated checkout finished clean at the pinned revision.
+
+Checkout: `/home/kristo/lrs3-pi5-loader-profiler-9e2b0f4/`.
+Retained fixture/report root: `/home/kristo/lrs3-pi5-loader-profiling-v1/`.
+
+Attempt directories beneath that root:
+- `parquet-loader-678382--556dd903-5e81-40e9-96c4-d1cc1e701a98`
+- `parquet-loader-1356764--03d98d06-1dfd-4e00-926d-891e8aa52382`
+
+Each attempt retains its synthetic-trades directory and completion record.
+Combined generated fixture file bytes total 176,363,077, approximately
+168.2 MiB; this is not a measurement of physical allocated disk space.
+Files used Parquet compression NONE. No automatic cleanup occurred.
+
+Loader-profiler source SHA-256:
+`3a064a717aea7173d4aa80bc029e330afd3a9a2342407e7e71b86cc038f448bb`.
+
+Shared loader source SHA-256:
+`52b58a3b45a2a063a829541f395c454e9a1e336c1d14b39b4a1074299f0ee072`.
+
+The previously recorded base-profiler and kernel hashes also matched
+the reported worker measurements.
+
+These are process-lifetime RSS high-water marks, including fixture
+generation and membership-validation allocations. Phase checkpoints
+are cumulative high-water observations, not isolated phase allocations.
+The synthetic file distribution and values are not a reconstruction
+of historical data. No canonical files were accessed, no historical
+payloads were transferred, and no calculation kernel or new study
+reporting ran in these loader workers.
+
 ## Remaining Limits and Decisions
 
 The measurements establish completed capacity observations and synthetic
 headroom for the tested array/sorting and kernel cases only.
 
-They do not measure real Parquet loading, source-file inventories,
-full schema conversion/filtering, the new reporting implementation,
-or every possible real-data allocation pattern. No full-pipeline
+Synthetic loader checks now exercise Parquet loading, file discovery,
+schema conversion/filtering, and sorting on generated corpora. They do
+not measure historical-data execution, the new reporting implementation,
+or the loader and kernel together in one process. They do not reproduce
+every possible historical-data allocation pattern. No full-pipeline
 memory-safety, feed-completeness, profitability, or scientific-readiness
 claim follows.
 
