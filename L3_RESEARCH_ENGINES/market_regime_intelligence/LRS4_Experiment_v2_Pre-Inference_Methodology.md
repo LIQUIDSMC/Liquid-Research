@@ -778,3 +778,23 @@ The relationship between the inherited six-value `H_path` disposition and Experi
 Endpoint-level source-history authorization, source-history maturity, measurement validity, threshold-learning validity, and applicable C11 temporal semantics remain inherited except where an explicit Experiment-v2 resolution states otherwise.
 
 No inherited Experiment-v1 methodology is superseded merely because it is not repeated in this document. Experiment-v1 methodology not explicitly superseded remains inherited unchanged where applicable, subject to the Experiment-v2 authority and interface model defined above.
+
+---
+
+## Section 5 -- Proposed Evidence Baseline Reference (Non-Normative)
+
+The proposed selected test inventory for Experiment v2 comprises 196 tests:
+145 Family A tests from
+`methodology_evidence/Family_A_Corrected_Proposed.md` and 51 Family B
+tests from `methodology_evidence/Family_B_Original_Selected.md`.
+
+The proposed selected invariant registry comprises 53 entries from
+`methodology_evidence/INVARIANT_REGISTRY_RECONCILED_PROPOSED.md`.
+
+`methodology_evidence/BASELINE_AUTHORITY.md` identifies the evidence
+selection, historical provenance, correction history, and repository
+preservation checkpoint. This section is an evidence reference only:
+it does not create, amend, supersede, or freeze technical methodology.
+
+Formal baseline acceptance, methodology freeze, implementation
+authorization, and research-outcome inspection remain withheld.
