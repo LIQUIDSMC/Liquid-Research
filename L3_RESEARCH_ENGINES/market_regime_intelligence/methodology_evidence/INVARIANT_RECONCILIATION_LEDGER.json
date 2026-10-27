@@ -1,0 +1,380 @@
+{
+  "1": {
+    "text": "| **I01** | `O_candidate(s,d,W)` depends only on inherited LRS3 candidacy and legitimate entry of `W`; no SH/regime/Gate2/path/final result may affect membership. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 15,
+    "status": "ORIGINAL",
+    "sha256": "c0acb96ae4a4a43218e30a32bbdc3d20bfeb14d253c8bcf09baaa9b566fc21d8"
+  },
+  "2": {
+    "text": "| **I02** | Every candidate `T` must resolve exactly one strict-C10 predecessor `G(T)` satisfying `G<T`; exact-grid observations consume the preceding endpoint. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 16,
+    "status": "ORIGINAL",
+    "sha256": "f8d8fd7bff4d89f9447b820481225311e137bff257c8aa0d0cf91e2fd5431d8c"
+  },
+  "3": {
+    "text": "| **I03** | `G_candidate` is the deduplicated set of candidate strict-C10 endpoints. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 17,
+    "status": "ORIGINAL",
+    "sha256": "f4abde90ca3063460250489b31d5076222df45ecf22bd8fa7e8a78a24cf6f453"
+  },
+  "4": {
+    "text": "| **I04** | `SH(s,d,W)` exists **iff** `|O_candidate|>0`; empty candidate set \u21d2 SH undefined, never ELIGIBLE/INELIGIBLE. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 18,
+    "status": "ORIGINAL",
+    "sha256": "726776afc59da355ef7cf0c7aaf770ff9d252b2c9ddfa66fd7b375da19106986"
+  },
+  "5": {
+    "text": "| **I05** | For nonempty candidates, aggregate SH is ELIGIBLE **iff every unique candidate endpoint** passes W-specific endpoint SH authorization. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 19,
+    "status": "ORIGINAL",
+    "sha256": "c60640b617e1cd0ba8b3c786267afbecb4acb42c26766015af23453a14910c84"
+  },
+  "6": {
+    "text": "| **I06** | A candidate-bearing day contributes **all or none** of its candidates to D1 according to aggregate SH. No partial day inclusion. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 20,
+    "status": "ORIGINAL",
+    "sha256": "6f54a1682b2355b0486a415d911940bf81a122f49493e02a2b1c0010a545c1b1"
+  },
+  "7": {
+    "text": "| **I07** | D1 contains observations only and cannot be filtered by D3, regime state, Gate2, `SH_path`, or final disposition. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 21,
+    "status": "ORIGINAL",
+    "sha256": "2d8e7dff5de24e4357c44e563b348780f46a3d2b9b4fa73c0aba6fdcb93a5d90"
+  },
+  "8": {
+    "text": "| **I08** | `D1=\u2205` \u21d2 D0 terminal `NO_TARGET_OBSERVATION_POPULATION`; C1 vs C2 provenance remains distinguishable. No fallback or synthetic Gate2 result. | `D0_TERMINAL` |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 22,
+    "status": "ORIGINAL",
+    "sha256": "1282d8aba4914829b5e71c5e6457438744d430d8de9e8d321521693228051bb0"
+  },
+  "9": {
+    "text": "| **I09** | `D1\u2260\u2205` \u21d2 D0 passes. No additional minimum-observation threshold may be introduced. | Integrity failure if violated |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 23,
+    "status": "ORIGINAL",
+    "sha256": "1850100ec742565eab8cac36492befe5dfab6e2038da37e7415fb3c13dc22029"
+  },
+  "10": {
+    "text": "| **I10** | D2 may be constructed only after D0 passes and must equal the complete 5-minute grid from `G(T_first)` through `G(T_last)`, inclusive. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 24,
+    "status": "ORIGINAL",
+    "sha256": "88112ea70c4a00b76f455238436b15402b25bef428a2571c862269ef4d42479d"
+  },
+  "11": {
+    "text": "| **I11** | D2 boundaries derive **only** from D1 extrema; excluded candidates cannot establish or extend them. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 25,
+    "status": "ORIGINAL",
+    "sha256": "c5a6cc1cb51208286be977d470bb29b0c16cfef273f0afd876abba2dbf1ab526"
+  },
+  "12": {
+    "text": "| **I12** | Once constructed, D2 is immutable. Interior exclusions or D3 failures never create holes, shrink, expand, or re-anchor it. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 26,
+    "status": "ORIGINAL",
+    "sha256": "a7673bac698993a0c60778da2c324054f7986e2b2c04b4e3c5c07d67406b1568"
+  },
+  "13": {
+    "text": "| **I13** | A one-cell D2 where `G_first=G_last` is valid and must not be rejected merely for its size. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 27,
+    "status": "ORIGINAL",
+    "sha256": "d0c65db7c6e91a920bd042d3e2d47eeaa08ec55efbc89b0ceec6422a83b0c0f8"
+  },
+  "14": {
+    "text": "| **I14** | Exactly one authoritative `D3_ADMISSIBLE(G,W)` exists for **every** endpoint in D2. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 28,
+    "status": "ORIGINAL",
+    "sha256": "f231a0e041841e0c5ed91d0800b6c8cf762827c63665276effd2399dac36dd5f"
+  },
+  "15": {
+    "text": "| **I15** | D3 must satisfy `SH_AUTHORIZED(G,W) AND REGIME_STATE_VALID(G,W)` with SH authorization evaluated first. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 29,
+    "status": "ORIGINAL",
+    "sha256": "509f5482cbbcab888385098c3d85cb1a1e74490ab261206a9f2fd9fb930cd5a6"
+  },
+  "16": {
+    "text": "| **I16** | `SH_AUTHORIZED=FALSE` forces D3 FALSE regardless of mechanically available HIGH/LOW state; mechanically computed unauthorized state has no classification authority. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 30,
+    "status": "ORIGINAL",
+    "sha256": "98cc55ff0e4efeac8a9fc500310b0d834c5fec8481712e29cd5b48cffc6b5668"
+  },
+  "17": {
+    "text": "| **I17** | D3 FALSE leaves the cell in D2 but prevents environmental classification/episode continuity; failure provenance remains auditable. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 31,
+    "status": "ORIGINAL",
+    "sha256": "7b04ac0b7472db7935fdb3a9a14da42b672bf46664a525ecf97c74ae34ff2d82"
+  },
+  "18": {
+    "text": "| **I18** | For every `T\u2208D1`, current-W regime eligibility equals authoritative D3 at strict-C10 `G(T)` and cannot mutate D1 or D2. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 32,
+    "status": "ORIGINAL",
+    "sha256": "f3f08e8d0406a865e51b6726630f539f7f4e9533749e33bc0fcb4534f547b172"
+  },
+  "19": {
+    "text": "| **I19** | D4 is produced by one chronological sweep over the **complete D3 timeline**, not observation-filtered D1 endpoints. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 33,
+    "status": "ORIGINAL",
+    "sha256": "09bd719b2f0d1f3e1df5fd96998ec1161c3a5e5f95ddc560219bba1ef1257d07"
+  },
+  "20": {
+    "text": "| **I20** | Every episode is a maximal contiguous same-state run of D3-admissible cells. Exactly three boundary causes exist: `STATE_CHANGE`, `D3_INADMISSIBILITY`, `D2_BOUNDARY`. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 34,
+    "status": "ORIGINAL",
+    "sha256": "5e721147b3fcbebd63f5a004737079a4d16e61b59630e460e7647e9fc1f3de4a"
+  },
+  "21": {
+    "text": "| **I21** | D3-inadmissible cells terminate continuity, form no episode, create no censoring, and cannot be bridged. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 35,
+    "status": "ORIGINAL",
+    "sha256": "dd293b95898f5de7ed8c3586031120078b416a5aef7e362e5f275cae2063e923"
+  },
+  "22": {
+    "text": "| **I22** | Only literal D2 boundaries may censor. Pre-D2 left tracing uses inherited state-transition / inherited-validity-discontinuity authority without extending D2. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 36,
+    "status": "ORIGINAL",
+    "sha256": "12cca55c3f535470711f739f95cea93e97f9aba16370554035d231a0300708b8"
+  },
+  "23": {
+    "text": "| **I23** | Every episode reaching `G_last` is right-censored; post-D2 evidence cannot remove/rescue that flag. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 37,
+    "status": "ORIGINAL",
+    "sha256": "83b3549dd90fe06a4ae264ef32955ebcdd1528a5776a6c9143c0ddee28ef2064"
+  },
+  "24": {
+    "text": "| **I24** | Left/right censoring are independent; a one-cell episode may carry either/both/neither and has observed duration exactly 5 minutes. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 38,
+    "status": "ORIGINAL",
+    "sha256": "ae0503ca64240ed37c50857dc06022994f0578f29a362c6e14df15061549e9ba"
+  },
+  "25": {
+    "text": "| **I25** | `K_HIGH`, `K_LOW`, `K_total`, and `T_classified` derive exclusively from authoritative D3/D4 environmental topology. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 39,
+    "status": "ORIGINAL",
+    "sha256": "91f16f5a8047b4d72cf49be346eec46516fd916b55f1de91a1cd41108a1cecc8"
+  },
+  "26": {
+    "text": "| **I26** | `K_total = 0 \u21d4 T_classified = 0`. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 40,
+    "status": "ORIGINAL",
+    "sha256": "257a4a6eb3bf580b2ad856bf3a4c14ddcc070b006e836e8d5e6e2da8817b74f8"
+  },
+  "27": {
+    "text": "| **I27** | `K_total=0` with positive current-W eligible-observation count is impossible as an ordinary realization. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 41,
+    "status": "ORIGINAL",
+    "sha256": "a2e66854647cfa99e1ed0bdc7d34251ee86cb21816f38a73413effb903363dae"
+  },
+  "28": {
+    "text": "| **I28** | `N_LRS4_ELIGIBLE=0` is a legitimate Z1 state; G-NUMERIC.4 becomes `NOT_APPLICABLE_ZERO_ELIGIBLE_OBSERVATIONS` and must not invent `p_min=0` or a Gate2 failure. | Ordinary diagnostic state |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 42,
+    "status": "ORIGINAL",
+    "sha256": "01c3b6eb54c8cb18c2040f5bef0dcc294fc8845b2c1ae5de078ee97ea4f125a0"
+  },
+  "29": {
+    "text": "| **I29** | `K_total=0` makes both G-NUMERIC.6 subdiagnostics independently `NOT_APPLICABLE_ZERO_STRUCTURAL_EPISODES`; neither contributes to `R_W`, while G-NUMERIC.5 remains operative. | Ordinary diagnostic state |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 43,
+    "status": "ORIGINAL",
+    "sha256": "965eaef5e6ea60262d2530e3a8f4e257c871f0bc000cd3c823c755dce2b8541e"
+  },
+  "30": {
+    "text": "| **I30** | `R_W`, `A_W`, and `H_W` remain distinct: `R_W` complete reasons, `A_W` sole routing authority, `H_W` diagnostic only. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 44,
+    "status": "ORIGINAL",
+    "sha256": "b41bf63bf664b0743ea8f3397de9b807429cc1f774ada3cf32b3828eaf10c15d"
+  },
+  "31": {
+    "text": "| **I31** | D0 cannot invoke F1 fallback. F1 directional fallback is reachable only after Gate2 and only through inherited Gate2 routing authority. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 45,
+    "status": "ORIGINAL",
+    "sha256": "63cbd573b223d558169a41f895c7df6e378a5d9f1ea79b9d8f216d2a605fb283"
+  },
+  "32": {
+    "text": "| **I32** | `WindowEvaluationResult` has exactly three non-coercible variants: D0 termination, completed `E_W`, `INTEGRITY_FAILURE`. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 46,
+    "status": "ORIGINAL",
+    "sha256": "a8005fbdda1ca66012e51b177ba6a7999996a4e9bba480472c8d6c7bd6408feb"
+  },
+  "33": {
+    "text": "| **I33** | `InstrumentPathResult` has exactly four non-coercible variants: `VIABLE`, `GATE2_TERMINAL`, `D0_TERMINAL`, `INTEGRITY_FAILURE`. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 47,
+    "status": "ORIGINAL",
+    "sha256": "fd837efc6cac53b0b831ffce9fa4bfa659c939691d392645bb64a780f2c84be2"
+  },
+  "34": {
+    "text": "| **I34** | `W*` exists **iff** the Instrument Path is `VIABLE`; no terminal/integrity path may synthesize one. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 48,
+    "status": "ORIGINAL",
+    "sha256": "11aad1a693843069b31fc704bfe207b14072f00923c3b3ac4ecb68c64d7efc0e"
+  },
+  "35": {
+    "text": "| **I35** | `W_evidence(s,d)` contains exactly entered windows having nonempty candidate sets / defined `SH(s,d,W)`. Zero-candidate entered windows abstain. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 49,
+    "status": "ORIGINAL",
+    "sha256": "e37cc6d9e8ed2f19dd1fbf348e74b75aee4b674bfacdb4c70fc3a19745047431"
+  },
+  "36": {
+    "text": "| **I36** | If `W_evidence\u2260\u2205`, `SH_path` equals AND across exactly those evidentiary contributors. A defined INELIGIBLE contributor cannot abstain. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 50,
+    "status": "ORIGINAL",
+    "sha256": "bc66d12ef32755b7a3d862d3859df322c59ed1083847de7a450c3b433e05c929"
+  },
+  "37": {
+    "text": "> **I37 \u2014 Empty evidentiary set.**  \n> If `W_evidence(s,d)` is empty, `SH_path(s,d)` is undefined and must not be coerced into a source-history eligibility state or any observation-level status. Under the inherited primary-4h entry guarantee, this implies that day `d` contains zero inherited LRS3-eligible observations **requiring LRS4 disposition**.",
+    "source": "15d364e7-attachment.txt",
+    "line": 45,
+    "status": "ADJUDICATED_CORRECTION",
+    "sha256": "a243210e313a7c4228f0212809347561b7fe901bdb85b5f962c6bc33583e3776",
+    "supersedes": {
+      "text": "| **I37** | `W_evidence=\u2205` \u21d2 `SH_path=UNDEFINED`; this cannot become an observation status. Under the inherited primary-4h path, it implies no inherited LRS3-eligible observations require disposition that day. | Integrity failure if coerced |",
+      "source": "f7f7fa69-attachment.txt",
+      "line": 51,
+      "status": "ORIGINAL",
+      "sha256": "fb447b5305ca66fb5ec9ee8091b08013bcdacacdb6e7ae4147977a0280258856"
+    }
+  },
+  "38": {
+    "text": "| **I38** | Final projection executes **only** for a VIABLE path and inherited LRS3-eligible observations requiring disposition. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 52,
+    "status": "ORIGINAL",
+    "sha256": "dd13165d0c24d8695c2cf3ff9b47659b1a1060eb7d2a5d43e584658aefc8e234"
+  },
+  "39": {
+    "text": "| **I39** | Final projection order is fixed: `SH_path` first \u2192 if eligible, strict C10 \u2192 authoritative **existing W*** D3 artifact. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 53,
+    "status": "ORIGINAL",
+    "sha256": "3f2a2be9821007d0d9e405016fc5761bb173c3b5a041e41025d6cc7c853f9431"
+  },
+  "40": {
+    "text": "| **I40** | Final projection must reuse the exact authoritative W* D3 artifact; it may not recompute SH authorization, RVOL, thresholds, regime state, or D3. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 54,
+    "status": "ORIGINAL",
+    "sha256": "08cdda3d50b2613a2938ab082068e5f20149671031fcae0cbabfd69238586018"
+  },
+  "41": {
+    "text": "| **I41** | Final ordinary disposition is exactly one of the three existing values: source-history ineligible, regime ineligible, eligible. | Integrity failure otherwise |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 55,
+    "status": "ORIGINAL",
+    "sha256": "45884c5eda2a0ae441ecce0ee04db84d6309789c3b7f220778c7b47ee7302392"
+  },
+  "42": {
+    "text": "| **I42** | `FinalObservationResult(T)` is either a successfully resolved ordinary disposition **or** `INTEGRITY_FAILURE`, never both. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 56,
+    "status": "ORIGINAL",
+    "sha256": "0b33589bb6b0440667d619a1b1f0da3c8393bb964df834f4ef4ee0305d52b15f"
+  },
+  "43": {
+    "text": "| **I43** | `FinalEligible(T)` exists only when an ordinary disposition exists and is TRUE iff that disposition is `LRS4_ELIGIBLE`. | Integrity failure |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 57,
+    "status": "ORIGINAL",
+    "sha256": "19207b06d1f58d0fbe58be89a104437d36fd36e69bc402fb449dbbdf408763cb"
+  },
+  "44": {
+    "text": "| **I44** | Final-projection integrity failure for `T` must not retroactively alter `InstrumentPathResult`, `W*`, completed Window Evaluations, or another observation's result. | Fail closed for T |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 58,
+    "status": "ORIGINAL",
+    "sha256": "875744e2de2ea21997e538d43a1a0e782a48cdb0dd673cb82677e2ac0fc61203"
+  },
+  "45": {
+    "text": "| **I45** | Integrity failure at any layer cannot be translated into `R_W`, `A_W`, `H_W`, D0, source-history exclusion, regime ineligibility, or another ordinary methodological result. | Fail closed |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 59,
+    "status": "ORIGINAL",
+    "sha256": "4b5a937c8608fe8b9af183d9975d7a89d1920f946f535f0ba8ab29557340812f"
+  },
+  "46": {
+    "text": "| **I46** | Partial ordinary results existing before integrity failure may remain as audit evidence but acquire **no downstream authorization authority**. | Fail closed |",
+    "source": "f7f7fa69-attachment.txt",
+    "line": 60,
+    "status": "ORIGINAL",
+    "sha256": "61e66f697e6cba30802c7653813230aba1e1989f3ccbf9c99c2f2d1779651a52"
+  },
+  "48": {
+    "text": "> **I48 \u2014 D4 upstream immutability.**  \n> `D4_W(s)` may partition and summarize the fixed `D2_W(s)` domain but must not resize or rebuild D2, alter any authoritative D3 value, or rebuild D3.  \n> **Violation \u2192 methodology-integrity failure.**",
+    "source": "e4f4ad03-attachment.txt",
+    "line": 7,
+    "status": "ORIGINAL",
+    "sha256": "1eb1a44f85ce58662919a711271d3d2ade6b20e1e6610025f124e4c72185cf58"
+  },
+  "50": {
+    "text": "> **I50 \u2014 Eligibility-layer naming discipline.**  \n> Whenever more than one eligibility layer is in scope, an implementation artifact, schema, diagnostic, or interface must identify the applicable eligibility layer explicitly rather than use an unqualified `eligibility` field/status whose authority is ambiguous. Inherited LRS3 eligibility, source-history eligibility, current-Window regime eligibility, and final observation eligibility must remain semantically distinguishable.  \n> **Violation \u2192 interface/schema non-compliance. Verified through static interface-conformance review; it is not itself a runtime discriminated `INTEGRITY_FAILURE` result.**",
+    "source": "607ce4a3-attachment.txt",
+    "line": 7,
+    "status": "ADJUDICATED",
+    "sha256": "3f1b20ad174bbb57bcd00d7c90311d6047d2a8c84f250a4d5ac8d5421b9e17da"
+  },
+  "51": {
+    "text": "> **I51 \u2014 Authoritative-object non-substitutability.**  \n> A methodological consumer must consume the authoritative object required by its interface. Predictable implication, numerical equality, compatible Boolean value, shared provenance, or reconstructibility does not authorize substitution by a different methodological object, including an object with different index arity, semantic type, dependency stage, or producer.  \n> **Violation \u2192 methodology-integrity failure.**",
+    "source": "607ce4a3-attachment.txt",
+    "line": 15,
+    "status": "ADJUDICATED",
+    "sha256": "f471b2024a58b67940e08eafe8527ffe37b8bde55f4ba335f38ad73078d91320"
+  },
+  "52": {
+    "text": "> **I52 \u2014 Single authoritative producer.**  \n> Within its applicable Window Evaluation or final-path projection, each authoritative methodological object must have exactly one authoritative producer. Derived evidence may validate, reconcile, or report that object but must not become a competing authoritative producer.  \n> **Violation \u2192 methodology-integrity failure.**",
+    "source": "607ce4a3-attachment.txt",
+    "line": 21,
+    "status": "ADJUDICATED",
+    "sha256": "ebaf45a258d65332d842b61e8d2fb8d177b035c1c3a541f05e1978a535a722bb"
+  },
+  "53": {
+    "text": "> **I53 \u2014 Control/provenance type preservation.**  \n> `D0Termination`, `DiagnosticRecord`, `R_W`, `A_W`, `H_W`, `ApplicabilityStatus`, `BoundaryCause`, `CensoringStatus`, and `Episode` are distinct authority-bearing control/provenance object types and must not be coerced into or substituted for one another. Their respective provenance and semantic roles must remain explicit.  \n> **Violation \u2192 methodology-integrity failure.**",
+    "source": "607ce4a3-attachment.txt",
+    "line": 27,
+    "status": "ADJUDICATED",
+    "sha256": "73fa0034562dd01f02517409c197c5060ff3525424aa968531854aad35c9d8ec"
+  },
+  "47": {
+    "text": "**I47 \u2014 Current-W G-NUMERIC population authority.** G-NUMERIC.1\u2013.3 observation counts and exposures must be derived from authoritative `D1_W(s)` of the current Window Evaluation. `D_available` remains a distinct W-scoped day-level denominator. Neither may be substituted with final-path `SH_path` populations or filtered by downstream regime assignment or disposition.",
+    "source": "30f1d781-attachment.txt",
+    "line": 59,
+    "status": "RECONSTRUCTED_PROPOSED_NOT_ORIGINAL",
+    "sha256": "d6ed6d5265de3d3dc334f7c8fa152e66aa46caf93ae5a52858041c3a81a20147"
+  },
+  "49": {
+    "text": "> **I49 \u2014 `SH_path` construction timing authority.**  \n> `SH_path(s,d)` may be constructed only after the Instrument Path has been finalized. No partial, unresolved, or in-progress Instrument Path may emit an authoritative `SH_path` value.",
+    "source": "15d364e7-attachment.txt",
+    "line": 126,
+    "status": "ADJUDICATED_REPLACEMENT",
+    "sha256": "571aa6b5bf22bb25ce525c235459039dba31098030b9558a4a0119068aec7487"
+  }
+}
