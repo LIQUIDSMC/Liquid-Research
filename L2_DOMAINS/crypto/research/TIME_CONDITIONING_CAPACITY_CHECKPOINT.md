@@ -195,6 +195,43 @@ of historical data. No canonical files were accessed, no historical
 payloads were transferred, and no calculation kernel or new study
 reporting ran in these loader workers.
 
+## Synthetic Descriptive Reporting Checkpoint — 2026-10-26
+
+Chris separately authorized synthetic-only descriptive reporting development.
+The independently reviewed module and tests were committed at
+`d2aa90a819603a3a417613ef03a4a809b7d51070`:
+- `L1_CORE/market_data_platform/research/time_conditioning_descriptive.py`
+- `L1_CORE/market_data_platform/research/test_time_conditioning_descriptive.py`
+
+Validation passed 20 synthetic tests on Mac and 20 on Pi5
+(0.23 seconds on Pi5). Pi5 used the existing isolated validation checkout
+at `/home/kristo/lrs3-validation-198bb8f/source/`, which finished clean
+at the committed revision. No tests were run on Pi3 for this component.
+
+The pure reporting API accepts summarized synthetic group counts and
+return means, validates the complete 24-date / 48-instrument-day matrix,
+and reports both mechanisms across all four horizons. It preserves
+invalid cells and dates explicitly, pairs valid BTC and ETH deltas with
+equal weight within each date, and reports leave-one-date-out sensitivity
+only when at least two valid date pairs exist.
+
+Malformed inputs raise ReportError. Missing or nonfinite populated-decile
+means produce explicitly invalid cells; empty deciles require null means.
+COMPLETE_DESCRIPTIVE denotes processing completion, not scientific validity.
+The module adds no significance tests, promotion thresholds, winner
+selection, or automatic follow-up decision.
+
+The synthetic input classification is a caller declaration, not an
+authentication mechanism. The module does not verify upstream populations,
+decile assignments, or means. Tests used fabricated summaries; they did
+not execute the historical analyzer, load canonical files, or establish
+end-to-end integration from the calculation kernel into the new report.
+
+Development bounds are 100,000 eligible observations per instrument-day
+horizon and a 1 MiB serialized report. These are not frozen historical
+execution budgets. Reporting has not been profiled in a combined
+loader/kernel/reporting process.
+
 ## Remaining Limits and Decisions
 
 The measurements establish completed capacity observations and synthetic
@@ -202,15 +239,16 @@ headroom for the tested array/sorting and kernel cases only.
 
 Synthetic loader checks now exercise Parquet loading, file discovery,
 schema conversion/filtering, and sorting on generated corpora. They do
-not measure historical-data execution, the new reporting implementation,
-or the loader and kernel together in one process. They do not reproduce
+not measure historical-data execution or an integrated loader/kernel/reporting
+run. The reporting module was tested separately on fabricated summaries.
+These checks do not reproduce
 every possible historical-data allocation pattern. No full-pipeline
 memory-safety, feed-completeness, profitability, or scientific-readiness
 claim follows.
 
 The study still requires final resource budgets, input identity and
-retention arrangements, implementation and synthetic review of its new
-descriptive reporting, a frozen prospective predeclaration, and explicit
+retention arrangements, synthetic integration and combined resource
+validation of the study components, a frozen prospective predeclaration, and explicit
 authorization for any acquisition or historical execution.
 
 Original Candidate D D0 remains blocked with its matrix unchanged.
