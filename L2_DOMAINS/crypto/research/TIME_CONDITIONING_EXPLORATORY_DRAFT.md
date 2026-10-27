@@ -134,6 +134,12 @@ or economic-feasibility work requires a separate prospective design.
 
 ## Capacity and Acquisition Plan — Unresolved
 
+Completed source-count and synthetic Pi5 profiling observations are recorded
+in [TIME_CONDITIONING_CAPACITY_CHECKPOINT.md](TIME_CONDITIONING_CAPACITY_CHECKPOINT.md).
+They do not freeze execution budgets, authorize acquisition, or establish
+full-pipeline memory safety. This predeclaration remains DRAFT / UNFROZEN.
+
+
 The one-file pilot cannot establish full-corpus file counts, byte volumes,
 row counts, peak memory, or runtime requirements.
 
