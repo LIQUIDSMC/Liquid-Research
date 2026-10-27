@@ -796,5 +796,9 @@ selection, historical provenance, correction history, and repository
 preservation checkpoint. This section is an evidence reference only:
 it does not create, amend, supersede, or freeze technical methodology.
 
-Formal baseline acceptance, methodology freeze, implementation
-authorization, and research-outcome inspection remain withheld.
+Formal evidence-baseline acceptance is recorded in
+`methodology_evidence/BASELINE_ACCEPTANCE_RECORD.md`. Experiment-v2
+methodology remains DRAFT / NOT FROZEN; implementation remains
+unauthorized; and research-outcome inspection remains N=0.
+Evidence-baseline acceptance does not independently authorize
+any of those subsequent activities.
