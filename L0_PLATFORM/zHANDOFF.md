@@ -228,22 +228,26 @@ whole-file rewrite when it can accomplish the same goal safely.
 
 **GM and specialist boundaries:**
 
-The General Manager owns cross-LRS architecture and governance, master cleanup
-sequencing, cross-engine coordination and routing, shared monitoring, and
-repository-wide/public-GitHub readiness.
+General Manager handles repository-wide work, shared infrastructure,
+cross-engine integration, and tasks that do not belong to a particular
+specialist.
 
-Each specialist owns its engine's research methodology, research
-adjudication, engine-specific implementation, and normal engineering workflow.
-That workflow may include writes, verification, commits, and pushes when
-appropriate. Specialists do not require GM permission merely to perform
-legitimate engine-owned work.
+Each specialist owns its engine-specific research, methodology,
+implementation, testing, and documentation. Engine-specific work stays in
+that specialist's chat; General Manager must not take it over.
 
-If GM discovers an engine-specific methodology or research question, GM should
-record and route it to the owning specialist rather than absorbing that
-specialist's research workflow.
+General Manager involves a specialist only when a concrete dependency blocks
+the user's requested work or must reach a defined state before General
+Manager can finish. Identify the specific dependency and route only the
+necessary work to its owner.
+
+The user sets priorities and authorizes work. General Manager does not
+independently create specialist workstreams or act as an approval gate for
+ordinary specialist-owned work.
 
 Likewise, a specialist should not independently alter unrelated engines,
-cross-LRS architecture, or another owner's methodology.
+cross-LRS architecture, or another owner's methodology. All chats follow the
+user-run command workflow below; assistants do not execute changes themselves.
 
 **Automate immediately wherever possible:**
 
@@ -253,12 +257,16 @@ optional suggestions, or a future backlog item. This applies to recurring
 checks, scheduled workflows, data freshness, service health, sample-size (N)
 thresholds, and documented checkpoint (CP) milestones.
 
-Build, verify, and schedule the automation within the owning thread's scope.
-GM implements shared infrastructure and routes engine-specific automation to
-the owning specialist as a precise ticket; specialists implement and audit
-those automations. Preserve frozen methodology and required human research
-judgment. If a concrete dependency or authority boundary prevents immediate
-completion, record the blocker and owner explicitly in the handoff.
+Build, verify, and schedule automation within the authorized task and owning
+thread's scope, using commands supplied for the user to run. General Manager
+handles shared infrastructure; specialists handle their engine-specific
+automation. Automation is not permission to expand scope or create specialist
+workstreams. General Manager routes specialist work only when the concrete
+dependency rule above applies.
+
+Preserve frozen methodology and required human research judgment. If a concrete
+dependency or authority boundary prevents immediate completion, record the
+blocker and owner explicitly in the handoff.
 
 Reuse the existing ntfy and Healthchecks.io alert infrastructure described
 under Monitoring and Research Checkpoint Governance below.
@@ -530,44 +538,48 @@ whether to execute each supplied command.
 
 **Terminal command delivery standard:**
 
-When the user is expected to run a terminal command, optimize for safe,
-low-friction execution.
+Put explanations before executable code. Place the executable code block at
+the bottom of the response, immediately followed by its terminal heading.
+Do not add explanatory prose after that heading.
 
-- Prefer one complete, fluid code block per command/action whenever practical.
-- Do not fragment one logical action across several code blocks.
-- Keep explanatory prose outside the command block.
-- When there is one thing to run, give one thing to run and inspect its result
-  before jumping several steps ahead.
-- Every command the user is expected to run must include both:
-  - an estimated runtime; and
-  - a concern-after threshold.
-- Include these even for commands expected to complete almost instantly.
-
-Example:
-
-`EST. <1 sec · CONCERN AFTER 5 sec`
+Keep each logical action in one complete code block. Never mix commands for
+different machines in one block. Prefer one action on one machine per response,
+then inspect the user's output before continuing.
 
 **Terminal headings:**
 
-Place the terminal heading after the command block.
+Every executable command block must be followed immediately by a Markdown H1
+heading with bold text and ALL CAPS, in this exact order:
 
-Mac:
+DEVICE · READ-ONLY / WRITE · OWNER · ACTION · EST. RUNTIME · CONCERN AFTER THRESHOLD
 
-`# 🖥️ MAC TERMINAL · 👁️ READ-ONLY · <OWNER> · <AREA/FILE>`
+Use these exact device labels:
+- 🖥️🖥️🖥️ MAC
+- 🍓🍓🍓 PI3
+- 🚀🚀🚀 PI5
 
-`# 🖥️ MAC TERMINAL · ✍️ WRITE · <OWNER> · <AREA/FILE>`
+Use the owner label matching the work:
+- 👑 GM — General Manager
+- 🎯 LRS1 — Market Selection
+- 🔬 LRS2 — Market Microstructure
+- 💧 LRS3 — Market Data Platform
+- 🌤️ LRS4 — Market Regimes
 
-Raspberry Pi:
+Examples:
 
-`# 🍓 PI TERMINAL · 👁️ READ-ONLY · <OWNER> · <AREA/FILE>`
+`# **🖥️🖥️🖥️ MAC · WRITE · 👑 GM · UPDATE HANDOFF · EST. 1–5 SEC · CONCERN AFTER 10 SEC**`
 
-`# 🍓 PI TERMINAL · ✍️ WRITE · <OWNER> · <AREA/FILE>`
+`# **🍓🍓🍓 PI3 · READ-ONLY · 💧 LRS3 · CHECK COLLECTOR · EST. 1–5 SEC · CONCERN AFTER 15 SEC**`
 
-Append the runtime estimate and concern threshold to the heading when
-practical.
+`# **🚀🚀🚀 PI5 · READ-ONLY · 🔬 LRS2 · CHECK SNAPSHOT · EST. 1–5 SEC · CONCERN AFTER 15 SEC**`
 
-Do not add separate decorative engine/project emojis to terminal headings.
-`git add` is WRITE because it modifies the Git index.
+Identify the machine where the command is entered. An SSH command entered on
+the Mac gets MAC; subsequent commands entered inside Pi5 get PI5. The owner
+identifies the work's responsibility, not the machine.
+
+Estimated runtime and concern-after threshold are mandatory, even for commands
+expected to complete immediately. Account for interactive password/input waits
+where applicable. `git add` is WRITE because it modifies the Git index.
 
 **Heredoc rules:**
 
