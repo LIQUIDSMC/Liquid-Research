@@ -946,3 +946,100 @@ result changed):
   >= 2,500, OR the count of markets at n>=15 exceeds 29. The 2,500-pair
   milestone predates CP15 and remains unchanged because it has not fired.
   This is a collection trigger, not a statistical-significance threshold.
+
+
+- Seventeenth checkpoint (triggered 2026-10-04; nearest retained immutable
+  analytical population through 2026-10-06, n=2,575 pairs, 671 markets):
+  the scheduled 06:05 PDT Sentinel run on October 4 reported 2,515 comparable
+  pairs and 29 markets at n>=15. The pair-count condition fired because
+  2,515 >= the frozen 2,500-pair threshold; the deep-market condition had not
+  fired because the roster remained at the frozen CP16 baseline of 29.
+
+  No immutable October 4 trigger-time snapshot was retained. The nearest
+  retained immutable post-trigger analytical snapshot is
+  20261007T002008.645365Z, published to the Pi5 LRS-2 handoff directory on
+  October 6 at approximately 17:20 PDT (2026-10-07 00:20 UTC). Its source
+  observations extend through 2026-10-06 12:03:48 UTC. This snapshot is used
+  for CP17 analysis without representing it as an exact reconstruction of the
+  October 4 trigger population.
+
+  Applying the frozen latest-row-per-(slug, publication_id) pairing semantics,
+  exact-zero neutrality, and canonical slug identity to that immutable
+  population produced 2,575 comparable pairs across 671 markets, with 32
+  markets at n>=15, 1,558 same-sign pairs, and a 60.50% aggregate same-sign
+  rate (1,558/2,575). The maximum per-market sample was n=80.
+
+  Relative to CP16, this retained analytical population increased by 144
+  comparable pairs, 41 markets, three deep markets, and 89 same-sign
+  observations. The aggregate same-sign rate moved from 60.43%
+  (1,469/2,431) to 60.50% (1,558/2,575), a change of +0.08 percentage points
+  using the underlying checkpoint fractions. The 144 additional comparable
+  pairs contained 89 same-sign observations (61.81%). These figures are
+  descriptive only. No frozen statistical threshold has been established for
+  classifying this movement as a trend, stability, instability, or predictive
+  signal.
+
+  The CP16-to-CP17 deep-market identity audit used canonical slug identity.
+  All 29 CP16 deep markets remained in the retained CP17 analytical roster,
+  exactly three additional markets crossed n>=15, and no CP16 deep market was
+  lost. The newly-deep markets were:
+
+  - 2026 Balance of Power -- Republican Senate / Republican House:
+    68.8% same-sign (11/16).
+  - Will Benjamin Netanyahu be the next Prime Minister of Israel?:
+    60.0% same-sign (9/15).
+  - US announces end of Iranian blockade by October 31, 2026?:
+    100.0% same-sign (15/15).
+
+  Several previously tracked records changed as their samples deepened. US
+  Invade Iran moved from 92.0% (69/75) to 92.5% (74/80). Putin out before
+  2027 moved from 96.9% (31/32) to 94.3% (33/35). Iranian regime fall
+  remained 100.0%, moving from 21/21 to 22/22. US end of Iranian blockade by
+  September 30 remained 96.6% (28/29). Flávio Bolsonaro moved from 54.5%
+  (18/33) to 51.4% (18/35), while Luiz Inácio Lula da Silva moved from 32.4%
+  (11/34) to 33.3% (12/36). These movements remain heterogeneous descriptive
+  observations and do not establish predictive value.
+
+  CP17 provenance:
+
+  - Natural trigger: 2026-10-04 06:05 PDT, with 2,515 comparable pairs and
+    29 markets at n>=15.
+  - Trigger condition: pairs=2515>=2500; deep-market condition remained
+    29/29.
+  - The host-local Sentinel log records the transition from NOT_DUE before
+    the threshold crossing to DUE at the October 4 scheduled run and records
+    an ALERT-SENT event for the LRS-2 research checkpoint.
+  - No immutable October 4 trigger-time snapshot was found in the retained
+    Pi3 checkpoint snapshots or Pi5 bridge handoff inventory.
+  - Nearest retained immutable post-trigger snapshot:
+    20261007T002008.645365Z.
+  - Snapshot timestamp: 2026-10-07T00:20:08.645365+00:00.
+  - Source host: liquid-pi (Pi3).
+  - Source commit:
+    f691225fa7fc7aada1a1f9bc41d03fd2e1a06582.
+  - Verified snapshot SHA-256:
+      obi_log.csv:
+        d30ee244a59ddf86ad74184030414436118bb986345a11e98aaba24e6a78c4e8
+      near_book_depth_log.csv:
+        ecfaa0dfb6d2bddbf8e9cf7f757b72c37f0ceda57c986bf017844179b1404af0
+  - Snapshot rows and timestamp boundaries:
+      obi_log.csv: 2,595 data rows, 12 columns,
+        2026-07-04T05:56:32Z through 2026-10-06T12:03:13Z.
+      near_book_depth_log.csv: 2,585 data rows, 13 columns,
+        2026-07-04T17:46:14Z through 2026-10-06T12:03:48Z.
+  - Manifest before-copy and after-copy source boundaries matched, and the
+    retained snapshot file hashes matched the manifest.
+  - Agreement-matrix CSV SHA-256 under the frozen single-pass equivalent
+    semantics:
+    e17af9fcbc315e156a5c87a509f2817d3dd5654fd8d2e4e26820cbb893259f6d.
+  - The retained analytical population is 60 comparable pairs beyond the
+    natural trigger count. It is the nearest retained immutable post-trigger
+    evidence, not an exact trigger-time reconstruction.
+  - Pi3 remained the authoritative live collector/writer. No indicator
+    definition, N=5 setting, pairing rule, deep-market threshold, or research
+    interpretation was changed for CP17.
+
+  No CP18 collection trigger is defined by the pre-CP17 frozen authority.
+  A subsequent trigger must be stated explicitly from the CP17 baseline
+  rather than inferred retroactively from observations accumulated while the
+  CP17 Sentinel remained DUE.

@@ -134,25 +134,46 @@ The checkpoint statistics are based on real comparable OBI/Near-Book observation
 
 ## Current Research State
 
-CP16 is the current frozen research checkpoint.
+CP17 is the current research checkpoint.
 
-CP16 recorded:
+The natural CP17 trigger fired on 2026-10-04 at the scheduled 06:05 PDT
+Sentinel run, when the live calculation reported 2,515 comparable pairs and
+29 markets at n>=15. The frozen 2,500-pair collection threshold fired; the
+deep-market condition did not.
 
-- 2,431 comparable pairs;
-- 630 markets;
-- 29 markets with n>=15;
-- 1,469 same-sign pairs;
-- 60.43% aggregate same-sign;
-- CP15 aggregate same-sign: 60.48%;
-- 118 additional comparable pairs between CP15 and CP16.
+No immutable trigger-time snapshot was retained. CP17 analysis therefore uses
+the nearest retained immutable post-trigger snapshot,
+`20261007T002008.645365Z`, whose source observations extend through
+2026-10-06. That bounded population recorded:
 
-The aggregate same-sign rate moved by -0.06 percentage points over that interval using the underlying checkpoint fractions. No frozen statistical threshold has been established for classifying this movement as a trend, stability, instability, or predictive signal.
+- 2,575 comparable pairs;
+- 671 markets;
+- 32 markets with n>=15;
+- 1,558 same-sign pairs;
+- 60.50% aggregate same-sign;
+- CP16 aggregate same-sign: 60.43%;
+- 144 additional comparable pairs relative to CP16.
 
-It is not evidence that OBI, Near-Book Depth Imbalance, or their agreement predicts future market outcomes.
+The aggregate same-sign rate moved by +0.08 percentage points between the CP16
+population and the retained CP17 analytical population using the underlying
+fractions. The additional 144 comparable pairs contained 89 same-sign
+observations (61.81%). No frozen statistical threshold has been established
+for classifying this movement as a trend, stability, instability, or
+predictive signal.
+
+The CP17 analytical snapshot is 60 comparable pairs beyond the natural trigger
+count and is not represented as an exact reconstruction of the October 4
+trigger population.
+
+It is not evidence that OBI, Near-Book Depth Imbalance, or their agreement
+predicts future market outcomes.
 
 Behavior remains heterogeneous across individual markets.
 
-The next checkpoint is triggered when total comparable pairs reach at least 2,500 or the count of markets at n>=15 exceeds the frozen CP16 baseline of 29, as defined in `zPROGRAM_ROADMAP.md`. The 2,500-pair milestone is a collection trigger, not a statistical-significance threshold.
+No CP18 collection trigger was defined by the pre-CP17 frozen authority. Any
+subsequent checkpoint trigger must be explicitly established from the CP17
+baseline rather than inferred retroactively from observations accumulated
+while the CP17 Sentinel remained DUE.
 
 ## Three-Question Check
 
