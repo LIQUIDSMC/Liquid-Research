@@ -2,7 +2,7 @@
 # Daily Operations
 
 **Status:** Current Operating Procedure
-**Last Updated:** 2026-09-18
+**Last Updated:** 2026-11-07
 **Engine:** `L3_RESEARCH_ENGINES/market_selection/`
 
 ---
@@ -41,6 +41,52 @@ The independent Market Data Platform collector service is separate from this
 daily cycle and must not be confused with the orchestrator:
 
 `liquid-research-collector.service`
+
+### LRS1 D1-003 CP-V2 Research Sentinel
+
+LRS1 also has a separate research-checkpoint sentinel outside the shared 05:00
+daily orchestrator.
+
+Current Pi3 scheduling observed on 2026-11-07:
+
+- CP-V2 sentinel wrapper:
+  `logs/run_lrs1_cpv2_sentinel.sh`
+- Schedule: user crontab at **06:17 Pacific**
+- Sentinel:
+  `analysis/d1_003_cpv2_sentinel.py`
+- Runtime state:
+  `logs/lrs1_cpv2_sentinel_state.json`
+- Runtime log:
+  `logs/lrs1_cpv2_sentinel.log`
+- Notification runtime:
+  `/home/kristo/lrs1_cpv2_watchdog/`
+
+The statement above that no user crontab is used applies to the shared daily
+orchestrator workflow. It does not mean that no separate LRS1 research
+checkpoint cron exists.
+
+The CP-V2 notification implementation is one-shot. When READY is present and
+the outbound ntfy request succeeds, `notify_ready.sh` creates a
+`ready_notified` latch. Later READY runs detect that latch and do not resend
+the READY notification.
+
+A successful outbound notification request therefore establishes sender-path
+success only. It does **not** establish that the human operator received,
+observed, or acknowledged the checkpoint.
+
+This limitation became operationally material in October-November 2026: the
+sentinel recorded READY on 2026-10-26, but the operator did not observe the
+checkpoint and discovered it manually on 2026-11-06 after the eligible
+population had reached 238.
+
+Cross-engine remediation of checkpoint acknowledgement/escalation belongs to
+shared monitoring/GM work. LRS1 documentation must not treat the presence of
+the local `ready_notified` latch as proof of human acknowledgement.
+
+The CP-V2 research population is no longer outcome-blind following explicit
+operator authorization on 2026-11-06 to inspect all 238 post-V1 outcomes.
+Historical runtime messages that state the research remains outcome-blind
+should therefore not be treated as current research authority.
 
 ---
 

@@ -225,3 +225,79 @@ LOCKED. Do not begin until:
 - Results show positive expectancy vs random market selection
 - Legal pathway for live trading is explicitly confirmed
 - Explicit human approval is given — this is never automatic
+
+---
+
+## D1-003 Entry-Price Validation and CP-V2 Monitoring — 2026-10 to 2026-11
+
+This section records later Market Selection research milestones without
+rewriting the earlier Program A build history above.
+
+### D1-003 Discovery and Protected V1
+
+On 2026-10-03:
+
+- D1-003 entry-price discovery results were recorded.
+- A protected V1 validation specification was frozen.
+- The frozen V1 identity-loading implementation was repaired before execution.
+- Protected V1 validation was completed and recorded as PASS under the frozen
+  directional classification criteria.
+
+Relevant commits:
+
+- `6777ffd` — Record LRS-1 D1-003 discovery results
+- `31faa3f` — Freeze LRS-1 D1-003 V1 validation specification
+- `0ae7092` — Repair LRS-1 frozen V1 identity loading
+- `23783da` — Record LRS-1 D1-003 protected V1 validation result
+
+The PASS was a protected directional replication result. It did not establish
+causality, live-money profitability, or a production entry-price rule.
+
+### CP-V2 Governance and Readiness Sentinel
+
+Also on 2026-10-03:
+
+- CP-V2 governance was frozen.
+- CP-V2 validation methodology was frozen.
+- A fail-closed CP-V2 readiness sentinel was added.
+
+Relevant commits:
+
+- `e1229ed` — Freeze LRS-1 D1-003 CP-V2 governance
+- `b5cf3e1` — Freeze LRS-1 D1-003 CP-V2 validation methodology
+- `2064831` — Add LRS-1 D1-003 CP-V2 readiness sentinel
+
+The intended prospective trigger was exactly 100 eligible post-V1 closed
+trades. The sentinel first observed READY on 2026-10-26 at 107 eligible trades.
+
+The runtime recorded a successful outbound READY notification and created its
+one-shot notification latch, but the operator did not observe the checkpoint.
+The missed checkpoint was discovered manually on 2026-11-06 at 238 eligible
+closed post-V1 trades.
+
+### Post-V1 Outcome Opening
+
+On 2026-11-06 the operator explicitly authorized opening all 238 post-V1
+outcomes for exploratory analysis.
+
+This ended CP-V2 outcome blindness for that cohort. The original 100-trade
+prospective CP-V2 design remains historical evidence of the intended frozen
+methodology, but it must not subsequently be represented as an untouched
+outcome-blind validation using the already-opened population.
+
+Exploratory analysis found raw post-V1 paper performance of 193 wins, 45
+losses, and -$319.22 aggregate P&L. It also found material event and
+resolution-date dependence, particularly among Political contracts.
+
+No scoring, admission, category, entry-price, sizing, or live-trading change
+was authorized from these exploratory observations.
+
+### Monitoring Incident
+
+The CP-V2 incident demonstrated that a successful outbound ntfy request plus a
+local one-shot latch does not establish human receipt or acknowledgement of a
+governance-critical research checkpoint.
+
+The cross-engine monitoring/acknowledgement issue was routed to General Manager
+scope for shared remediation. This historical record does not prescribe the
+infrastructure fix.

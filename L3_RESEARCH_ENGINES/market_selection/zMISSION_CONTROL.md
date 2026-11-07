@@ -2,7 +2,7 @@
 # Mission Control
 
 **Status:** Active Research
-**Last Updated:** 2026-09-18
+**Last Updated:** 2026-11-07
 **Engine:** `L3_RESEARCH_ENGINES/market_selection/`
 
 ---
@@ -63,44 +63,20 @@ this document.
 
 ## Repository Ledger Snapshot
 
-The following is a snapshot of the checked-in repository ledger, not a claim
-about production activity after the ledger's latest recorded timestamp.
+Fast-changing ledger counts are intentionally not duplicated here as current
+control state.
 
-**Ledger:** `data/simulator/paper_trades.csv`
-**Latest recorded entry:** 2026-08-12 20:29
-**Latest recorded resolution:** 2026-08-12 20:30
+The authoritative paper-trade ledger remains:
 
-### Population
+`data/simulator/paper_trades.csv`
 
-- Total paper trades: **269**
-- Closed: **138**
-- Open: **131**
-- Wins: **119**
-- Losses: **19**
-- Closed win rate: **86.23%**
-- Aggregate recorded paper P&L: **+$644.86**
+Population counts, win rates, P&L, and category composition should be computed
+from the current ledger or from a frozen research artifact with explicit
+provenance. Historical snapshots remain research evidence but must not be
+mistaken for current runtime state.
 
-These are paper-research observations. They do not establish live
-profitability, predictive validity, or expected future returns.
-
-### Closed Performance by Recorded Category
-
-| Category | Closed | Wins | Losses | Win Rate | Paper P&L |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| Crypto Long-Duration | 12 | 12 | 0 | 100.00% | +$393.95 |
-| Entertainment | 1 | 1 | 0 | 100.00% | +$48.15 |
-| Geopolitical | 48 | 41 | 7 | 85.42% | +$194.66 |
-| Macro/Economic | 5 | 5 | 0 | 100.00% | +$79.93 |
-| Other/Unknown | 54 | 47 | 7 | 87.04% | -$24.46 |
-| Political | 1 | 1 | 0 | 100.00% | +$2.09 |
-| Sports | 17 | 12 | 5 | 70.59% | -$49.46 |
-
-Small category samples must not be treated as validated category effects.
-
-The `Other/Unknown` population is particularly important because its high
-observed win rate coexists with negative aggregate recorded paper P&L. That
-makes population composition and economics a research question rather than a
-reason to assume classifier redesign is the solution.
+Paper-research observations do not establish live profitability, predictive
+validity, or expected future returns.
 
 ---
 
@@ -174,55 +150,78 @@ Historical checkpoints at n=32, n=36, and n=117 are preserved in
 Tradeability Score is predictive, inverted, harmful, or causally related to
 paper-trade outcomes.
 
-## Current Research State — D0 Audited / D1 Governance Frozen
+## Current Research State — D1-003 V1 Complete / Post-V1 Exploratory
 
-Audit E's decomposition-first review was completed at the overdue
-250-closed-trade checkpoint, performed at n=396 closed trades on 2026-09-23.
+The frozen n=396 discovery population and D0 descriptive work remain preserved
+historical research evidence.
 
-The review established that `Other/Unknown` is heterogeneous and contains
-substantial latent event-family concentration. Removing `Other/Unknown` did
-not restore the earlier n=117 lower-score economic pattern, and entry-price
-stratification plus recorded-category diagnostics did not reveal a stable,
-uniform Tradeability Score relationship.
+D1 discovery subsequently evaluated the prospectively registered candidate
+questions under the frozen discovery protocol. D1-003, the entry-price
+candidate, ranked first for protected validation.
 
-Discovery-protocol step 4a is now closed. The outcome-blind latent event-family
-detector v1.1 is frozen at:
+The protected D1-003 V1 validation was executed against the frozen 80-trade V1
+population under its precommitted specification. The joint directional
+replication classification was **PASS**:
 
-`analysis/latent_event_family_detector_v1_1.py`
+- entry price versus `trade_won`: positive Spearman relationship;
+- entry price versus `trade_pnl`: negative Spearman relationship;
+- the frozen family-equal sensitivity gate retained the required directions.
 
-Exact reproduction against the authoritative Pi3 runtime ledger recovered the
-frozen n=396 discovery population, family assignments, checksums, and all 17
-regression assertions. The detector provides a deterministic conservative
-approximation of event dependence for family-aware sensitivity analysis. It
-does not establish mathematically independent observations or an exact
-effective sample size.
+That PASS establishes only replication of the frozen directional hypothesis in
+V1. It does not establish causality, a universal entry-price rule, live-money
+profitability, or authorization to change scoring, admission, sizing, or
+trading behavior.
 
-The evidence does not currently support changing the taxonomy or classifier
-solely to improve this research result.
+After V1, CP-V2 governance and validation methodology were frozen for a
+prospective 100-eligible-trade replication. A fail-closed readiness sentinel
+was added to monitor that threshold without reading outcome or predictor
+fields.
 
-The primary research question remains unresolved. Event-family dependence
-remains a material interpretation issue, but a frozen family-aware sensitivity
-apparatus is now available. Entry-price effects and market composition also
-remain material interpretation issues.
+The sentinel first recorded READY on 2026-10-26 with 107 eligible closed
+post-V1 trades. The notification runtime recorded a successful outbound READY
+alert and created its one-shot notification latch, but the human operator did
+not observe the checkpoint. No effective subsequent READY escalation occurred.
 
-D0 descriptive population characterization is complete and audited. It
-characterized the frozen n=396 discovery population without loading economic
-outcome fields and established the descriptive geometry required before D1.
-Its accepted summary is preserved in `L4_KNOWLEDGE/validated_findings.md`.
+The missed checkpoint was discovered manually on 2026-11-06 with 238 eligible
+closed post-V1 trades. The operator then explicitly authorized opening all 238
+post-V1 outcomes for exploratory analysis.
 
-The D1 candidate/statistic logging protocol is now frozen at
-`analysis/D1_candidate_statistic_log.md`. Before any materially distinct
-outcome-facing D1 question is executed, it must be registered prospectively
-in that append-only log. Protected V1 outcomes remain unopened. The next
-research step is prospectively registered D1 hypothesis-generating discovery
-on frozen D; no D1 outcome-facing statistic has yet been executed under this
-protocol.
+Therefore:
 
-No new raw closed-trade milestone is currently defined; any subsequent
-checkpoint should be prospectively defined from a research-relevant trigger.
+- CP-V2 outcome blindness has ended.
+- The original prospective 100-trade CP-V2 validation must not be represented
+  as an untouched outcome-blind validation using this already-opened cohort.
+- The 238-trade post-V1 work is exploratory.
+- No CP-V3 or replacement confirmatory experiment is automatically authorized.
+- No scoring, admission, category, entry-price, sizing, or live-trading change
+  is authorized from the exploratory results.
 
-Detailed checkpoint measurements, detector checksums, reporting discipline,
-and limitations are preserved in `L4_KNOWLEDGE/validated_findings.md`.
+At the raw-trade level, the 238 post-V1 observations contained 193 wins and 45
+losses, an 81.09% win rate, and aggregate paper P&L of -$319.22.
+
+Exploratory decomposition found material dependence and concentration.
+Political observations accounted for 80 trades and -$896.53 raw paper P&L,
+while the 158 non-Political observations accounted for +$577.31. However,
+multiple Political contracts represented related election/event exposures, and
+the frozen family detector v1.1 visibly under-clustered some of that economic
+dependence.
+
+A resolution-day sensitivity also materially changed the weighting of results:
+the 238 observations resolved across 34 days, with 19 positive-P&L days and 15
+negative-P&L days. Equal-weight daily mean P&L was -$0.75 and median daily mean
+P&L was +$5.38. This sensitivity does not define an event family and is not a
+confirmatory test.
+
+The current research conclusion is therefore deliberately limited:
+
+**post-V1 deterioration is real at the recorded-trade accounting level, but
+the observations are materially dependent and do not justify a simple
+Political-category exclusion, an entry-price threshold, or another methodology
+change.**
+
+Further outcome slicing should not be used to manufacture a favorable rule.
+Any new confirmatory hypothesis must be defined prospectively with a new
+protected population and explicit governance.
 
 ---
 
