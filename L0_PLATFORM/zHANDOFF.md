@@ -920,6 +920,58 @@ notification retries, and unattended scheduled execution before declaring the
 automation complete. Alerts prompt specialist review; they do not automate
 research conclusions or authorize methodology changes.
 
+**Notification title and emoji standard:**
+
+Every human-facing ntfy notification must identify the event, affected device,
+responsible engine or shared owner, and condition in readable words.
+
+Use this title structure:
+
+`EVENT_EMOJI DEVICE_EMOJI ENGINE_EMOJI ENGINE — CONDITION`
+
+Device identities:
+
+- `🍓` Pi3
+- `🚀` Pi5
+- `🖥️` Mac
+
+Engine and shared-owner identities:
+
+- `🎯` LRS1 — Market Selection
+- `🔬` LRS2 — Market Microstructure
+- `💧` LRS3 — Market Data Platform
+- `🌤️` LRS4 — Market Regimes
+- `👑` GM — Shared Infrastructure
+
+Event identities:
+
+- `⭐` checkpoint READY/DUE
+- `✨` unacknowledged checkpoint reminder
+- `🚨` operational failure
+- `⚠️` operational warning
+- `✅` recovery
+- `💚` healthy status, where a human-facing healthy notification is warranted
+
+Examples (format illustrations, not active research triggers):
+
+- `⭐ 🍓 🎯 LRS1 — CP-V2 READY`
+- `✨ 🍓 🔬 LRS2 — CHECKPOINT REMINDER`
+- `🚨 🚀 💧 LRS3 — DATA PIPELINE ERROR`
+- `✅ 🍓 👑 GM — MACHINE RECOVERED`
+
+The notification body must describe the actual trigger or condition, affected
+system, required human action, and acknowledgement status where applicable.
+Emoji never replaces readable text. Do not send routine healthy push
+notifications merely because a Healthchecks heartbeat succeeds.
+
+For authorized research checkpoints, send an immediate alert when DUE and
+repeat reminders every 24 hours while unacknowledged. Acknowledgement requires
+an explicit operator command on Pi3. HTTP acceptance by ntfy is not human
+acknowledgement. Acknowledgement does not close the research checkpoint;
+specialist authority governs closure. Preserve delivery retries, duplicate
+suppression between reminder deadlines, independent monitor state, and
+independent Healthchecks heartbeats.
+
 **Research checkpoint monitoring:**
 
 The Research Checkpoint Sentinel monitors only checkpoint triggers that are
@@ -977,6 +1029,39 @@ Rapidly changing counts and checkpoint results belong in the owning engine's
 current authority rather than this operating manual.
 
 ---
+
+
+### Shared Notification Controller — Implementation Boundary
+
+The shared controller implementation is located at
+`L1_CORE/operations/lrs_notification_controller.py`, with synthetic
+tests in `test_lrs_notification_controller.py`.
+
+Implementation status: development complete for tested notification,
+reminder, acknowledgement, and basic declared-trigger authorization
+functions; not deployed or operationally validated.
+
+- `authorized_trigger` is a local declaration containing `trigger_id`,
+  `owner`, and `authority_ref`. Matching these fields does not
+  independently authenticate specialist approval.
+- `DUE` and `NOT_DUE` require a matching declared trigger.
+  `NO_ACTIVE_TRIGGER` and operational `ERROR` do not.
+- Operator acknowledgement stops reminders but does not constitute
+  specialist research closure.
+- An outstanding `DUE` cannot currently transition to closed through
+  the controller. Specialist-authorized closure requires a separately
+  reviewed lifecycle implementation before operational use.
+- Successful ntfy HTTP acceptance does not establish device delivery
+  or human receipt.
+- Operational `ERROR` suppresses a healthy Healthchecks heartbeat;
+  explicit Healthchecks failure signaling is not implemented.
+- No live checkpoint activation, scheduler installation, Pi3
+  deployment, or production notification verification is authorized
+  by this implementation.
+- Before deployment, verify the specialist's current trigger
+  documentation, configure secrets locally, validate the integration
+  contract, and obtain explicit deployment authorization.
+
 
 ## Session Start Procedure
 
