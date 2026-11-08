@@ -1043,3 +1043,252 @@ result changed):
   A subsequent trigger must be stated explicitly from the CP17 baseline
   rather than inferred retroactively from observations accumulated while the
   CP17 Sentinel remained DUE.
+
+
+---
+
+## Forward Midpoint Study A — Frozen Pre-Outcome Methodology
+
+**Status:** FROZEN PRE-OUTCOME — outcome analysis has not yet been run.
+
+**Research question:** Does full-book OBI measured at time T contain information
+about subsequent midpoint movement at the next approximately daily observation?
+
+This study addresses the existing LRS-2 Core Research Question, "Does OBI
+predict future midpoint movement?" It is a separate historical predictive
+study. It is not CP18, does not define a CP18 collection trigger, and does not
+alter the CP1-CP17 descriptive checkpoint methodology.
+
+### Evidence population
+
+The sole evidence population is the retained immutable CP17 analytical
+snapshot:
+
+`20261007T002008.645365Z`
+
+Source observations extend through 2026-10-06. Later live observations,
+including observations accumulated after CP17 while the old Sentinel remained
+DUE, are excluded from Study A.
+
+Verified snapshot source hashes:
+
+- `obi_log.csv`:
+  `d30ee244a59ddf86ad74184030414436118bb986345a11e98aaba24e6a78c4e8`
+- `near_book_depth_log.csv`:
+  `ecfaa0dfb6d2bddbf8e9cf7f757b72c37f0ceda57c986bf017844179b1404af0`
+
+### Outcome-blind feasibility work completed before this freeze
+
+Before any forward midpoint outcome was calculated or related to OBI, the
+retained CP17 snapshot was inspected only for sampling geometry, source
+pairing, timestamp separation, midpoint completeness, and contemporaneous
+source consistency.
+
+That inspection established:
+
+- 2,580 canonical latest-row-per-(slug, publication_id) OBI observations;
+- 2,575 canonical latest-row-per-(slug, publication_id) Near-Book
+  observations;
+- 2,575 shared OBI/Near pairs across 671 markets and 99 shared publication
+  cycles;
+- 2,483 pairs across 664 markets satisfy an absolute OBI/Near timestamp
+  separation of no more than 120 seconds;
+- 96.43% of all shared pairs satisfy that 120-second boundary;
+- widening the boundary from 120 seconds to 300 seconds adds only 24 pairs
+  and four markets;
+- five observations with separation greater than 600 seconds all belong to
+  the single legacy publication cycle `snapshot_20260704_1005.csv`;
+- midpoint values are complete in both sources for all 2,575 shared pairs;
+- longitudinal sampling is irregular but strongly concentrated around a
+  roughly daily collection interval;
+- among canonical OBI observations with any later same-market observation,
+  1,091 of 1,909 anchors (57.15%) have a later observation in the 18-30 hour
+  window;
+- among canonical Near-Book observations with any later same-market
+  observation, 1,091 of 1,904 anchors (57.30%) have a later observation in
+  the 18-30 hour window.
+
+These facts were used only to establish whether a forward study was
+mechanically supportable and to freeze its timing rules. No forward midpoint
+change, OBI/outcome relationship, predictive success rate, correlation,
+return, or outcome-conditioned subgroup was inspected before this
+methodology was frozen.
+
+### Canonical observation construction
+
+For each source independently:
+
+1. retain valid observations;
+2. order observations by their real timestamp;
+3. for each `(slug, publication_id)`, retain the latest valid row.
+
+This preserves the established CP1-CP17 latest-row-per-publication semantics
+without assuming that `(slug, publication_id)` is inherently unique.
+
+A Study A anchor requires both an OBI and Near-Book observation for the same
+`(slug, publication_id)` and an absolute separation between their timestamps
+of no more than 120 seconds.
+
+The 120-second boundary is a contemporaneous-data eligibility rule, not a
+predictive threshold. It was selected before outcome exposure from the
+observed acquisition geometry described above.
+
+No observation is excluded because the OBI-source and Near-Book-source
+midpoints differ.
+
+### Time T and predictor
+
+For every eligible anchor:
+
+- T is the OBI observation timestamp;
+- the baseline price is the OBI-source midpoint at T;
+- the primary predictor is the continuous full-book OBI value at T.
+
+The existing frozen OBI calculation is not changed.
+
+No OBI magnitude cutoff, percentile threshold, bin boundary, optimized
+decision threshold, or newly constructed indicator is part of the primary
+hypothesis.
+
+Near-Book OBI remains retained as contemporaneous research evidence but is
+not a primary predictor in Study A. Whether Near-Book OBI adds predictive
+information beyond full-book OBI requires a separately specified comparison
+and is not inferred from this study.
+
+### Forward-observation rule
+
+For each eligible anchor, identify the chronologically next canonical
+publication-level OBI observation for the same slug.
+
+The anchor is eligible for the primary outcome only when that immediately
+next observation occurs from 18 through 30 elapsed hours after T, inclusive.
+
+The immediately next observation may not be skipped in order to select a
+later observation that happens to fall inside the 18-30 hour window.
+
+No nearest-to-24-hours search is performed.
+
+No 48-hour, 72-hour, or other alternative horizon is part of Study A.
+
+### Primary outcome
+
+The primary outcome is signed midpoint change:
+
+`next_obi_midpoint - anchor_obi_midpoint`
+
+The primary analysis asks whether continuous full-book OBI at T is associated
+with this subsequent signed midpoint change.
+
+The exact statistical implementation must preserve the continuous predictor
+and signed outcome and must be specified and audited before execution. Study A
+does not authorize post-outcome selection among multiple statistical tests.
+
+### Secondary descriptive diagnostic
+
+A single secondary diagnostic may report directional concordance:
+
+- positive OBI with positive future midpoint change;
+- negative OBI with negative future midpoint change.
+
+Exact-zero OBI or exact-zero future midpoint change is neutral and is not
+counted as directional concordance or discordance.
+
+This diagnostic is secondary and descriptive. It does not replace the
+continuous primary analysis.
+
+### Prohibited post-outcome adaptation
+
+After Study A outcomes are exposed, the following may not be introduced into
+Study A in order to improve the result:
+
+- alternate forward horizons;
+- alternate contemporaneous-pair timing tolerances;
+- OBI magnitude thresholds or optimized cutoffs;
+- outcome-selected OBI bins;
+- market-category rescue analyses;
+- liquidity or spread rescue variables;
+- exclusion based on contemporaneous midpoint disagreement;
+- selective removal of markets because their outcomes weaken the result;
+- LRS-1 trade outcomes or LRS-1 selection state;
+- Near-Book combinations selected after observing the full-book OBI result;
+- reconstructed historical diagnostics whose exact mechanics were not frozen
+  before outcome exposure.
+
+Any such question requires a separately defined follow-up study with its own
+pre-outcome methodology and evidence boundary.
+
+### Interpretation boundary
+
+Study A is a historical research test on a bounded retained population.
+
+A positive result would not by itself establish:
+
+- live or prospective predictive value;
+- statistical or economic significance beyond the test actually specified;
+- profitability after execution costs;
+- a production trading signal;
+- authorization to alter LRS-1 market selection or entry timing;
+- authorization to combine LRS-1 and LRS-2;
+- readiness for deployment.
+
+A null or negative result must likewise be retained as evidence and may not
+be rescued by changing Study A's frozen rules after outcome exposure.
+
+No CP18 collection trigger is created by this study.
+
+### Frozen primary statistical procedure
+
+Before outcome exposure, the independent pre-outcome methodology audit returned
+PASS and required the exact primary statistical procedure to be frozen.
+
+The primary estimator is an ordinary least squares linear regression:
+
+`future_midpoint_change = intercept + beta * obi_t + error`
+
+where:
+
+- `future_midpoint_change` is the frozen signed primary outcome
+  (`next_obi_midpoint - anchor_obi_midpoint`);
+- `obi_t` is the frozen continuous full-book OBI value at T;
+- an intercept is included;
+- OBI remains on its original continuous scale, with no transformation,
+  standardization, binning, clipping, or thresholding;
+- midpoint change remains in original midpoint units, with no normalization or
+  transformation;
+- each eligible anchor contributes exactly one regression observation;
+- the clustering variable is canonical market identity `slug`.
+
+Inference uses a cluster-robust sandwich covariance estimator with standard
+errors clustered at the `slug` level to account for repeated eligible anchors
+from the same market.
+
+The single primary inferential test is:
+
+- null hypothesis: `beta = 0`;
+- alternative hypothesis: `beta != 0`;
+- two-sided significance level: alpha = 0.05;
+- the primary p-value is computed from the slug-clustered robust covariance.
+
+The primary result must report at minimum:
+
+- beta estimate;
+- intercept estimate;
+- slug-clustered robust standard error for beta;
+- 95% confidence interval for beta;
+- two-sided p-value for beta;
+- number of eligible anchor observations;
+- number of unique slug clusters represented.
+
+There is no fallback to ordinary, heteroskedasticity-only, or other
+non-slug-clustered standard errors if the frozen clustered procedure cannot be
+computed. Such a failure is an analysis failure to be diagnosed without
+exposing or substituting an alternative primary result.
+
+No alternate regression specification, transformation, weighting scheme,
+fixed-effect specification, alternative covariance estimator, alternative
+significance threshold, or alternative primary statistical test may be
+selected after outcomes are observed.
+
+Statistical significance under this frozen historical test is not equivalent
+to economic significance, prospective predictive validity, profitability, or
+production readiness.
