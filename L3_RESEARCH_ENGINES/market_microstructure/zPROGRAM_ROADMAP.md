@@ -1357,3 +1357,250 @@ than substituting another estimator or inference procedure.
 Statistical significance under this frozen historical test is not equivalent
 to economic significance, prospective predictive validity, profitability, or
 production readiness.
+
+---
+
+## Forward Midpoint Study B — Frozen Replication Methodology
+
+**Status:** FROZEN PRE-OUTCOME — no Study-B OBI/outcome relationship, forward
+midpoint result, regression result, correlation, directional success rate, or
+outcome-conditioned subgroup has been calculated or exposed.
+
+**Research question:** Does the full-book OBI association tested in Study A
+replicate in a strictly post-Study-A temporal evidence population under the
+same primary specification and numerical inference convention?
+
+Study B is a temporal replication study. It is not CP18, does not define a
+CP18 collection trigger, does not alter the CP1-CP17 descriptive checkpoint
+methodology, and does not authorize LRS-1 integration.
+
+### Evidence population
+
+The sole Study-B evidence population is the retained immutable analytical
+snapshot:
+
+`20261107T130339.259331Z`
+
+Verified snapshot identity:
+
+- snapshot UTC: `2026-11-07T13:03:39.259331+00:00`;
+- purpose: `LRS2 bounded analytical snapshot`;
+- source host: `liquid-pi`;
+- source commit:
+  `f691225fa7fc7aada1a1f9bc41d03fd2e1a06582`;
+- research checkpoint: `False`;
+- manifest SHA-256:
+  `b2a80ba423448401ee8435f6d9c67c0485af537c9b456a03289eb103b79ba5f7`;
+- `obi_log.csv` SHA-256:
+  `74063d05e85ea3a26e07815020928ca301e592e10c120edbc0271852721d8001`;
+- `near_book_depth_log.csv` SHA-256:
+  `c0454875be0ce76ec55eaffa9c2286e3c0d9de2b564b4d042bba4b8d40da9f04`.
+
+The frozen Study-A OBI evidence boundary is:
+
+`2026-10-06T12:03:13Z`
+
+A Study-B primary anchor is eligible only if both:
+
+1. its canonical OBI timestamp is strictly later than the Study-A boundary;
+2. its immediately next canonical same-slug OBI observation used for the
+   primary outcome is also strictly later than the Study-A boundary.
+
+No Study-A anchor may re-enter Study B.
+
+### Outcome-blind feasibility work completed before this freeze
+
+Before any Study-B OBI value, midpoint value, forward midpoint outcome,
+OBI/outcome relationship, regression result, correlation, directional success
+rate, or outcome-conditioned subgroup was calculated or exposed, the retained
+Study-B candidate snapshot was inspected using identifiers, statuses, hashes,
+and timestamps only.
+
+That inspection established:
+
+- 3,655 raw OBI rows and 3,646 raw Near-Book rows in the snapshot;
+- 3,640 canonical valid OBI observations and 3,636 canonical valid Near-Book
+  observations;
+- 888 unique slugs in each canonical source;
+- 1,060 canonical OBI observations occur strictly after the Study-A OBI
+  evidence boundary;
+- those 1,060 observations span 304 unique slugs;
+- all 1,060 post-boundary OBI observations have a same-key canonical
+  OBI/Near-Book pair with absolute timestamp separation no greater than
+  120 seconds;
+- 505 post-boundary contemporaneous anchors have an immediately next
+  canonical same-slug OBI observation 18 through 30 elapsed hours later,
+  inclusive;
+- those 505 temporal-geometry-eligible anchors span 106 unique slugs;
+- all 505 eligible anchors and all 505 immediately next outcome timestamps
+  are strictly later than the Study-A evidence boundary;
+- zero eligible forward observations cross backward over the Study-A evidence
+  boundary;
+- 304 observations are the first post-boundary observation for their slug;
+- 87 of those first post-boundary observations have a pre-boundary
+  predecessor, but this does not enter the primary forward outcome because
+  the frozen outcome uses the anchor and its immediately next observation,
+  and both are post-boundary for all 505 eligible anchors.
+
+These facts establish sampling and temporal geometry only. They are not
+Study-B outcome evidence.
+
+### Replication specification
+
+Study B carries forward the Study-A primary scientific specification unchanged
+except for the prospectively defined post-Study-A evidence boundary above.
+
+For each source independently:
+
+1. retain valid observations;
+2. order observations by their real timestamp;
+3. for each `(slug, publication_id)`, retain the latest valid row.
+
+A Study-B anchor requires both an OBI and Near-Book observation for the same
+`(slug, publication_id)` and an absolute separation between their timestamps
+of no more than 120 seconds.
+
+No observation is excluded because the OBI-source and Near-Book-source
+midpoints differ.
+
+For every eligible anchor:
+
+- T is the OBI observation timestamp;
+- the baseline price is the OBI-source midpoint at T;
+- the primary predictor is the continuous full-book OBI value at T.
+
+The existing frozen OBI calculation is unchanged. There is no OBI magnitude
+cutoff, percentile threshold, bin boundary, optimized decision threshold,
+transformation, standardization, clipping, or newly constructed primary
+indicator.
+
+Near-Book OBI remains retained contemporaneous evidence but is not a primary
+predictor in Study B.
+
+### Forward-observation rule
+
+For each eligible anchor, identify the chronologically immediately next
+canonical publication-level OBI observation for the same slug.
+
+The anchor is eligible for the primary outcome only when that immediately
+next observation occurs from 18 through 30 elapsed hours after T, inclusive.
+
+The immediately next observation may not be skipped to select a later
+observation inside the 18-30 hour window. No nearest-to-24-hours search is
+performed. No 48-hour, 72-hour, or alternative horizon is part of Study B.
+
+Both the anchor and the immediately next observation must satisfy the frozen
+strictly-post-Study-A temporal boundary.
+
+### Primary outcome and estimator
+
+The primary outcome is unchanged from Study A:
+
+`next_obi_midpoint - anchor_obi_midpoint`
+
+The primary estimator is:
+
+`future_midpoint_change = intercept + beta * obi_t + error`
+
+where:
+
+- an intercept is included;
+- `obi_t` remains on its original continuous scale;
+- midpoint change remains in original midpoint units;
+- each eligible anchor contributes exactly one regression observation;
+- the clustering variable is canonical market identity `slug`.
+
+The primary hypotheses remain:
+
+- null hypothesis: `beta = 0`;
+- alternative hypothesis: `beta != 0`;
+- two-sided significance level: alpha = 0.05.
+
+Study B does not redefine the formal alternative as negative merely because
+Study A estimated a negative coefficient.
+
+### Frozen clustered-inference numerical convention
+
+Study B carries forward the Study-A numerical convention unchanged.
+
+For one-way slug-clustered sandwich covariance:
+
+- `G` is the number of unique canonical `slug` clusters among eligible anchors;
+- `N` is the number of eligible anchor observations;
+- `K = 2`, corresponding exactly to the intercept and continuous full-book OBI
+  coefficient;
+- apply the CR1 finite-sample correction
+  `(G / (G - 1)) * ((N - 1) / (N - K))`;
+- the beta test statistic is `beta / clustered_SE_beta`;
+- the primary two-sided p-value uses a Student-t reference distribution with
+  exactly `G - 1` degrees of freedom;
+- the 95% confidence interval uses `t_(0.975, G - 1)`.
+
+There is no normal/z fallback, alternate CR correction, alternate
+degrees-of-freedom convention, alternate covariance estimator, alternate
+regression specification, weighting scheme, fixed-effect specification, or
+alternative primary statistical test.
+
+If `G <= 1`, `N <= K`, the OLS design matrix is rank deficient, or the
+clustered covariance or beta standard error cannot be computed as a finite
+valid quantity, the primary analysis fails rather than substituting another
+procedure.
+
+### Required primary reporting
+
+The Study-B primary result must report at minimum:
+
+- beta estimate;
+- intercept estimate;
+- slug-clustered robust standard error for beta;
+- 95% confidence interval for beta;
+- two-sided p-value for beta;
+- number of eligible anchor observations;
+- number of unique slug clusters represented.
+
+The same secondary directional-concordance diagnostic defined in Study A may
+be reported:
+
+- positive OBI with positive future midpoint change;
+- negative OBI with negative future midpoint change;
+- exact-zero OBI or exact-zero future midpoint change is neutral.
+
+It remains secondary and descriptive and does not replace the continuous
+primary analysis.
+
+### Prohibited post-outcome adaptation
+
+After Study-B outcomes are exposed, Study B may not be altered or rescued
+using:
+
+- alternate forward horizons;
+- alternate contemporaneous-pair timing tolerances;
+- OBI thresholds, optimized cutoffs, bins, transformations, or clipping;
+- market-category subsets selected from Study-B outcomes;
+- liquidity or spread rescue variables;
+- midpoint-disagreement exclusions;
+- selective market removal;
+- Near-Book combinations selected after seeing the Study-B result;
+- LRS-1 trade outcomes, selection state, or conditioning;
+- alternate estimators, covariance conventions, significance thresholds, or
+  inferential tests.
+
+A null result, opposite-sign result, or statistically non-significant result
+must be retained as Study-B evidence without rescue.
+
+### Interpretation boundary
+
+Study B tests whether the Study-A association replicates in a later,
+non-overlapping anchor/outcome temporal population under the same frozen
+primary specification.
+
+Whatever the result, Study B alone does not establish profitability,
+production readiness, deployability, causal effect, or improvement to an
+LRS-1 trading decision.
+
+No LRS-1 integration and no CP18 collection trigger are authorized by this
+study.
+
+Any subsequent question involving thresholds, Near-Book incremental value,
+market subsets, alternative horizons, or LRS-1 conditioning requires a
+separately specified pre-outcome study and evidence boundary.
