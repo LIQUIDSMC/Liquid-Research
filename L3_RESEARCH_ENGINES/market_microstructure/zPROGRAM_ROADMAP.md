@@ -1049,7 +1049,7 @@ result changed):
 
 ## Forward Midpoint Study A — Frozen Pre-Outcome Methodology
 
-**Status:** FROZEN PRE-OUTCOME — outcome analysis has not yet been run.
+**Status:** EXECUTED — first canonical outcome exposure completed 2026-11-08 under the frozen pre-outcome methodology. No post-outcome respecification is authorized.
 
 **Research question:** Does full-book OBI measured at time T contain information
 about subsequent midpoint movement at the next approximately daily observation?
@@ -1216,6 +1216,44 @@ Study A in order to improve the result:
 
 Any such question requires a separately defined follow-up study with its own
 pre-outcome methodology and evidence boundary.
+
+### First canonical result — 2026-11-08
+
+The first canonical Study A execution used code authority
+`0415f0af5a1b35d78000956bdab4cc2738a8d834` and the sole frozen CP17
+analytical snapshot `20261007T002008.645365Z`.
+
+The audited provenance runner validated the frozen snapshot contract before
+delegating to the frozen Study A implementation. The execution reported:
+
+- eligible observations: 1,009;
+- unique slug clusters: 225;
+- intercept: 0.00010752942338519746;
+- full-book OBI coefficient (`beta`): -0.01586748820654767;
+- slug-clustered robust standard error of `beta`: 0.0045457246668535152;
+- 95% confidence interval for `beta`:
+  [-0.024825343061202598, -0.0069096333518927425];
+- two-sided p-value for `beta`: 0.00058022107633821918;
+- secondary same-direction count: 418;
+- secondary same-direction rate: 0.41427155599603566 (41.43%).
+
+Under the prospectively frozen primary test, the estimated association is
+negative: higher full-book OBI at T is associated with lower subsequent signed
+midpoint change at the immediately next eligible 18-30 hour observation, and
+lower OBI with higher subsequent signed midpoint change. The frozen two-sided
+test rejects `H0: beta = 0` at alpha=0.05.
+
+This is historical evidence of a negative association in the bounded CP17
+Study A population. It does not establish prospective predictive value,
+economic significance, profitability, a production trading signal, or an
+improvement to LRS-1. The secondary 41.43% same-direction rate is descriptive
+and does not replace the continuous primary analysis.
+
+The first outcome exposure does not authorize alternate horizons, thresholds,
+bins, market subsets, rescue variables, Near-Book combinations, LRS-1
+conditioning, or any other post-outcome respecification prohibited by the
+frozen methodology. Any follow-up question requires a separately specified
+pre-outcome study and evidence boundary.
 
 ### Interpretation boundary
 

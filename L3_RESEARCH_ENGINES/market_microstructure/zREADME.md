@@ -175,6 +175,30 @@ subsequent checkpoint trigger must be explicitly established from the CP17
 baseline rather than inferred retroactively from observations accumulated
 while the CP17 Sentinel remained DUE.
 
+## Forward Midpoint Study A
+
+A separate frozen historical outcome study was first executed on 2026-11-08
+against the retained immutable CP17 analytical snapshot
+`20261007T002008.645365Z`.
+
+The frozen primary regression contained 1,009 eligible observations across
+225 slug clusters. Continuous full-book OBI had a coefficient of
+-0.01586748820654767 with slug-clustered robust standard error
+0.0045457246668535152, 95% confidence interval
+[-0.024825343061202598, -0.0069096333518927425], and two-sided
+p=0.00058022107633821918. The secondary descriptive same-direction rate was
+418/1,009 (41.43%).
+
+Study A therefore records a statistically nonzero negative historical
+association under its prospectively frozen specification. It does not establish
+prospective predictive value, profitability, production readiness, or
+improvement to an LRS-1 trading decision. No post-outcome respecification or
+LRS-1 integration is authorized by this result.
+
+The complete frozen methodology, provenance boundary, numerical inference
+convention, result, and interpretation limits are maintained in
+`zPROGRAM_ROADMAP.md`.
+
 ## Three-Question Check
 
 Every indicator must answer these before earning a stronger role in Liquid Research:
