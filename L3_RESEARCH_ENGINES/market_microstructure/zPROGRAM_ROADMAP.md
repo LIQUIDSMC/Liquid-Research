@@ -1289,6 +1289,33 @@ fixed-effect specification, alternative covariance estimator, alternative
 significance threshold, or alternative primary statistical test may be
 selected after outcomes are observed.
 
+
+#### Frozen clustered-inference numerical convention
+
+Before any Study-A outcome was calculated or exposed, the numerical convention
+for the already-frozen slug-clustered sandwich inference was prospectively
+specified and independently audited.
+
+For the one-way slug-clustered sandwich covariance:
+
+- `G` is the number of unique canonical `slug` clusters among eligible anchors;
+- `N` is the number of eligible anchor observations;
+- `K = 2`, corresponding exactly to the intercept and continuous full-book OBI
+  coefficient;
+- the cluster-robust sandwich covariance is multiplied by the CR1 finite-sample
+  correction `(G / (G - 1)) * ((N - 1) / (N - K))`;
+- the beta test statistic is `beta / clustered_SE_beta`;
+- the frozen primary two-sided p-value uses a Student-t reference distribution
+  with exactly `G - 1` degrees of freedom;
+- the frozen 95% confidence interval for beta uses the corresponding
+  `t_(0.975, G - 1)` critical value.
+
+There is no normal/z fallback, alternate CR correction, or alternate
+degrees-of-freedom convention. If `G <= 1`, `N <= K`, the OLS design matrix is
+rank deficient, or the clustered covariance or beta standard error cannot be
+computed as a finite valid quantity, the frozen primary analysis fails rather
+than substituting another estimator or inference procedure.
+
 Statistical significance under this frozen historical test is not equivalent
 to economic significance, prospective predictive validity, profitability, or
 production readiness.
