@@ -1362,9 +1362,9 @@ production readiness.
 
 ## Forward Midpoint Study B — Frozen Replication Methodology
 
-**Status:** FROZEN PRE-OUTCOME — no Study-B OBI/outcome relationship, forward
-midpoint result, regression result, correlation, directional success rate, or
-outcome-conditioned subgroup has been calculated or exposed.
+**Status:** EXECUTED — canonical Study-B replication completed 2026-11-08
+against the prospectively frozen strictly post-Study-A evidence population.
+The frozen specification was not changed after outcome exposure.
 
 **Research question:** Does the full-book OBI association tested in Study A
 replicate in a strictly post-Study-A temporal evidence population under the
@@ -1604,3 +1604,48 @@ study.
 Any subsequent question involving thresholds, Near-Book incremental value,
 market subsets, alternative horizons, or LRS-1 conditioning requires a
 separately specified pre-outcome study and evidence boundary.
+
+### Canonical Study-B result
+
+Study B was executed on 2026-11-08 against the frozen immutable snapshot
+`20261107T130339.259331Z` using the committed Study-B implementation at
+`5b5e48aea74c6a7d10c4df18c0e1d4bcc3a9b516`.
+
+The frozen primary regression contained 505 eligible observations across 106
+slug clusters. The canonical result was:
+
+- intercept: `-0.0027210385017333522`;
+- beta: `-0.0090142714987921316`;
+- slug-clustered robust standard error for beta:
+  `0.0035299762431765368`;
+- 95% confidence interval for beta:
+  `[-0.016013562309896229, -0.0020149806876880328]`;
+- two-sided p-value: `0.012096530327545912`;
+- eligible observations: `505`;
+- slug clusters: `106`;
+- secondary same-direction count: `172`;
+- secondary same-direction rate: `0.34059405940594062` (34.06%).
+
+Under the prospectively frozen Study-B specification, the estimated beta is
+negative and its frozen two-sided test rejects `beta = 0` at alpha = 0.05.
+The 95% confidence interval is entirely below zero.
+
+Study B therefore records a statistically nonzero negative historical
+association in the later, non-overlapping temporal evidence population, in the
+same direction as Study A. This constitutes a temporal replication of the
+negative association under the frozen Study-A/Study-B primary specification.
+
+The Study-B beta is smaller in magnitude than the Study-A beta. No
+post-outcome analysis is authorized to explain, optimize, subdivide, or rescue
+that difference. The secondary same-direction rate remains descriptive only.
+
+The replication strengthens the historical evidence that the frozen
+continuous full-book OBI measure is associated with subsequent signed midpoint
+change under the specified sampling and 18-30 hour immediate-next rule. It
+does not establish causality, economic significance, prospective predictive
+validity, profitability, production readiness, deployability, or improvement
+to an LRS-1 trading decision.
+
+No alternate horizon, OBI threshold, market subset, Near-Book combination,
+liquidity/spread rescue, alternate inference procedure, CP18 trigger, or LRS-1
+integration is authorized by this result.

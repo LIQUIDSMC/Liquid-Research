@@ -199,6 +199,32 @@ The complete frozen methodology, provenance boundary, numerical inference
 convention, result, and interpretation limits are maintained in
 `zPROGRAM_ROADMAP.md`.
 
+## Forward Midpoint Study B
+
+The prospectively frozen temporal replication was executed on 2026-11-08
+against the immutable `20261107T130339.259331Z` snapshot, restricted to anchors
+and immediately next same-slug outcome observations strictly later than the
+Study-A evidence boundary.
+
+The frozen primary regression contained 505 eligible observations across 106
+slug clusters. Continuous full-book OBI had a coefficient of
+-0.0090142714987921316 with slug-clustered robust standard error
+0.0035299762431765368, 95% confidence interval
+[-0.016013562309896229, -0.0020149806876880328], and two-sided
+p=0.012096530327545912. The secondary descriptive same-direction rate was
+172/505 (34.06%).
+
+Study B therefore records a statistically nonzero negative historical
+association in a later, non-overlapping temporal evidence population, in the
+same direction as Study A. It is a temporal replication under the frozen
+primary specification.
+
+This replication does not establish causality, economic significance,
+prospective predictive value, profitability, production readiness, or
+improvement to an LRS-1 trading decision. No post-outcome respecification,
+CP18 trigger, or LRS-1 integration is authorized by this result.
+
+
 ## Three-Question Check
 
 Every indicator must answer these before earning a stronger role in Liquid Research:
