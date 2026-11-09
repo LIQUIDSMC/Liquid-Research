@@ -110,7 +110,7 @@ def _canonicalize_source(
 
     validity_columns = sorted(required - {"status"})
     valid = (
-        work["status"].astype(str).str.lower().eq("valid")
+        work["status"].astype(str).str.lower().eq("ok")
         & work["timestamp"].notna()
         & work[validity_columns].notna().all(axis=1)
     )

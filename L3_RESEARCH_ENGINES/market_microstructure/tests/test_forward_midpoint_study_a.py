@@ -20,7 +20,7 @@ def _obi_row(
     timestamp,
     midpoint,
     obi,
-    status="valid",
+    status="ok",
 ):
     return {
         "timestamp": timestamp,
@@ -38,7 +38,7 @@ def _near_row(
     timestamp,
     midpoint,
     near_obi,
-    status="valid",
+    status="ok",
 ):
     return {
         "timestamp": timestamp,
@@ -48,6 +48,22 @@ def _near_row(
         "near_obi": near_obi,
         "status": status,
     }
+
+
+
+def test_canonicalization_uses_repository_ok_status_contract():
+    obi = pd.DataFrame(
+        [
+            _obi_row("a", "p1", "2026-01-01T00:00:00Z", 0.40, 0.10, status="ok"),
+            _obi_row("b", "p2", "2026-01-01T00:00:00Z", 0.50, 0.20, status="valid"),
+        ]
+    )
+
+    result = canonicalize_obi(obi)
+
+    assert len(result) == 1
+    assert result.iloc[0]["slug"] == "a"
+    assert result.iloc[0]["status"] == "ok"
 
 
 def test_canonicalization_keeps_latest_valid_row_per_key():
