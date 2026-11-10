@@ -1745,6 +1745,12 @@ Enrollment stops permanently when the 150th eligible Study-C trade is enrolled.
 There is no early stopping for favorable evidence and no extension because of
 weak, null, adverse, missing, or otherwise inconvenient eventual results.
 
+For deterministic prospective sequencing, eligible candidates are processed in
+chronological orchestrator-run order. Within the same orchestrator run,
+candidates are ordered by ascending integer `trade_id`. `enrollment_sequence`
+follows that order. This ordering rule has no eligibility, predictor, outcome,
+or classification role beyond determining the frozen first-150 sequence.
+
 ### LRS-1 admission identity
 
 Each candidate begins with an independently created LRS-1 paper-trade
