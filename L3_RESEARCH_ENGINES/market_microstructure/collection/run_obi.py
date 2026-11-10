@@ -34,7 +34,13 @@ from datetime import datetime, UTC
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'L2_DOMAINS', 'prediction_markets', 'market_data'))
 
-from clob_client import get_market_clob_data, fetch_order_book, parse_clob_token_ids, fetch_market_by_slug
+from clob_client import (
+    get_market_clob_data,
+    fetch_order_book,
+    parse_clob_token_ids,
+    parse_outcomes,
+    fetch_market_by_slug,
+)
 from L3_RESEARCH_ENGINES.market_microstructure.indicators.obi import compute_obi_and_microprice
 from rich.console import Console
 from rich.table import Table
@@ -46,6 +52,27 @@ LOG_COLUMNS = [
     "timestamp", "publication_id", "slug", "question",
     "midpoint", "micro_price", "obi", "v_bid", "v_ask",
     "bid_count", "ask_count", "status",
+]
+
+# Prospective Study-C measurement provenance. This sidecar does not determine
+# eligibility or enrollment. It preserves the exact second-fetch market/token
+# identity used by this runner for each successfully computed OBI measurement.
+STUDY_C_PROVENANCE_PATH = os.path.join(
+    "L3_RESEARCH_ENGINES",
+    "market_microstructure",
+    "data",
+    "study_c_measurement_provenance.csv",
+)
+STUDY_C_PROVENANCE_COLUMNS = [
+    "timestamp",
+    "publication_id",
+    "slug",
+    "outcomes",
+    "token_ids",
+    "outcome_tested",
+    "token_id",
+    "raw_obi",
+    "status",
 ]
 
 
@@ -101,6 +128,21 @@ def log_to_csv(row: dict) -> None:
         writer.writerow(row)
 
 
+def log_study_c_measurement_provenance(row: dict) -> None:
+    """Append prospective Study-C identity evidence for one OBI measurement."""
+    os.makedirs(os.path.dirname(STUDY_C_PROVENANCE_PATH), exist_ok=True)
+    write_header = not os.path.exists(STUDY_C_PROVENANCE_PATH)
+
+    with open(STUDY_C_PROVENANCE_PATH, "a", newline="") as f:
+        writer = csv.DictWriter(
+            f,
+            fieldnames=STUDY_C_PROVENANCE_COLUMNS,
+        )
+        if write_header:
+            writer.writeheader()
+        writer.writerow(row)
+
+
 def main() -> None:
     console.print("\n[bold cyan]LRS-2 — Market Microstructure Research[/bold cyan]")
     console.print("[dim]Indicator: OBI / Micro-Price — stability check[/dim]\n")
@@ -132,11 +174,15 @@ def main() -> None:
 
         market = fetch_market_by_slug(slug)
         token_ids = parse_clob_token_ids(market)
+        outcomes = parse_outcomes(market)
         if not token_ids:
             table.add_row(slug[:26], "-", "-", "-", "-", "-", "-", "-", "No token IDs")
             continue
 
-        book = fetch_order_book(token_ids[0])
+        measured_token_id = token_ids[0]
+        measured_outcome = outcomes[0] if outcomes else "Unknown"
+
+        book = fetch_order_book(measured_token_id)
         if not book["success"]:
             table.add_row(slug[:26], "-", "-", "-", "-", "-", "-", "-", f"Book failed: {book['error']}")
             continue
@@ -154,8 +200,10 @@ def main() -> None:
         vask_str = f"{metrics['v_ask']:.0f}" if metrics["v_ask"] is not None else "-"
         status = metrics["error"] if metrics["error"] else "ok"
 
+        measurement_timestamp = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+
         log_to_csv({
-            "timestamp": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "timestamp": measurement_timestamp,
             "publication_id": publication_id,
             "slug": slug,
             "question": clob.get("question") or "",
@@ -168,6 +216,22 @@ def main() -> None:
             "ask_count": clob["ask_count"],
             "status": status,
         })
+
+        # Preserve the exact identity from the second market fetch whose
+        # token_ids[0] book produced metrics["obi"]. Do not use the earlier
+        # get_market_clob_data() token identity for this provenance record.
+        if status == "ok" and metrics["obi"] is not None:
+            log_study_c_measurement_provenance({
+                "timestamp": measurement_timestamp,
+                "publication_id": publication_id,
+                "slug": slug,
+                "outcomes": repr(outcomes),
+                "token_ids": repr(token_ids),
+                "outcome_tested": measured_outcome,
+                "token_id": measured_token_id,
+                "raw_obi": metrics["obi"],
+                "status": status,
+            })
 
         table.add_row(
             question_short,
