@@ -1649,3 +1649,431 @@ to an LRS-1 trading decision.
 No alternate horizon, OBI threshold, market subset, Near-Book combination,
 liquidity/spread rescue, alternate inference procedure, CP18 trigger, or LRS-1
 integration is authorized by this result.
+
+---
+
+## Prospective Post-Admission Conditioning Study C — Frozen Pre-Outcome Methodology
+
+**Status:** FROZEN PRE-OUTCOME METHODOLOGY — INDEPENDENT AUDIT PASS; NO OUTCOME EXECUTION AUTHORIZED.
+
+**Research question:** Among trades independently admitted by the unchanged LRS-1
+paper-trading methodology, does contemporaneous LRS-2 full-book OBI measured
+after admission provide information about the trade's subsequent paper-trade
+outcome?
+
+Study C is a prospective cross-engine conditioning study owned by LRS-2. It
+does not alter LRS-1 admission methodology, market selection, side selection,
+position sizing, or resolution methodology. It does not modify the frozen
+Study-A or Study-B evidence or specifications.
+
+Because the LRS-2 observation is produced after LRS-1 admission in the current
+daily pipeline, Study C tests **post-admission conditioning / incremental
+information**. It does not test whether LRS-2 improves the original LRS-1
+admission decision.
+
+Study C is not CP18, does not define a CP18 collection trigger, and does not
+authorize production integration, live trading, position sizing, or changes to
+LRS-1.
+
+### Pre-outcome evidence and rationale
+
+Study A and Study B independently established a negative historical association
+between continuous full-book OBI and subsequent same-token midpoint movement
+under their frozen 18-30 hour immediate-next specifications.
+
+Study-A canonical beta:
+
+`-0.01586748820654767`
+
+Study-B canonical beta:
+
+`-0.0090142714987921316`
+
+Both frozen two-sided tests rejected beta = 0 at alpha = 0.05, and Study B
+replicated the negative direction in a later non-overlapping temporal evidence
+population.
+
+Those studies did not use LRS-1 trade outcomes and did not establish that OBI
+improves or informs an LRS-1 trading decision. Study C opens that separate
+question prospectively.
+
+Before Study-C outcome exposure, outcome-blind pipeline inspection established
+that new LRS-1 admissions are followed by same-slug LRS-2 full-book OBI
+observations during the OBI stage of the same successful daily orchestrator
+run. In the inspected 2026-11-09 run, all 15 new admissions had a matching
+post-admission OBI observation approximately 2.35 to 3.13 minutes after
+admission. These 15 admissions are feasibility evidence only and are not part
+of the protected Study-C confirmatory cohort.
+
+Outcome-blind recent family/dependence geometry was also inspected before this
+freeze. Among 214 recent LRS-1 admissions from 2026-10-10 through 2026-11-09,
+the frozen v1.1 event-family classifier produced 164 represented families,
+including 142 singleton families and 22 multi-trade families. The largest
+family contained 11 trades (5.14% of the 214-trade population).
+
+For the first 150 trades in that outcome-blind recent sequence, 121 families
+were represented, 106 were singletons, 15 were multi-trade families, and the
+largest family contained 7 trades (4.67%).
+
+No LRS-1 outcome, entry-price, side, P&L, or LRS-2 measurement value was
+accessed in that family-geometry diagnostic.
+
+Historical resolution timing was inspected separately without reading outcome
+values, entry price, side, P&L, or LRS-2 measurement values. Among 733 rows
+with valid nonnegative entry-to-resolution timestamps, the maximum observed
+latency was 136.731944 days and all 733 resolved within 150 calendar days.
+This timing evidence is used only to define the administrative outcome-opening
+boundary below.
+
+### Protected prospective population
+
+The protected Study-C cohort consists of the **first 150 prospectively
+eligible enrollments after the final Study-C methodology freeze commit and
+freeze timestamp**.
+
+The 150 count applies to eligible enrolled Study-C trades, not to raw LRS-1
+admissions.
+
+No admission occurring at or before the final methodology freeze boundary is
+eligible for the protected cohort. The 2026-11-09 feasibility population is
+therefore excluded.
+
+Cohort membership is determined without reference to `trade_won`,
+`trade_pnl`, resolution outcome, or any other outcome-bearing field.
+
+Enrollment stops permanently when the 150th eligible Study-C trade is enrolled.
+There is no early stopping for favorable evidence and no extension because of
+weak, null, adverse, missing, or otherwise inconvenient eventual results.
+
+### LRS-1 admission identity
+
+Each candidate begins with an independently created LRS-1 paper-trade
+admission under the unchanged LRS-1 methodology.
+
+The LRS-1 trade identity is `trade_id`. The study enrollment record must also
+preserve at minimum:
+
+- `trade_id`;
+- `market_id`;
+- canonical `slug`;
+- LRS-1 `side`;
+- LRS-1 admission timestamp;
+- `scanner_run_id`;
+- corresponding orchestrator `run_id`.
+
+Study C does not authorize any change to LRS-1's existing one-`market_id`,
+maximum-one-paper-trade admission invariant.
+
+### Post-admission LRS-2 anchor
+
+For each candidate LRS-1 admission, the Study-C LRS-2 anchor is the first
+successful full-book OBI observation for the same canonical `slug` produced
+during the `run_obi` stage of the same successful orchestrator `run_id` in
+which the LRS-1 admission was created.
+
+The LRS-2 timestamp must be strictly later than the LRS-1 admission timestamp.
+
+No later orchestrator run may be substituted when the required same-run anchor
+is absent or invalid. No nearest-observation search, alternate timing window,
+manual replacement, or retrospective fallback is permitted.
+
+The enrollment record must preserve the LRS-2 `publication_id` and LRS-2
+observation timestamp used as the anchor.
+
+### Token/outcome identity eligibility
+
+The full-book OBI producer measures the first token returned by the market
+token/outcome ordering. Pre-outcome structural inspection established that
+index 0 is typically, but not universally, the `Yes` outcome.
+
+Study C therefore requires explicit token identity.
+
+A candidate is eligible only when:
+
+- the market exposes exactly two outcomes;
+- the market exposes exactly two corresponding token IDs;
+- the ordered outcomes are exactly `["Yes", "No"]`;
+- the measured full-book OBI token is explicitly the token corresponding to
+  `Yes`; and
+- the LRS-1 recorded side is exactly `Yes` or `No`.
+
+If any requirement fails, the candidate is ineligible. There is no outcome
+reordering, alternate-token fallback, manual semantic interpretation, or
+retrospective repair.
+
+The enrollment artifact must preserve both `outcome_tested = Yes` and the
+exact measured `token_id`.
+
+### Primary LRS-2 predictor
+
+The underlying full-book OBI remains the frozen continuous measurement:
+
+`OBI = (V_bid - V_ask) / (V_bid + V_ask)`
+
+Study A and Study B prospectively established before Study-C outcomes that
+higher raw OBI for the measured token was associated with lower subsequent
+same-token midpoint movement.
+
+Study C therefore defines one continuous **side-aligned OBI score** before
+prospective outcome exposure:
+
+- if LRS-1 `side == "Yes"`: `side_aligned_obi = -raw_obi`;
+- if LRS-1 `side == "No"`: `side_aligned_obi = +raw_obi`.
+
+Higher `side_aligned_obi` therefore represents the direction historically
+favorable to the already-selected LRS-1 side under the replicated Study-A/B
+OBI relationship.
+
+The continuous score is primary. There is no threshold, cutoff, percentile,
+bin, clipping, standardization, nonlinear transformation, optimized boundary,
+or abstention rule.
+
+Near-Book OBI is not part of the Study-C primary predictor and may not be
+introduced after outcome exposure to rescue or replace the frozen predictor.
+
+### Joint primary outcomes
+
+Study C has one joint structural target with two jointly required LRS-1
+paper-trade outcome relationships:
+
+1. `side_aligned_obi` versus numeric `trade_won`;
+2. `side_aligned_obi` versus `trade_pnl`.
+
+`trade_won` uses the existing deterministic LRS-1 numeric representation.
+`trade_pnl` uses the existing LRS-1 paper-trading resolution and P&L
+semantics. Study C does not redefine either outcome.
+
+Because higher `side_aligned_obi` is defined as historically more favorable
+for the already-selected LRS-1 side, the prespecified expected direction is
+**positive for both primary relationships**.
+
+The two outcome relationships are jointly required components of one Study-C
+target and are not interchangeable discoveries. Neither may rescue failure of
+the other.
+
+### Primary statistical procedure
+
+For the usable resolved members of the fixed protected cohort, compute:
+
+- Spearman(`side_aligned_obi`, `trade_won`);
+- Spearman(`side_aligned_obi`, `trade_pnl`).
+
+The implementation must use `scipy.stats.spearmanr` with its two-sided
+p-value convention and primary alpha = 0.05.
+
+The exact audited Study-C execution environment, including the exact SciPy
+version, must be pinned in the Study-C implementation/provenance contract
+before any protected outcome execution. No outcome execution is authorized
+until that implementation and environment are independently audited and
+frozen.
+
+Supporting Pearson associations may be reported but have zero classification
+authority.
+
+No regression, threshold test, subgroup test, alternate rank statistic,
+one-sided p-value, or alternate significance level may replace the frozen
+primary procedure after outcomes are exposed.
+
+### Frozen family/dependence sensitivity
+
+Study C carries forward the existing frozen LRS-1 v1.1 event-family
+classification semantics prospectively.
+
+Family assignment must use the frozen deterministic question-only
+`classify_v11` semantics. No outcome-bearing value may influence family
+assignment.
+
+The implementation must provenance-check the frozen detector authority before
+protected execution.
+
+For the family-equal sensitivity, aggregate the usable resolved protected
+cohort to exactly one row per frozen `family_key` using arithmetic means of:
+
+- `side_aligned_obi`;
+- numeric `trade_won`;
+- `trade_pnl`.
+
+Each represented family receives one row regardless of raw family size.
+
+Report:
+
+- represented-family count;
+- largest-family size;
+- largest-family raw-trade concentration;
+- family-rule counts;
+- family-equal Spearman and supporting Pearson association between family-mean
+  `side_aligned_obi` and family-mean `trade_won`;
+- family-equal Spearman and supporting Pearson association between family-mean
+  `side_aligned_obi` and family-mean `trade_pnl`.
+
+Family-aware analysis is a dependence sensitivity and is not proof that raw
+trades are independent.
+
+### Deterministic PASS / FAIL / INCONCLUSIVE classification
+
+Classification is applied in this exact order.
+
+1. Evaluate both raw-trade primary Spearman relationships.
+2. If either raw-trade primary Spearman is negative, classify **FAIL**.
+3. Otherwise, if either raw-trade primary Spearman is zero or mathematically
+   undefined, classify **INCONCLUSIVE**.
+4. Otherwise, if either raw-trade primary two-sided p-value is undefined or
+   `>= 0.05`, classify **INCONCLUSIVE**.
+5. Otherwise both raw-trade primary relationships are positive with two-sided
+   `p < 0.05`; evaluate the frozen family-equal sensitivity.
+6. If either required family-equal Spearman is undefined, zero, or negative,
+   classify **INCONCLUSIVE**.
+7. Otherwise classify **PASS**.
+
+Therefore PASS requires:
+
+- Spearman(`side_aligned_obi`, `trade_won`) > 0 with two-sided `p < 0.05`;
+- Spearman(`side_aligned_obi`, `trade_pnl`) > 0 with two-sided `p < 0.05`;
+- family-equal Spearman(`side_aligned_obi`, `trade_won`) > 0;
+- family-equal Spearman(`side_aligned_obi`, `trade_pnl`) > 0;
+- all required statistics mathematically defined; and
+- exact prespecified analysis executed without post-outcome modification.
+
+FAIL requires an opposite, negative direction in either raw-trade primary
+relationship.
+
+INCONCLUSIVE applies when no FAIL condition is present but a required raw
+primary or family statistic is zero, undefined, insufficiently significant
+under the frozen raw-primary rule, or otherwise cannot be evaluated.
+
+The family sensitivity may downgrade an otherwise qualifying PASS to
+INCONCLUSIVE. It may not rescue a raw FAIL or raw INCONCLUSIVE result.
+
+### Fixed cohort, resolution, and administrative outcome-opening boundary
+
+The protected cohort identities remain fixed after the 150th eligible
+enrollment. Resolution speed may not determine cohort membership.
+
+Protected outcome analysis may open when either:
+
+1. all 150 protected cohort members have resolved under the unchanged LRS-1
+   resolution contract; or
+2. 150 calendar days have elapsed after the admission timestamp of the 150th
+   eligible enrollment,
+
+whichever occurs first.
+
+At the administrative boundary, any unresolved protected member remains part
+of the disclosed protected cohort and is not replaced.
+
+Primary and family analyses use every protected cohort member with the
+required predictor and resolved usable outcome fields. Raw protected n, usable
+n for each required statistic, unresolved count, and all required-field
+missingness must be reported.
+
+Missing or unresolved members may not be replaced, and the cohort may not be
+extended because of observed results.
+
+If missingness or unresolved outcomes make any required primary or
+family-equal statistic mathematically undefined, the final classification is
+INCONCLUSIVE unless an earlier raw opposite-direction FAIL condition applies.
+
+### Required prospective enrollment artifact
+
+Study C must use a separate study-specific enrollment artifact rather than
+changing the existing live OBI or Near-Book CSV schemas.
+
+Each enrolled row must preserve at minimum:
+
+- enrollment sequence;
+- orchestrator `run_id`;
+- LRS-1 `trade_id`;
+- LRS-1 `market_id`;
+- canonical `slug`;
+- LRS-1 `side`;
+- LRS-1 admission timestamp;
+- `scanner_run_id`;
+- LRS-2 `publication_id`;
+- LRS-2 timestamp;
+- `outcome_tested`;
+- measured `token_id`;
+- raw full-book OBI;
+- `side_aligned_obi`;
+- frozen family `rule_matched`;
+- frozen `family_key`.
+
+The enrollment artifact must not contain `trade_won`, `trade_pnl`, winning
+outcome, or other future outcome values during prospective accrual.
+
+### Prohibited post-outcome adaptation
+
+After any protected Study-C outcome is exposed to the Study-C analysis, Study C
+may not be altered, subdivided, optimized, or rescued using:
+
+- alternate OBI thresholds, bins, cutoffs, transformations, or clipping;
+- alternate side-alignment rules;
+- alternate token/outcome interpretation;
+- alternate post-admission timing windows or later OBI observations;
+- Near-Book OBI combinations;
+- liquidity, spread, category, or market-subset rescue variables;
+- selective family removal or altered family semantics;
+- selective trade removal other than frozen missing-data handling;
+- replacement of unresolved or ineligible trades;
+- extension beyond the first 150 eligible enrollments because of results;
+- alternate outcomes;
+- alternate correlation estimators;
+- one-sided significance tests;
+- alternate alpha thresholds;
+- candidate switching;
+- LRS-1 methodology changes justified from Study-C outcomes.
+
+All adverse, null, zero, undefined, missing, opposite-direction, or otherwise
+non-confirmatory results must be retained and reported.
+
+### Interpretation boundary
+
+Study C asks whether the frozen side-aligned LRS-2 full-book OBI score provides
+prospective information about later LRS-1 paper-trade outcomes **conditional on
+a trade already having been independently admitted by LRS-1**.
+
+PASS would establish prospective evidence for post-admission conditioning under
+this exact frozen population, timing, identity, predictor, outcome, and
+classification contract.
+
+PASS would not by itself establish:
+
+- causality;
+- live-money profitability;
+- economic significance;
+- universal generalization;
+- a production trading signal;
+- an OBI entry threshold;
+- position sizing;
+- an abstention rule;
+- improvement to the original LRS-1 admission decision;
+- authorization to modify LRS-1;
+- authorization to deploy LRS-2 into production;
+- a CP18 trigger.
+
+FAIL or INCONCLUSIVE must be retained as Study-C evidence without rescue.
+
+Any later attempt to use LRS-2 before LRS-1 admission, alter LRS-1 admission,
+derive a trading threshold, combine Near-Book information, change timing, or
+test production decision value requires a separately frozen prospective study.
+
+### Frozen authorization state
+
+Independent pre-outcome methodology audit verdict: **PASS**.
+
+Blocking findings: **NONE**.
+
+Required corrections: **NONE**.
+
+The methodology is safe to freeze before prospective enrollment begins.
+
+At this freeze stage:
+
+- protected Study-C enrollment opened: **NO**;
+- protected Study-C cohort identities established: **NO**;
+- protected Study-C outcomes accessed: **NO**;
+- Study-C analysis executed: **NO**;
+- Study-C production integration authorized: **NO**;
+- CP18 authorized: **NO**.
+
+The protected Study-C population begins only after the final methodology freeze
+commit and freeze timestamp. No pre-freeze admission is eligible.
