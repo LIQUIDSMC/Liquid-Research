@@ -43,3 +43,7 @@ logs/daily_cycle/
 
 # Local research backup snapshots
 data_backups/
+
+# LRS2 Study C prospective runtime artifacts — local data, never commit.
+L3_RESEARCH_ENGINES/market_microstructure/data/study_c_measurement_provenance.csv
+L3_RESEARCH_ENGINES/market_microstructure/data/study_c_enrollment.csv
