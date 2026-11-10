@@ -2081,5 +2081,16 @@ At this freeze stage:
 - Study-C production integration authorized: **NO**;
 - CP18 authorized: **NO**.
 
-The protected Study-C population begins only after the final methodology freeze
-commit and freeze timestamp. No pre-freeze admission is eligible.
+The protected Study-C population begins only after both the final methodology
+freeze boundary and a separately pinned prospective enrollment-activation
+boundary. No admission at or before either boundary is eligible.
+
+The enrollment-activation boundary must be established only after the audited
+Study-C enrollment collector and required prospective measurement-provenance
+capture are deployed on the authoritative live Pi3 runtime. Admissions occurring
+between the methodology freeze and that activation boundary are not eligible
+and must not be backfilled, reconstructed, replaced, or counted toward the
+protected first-150 sequence.
+
+At this stage the enrollment-activation boundary is not yet established and
+protected Study-C enrollment remains closed.
