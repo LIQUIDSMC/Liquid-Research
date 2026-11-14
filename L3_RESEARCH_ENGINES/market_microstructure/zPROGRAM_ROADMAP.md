@@ -2092,5 +2092,13 @@ between the methodology freeze and that activation boundary are not eligible
 and must not be backfilled, reconstructed, replaced, or counted toward the
 protected first-150 sequence.
 
-At this stage the enrollment-activation boundary is not yet established and
-protected Study-C enrollment remains closed.
+The enrollment-activation boundary is frozen at
+`2026-11-10T07:27:56+00:00`. This timestamp was captured from the authoritative Pi3 runtime
+after the audited Study-C enrollment collector and required prospective
+measurement-provenance capture were deployed, with Pi3 reporting NTP
+synchronization. Admissions at or before this boundary are ineligible and must
+not be backfilled, reconstructed, replaced, or counted toward the protected
+first-150 sequence.
+
+Protected Study-C enrollment may begin only under this frozen activation
+boundary and the already-frozen Study-C methodology.

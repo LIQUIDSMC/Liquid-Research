@@ -37,6 +37,7 @@ DEFAULT_ENROLLMENT = Path(
     "L3_RESEARCH_ENGINES/market_microstructure/data/study_c_enrollment.csv"
 )
 DEFAULT_LOG_ROOT = Path("logs/daily_cycle")
+STUDY_C_ACTIVATION_UTC = "2026-11-10T07:27:56+00:00"
 
 
 def read_ledger_outcome_blind(path: Path) -> list[dict]:
@@ -142,14 +143,9 @@ def main() -> None:
         description="Enroll prospective LRS2 Study-C trades from completed runs."
     )
     parser.add_argument("--repo-root", required=True)
-    parser.add_argument(
-        "--activation-utc",
-        required=True,
-        help="Pinned audited enrollment activation timestamp, ISO-8601 UTC.",
-    )
     args = parser.parse_args()
 
-    activation = parse_utc(args.activation_utc)
+    activation = parse_utc(STUDY_C_ACTIVATION_UTC)
     raise SystemExit(
         run(
             repo_root=Path(args.repo_root).resolve(),

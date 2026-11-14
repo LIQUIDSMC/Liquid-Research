@@ -44,3 +44,11 @@ def test_runtime_ledger_reader_does_not_return_outcomes(tmp_path):
     assert "trade_won" not in rows[0]
     assert "trade_pnl" not in rows[0]
     assert "winning_outcome" not in rows[0]
+
+
+def test_activation_boundary_is_repository_pinned():
+    from L3_RESEARCH_ENGINES.market_microstructure.analysis.run_study_c_enrollment import (
+        STUDY_C_ACTIVATION_UTC,
+    )
+
+    assert STUDY_C_ACTIVATION_UTC == "2026-11-10T07:27:56+00:00"
