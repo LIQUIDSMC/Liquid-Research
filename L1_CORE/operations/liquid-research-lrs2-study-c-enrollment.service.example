@@ -1,0 +1,22 @@
+# Reference copy. Production unit lives at:
+# /etc/systemd/system/liquid-research-lrs2-study-c-enrollment.service
+#
+# Runs the frozen prospective Study-C enrollment collector only after a
+# successful daily orchestrator run. The collector is outcome-blind,
+# idempotent, and permanently capped at the frozen first 150 eligible
+# enrollments.
+
+[Unit]
+Description=Liquid Research LRS2 Study-C prospective enrollment
+After=mnt-lrs001.mount
+Requires=mnt-lrs001.mount
+RequiresMountsFor=/mnt/lrs001
+
+[Service]
+Type=oneshot
+User=kristo
+WorkingDirectory=/mnt/lrs001/liquid-research-l0l4
+ExecStart=/mnt/lrs001/liquid-research-l0l4/venv/bin/python3 /mnt/lrs001/liquid-research-l0l4/L3_RESEARCH_ENGINES/market_microstructure/analysis/run_study_c_enrollment.py --repo-root /mnt/lrs001/liquid-research-l0l4
+TimeoutStartSec=600
+StandardOutput=journal
+StandardError=journal

@@ -1,0 +1,10 @@
+# Reference drop-in. Production copy lives at:
+# /etc/systemd/system/liquid-research-orchestrator.service.d/lrs2-study-c-enrollment.conf
+#
+# OnSuccess starts the outcome-blind Study-C enrollment collector only after
+# the daily orchestrator service has completed successfully. This does not
+# alter orchestrator stage ordering, LRS-1 admission methodology, Study-C
+# methodology, or research/production authorization.
+
+[Unit]
+OnSuccess=liquid-research-lrs2-study-c-enrollment.service

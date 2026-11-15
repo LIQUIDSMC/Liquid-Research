@@ -1,6 +1,6 @@
 """Runtime runner for prospective LRS2 Study-C enrollment.
 
-Enrollment remains impossible unless an explicit activation timestamp is supplied.
+The production CLI uses the frozen Study-C activation boundary defined below.
 The runner consumes only completed successful orchestrator runs and outcome-blind
 ledger columns.
 """

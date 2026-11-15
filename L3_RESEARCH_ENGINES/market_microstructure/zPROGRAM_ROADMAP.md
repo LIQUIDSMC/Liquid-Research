@@ -2072,10 +2072,10 @@ Required corrections: **NONE**.
 
 The methodology is safe to freeze before prospective enrollment begins.
 
-At this freeze stage:
+Current authorization and accrual state:
 
-- protected Study-C enrollment opened: **NO**;
-- protected Study-C cohort identities established: **NO**;
+- protected Study-C enrollment opened: **YES**;
+- protected Study-C cohort identities established: **PARTIAL — 36/150 enrolled as of 2026-11-14**;
 - protected Study-C outcomes accessed: **NO**;
 - Study-C analysis executed: **NO**;
 - Study-C production integration authorized: **NO**;
