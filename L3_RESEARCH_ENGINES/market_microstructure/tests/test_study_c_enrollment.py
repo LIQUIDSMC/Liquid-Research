@@ -171,16 +171,58 @@ def test_ineligible_first_anchor_cannot_be_replaced_by_later_valid_row():
 
     later = provenance(raw="0.90", ts="2026-11-10T13:03:40Z")
 
-    with pytest.raises(EnrollmentError):
-        build_enrollment_rows(
-            run_id="20261110T130002Z",
-            ledger_rows=[ledger_row(1001)],
-            created_ids=[1001],
-            scanner_run_id="scanner_run_20261110_0501.csv",
-            provenance_rows=[later, first],
-            run_obi_window=window,
-            activation_boundary=activation,
-        )
+    rows = build_enrollment_rows(
+        run_id="20261110T130002Z",
+        ledger_rows=[ledger_row(1001)],
+        created_ids=[1001],
+        scanner_run_id="scanner_run_20261110_0501.csv",
+        provenance_rows=[later, first],
+        run_obi_window=window,
+        activation_boundary=activation,
+    )
+
+    assert rows == []
+
+
+def test_ineligible_candidate_does_not_block_later_eligible_candidate():
+    activation = datetime(2026, 11, 10, 12, 0, tzinfo=timezone.utc)
+    window = StageWindow(
+        datetime(2026, 11, 10, 13, 3, 14, tzinfo=timezone.utc),
+        datetime(2026, 11, 10, 13, 4, 9, tzinfo=timezone.utc),
+    )
+
+    first_ledger = ledger_row(1001)
+    first_ledger["slug"] = "slug-a"
+    second_ledger = ledger_row(1002)
+    second_ledger["slug"] = "slug-b"
+
+    ineligible = provenance(
+        slug="slug-a",
+        raw="0.10",
+        ts="2026-11-10T13:03:20Z",
+    )
+    ineligible["outcomes"] = "['Team A', 'Team B']"
+
+    eligible = provenance(
+        slug="slug-b",
+        raw="0.40",
+        ts="2026-11-10T13:03:30Z",
+    )
+
+    rows = build_enrollment_rows(
+        run_id="20261110T130002Z",
+        ledger_rows=[first_ledger, second_ledger],
+        created_ids=[1001, 1002],
+        scanner_run_id="scanner_run_20261110_0501.csv",
+        provenance_rows=[ineligible, eligible],
+        run_obi_window=window,
+        activation_boundary=activation,
+    )
+
+    assert len(rows) == 1
+    assert rows[0]["trade_id"] == 1002
+    assert rows[0]["slug"] == "slug-b"
+    assert rows[0]["enrollment_sequence"] == 1
 
 
 def test_no_side_alignment():
@@ -221,16 +263,16 @@ def test_token_and_measurement_contract_fails_closed(change):
     )
     p = provenance()
     p.update(change)
-    with pytest.raises(EnrollmentError):
-        build_enrollment_rows(
-            run_id="r",
-            ledger_rows=[ledger_row(1001)],
-            created_ids=[1001],
-            scanner_run_id="scanner_run_20261110_0501.csv",
-            provenance_rows=[p],
-            run_obi_window=window,
-            activation_boundary=activation,
-        )
+    rows = build_enrollment_rows(
+        run_id="r",
+        ledger_rows=[ledger_row(1001)],
+        created_ids=[1001],
+        scanner_run_id="scanner_run_20261110_0501.csv",
+        provenance_rows=[p],
+        run_obi_window=window,
+        activation_boundary=activation,
+    )
+    assert rows == []
 
 
 def test_pre_activation_admission_is_not_enrolled():

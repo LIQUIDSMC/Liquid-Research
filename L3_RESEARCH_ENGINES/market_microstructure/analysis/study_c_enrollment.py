@@ -89,6 +89,11 @@ class EnrollmentError(RuntimeError):
     pass
 
 
+class CandidateIneligible(EnrollmentError):
+    """Candidate fails frozen Study-C eligibility; not a collector integrity error."""
+    pass
+
+
 @dataclass(frozen=True)
 class StageWindow:
     started: datetime
@@ -418,7 +423,7 @@ def select_anchor(
         candidates.append((ts, row))
 
     if not candidates:
-        raise EnrollmentError(f"no successful same-run OBI anchor for slug {slug}")
+        raise CandidateIneligible(f"no successful same-run OBI anchor for slug {slug}")
 
     candidates.sort(key=lambda x: x[0])
     ts, row = candidates[0]
@@ -429,31 +434,31 @@ def select_anchor(
     token_ids = _parse_exact_list(row["token_ids"], "token_ids")
 
     if outcomes != ["Yes", "No"]:
-        raise EnrollmentError(
+        raise CandidateIneligible(
             f"first anchor has ineligible outcomes for slug {slug}"
         )
     if len(token_ids) != 2:
-        raise EnrollmentError(
+        raise CandidateIneligible(
             f"first anchor has ineligible token_ids for slug {slug}"
         )
     if row["outcome_tested"] != "Yes":
-        raise EnrollmentError(
+        raise CandidateIneligible(
             f"first anchor outcome_tested is not Yes for slug {slug}"
         )
     if row["token_id"] != token_ids[0]:
-        raise EnrollmentError(
+        raise CandidateIneligible(
             f"first anchor token_id does not match Yes token for slug {slug}"
         )
 
     try:
         raw_obi = float(row["raw_obi"])
     except Exception as exc:
-        raise EnrollmentError(
+        raise CandidateIneligible(
             f"first anchor raw_obi is non-numeric for slug {slug}"
         ) from exc
 
     if not math.isfinite(raw_obi):
-        raise EnrollmentError(
+        raise CandidateIneligible(
             f"first anchor raw_obi is non-finite for slug {slug}"
         )
 
@@ -499,12 +504,19 @@ def build_enrollment_rows(
         if side not in {"Yes", "No"}:
             continue
 
-        anchor = select_anchor(
-            provenance_rows,
-            slug=ledger["slug"],
-            admission_timestamp=admission,
-            run_obi_window=run_obi_window,
-        )
+        try:
+            anchor = select_anchor(
+                provenance_rows,
+                slug=ledger["slug"],
+                admission_timestamp=admission,
+                run_obi_window=run_obi_window,
+            )
+        except CandidateIneligible:
+            # Frozen Study-C eligibility is candidate-level. An absent or
+            # ineligible first anchor excludes this candidate only; it must
+            # never be replaced by a later observation and must not block
+            # later independently eligible candidates.
+            continue
 
         raw_obi = anchor["_raw_obi"]
         side_aligned = -raw_obi if side == "Yes" else raw_obi
