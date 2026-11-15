@@ -29,6 +29,15 @@ LOCK="$STATE_DIR/lock"
 OOM_BOOT="$STATE_DIR/oom_boot_id"
 OOM_CURSOR="$STATE_DIR/oom_cursor"
 
+case "$NODE_NAME" in
+    liquid-pi) DEVICE_EMOJI="🍓" ;;
+    liquid-pi5) DEVICE_EMOJI="🚀" ;;
+    *)
+        echo "ERROR: unsupported machine identity" >&2
+        exit 2
+        ;;
+esac
+
 mkdir -p "$STATE_DIR"
 
 note() {
@@ -38,9 +47,19 @@ note() {
 alert() {
     local title="$1"
     local body="$2"
+    local EVENT_EMOJI
+
+    case "$title" in
+        PROBLEM) EVENT_EMOJI="🚨" ;;
+        RECOVERED) EVENT_EMOJI="✅" ;;
+        *)
+            echo "ERROR: unsupported notification condition" >&2
+            return 2
+            ;;
+    esac
 
     if curl -fsS -m 10 --retry 2 \
-        -H "Title: LRS Machine Health — ${NODE_NAME} — ${title}" \
+        -H "Title: ${EVENT_EMOJI} ${DEVICE_EMOJI} 👑 GM — MACHINE HEALTH ${title}" \
         -d "$body" \
         "https://ntfy.sh/$NTFY_TOPIC" >/dev/null 2>&1
     then
