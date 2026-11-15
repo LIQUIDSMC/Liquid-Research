@@ -7,6 +7,7 @@ import os
 import stat
 import tempfile
 import urllib.request
+from email.header import Header
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -62,7 +63,7 @@ def evaluate(path, now, grace_minutes, daily_time="05:00", schedule_timezone="Am
 def request(url, message=None, title=None):
     headers = {}
     if title:
-        headers["Title"] = title
+        headers["Title"] = Header(title, "utf-8").encode()
     body = message.encode("utf-8") if message is not None else b""
     req = urllib.request.Request(url, data=body, headers=headers)
     try:
@@ -137,7 +138,9 @@ def main():
         if not previous and condition == "HEALTHY":
             save(notified_path, condition)
         elif previous != condition:
-            title = "LRS2 bridge " + ("RECOVERED" if condition == "HEALTHY" and previous else condition)
+            label = "RECOVERED" if condition == "HEALTHY" and previous else condition
+            symbol = "✅" if label == "RECOVERED" else "🚨"
+            title = f"{symbol} 🍓 🔬 LRS2 — BRIDGE {label}"
             delivery_ok = request("https://ntfy.sh/" + topic, message, title)
             if delivery_ok:
                 save(notified_path, condition)

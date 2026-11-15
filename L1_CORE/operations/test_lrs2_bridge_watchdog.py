@@ -3,6 +3,7 @@ import io
 import json
 import tempfile
 import unittest
+from email.header import decode_header, make_header
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
@@ -114,6 +115,78 @@ class WatchdogTests(unittest.TestCase):
             self.assertEqual(result, 0)
             self.assertEqual(send.call_count, 1)
             self.assertEqual(send.call_args.args[0], "https://hc-ping.com/synthetic-test")
+
+    def test_all_alert_conditions_have_standard_titles(self):
+        expected = {
+            "FAILED": "🚨 🍓 🔬 LRS2 — BRIDGE FAILED",
+            "OVERDUE": "🚨 🍓 🔬 LRS2 — BRIDGE OVERDUE",
+            "STALE_FAILURE": "🚨 🍓 🔬 LRS2 — BRIDGE STALE_FAILURE",
+            "EVIDENCE_ERROR": "🚨 🍓 🔬 LRS2 — BRIDGE EVIDENCE_ERROR",
+        }
+        for condition, title in expected.items():
+            with self.subTest(condition=condition):
+                if (self.state / "notified_state").exists():
+                    (self.state / "notified_state").unlink()
+                with patch.object(
+                    monitor, "evaluate", return_value=(condition, "synthetic")
+                ):
+                    result, send = self.run_main([True])
+                self.assertEqual(result, 1)
+                self.assertEqual(send.call_count, 1)
+                self.assertEqual(send.call_args.args[2], title)
+                self.assertEqual(
+                    (self.state / "notified_state").read_text().strip(),
+                    condition,
+                )
+
+    def test_recovery_title_is_standardized(self):
+        self.state.mkdir()
+        (self.state / "notified_state").write_text("FAILED\\n")
+        with patch.object(
+            monitor, "evaluate", return_value=("HEALTHY", "synthetic")
+        ):
+            result, send = self.run_main([True, True])
+        self.assertEqual(result, 0)
+        self.assertEqual(
+            send.call_args_list[0].args[2],
+            "✅ 🍓 🔬 LRS2 — BRIDGE RECOVERED",
+        )
+
+    def test_unicode_title_is_encoded_for_http(self):
+        captured = []
+
+        class FakeResponse:
+            status = 200
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+        def fake_urlopen(request, timeout):
+            captured.append(request)
+            return FakeResponse()
+
+        title = "🚨 🍓 🔬 LRS2 — BRIDGE FAILED"
+        with patch.object(
+            monitor.urllib.request, "urlopen", side_effect=fake_urlopen
+        ):
+            result = monitor.request(
+                "https://ntfy.sh/synthetic_test_topic",
+                "Synthetic failure only",
+                title,
+            )
+
+        self.assertTrue(result)
+        self.assertEqual(len(captured), 1)
+        encoded = captured[0].get_header("Title")
+        self.assertEqual(
+            str(make_header(decode_header(encoded))), title
+        )
+        self.assertEqual(
+            captured[0].data, b"Synthetic failure only"
+        )
 
     def test_heartbeat_failure_returns_failure(self):
         with patch.object(monitor, "evaluate", return_value=("HEALTHY", "synthetic")):
