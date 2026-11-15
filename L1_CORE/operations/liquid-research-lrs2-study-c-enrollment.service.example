@@ -16,6 +16,7 @@ RequiresMountsFor=/mnt/lrs001
 Type=oneshot
 User=kristo
 WorkingDirectory=/mnt/lrs001/liquid-research-l0l4
+Environment=PYTHONPATH=/mnt/lrs001/liquid-research-l0l4
 ExecStart=/mnt/lrs001/liquid-research-l0l4/venv/bin/python3 /mnt/lrs001/liquid-research-l0l4/L3_RESEARCH_ENGINES/market_microstructure/analysis/run_study_c_enrollment.py --repo-root /mnt/lrs001/liquid-research-l0l4
 TimeoutStartSec=600
 StandardOutput=journal
