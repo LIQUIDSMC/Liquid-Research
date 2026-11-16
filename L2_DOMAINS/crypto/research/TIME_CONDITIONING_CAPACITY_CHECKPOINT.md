@@ -229,26 +229,114 @@ end-to-end integration from the calculation kernel into the new report.
 
 Development bounds are 100,000 eligible observations per instrument-day
 horizon and a 1 MiB serialized report. These are not frozen historical
-execution budgets. Reporting has not been profiled in a combined
-loader/kernel/reporting process.
+execution budgets. A subsequent combined synthetic loader/kernel/adapter/reporting
+profile completed on Pi5 on 2026-11-07, as documented below.
+
+## Combined Synthetic Pi5 Profiling Checkpoint — 2026-11-07
+
+The combined synthetic loader/kernel/adapter/reporting profiler ran on Pi5
+from an isolated, clean checkout at source revision
+`8bf489eb475c9be5b5bc5ff04bbdf592df274a4f`.
+
+Checkout:
+`/home/kristo/lrs3-pi5-combined-profiler-8bf489e/`.
+
+Retained output root:
+`/home/kristo/lrs3-pi5-combined-profiling-v1/`.
+
+Both sequential workers completed successfully with exit status zero,
+state COMPLETE, and selected_ids_verified true. The launcher reported
+ALL_BENCHMARKS_PASSED; subsequent inspection found no active profiler
+processes or tmux session. The isolated checkout was clean.
+
+Environment: Linux aarch64, Python 3.13.5, NumPy 2.4.6,
+PyArrow 25.0.0. Each worker used a 2 GiB address-space limit,
+a 300-second runtime limit, and single-thread numerical-library settings.
+
+| Selected rows | Generated rows including controls | Synthetic files | Fixture logical bytes | Peak RSS, bytes | Worker elapsed seconds |
+|---:|---:|---:|---:|---:|---:|
+| 678,382 | 758,977 | 26,865 | 81,831,442 | 184,991,744 | 136.857564 |
+| 1,356,764 | 1,437,359 | 26,865 | 94,531,635 | 229,343,232 | 194.433410 |
+
+Peak RSS corresponds to approximately 176.42 MiB and 218.72 MiB,
+respectively. These are process-lifetime high-water marks, not isolated
+incremental allocations or measurements of address-space consumption.
+
+| Phase | Baseline seconds | Stress seconds |
+|---|---:|---:|
+| Generation | 14.721344 | 15.610730 |
+| Counting | 26.779658 | 27.043127 |
+| Loading and validation | 38.592391 | 38.508289 |
+| Sorting and membership validation | 0.052601 | 0.102453 |
+| Kernel and adapter matrix | 56.694236 | 113.151488 |
+| Reporting and serialization | 0.012561 | 0.012480 |
+
+The combined workflow verified selected trade-ID membership and invoked
+the existing calculation kernel 48 times per case. It generated a
+COMPLETE_DESCRIPTIVE report of 393,086 bytes per case, hashed the
+serialized report, and discarded that serialized output rather than
+publishing it.
+
+The reporting matrix recorded 24 valid date pairs for each hour
+horizon (5, 15, 30, and 60 seconds), but zero valid date pairs for
+each session horizon. COMPLETE_DESCRIPTIVE denotes completed processing,
+not validity of every reporting cell or scientific readiness.
+
+Replication policy:
+`ONE_BTC_FIXTURE_REUSED_WITH_SHIFTED_DATES_AND_INSTRUMENT_LABELS`.
+
+The 48 instrument-day invocations reused one generated BTC fixture
+with shifted dates and instrument labels. They were not 48 independently
+generated or loaded corpora. Constant synthetic prices and quantities,
+Parquet compression NONE, and the fabricated file distribution do not
+reproduce historical input distributions. Empty or invalid descriptive
+cells remain explicit.
+
+Both completion records retain the limitations array and the exact
+source revision. Their paths and operator-verified SHA-256 hashes are:
+
+- Baseline:
+  `combined-678382--8ec5c0f2-8a97-4ff2-a8bf-1351a4a67554/complete.json`
+  SHA-256:
+  `3d7684d3aa80f84fef7246e5441f25faf39639a78980cd2e558fcd45eb880281`
+- Stress:
+  `combined-1356764--5bcc415d-a56f-4d4a-b4ea-f04c80d27f80/complete.json`
+  SHA-256:
+  `066ef2f12ad0a360dd0cc7dfe49d8c1927a7b83d0d53a4ec378726fb150dff3e`
+
+The retained profiling root occupied approximately 249 MB according
+to the operator's `du -sh` observation. Fixtures and attempts remain
+retained without automatic cleanup. The files are operator-controlled,
+not immutable or independently authenticated evidence.
+
+The operator subsequently reported an independent Gemini audit
+VERDICT: PASS for this synthetic profiling checkpoint. That reported
+review is not a precommit audit of this documentation update.
+
+The measurements support bounded synthetic hardware-capacity
+observations only. They do not establish historical execution safety,
+historical feed completeness, general memory safety, scientific
+readiness, predictive value, profitability, or production authorization.
 
 ## Remaining Limits and Decisions
 
 The measurements establish completed capacity observations and synthetic
 headroom for the tested array/sorting and kernel cases only.
 
-Synthetic loader checks now exercise Parquet loading, file discovery,
-schema conversion/filtering, and sorting on generated corpora. They do
-not measure historical-data execution or an integrated loader/kernel/reporting
-run. The reporting module was tested separately on fabricated summaries.
+Synthetic loader checks exercised Parquet loading, file discovery,
+schema conversion/filtering, and sorting on generated corpora. A subsequent
+combined synthetic run exercised the loader, calculation kernel, adapter,
+and descriptive reporting in one bounded worker per case. Neither run
+measured historical-data execution. The earlier reporting module tests
+used fabricated summaries.
 These checks do not reproduce
 every possible historical-data allocation pattern. No full-pipeline
 memory-safety, feed-completeness, profitability, or scientific-readiness
 claim follows.
 
 The study still requires final resource budgets, input identity and
-retention arrangements, synthetic integration and combined resource
-validation of the study components, a frozen prospective predeclaration, and explicit
+retention arrangements, historical-input fidelity assessment, final
+resource budgets, a frozen prospective predeclaration, and explicit
 authorization for any acquisition or historical execution.
 
 Original Candidate D D0 remains blocked with its matrix unchanged.
