@@ -334,10 +334,27 @@ every possible historical-data allocation pattern. No full-pipeline
 memory-safety, feed-completeness, profitability, or scientific-readiness
 claim follows.
 
-The study still requires final resource budgets, input identity and
-retention arrangements, historical-input fidelity assessment, final
-resource budgets, a frozen prospective predeclaration, and explicit
-authorization for any acquisition or historical execution.
+The following resource envelope is PROPOSED, NOT APPROVED:
+
+- Execution: sequential, one instrument-day per worker.
+- Worker virtual address-space limit: 2 GiB.
+- Worker runtime limit: 300 seconds.
+- Minimum free-space reserve: 1 GiB (cooperative check, not reserved storage).
+- Serialized report limit: 1 MiB per worker.
+
+These proposed values reuse synthetic-profiler safeguards; they are not
+validated historical-execution limits. The combined synthetic stress case
+processed 1,356,764 selected rows in 194.433410 seconds with a peak RSS
+of 229,343,232 bytes. Peak RSS is not virtual address-space consumption.
+Historical file distribution, allocation behavior, and total I/O remain
+unverified. The historical runner does not itself enforce the proposed
+worker memory and runtime limits.
+
+The study still requires approval of final resource budgets, input
+identity and retention arrangements, historical-input fidelity assessment,
+a frozen prospective predeclaration, independently audited execution
+safeguards, and explicit authorization for any acquisition or historical
+execution.
 
 Original Candidate D D0 remains blocked with its matrix unchanged.
 Production transfer and broader pilot remain HOLD.
