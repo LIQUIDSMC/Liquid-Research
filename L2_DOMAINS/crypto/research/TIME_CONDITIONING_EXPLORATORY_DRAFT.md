@@ -136,8 +136,15 @@ or economic-feasibility work requires a separate prospective design.
 
 Completed source-count and synthetic Pi5 profiling observations are recorded
 in [TIME_CONDITIONING_CAPACITY_CHECKPOINT.md](TIME_CONDITIONING_CAPACITY_CHECKPOINT.md).
-They do not freeze execution budgets, authorize acquisition, or establish
-full-pipeline memory safety. This predeclaration remains DRAFT / UNFROZEN.
+The checkpoint records a PROPOSED, NOT APPROVED worker envelope:
+sequential instrument-day execution, 2 GiB virtual address space,
+300 seconds runtime, 1 GiB cooperative free-space reserve, and
+1 MiB serialized report limit per worker.
+
+These are synthetic-profiler safeguards, not validated historical limits.
+They do not resolve corpus-wide file/byte budgets, inventory bounds,
+historical-input fidelity, acquisition approval, or execution authorization.
+This predeclaration remains DRAFT / UNFROZEN.
 
 
 The one-file pilot cannot establish full-corpus file counts, byte volumes,
