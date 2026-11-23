@@ -33,6 +33,184 @@ This roadmap does not commit to a timeline or to specific future deliverables.
 Detailed current limitations and evidence boundaries are maintained in
 `zMISSION_CONTROL.md`.
 
+## Proposed Development Roadmap — NOT YET APPROVED
+
+Status: PLANNING DRAFT / NO RESEARCH EXECUTION AUTHORIZATION.
+This section defines proposed development checkpoints, not approved
+experiments, scientific findings, or permission to access production data.
+
+Historical gross-edge v1 and ETH replication v2 remain closed.
+The specific ETH LONG H1 rejection remains limited to frozen v2.
+Cost-stress remains paused. Original Candidate D D0 remains blocked.
+The H2 reserve remains sealed.
+
+### R01 — Research Governance and Roadmap
+
+- [x] MC01 — Define three-level planning hierarchy in the development thread.
+- [ ] MC02 — Verify repository-wide operating-rule adoption (GM-owned).
+- [ ] MC03 — Verify Gemini audit-protocol reconciliation (GM-owned).
+- [ ] MC04 — Define complete LRS3 roadmap.
+- [ ] MC05 — Establish measurable acceptance criteria.
+- [ ] MC06 — Establish evidence and replacement-thread continuity.
+- [ ] MC07 — Reconcile Crypto control-document status.
+- [ ] MC08 — Obtain independent Gemini roadmap audit.
+- [ ] MC09 — Resolve blocking findings and obtain PASS.
+- [ ] MC10 — Commit, push, and verify the reviewed roadmap.
+
+Acceptance: all required checkpoints complete, repository evidence
+verified, independent audit PASS, and authorized Git completion.
+
+### R02 — Exploratory Design Readiness
+
+- [ ] MC01 — Verify research question and historical boundaries.
+- [ ] MC02 — Verify population, partitions, and sealed-date exclusions.
+- [ ] MC03 — Verify sampling, eligibility, deciles, and return semantics.
+- [ ] MC04 — Verify hour-boundary and New York clock groups.
+- [ ] MC05 — Verify invalid-cell and paired-date reporting.
+- [ ] MC06 — Document statistical and interpretive limitations.
+- [ ] MC07 — Resolve design questions without outcome inspection.
+- [ ] MC08 — Obtain independent Gemini design review.
+- [ ] MC09 — Resolve findings and obtain PASS.
+- [ ] MC10 — Record reviewed design and separate approval status.
+
+Acceptance: reproducible, reviewed descriptive design. No freeze,
+production-data access, or execution authorization is implied.
+
+### R03 — Capacity and Acquisition Readiness
+
+- [ ] MC01 — Reconcile observed inventory and synthetic profiling evidence.
+- [ ] MC02 — Define bounded inventory and acquisition operations.
+- [ ] MC03 — Define file, byte, runtime, and repeated-I/O ceilings.
+- [ ] MC04 — Define process memory and termination safeguards.
+- [ ] MC05 — Define storage, incomplete-artifact, and reserve budgets.
+- [ ] MC06 — Define input integrity and historical-fidelity checks.
+- [ ] MC07 — Test fail-closed resource controls without outcome analysis.
+- [ ] MC08 — Obtain independent Gemini capacity review.
+- [ ] MC09 — Resolve findings and obtain PASS.
+- [ ] MC10 — Record separately authorized capacity/acquisition scope.
+
+Acceptance: approved numerical safeguards supported by evidence.
+Proposed limits in the exploratory draft are not approved by this roadmap.
+
+### R04 — Analytical Implementation Readiness
+
+- [ ] MC01 — Establish bounded implementation scope and code ownership.
+- [ ] MC02 — Implement deterministic input and date validation.
+- [ ] MC03 — Implement analytical transformations against frozen design.
+- [ ] MC04 — Implement invalid-cell and paired-date reporting.
+- [ ] MC05 — Implement resource enforcement and abort behavior.
+- [ ] MC06 — Build synthetic and adversarial tests.
+- [ ] MC07 — Verify reproducibility and output integrity.
+- [ ] MC08 — Obtain independent Gemini implementation audit.
+- [ ] MC09 — Resolve findings and obtain PASS.
+- [ ] MC10 — Record implementation revision and readiness limitations.
+
+Acceptance: tested and audited implementation. No historical execution
+or scientific readiness is established by implementation alone.
+
+### R05 — Study Freeze and Execution Authorization
+
+- [ ] MC01 — Confirm design and capacity prerequisites.
+- [ ] MC02 — Identify exact input scope and expected digests.
+- [ ] MC03 — Identify code revision and dependencies.
+- [ ] MC04 — Specify output, retention, and recovery arrangements.
+- [ ] MC05 — Preserve predeclaration and digest outside temporary storage.
+- [ ] MC06 — Verify sealed-data and historical-boundary protections.
+- [ ] MC07 — Independently review the exact frozen packet.
+- [ ] MC08 — Resolve audit findings and obtain PASS.
+- [ ] MC09 — Request explicit user authorization for exact execution scope.
+- [ ] MC10 — Record freeze and authorization evidence.
+
+Acceptance: complete frozen packet and explicit user authorization.
+A Gemini PASS alone does not authorize execution.
+
+### R06 — Historical Exploratory Execution
+
+- [ ] MC01 — Verify authorization and exact frozen inputs.
+- [ ] MC02 — Verify environment and resource preflight.
+- [ ] MC03 — Execute only the authorized historical scope.
+- [ ] MC04 — Preserve immutable input and output evidence.
+- [ ] MC05 — Verify all required instrument-days were addressed.
+- [ ] MC06 — Disclose every invalid cell and date pair.
+- [ ] MC07 — Reconcile runtime, memory, and I/O observations.
+- [ ] MC08 — Verify output reproducibility and provenance.
+- [ ] MC09 — Obtain independent execution-evidence review.
+- [ ] MC10 — Record COMPLETE_DESCRIPTIVE or INCOMPLETE.
+
+Acceptance: authorized execution classified under frozen completion
+rules. COMPLETE_DESCRIPTIVE does not establish predictive value.
+
+### R07 — Descriptive Findings and Adjudication
+
+- [ ] MC01 — Verify primary 60-second reporting completeness.
+- [ ] MC02 — Report secondary horizons without rescue selection.
+- [ ] MC03 — Report both time mechanisms side by side.
+- [ ] MC04 — Report instrument-day and valid date-paired summaries.
+- [ ] MC05 — Report invalid cells, exclusions, and sensitivity.
+- [ ] MC06 — Document dependence and outcome-semantic limitations.
+- [ ] MC07 — Separate observed contrasts from causal or economic claims.
+- [ ] MC08 — Obtain independent Gemini reporting audit.
+- [ ] MC09 — Resolve findings and obtain PASS.
+- [ ] MC10 — Record explicit stop, defer, or new-study proposal decision.
+
+Acceptance: reproducible descriptive findings and documented decision.
+No automatic hypothesis promotion or profitability conclusion.
+
+### R08 — Conditional Confirmation and Economic Feasibility
+
+- [ ] MC01 — Determine whether exploratory evidence justifies continuation.
+- [ ] MC02 — Define a new prospective confirmation question if warranted.
+- [ ] MC03 — Establish independent data and sealed holdout boundaries.
+- [ ] MC04 — Predeclare success, failure, and stopping criteria.
+- [ ] MC05 — Obtain separate design audit and user authorization.
+- [ ] MC06 — Execute only an independently authorized confirmation study.
+- [ ] MC07 — Adjudicate confirmation without post-hoc rule changes.
+- [ ] MC08 — Separately design transaction-cost and execution feasibility.
+- [ ] MC09 — Independently audit any economic analysis.
+- [ ] MC10 — Record continuation, rejection, or justified deferral.
+
+Acceptance: conditional evidence and decisions, not presumed positive
+results. This stage may remain parked if continuation is unjustified.
+
+### R09 — Research Operations and Bounded AI Readiness
+
+- [ ] MC01 — Define reproducibility and artifact-retention contracts.
+- [ ] MC02 — Define monitoring, alerts, and recovery behavior.
+- [ ] MC03 — Establish permission and authorization boundaries.
+- [ ] MC04 — Define read-only and write-capable agent operations.
+- [ ] MC05 — Define daily reporting and evidence provenance.
+- [ ] MC06 — Test failure and interruption handling.
+- [ ] MC07 — Conduct supervised agent dry runs if authorized.
+- [ ] MC08 — Obtain independent Gemini operational audit.
+- [ ] MC09 — Resolve findings and obtain PASS.
+- [ ] MC10 — Record authorized operating scope or remain manual.
+
+Acceptance: reproducible, audited operations and explicitly approved
+permissions. This roadmap does not deploy or activate an agent.
+
+### Development Control and Continuity
+
+The persistent roadmap records major checkpoints, acceptance criteria,
+verified status, and evidence references. Development responses display
+the active roadmap item, its complete Major Checklist, the actionable
+Minor Checklist for the active major checkpoint, and one next action.
+
+Minor tasks are chat-level working detail. Their outstanding requirements
+must remain reconstructible from repository evidence when threads change.
+
+A checkpoint is not complete merely because a test, audit, commit,
+transfer, or deployment succeeded. Scientific conclusions require their
+own evidence and predefined decision criteria.
+
+Gemini is the independent auditor, not General Manager. GM handles only
+repository-wide work assigned by the user. Specialists own their domains.
+
+All terminal commands are executed by the user. No experiment, source
+inventory, transfer, production-data read, study freeze, or deployment
+is authorized by this planning section.
+
+---
+
 ## Historical Roadmap Snapshot — SUPERSEDED
 
 The original roadmap is preserved verbatim below as historical planning
