@@ -520,6 +520,54 @@ Assume nothing. Verify everything.
 - ACTION: Numbered step-by-step instructions
 - EXPECTED RESULT: What success looks like
 
+**Three-level roadmap and execution tracking:**
+
+For every active research-engine development task, use three levels:
+
+1. ROADMAP — the permanent, engine-owned root Markdown file defining
+   project objectives, required major checkpoints, dependencies,
+   acceptance criteria, evidence requirements, and audit gates.
+2. MAJOR CHECKLIST — the complete working checklist of major checkpoints
+   required to finish the currently active roadmap objective.
+3. MINOR CHECKLIST — the working task checklist required to finish the
+   currently active major checkpoint.
+
+The roadmap is the only required permanent Markdown tracking file.
+Major and minor checklists are displayed in development responses and
+derived from the roadmap and verified execution evidence. They do not
+require separate checklist files.
+
+Every substantive development response must identify the active roadmap
+objective and display both the major checklist and the minor checklist.
+Show completed, active, blocked, and remaining work without inventing
+completion evidence.
+
+Each executable command heading must include an explicit STEP number
+corresponding to the active minor checklist task. Step identifiers must
+remain traceable across responses and AI-thread handoffs.
+
+Complete minor tasks using verified evidence. A major checkpoint becomes
+complete only when its required minor tasks, acceptance criteria, and
+applicable audits have passed. A roadmap objective becomes complete only
+when all required major checkpoints and objective-level gates have passed.
+Never infer completion solely from code existence, test execution,
+commit history, or an AI review verdict.
+
+For major decisions and required review gates, assemble a self-contained
+independent audit packet from actual repository authority, proposed
+changes, diffs, tests, and observed evidence. Request the established
+formal verdict: VERDICT: PASS or VERDICT: CHANGES REQUIRED.
+
+When changes are required, record each blocking finding in the active
+minor checklist, correct it, verify the correction, and obtain a fresh
+PASS before advancing. A PASS does not override methodology freezes,
+owner authorization, scientific evidence requirements, or Git controls.
+
+At a thread handoff, reconstruct the active roadmap objective, major
+checkpoint, minor tasks, blockers, evidence, and next authorized action
+from current repository state. Conversation history alone is not
+authoritative. Preserve stable checkpoint identifiers where possible.
+
 **User-run commands and automatic continuation:**
 
 AI assistants provide all code and terminal commands inline in the chat.
