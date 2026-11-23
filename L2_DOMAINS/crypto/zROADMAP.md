@@ -47,15 +47,15 @@ The H2 reserve remains sealed.
 ### R01 — Research Governance and Roadmap
 
 - [x] MC01 — Define three-level planning hierarchy in the development thread.
-- [ ] MC02 — Verify repository-wide operating-rule adoption (GM-owned).
+- [x] MC02 — Verify repository-wide operating-rule adoption (GM-owned).
 - [ ] MC03 — Verify Gemini audit-protocol reconciliation (GM-owned).
-- [ ] MC04 — Define complete LRS3 roadmap.
-- [ ] MC05 — Establish measurable acceptance criteria.
+- [x] MC04 — Define complete LRS3 roadmap.
+- [x] MC05 — Establish measurable acceptance criteria.
 - [ ] MC06 — Establish evidence and replacement-thread continuity.
 - [ ] MC07 — Reconcile Crypto control-document status.
-- [ ] MC08 — Obtain independent Gemini roadmap audit.
-- [ ] MC09 — Resolve blocking findings and obtain PASS.
-- [ ] MC10 — Commit, push, and verify the reviewed roadmap.
+- [x] MC08 — Obtain independent Gemini roadmap audit.
+- [x] MC09 — Resolve blocking findings and obtain PASS.
+- [x] MC10 — Commit, push, and verify the reviewed roadmap.
 
 Acceptance: all required checkpoints complete, repository evidence
 verified, independent audit PASS, and authorized Git completion.
@@ -197,6 +197,36 @@ Minor Checklist for the active major checkpoint, and one next action.
 
 Minor tasks are chat-level working detail. Their outstanding requirements
 must remain reconstructible from repository evidence when threads change.
+
+Replacement-thread reconstruction for LRS3:
+1. Confirm the current Git HEAD, branch, worktree status, and document
+   revisions; do not assume Project Source snapshots are synchronized.
+2. Read L0_PLATFORM/zHANDOFF.md for operating rules, then
+   L2_DOMAINS/crypto/zREADME.md, zMISSION_CONTROL.md, and zROADMAP.md
+   for domain navigation, research status, and development checkpoints.
+3. Read research/TIME_CONDITIONING_EXPLORATORY_DRAFT.md and
+   research/TIME_CONDITIONING_CAPACITY_CHECKPOINT.md for the proposed
+   study, evidence references, unresolved decisions, and limitations.
+4. Reconstruct the active roadmap item, complete Major Checklist,
+   actionable Minor Checklist, blockers, evidence, and next action.
+   Verify completion against repository evidence rather than treating
+   checked boxes or prior conversation statements as sufficient proof.
+5. Preserve sealed research boundaries and require separate explicit
+   authorization for inventory, acquisition, execution, or deployment.
+
+R01 evidence anchors: roadmap commit 5e23695; platform governance
+commit 21cf802; exploratory draft revision 7f9fab3; capacity
+checkpoint revision 4b18273. These identify documentation revisions,
+not immutable external evidence or authorization. MC03 remains a
+GM-owned platform protocol dependency; MC06 and MC07 remain open.
+
+Active development checkpoint at this continuity update: R01-MC06.
+Remaining MC06 work: verify repository-backed reconstruction and
+independent review of this continuity change. Next specialist-owned
+checkpoint: R01-MC07, Crypto control-document reconciliation.
+R01-MC03 remains a separate GM-owned platform dependency.
+Recheck these statuses against current Git evidence in a new thread;
+this paragraph is a revision-specific checkpoint, not live state.
 
 A checkpoint is not complete merely because a test, audit, commit,
 transfer, or deployment succeeded. Scientific conclusions require their
