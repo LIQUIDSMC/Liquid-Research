@@ -52,7 +52,7 @@ The H2 reserve remains sealed.
 - [x] MC04 — Define complete LRS3 roadmap.
 - [x] MC05 — Establish measurable acceptance criteria.
 - [x] MC06 — Establish evidence and replacement-thread continuity.
-- [ ] MC07 — Reconcile Crypto control-document status.
+- [x] MC07 — Reconcile Crypto control-document status.
 - [x] MC08 — Obtain independent Gemini roadmap audit.
 - [x] MC09 — Resolve blocking findings and obtain PASS.
 - [x] MC10 — Commit, push, and verify the reviewed roadmap.
@@ -218,14 +218,13 @@ R01 evidence anchors: roadmap commit 5e23695; platform governance
 commit 21cf802; exploratory draft revision 7f9fab3; capacity
 checkpoint revision 4b18273. These identify documentation revisions,
 not immutable external evidence or authorization. MC03 remains a
-GM-owned platform protocol dependency; MC06 is complete and MC07 remains open.
+GM-owned platform protocol dependency; MC06 and MC07 are complete.
 
 Historical continuity checkpoint recorded at commit 08f41f5: R01-MC06.
 R01-MC06 documentation was audited, committed, pushed, and verified.
-Active specialist-owned checkpoint: R01-MC07, Crypto control-document
-reconciliation. This checkpoint remains open until its own review
-and Git completion are verified.
-R01-MC03 remains a separate GM-owned platform dependency.
+R01-MC07 Crypto control-document reconciliation was independently
+Gemini-audited, committed, pushed, and verified at commit 7709ecc.
+R01-MC03 remains the outstanding GM-owned platform dependency.
 Recheck these statuses against current Git evidence in a new thread;
 this paragraph is a revision-specific checkpoint, not live state.
 
