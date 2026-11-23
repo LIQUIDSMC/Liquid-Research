@@ -147,6 +147,36 @@ historical-input fidelity, acquisition approval, or execution authorization.
 This predeclaration remains DRAFT / UNFROZEN.
 
 
+### Proposed Corpus-Wide Resource Budget — NOT APPROVED
+
+Based on the completed Pi3 partition counts and Pi5 synthetic profiling:
+
+- Canonical source-path ceiling: 250,000.
+- Logical source-byte ceiling: 1,100,000,000 bytes.
+- Required source partitions: exactly 28, with no substitutions.
+- Proposed inventory wall-clock ceiling: 1,800 seconds.
+- Historical analytical workers: at most 48, sequential.
+- Runtime ceiling per analytical worker: 300 seconds.
+- Aggregate analytical worker-runtime ceiling: 14,400 seconds.
+- Worker virtual address-space ceiling: 2 GiB.
+- Minimum destination free-space reserve: 1 GiB, cooperatively checked.
+- Serialized report ceiling: 1 MiB per worker.
+
+The observed source inventory contained 227,731 paths and
+1,009,697,774 logical bytes. The inventory runtime ceiling is proposed,
+not established by a recorded end-to-end completion duration.
+
+The aggregate worker-runtime ceiling excludes orchestration, acquisition,
+verification, and other I/O. It is not an end-to-end elapsed-time guarantee.
+The historical analytical runner does not currently enforce these limits.
+
+Input/output storage allowances, temporary and incomplete artifact budgets,
+repeated-read allowances, transfer limits, historical-input fidelity, and
+termination safeguards remain unresolved.
+
+All limits above are PROPOSED, NOT APPROVED. They do not authorize
+inventory, acquisition, historical execution, or a study freeze.
+
 The one-file pilot cannot establish full-corpus file counts, byte volumes,
 row counts, peak memory, or runtime requirements.
 
