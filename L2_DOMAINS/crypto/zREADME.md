@@ -12,6 +12,21 @@ ETH LONG Post-Entry Continuation H1 was rejected on independent replication.
 That result does not generalize the rejection to all trade-flow hypotheses.
 Cost-stress/economic-feasibility research has not started and remains paused.
 
+## Current Development Planning
+
+The proposed LRS3 development roadmap is maintained in `zROADMAP.md`.
+Its current planning work does not authorize research execution.
+
+`research/TIME_CONDITIONING_EXPLORATORY_DRAFT.md` records an
+unfrozen exploratory design. The separate
+`research/TIME_CONDITIONING_CAPACITY_CHECKPOINT.md` records
+retrospective capacity evidence and proposed resource limits.
+Neither document establishes an approved study, approved budgets,
+predictive value, or authorization to access historical production data.
+
+Original Candidate D D0 remains blocked. The H2 reserve remains
+sealed. No new experiment is selected or authorized.
+
 ## Architecture Boundary
 
 The L1 Market Data Platform owns shared, venue-agnostic acquisition,

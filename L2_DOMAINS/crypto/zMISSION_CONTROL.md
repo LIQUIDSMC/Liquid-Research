@@ -5,7 +5,7 @@
 > are documented in `L1_CORE/market_data_platform/market_data/zROADMAP.md`.
 > Crypto orientation and research boundaries are summarized in `zREADME.md`.
 
-Last updated: 2026-09-18
+Last updated: 2026-11-23
 Research state anchored to closure baseline: `a622e42`
 
 ## Current Status
@@ -19,6 +19,22 @@ Research state anchored to closure baseline: `a622e42`
 
 The ETH LONG result is specific to the frozen v2 replication design. It does
 not establish a general rejection of trade-flow hypotheses.
+
+## Current Development Planning
+
+LRS3 maintains a proposed development roadmap in `zROADMAP.md`.
+The active development work concerns research governance and
+documentation reconciliation, not an active experiment.
+
+The exploratory time-conditioning design remains DRAFT / UNFROZEN /
+NO EXECUTION AUTHORIZATION. Its resource limits remain proposed,
+not approved. The design and capacity evidence are recorded in
+`research/TIME_CONDITIONING_EXPLORATORY_DRAFT.md` and
+`research/TIME_CONDITIONING_CAPACITY_CHECKPOINT.md`.
+
+Original Candidate D D0 remains blocked. The H2 reserve remains
+sealed. Cost-stress remains paused. No historical research execution,
+production-data transfer, study freeze, or deployment is authorized.
 
 ## Architecture Boundary
 
