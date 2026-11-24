@@ -62,7 +62,7 @@ verified, independent audit PASS, and authorized Git completion.
 
 ### R02 — Exploratory Design Readiness
 
-- [ ] MC01 — Verify research question and historical boundaries.
+- [x] MC01 — Verify research question and historical boundaries.
 - [ ] MC02 — Verify population, partitions, and sealed-date exclusions.
 - [ ] MC03 — Verify sampling, eligibility, deciles, and return semantics.
 - [ ] MC04 — Verify hour-boundary and New York clock groups.
@@ -225,6 +225,7 @@ R01-MC06 documentation was audited, committed, pushed, and verified.
 R01-MC07 Crypto control-document reconciliation was independently
 Gemini-audited, committed, pushed, and verified at commit 7709ecc.
 R01-MC03 remains the outstanding GM-owned platform dependency.
+R02-MC01 research-question and historical-boundary documentation review received independent Gemini PASS with no blocking findings. Gemini reviewed documented excerpts, not the live repository. Original Candidate D D0 provenance remains unresolved, and the development sample is not an independent holdout. H2 remains sealed. This checkpoint permits continued descriptive design review only; it does not authorize study freeze, inventory, acquisition, production-data access, or execution.
 Recheck these statuses against current Git evidence in a new thread;
 this paragraph is a revision-specific checkpoint, not live state.
 
