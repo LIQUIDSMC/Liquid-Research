@@ -14,8 +14,11 @@ regime state rather than redefining the upstream candidate.
   omission was discovered **post-freeze and pre-outcome**.
 - Gate-2-dependent implementation stopped rather than adopting an unstated
   temporal-boundary interpretation.
-- Experiment v2 is currently **DRAFT / OUTCOME-BLIND / NOT FROZEN /
-  IMPLEMENTATION NOT AUTHORIZED**.
+- Experiment-v2 pre-inference methodology was formally **FROZEN**
+  on 2026-10-27, as documented in
+  `methodology_evidence/METHODOLOGY_FREEZE_RECORD.md`.
+  The freeze covered methodology only; implementation authorization
+  was withheld and research-outcome inspection was N=0 at that checkpoint.
 - No conditioned LRS-4 HIGH-versus-LOW outcome was used to resolve the
   specification omission or select the v2 methodology.
 
@@ -65,8 +68,9 @@ timing semantics. LRS-4 conditions those inherited observations on regime state;
 it does not substitute reconstructed upstream methodology.
 
 Experiment v1 remains the frozen historical predecessor specification.
-Experiment v2 is the current methodology revision, but it remains unfrozen and
-does not authorize Gate-2-dependent implementation.
+Experiment-v2 methodology was formally frozen on 2026-10-27.
+That methodology freeze did not authorize Gate-2-dependent implementation
+or research-outcome inspection.
 
 ## Research Firewall
 
@@ -85,8 +89,11 @@ Experiment-v1 research-design record and its preserved post-freeze Gate-2
 specification-omission history.
 
 `LRS4_Experiment_v2_Pre-Inference_Methodology.md` contains the current
-Experiment-v2 pre-inference methodology revision. It remains **DRAFT /
-OUTCOME-BLIND / NOT FROZEN / IMPLEMENTATION NOT AUTHORIZED**.
+Experiment-v2 pre-inference methodology, formally **FROZEN** on
+2026-10-27. Its canonical SHA256 is
+`9868c96a48dcec9a080de7ac5b02af15bba388905222cb84fd2a647fc8ffaed2`.
+The freeze record withheld implementation authorization and recorded
+research-outcome inspection N=0 at that checkpoint.
 
 The v1 and v2 authority records are maintained separately so that the frozen
 Experiment-v1 historical specification is not retroactively rewritten by the
