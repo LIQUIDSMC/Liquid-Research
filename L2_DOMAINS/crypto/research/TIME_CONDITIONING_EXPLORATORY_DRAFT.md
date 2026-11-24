@@ -117,6 +117,35 @@ No p-values, confidence levels, or significance claims are specified.
 Secondary horizons cannot rescue a primary finding. The two mechanisms
 must be reported side by side without selecting a winner automatically.
 
+## Statistical and Interpretive Limitations
+
+Repeated intraday observations and potentially overlapping forward-return
+windows can induce serial dependence. Sampling every twentieth trade does
+not establish independence. BTC-USD and ETH-USD may co-move on the same
+date, and the 5-, 15-, 30-, and 60-second horizons may be correlated.
+Instrument-day aggregation, date pairing, and leave-one-date-out summaries
+do not automatically eliminate dependence or establish independent
+statistical evidence.
+
+Paired-date summaries condition on both instruments having valid deltas.
+Invalid dates remain disclosed, but validity may vary with liquidity,
+trading activity, time grouping, or market conditions. Consequently,
+valid-subset summaries need not represent all 24 research dates.
+Disclosure of invalid observations does not correct selection effects.
+
+Examining two temporal mechanisms and four return horizons creates
+multiple opportunities to observe apparent contrasts. The 60-second
+primary horizon and prohibition on secondary-horizon rescue restrict
+interpretation but do not remove exploratory selection risk or establish
+independent confirmation. No retrospective significance threshold,
+automatic winner, or promotion decision is introduced.
+
+These limitations supplement the existing development-sample, forward-
+return, float64, and gross-return qualifications. Descriptive means,
+positive-pair counts, and leave-one-date-out sensitivity are not
+inferential tests. Gross-return contrasts do not incorporate executable
+transaction costs, slippage, or latency and cannot establish profitability.
+
 ## Completion and Follow-Up Rules
 
 No automatic scientific PASS or promotion threshold is assigned.
