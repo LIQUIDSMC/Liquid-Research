@@ -64,7 +64,7 @@ verified, independent audit PASS, and authorized Git completion.
 
 - [x] MC01 — Verify research question and historical boundaries.
 - [x] MC02 — Verify population, partitions, and sealed-date exclusions.
-- [ ] MC03 — Verify sampling, eligibility, deciles, and return semantics.
+- [x] MC03 — Verify sampling, eligibility, deciles, and return semantics.
 - [ ] MC04 — Verify hour-boundary and New York clock groups.
 - [ ] MC05 — Verify invalid-cell and paired-date reporting.
 - [ ] MC06 — Document statistical and interpretive limitations.
@@ -227,6 +227,8 @@ Gemini-audited, committed, pushed, and verified at commit 7709ecc.
 R01-MC03 remains the outstanding GM-owned platform dependency.
 R02-MC01 research-question and historical-boundary documentation review received independent Gemini PASS with no blocking findings. Gemini reviewed documented excerpts, not the live repository. Original Candidate D D0 provenance remains unresolved, and the development sample is not an independent holdout. H2 remains sealed. This checkpoint permits continued descriptive design review only; it does not authorize study freeze, inventory, acquisition, production-data access, or execution.
 R02-MC02 population, receipt-date partition, and sealed-date exclusion review received independent Gemini PASS with zero blocking or nonblocking findings. The proposed BTC-USD and ETH-USD population contains 24 research dates and 48 instrument-days. Previous, target, and next receipt-date coverage requires exactly 28 distinct trade partitions: 2026-07-21 through 2026-08-10 and 2026-08-25 through 2026-08-31 inclusive. No required partition overlaps sealed H2 (2026-09-04 through 2026-10-01). September 3 remains excluded because its next-day partition is sealed. Gemini independently verified calendar arithmetic, not live repository contents or historical feed completeness. This review does not authorize inventory, acquisition, transfer, execution, or study freeze.
+R02-MC03 sampling, eligibility, decile, and forward-return semantics review received independent Gemini PASS with zero blocking findings and three nonblocking documentation observations. Source inspection confirmed every-20th-trade sampling beginning at zero-based index 19; the inherited 10-second lookback; common eligibility based on defined momentum; horizon-specific comparative eligibility using common_eligible & ~np.isnan(return_h); forward returns using the last trade in (T, T+h]; and deterministic imbalance-decile ranking by value, trade time, and trade ID across the complete eligible instrument-day before temporal grouping. The inherited zero-volume imbalance behavior and float64 numerical limitations remain relevant. Gemini's nonblocking observations recommend explicit cross-references to these inherited invariants during R04 implementation. Gemini assessed supplied source observations and draft text without direct repository inspection or independent digest verification. The operator separately verified the tracked source files. This checkpoint establishes design-semantics review only; it does not authorize historical data access, inventory, acquisition, transfer, execution, study freeze, or deployment, and does not establish scientific readiness.
+
 Recheck these statuses against current Git evidence in a new thread;
 this paragraph is a revision-specific checkpoint, not live state.
 
