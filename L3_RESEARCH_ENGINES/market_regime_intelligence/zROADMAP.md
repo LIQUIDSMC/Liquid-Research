@@ -70,11 +70,10 @@ validity, profitability, or deployment authorization.
 
 ## 4. Current planning state
 
-Active roadmap objective: R1.
-Active major checkpoint: M1.6.
-Next action: complete the current R1 roadmap governance review,
-obtain independent audit PASS for any proposed documentation
-corrections, and follow controlled Git change procedures.
+Active roadmap objective: R2 (PLANNED; implementation unauthorized).
+Active major checkpoint: M2.1 (PENDING AUTHORIZATION).
+Next action: await explicit owner authorization before beginning
+Experiment-v2 implementation work. R1 governance acceptance is complete.
 
 The repository inventory identified Experiment-v2 contracts, D1/D0,
 D2, D3, D4, Gate-2 numeric and episode diagnostics, and Gate-2 evidence
@@ -91,17 +90,17 @@ Production transfer and broader pilot: NOT AUTHORIZED by this roadmap.
 
 ### R1 — Establish execution governance and roadmap
 
-Status: IN PROGRESS.
+Status: COMPLETE; independent governance acceptance PASS.
 
 - [x] M1.1 Confirm LRS4 mission and ownership.
 - [x] M1.2 Define roadmap, major checklist, and minor checklist hierarchy.
 - [x] M1.3 Define independent Gemini audit and remediation workflow.
 - [x] M1.4 Identify repository operating and methodological authorities.
-- [ ] M1.5 Complete governance-rule verification and audit.
-- [ ] M1.6 Create and verify the LRS4 root roadmap.
-- [ ] M1.7 Verify roadmap completeness, references, and consistency.
-- [ ] M1.8 Obtain independent audit PASS for proposed documentation.
-- [ ] M1.9 Review staged changes, commit, push, and verify results.
+- [x] M1.5 Complete governance-rule verification and audit.
+- [x] M1.6 Create and verify the LRS4 root roadmap.
+- [x] M1.7 Verify roadmap completeness, references, and consistency.
+- [x] M1.8 Obtain independent audit PASS for proposed documentation.
+- [x] M1.9 Review staged changes, commit, push, and verify results.
 
 Acceptance: verified roadmap, operating-rule consistency, independent
 audit PASS, and completed controlled Git change.
