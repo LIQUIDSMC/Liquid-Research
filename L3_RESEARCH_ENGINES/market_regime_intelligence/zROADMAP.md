@@ -72,8 +72,9 @@ validity, profitability, or deployment authorization.
 
 Active roadmap objective: R1.
 Active major checkpoint: M1.6.
-Next action: complete documentation consistency review and obtain
-independent precommit audit PASS before staging or committing.
+Next action: complete the current R1 roadmap governance review,
+obtain independent audit PASS for any proposed documentation
+corrections, and follow controlled Git change procedures.
 
 The repository inventory identified Experiment-v2 contracts, D1/D0,
 D2, D3, D4, Gate-2 numeric and episode diagnostics, and Gate-2 evidence
@@ -107,7 +108,9 @@ audit PASS, and completed controlled Git change.
 
 ### R2 — Complete Experiment-v2 implementation
 
-Status: IN PROGRESS; historical implementation evidence exists.
+Status: PLANNED; historical implementation evidence exists.
+The methodology freeze did not authorize implementation.
+Further implementation requires explicit owner authorization.
 
 - [ ] M2.1 Verify existing D1/D0 through D4 contracts and implementations.
 - [ ] M2.2 Verify existing Gate-2 diagnostics and evidence assembly.
