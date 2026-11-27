@@ -157,4 +157,5 @@ def test_oversized_endpoint_domain_fails_before_allocation():
     result = construct_d2(_input([1, (count - 1) * DELTA + 1]))
     assert result.d2 is None
     assert isinstance(result.terminal, WindowIntegrityFailure)
+    assert result.terminal.invariant == "D2_RESOURCE_EXHAUSTION"
     assert result.terminal.provenance == "D2 endpoint allocation budget exceeded"

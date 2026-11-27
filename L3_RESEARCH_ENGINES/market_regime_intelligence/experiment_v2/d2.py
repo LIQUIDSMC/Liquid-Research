@@ -38,14 +38,18 @@ class D2Result:
     terminal: WindowD0Terminal | WindowIntegrityFailure | None
 
 
-def _failure(window: str, detail: str) -> D2Result:
+def _failure(
+    window: str,
+    detail: str,
+    invariant: str = "D2_BOUNDARY",
+) -> D2Result:
     return D2Result(
         window=window,
         d2=None,
         terminal=WindowIntegrityFailure(
             tag="INTEGRITY_FAILURE",
             window=window,
-            invariant="D2_BOUNDARY",
+            invariant=invariant,
             provenance=detail,
         ),
     )
@@ -131,7 +135,11 @@ def construct_d2(result: D1D0Result) -> D2Result:
     # Engineering allocation guard; not a methodological D2 duration limit.
     max_endpoint_bytes = 64 * 1024 * 1024
     if count > max_endpoint_bytes // np.dtype("int64").itemsize:
-        return _failure(window, "D2 endpoint allocation budget exceeded")
+        return _failure(
+            window,
+            "D2 endpoint allocation budget exceeded",
+            invariant="D2_RESOURCE_EXHAUSTION",
+        )
 
     try:
         endpoints = np.arange(
@@ -140,7 +148,13 @@ def construct_d2(result: D1D0Result) -> D2Result:
             interval,
             dtype=np.int64,
         )
-    except (ValueError, OverflowError, MemoryError):
+    except MemoryError:
+        return _failure(
+            window,
+            "D2 endpoint allocation failed: MemoryError",
+            invariant="D2_RESOURCE_EXHAUSTION",
+        )
+    except (ValueError, OverflowError):
         return _failure(window, "D2 endpoint allocation failed")
 
     if (
