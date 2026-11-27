@@ -72,6 +72,74 @@ def test_zero_structural_episodes_are_legitimate():
     )
 
 
+
+def test_distinct_integrity_invariants_preserve_provenance():
+    """A123: distinct structural violations retain distinct identities."""
+    d1, d3, d4 = aligned_case([2, 2], final_invalid=True)
+
+    endpoint_failure = assemble_gate2(
+        d1,
+        d3,
+        replace(d4, endpoint_ms=d4.endpoint_ms + 300000),
+    )
+
+    bad_ids = d4.episode_id_by_endpoint.copy()
+    bad_ids[0] = -1
+
+    episode_failure = assemble_gate2(
+        d1,
+        d3,
+        replace(d4, episode_id_by_endpoint=bad_ids),
+    )
+
+    first = endpoint_failure.integrity
+    second = episode_failure.integrity
+
+    assert endpoint_failure.completed is None
+    assert episode_failure.completed is None
+    assert first is not None
+    assert second is not None
+    assert first.tag == second.tag == "INTEGRITY_FAILURE"
+
+    assert first.provenance == "D3/D4 endpoint domains differ"
+    assert second.provenance == "Admissible endpoint lacks episode"
+
+    assert first.invariant == "I19"
+    assert second.invariant == "I20"
+    assert first.invariant != second.invariant
+
+    assert endpoint_failure.observations is None
+    assert endpoint_failure.episodes is None
+    assert episode_failure.observations is None
+    assert episode_failure.episodes is None
+
+
+
+def test_inadmissible_endpoint_episode_reports_i21():
+    """A123/I21: preserve exact invariant and provenance."""
+    d1, d3, d4 = aligned_case([2, 2], final_invalid=True)
+
+    bad_ids = d4.episode_id_by_endpoint.copy()
+    invalid_positions = np.flatnonzero(~d3.admissible)
+    assert invalid_positions.size > 0
+
+    bad_ids[int(invalid_positions[0])] = 0
+
+    result = assemble_gate2(
+        d1,
+        d3,
+        replace(d4, episode_id_by_endpoint=bad_ids),
+    )
+
+    assert result.completed is None
+    assert result.integrity is not None
+    assert result.integrity.tag == "INTEGRITY_FAILURE"
+    assert result.integrity.invariant == "I21"
+    assert result.integrity.provenance == "Inadmissible endpoint has episode"
+    assert result.observations is None
+    assert result.episodes is None
+
+
 def test_mismatched_endpoint_domains_fail_closed():
     d1, d3, d4 = aligned_case([2, 2], final_invalid=True)
 
@@ -241,3 +309,58 @@ def test_gate2_routing_branch_regression(
     assert result.completed.evidence.action == action
     assert result.completed.evidence.disposition == disposition
     assert result.completed.evidence.reasons == reasons
+
+
+@pytest.mark.parametrize(
+    ("corruption", "expected_invariant", "expected_provenance"),
+    [
+        (
+            "episode_duration",
+            "I24",
+            "D4 episode duration or identity mismatch",
+        ),
+        (
+            "episode_summary",
+            "I25",
+            "D4 episode count mismatch",
+        ),
+        (
+            "observation_exposure",
+            "I47",
+            "D1 observation/day exposure reconciliation failure",
+        ),
+    ],
+)
+def test_a123_assembly_propagation(
+    corruption, expected_invariant, expected_provenance
+):
+    """A123: producer integrity identity survives assembly unchanged."""
+
+    d1, d3, d4 = aligned_case([3], final_invalid=True)
+
+    if corruption == "episode_duration":
+        episode = replace(
+            d4.episodes[0],
+            observed_duration_ms=2 * 300000,
+        )
+        d4 = replace(d4, episodes=(episode,))
+
+    elif corruption == "episode_summary":
+        d4 = replace(d4, k_total=d4.k_total + 1)
+
+    else:
+        bad_status = replace(
+            d1.day_statuses[0],
+            candidate_count=999,
+        )
+        d1 = replace(d1, day_statuses=(bad_status,))
+
+    result = assemble_gate2(d1, d3, d4)
+
+    assert result.completed is None
+    assert result.integrity is not None
+    assert result.integrity.tag == "INTEGRITY_FAILURE"
+    assert result.integrity.invariant == expected_invariant
+    assert result.integrity.provenance == expected_provenance
+    assert result.observations is None
+    assert result.episodes is None

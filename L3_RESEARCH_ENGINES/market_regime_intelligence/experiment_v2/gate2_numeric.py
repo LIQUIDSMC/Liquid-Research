@@ -5,6 +5,8 @@ No episode morphology, routing, or completed Gate-2 evidence is emitted.
 """
 
 from dataclasses import dataclass
+
+from .gate2_integrity import Gate2IntegrityError
 import numpy as np
 
 from L3_RESEARCH_ENGINES.market_regime_intelligence.experiment_v2.d1_d0 import D1Constructed
@@ -169,7 +171,7 @@ def evaluate_observation_diagnostics(
             low += 1
 
     if any(exposure[day] != available[day] for day in available):
-        raise ValueError("D1 observation/day exposure reconciliation failure")
+        raise Gate2IntegrityError("I47", "D1 observation/day exposure reconciliation failure")
 
     eligible_statuses = {
         status.research_day: status
@@ -181,7 +183,7 @@ def evaluate_observation_diagnostics(
         != eligible_statuses[day].candidate_endpoints
         for day in available
     ):
-        raise ValueError("D1 observation/day endpoint reconciliation failure")
+        raise Gate2IntegrityError("I47", "D1 observation/day endpoint reconciliation failure")
 
     n_d1 = len(times)
     n_eligible = high + low

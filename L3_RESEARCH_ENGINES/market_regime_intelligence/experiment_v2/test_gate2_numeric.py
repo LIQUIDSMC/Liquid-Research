@@ -12,6 +12,7 @@ from L3_RESEARCH_ENGINES.market_regime_intelligence.experiment_v2.d1_d0 import (
 from L3_RESEARCH_ENGINES.market_regime_intelligence.experiment_v2.d3 import (
     D3Constructed,
 )
+from L3_RESEARCH_ENGINES.market_regime_intelligence.experiment_v2.gate2_integrity import Gate2IntegrityError
 from L3_RESEARCH_ENGINES.market_regime_intelligence.experiment_v2.gate2_numeric import (
     evaluate_observation_diagnostics,
 )
@@ -138,5 +139,28 @@ def test_missing_d1_candidate_endpoint_fails_closed():
         candidate_endpoints=(0,),
     )
     bad_d1 = replace(d1, day_statuses=(bad_status,))
-    with pytest.raises(ValueError, match="endpoint reconciliation"):
+    with pytest.raises(Gate2IntegrityError) as exc:
+
         evaluate_observation_diagnostics(bad_d1, d3)
+    assert exc.value.invariant == "I47"
+    assert exc.value.provenance == "D1 observation/day endpoint reconciliation failure"
+
+
+@pytest.mark.parametrize(
+    ("expected_invariant", "expected_provenance"),
+    [
+        ("I47", "D1 observation/day exposure reconciliation failure"),
+    ],
+)
+def test_a123_numeric_integrity_identity(expected_invariant, expected_provenance):
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.experiment_v2.gate2_integrity import Gate2IntegrityError
+
+    d1, d3 = make_case(["HIGH", "LOW"])
+    bad_status = replace(d1.day_statuses[0], candidate_count=3)
+    bad_d1 = replace(d1, day_statuses=(bad_status,))
+
+    with pytest.raises(Gate2IntegrityError) as captured:
+        evaluate_observation_diagnostics(bad_d1, d3)
+
+    assert captured.value.invariant == expected_invariant
+    assert captured.value.provenance == expected_provenance

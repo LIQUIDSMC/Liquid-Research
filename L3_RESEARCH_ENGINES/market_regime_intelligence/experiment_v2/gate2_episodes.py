@@ -5,6 +5,8 @@ inspect research outcomes, or emit completed Gate-2 routing evidence.
 """
 
 from dataclasses import dataclass
+
+from .gate2_integrity import Gate2IntegrityError
 from fractions import Fraction
 
 import numpy as np
@@ -85,7 +87,7 @@ def _validate(d4: D4Constructed) -> None:
 
     episodes = d4.episodes
     if d4.k_total != len(episodes):
-        raise ValueError("D4 episode count mismatch")
+        raise Gate2IntegrityError("I25", "D4 episode count mismatch")
 
     valid_causes = {D2_BOUNDARY, D3_INADMISSIBILITY, STATE_CHANGE}
     classified_cells = 0
@@ -121,28 +123,28 @@ def _validate(d4: D4Constructed) -> None:
             or episode.end_endpoint_ms != int(endpoints[episode.end_index])
             or not np.all(ids[episode.start_index:episode.end_index + 1] == i)
         ):
-            raise ValueError("D4 episode duration or identity mismatch")
+            raise Gate2IntegrityError("I24", "D4 episode duration or identity mismatch")
 
         if episode.left_censored and (
             episode.start_index != 0
             or episode.left_boundary_cause != D2_BOUNDARY
         ):
-            raise ValueError("Invalid left censoring")
+            raise Gate2IntegrityError("I22", "Invalid left censoring")
 
         if episode.right_censored != (
             episode.end_index == len(endpoints) - 1
         ):
-            raise ValueError("Invalid right censoring")
+            raise Gate2IntegrityError("I23", "Invalid right censoring")
 
         if (
             episode.left_boundary_cause == D2_BOUNDARY
         ) != (episode.start_index == 0):
-            raise ValueError("Invalid left boundary cause")
+            raise Gate2IntegrityError("I20", "Invalid left boundary cause")
 
         if (
             episode.right_boundary_cause == D2_BOUNDARY
         ) != (episode.end_index == len(endpoints) - 1):
-            raise ValueError("Invalid right boundary cause")
+            raise Gate2IntegrityError("I20", "Invalid right boundary cause")
 
         if episode.start_index > 0:
             adjacent = episode.start_index == previous_end + 1
@@ -151,9 +153,9 @@ def _validate(d4: D4Constructed) -> None:
                     previous_state == episode.state
                     or episode.left_boundary_cause != STATE_CHANGE
                 ):
-                    raise ValueError("Invalid episode transition")
+                    raise Gate2IntegrityError("I20", "Invalid episode transition")
             elif episode.left_boundary_cause != D3_INADMISSIBILITY:
-                raise ValueError("Invalid episode gap boundary")
+                raise Gate2IntegrityError("I21", "Invalid episode gap boundary")
 
         if episode.end_index < len(endpoints) - 1:
             next_is_episode = (
@@ -162,7 +164,7 @@ def _validate(d4: D4Constructed) -> None:
             )
             expected = STATE_CHANGE if next_is_episode else D3_INADMISSIBILITY
             if episode.right_boundary_cause != expected:
-                raise ValueError("Invalid right boundary transition")
+                raise Gate2IntegrityError("I20", "Invalid right boundary transition")
 
         classified_cells += count
         high += episode.state == "HIGH"
@@ -175,7 +177,7 @@ def _validate(d4: D4Constructed) -> None:
         expected_ids[episode.start_index:episode.end_index + 1] = episode.episode_id
 
     if not np.array_equal(ids, expected_ids):
-        raise ValueError("D4 endpoint-to-episode reconciliation failure")
+        raise Gate2IntegrityError("I21", "D4 endpoint-to-episode reconciliation failure")
 
     if (
         d4.k_high != high
@@ -183,7 +185,7 @@ def _validate(d4: D4Constructed) -> None:
         or d4.k_total != high + low
         or d4.t_classified_ms != classified_cells * GRID_INTERVAL_MS
     ):
-        raise ValueError("D4 summary reconciliation failure")
+        raise Gate2IntegrityError("I25", "D4 summary reconciliation failure")
 
 
 def evaluate_episode_diagnostics(d4: D4Constructed) -> EpisodeDiagnostics:

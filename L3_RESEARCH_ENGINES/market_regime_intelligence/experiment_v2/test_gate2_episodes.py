@@ -179,3 +179,272 @@ def test_rejects_summary_mismatch():
         evaluate_episode_diagnostics(
             replace(d4, t_classified_ms=0)
         )
+
+
+@pytest.mark.parametrize(
+    ("corruption", "expected_invariant", "expected_provenance"),
+    [
+        (
+            "duration",
+            "I24",
+            "D4 episode duration or identity mismatch",
+        ),
+        (
+            "summary",
+            "I25",
+            "D4 summary reconciliation failure",
+        ),
+    ],
+)
+def test_a123_episode_integrity_identity(
+    corruption, expected_invariant, expected_provenance
+):
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.experiment_v2.gate2_integrity import Gate2IntegrityError
+
+    d4 = make_case([3], final_invalid=True)
+
+    if corruption == "duration":
+        bad_episode = replace(
+            d4.episodes[0],
+            observed_duration_ms=2 * STEP,
+        )
+        d4 = replace(d4, episodes=(bad_episode,))
+    else:
+        d4 = replace(d4, t_classified_ms=0)
+
+    with pytest.raises(Gate2IntegrityError) as captured:
+        evaluate_episode_diagnostics(d4)
+
+    assert captured.value.invariant == expected_invariant
+    assert captured.value.provenance == expected_provenance
+
+def test_a123_i23_right_censor_identity():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.experiment_v2.gate2_integrity import Gate2IntegrityError
+
+    d4 = make_case([3])
+    episode = replace(d4.episodes[0], right_censored=False)
+    bad_d4 = replace(d4, episodes=(episode,))
+
+    with pytest.raises(Gate2IntegrityError) as captured:
+        evaluate_episode_diagnostics(bad_d4)
+
+    assert captured.value.invariant == "I23"
+    assert captured.value.provenance == "Invalid right censoring"
+def test_a123_i22_left_censor_identity():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.experiment_v2.gate2_integrity import Gate2IntegrityError
+
+    d4 = make_case([3, 3], final_invalid=True)
+    episode = replace(d4.episodes[1], left_censored=True)
+    bad_d4 = replace(d4, episodes=(d4.episodes[0], episode))
+
+    with pytest.raises(Gate2IntegrityError) as captured:
+        evaluate_episode_diagnostics(bad_d4)
+
+    assert captured.value.invariant == "I22"
+    assert captured.value.provenance == "Invalid left censoring"
+
+@pytest.mark.parametrize(
+    ("side", "expected_provenance"),
+    [
+        ("left", "Invalid left boundary cause"),
+        ("right", "Invalid right boundary cause"),
+    ],
+)
+def test_a123_i20_boundary_cause_identity(side, expected_provenance):
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.experiment_v2.gate2_integrity import Gate2IntegrityError
+
+    d4 = make_case([3], final_invalid=True)
+    episode = d4.episodes[0]
+
+    if side == "left":
+        episode = replace(
+            episode,
+            left_boundary_cause=D3_INADMISSIBILITY,
+        )
+    else:
+        episode = replace(
+            episode,
+            right_boundary_cause=D2_BOUNDARY,
+        )
+
+    bad_d4 = replace(d4, episodes=(episode,))
+
+    with pytest.raises(Gate2IntegrityError) as captured:
+        evaluate_episode_diagnostics(bad_d4)
+
+    assert captured.value.invariant == "I20"
+    assert captured.value.provenance == expected_provenance
+
+@pytest.mark.parametrize(
+    "defect",
+    ["same_state", "wrong_boundary"],
+)
+def test_a123_i20_episode_transition_identity(defect):
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.experiment_v2.d4 import (
+        STATE_CHANGE,
+    )
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.experiment_v2.gate2_integrity import (
+        Gate2IntegrityError,
+    )
+
+    d4 = make_case([3], final_invalid=True)
+    first = d4.episodes[0]
+
+    second = replace(
+        first,
+        episode_id=1,
+        state="LOW",
+        start_index=3,
+        end_index=5,
+        start_endpoint_ms=3 * STEP,
+        end_endpoint_ms=5 * STEP,
+        left_boundary_cause=STATE_CHANGE,
+        right_boundary_cause=D2_BOUNDARY,
+        left_censored=False,
+        right_censored=True,
+    )
+
+    first = replace(
+        first,
+        right_boundary_cause=STATE_CHANGE,
+    )
+
+    if defect == "same_state":
+        second = replace(second, state=first.state)
+    else:
+        second = replace(
+            second,
+            left_boundary_cause=D3_INADMISSIBILITY,
+        )
+
+    endpoints = np.arange(6, dtype=np.int64) * STEP
+    ids = np.array([0, 0, 0, 1, 1, 1], dtype=np.int64)
+
+    bad_d4 = replace(
+        d4,
+        endpoint_ms=endpoints,
+        episode_id_by_endpoint=ids,
+        episodes=(first, second),
+        k_high=1,
+        k_low=1,
+        k_total=2,
+        t_classified_ms=6 * STEP,
+    )
+
+    with pytest.raises(Gate2IntegrityError) as captured:
+        evaluate_episode_diagnostics(bad_d4)
+
+    assert captured.value.invariant == "I20"
+    assert captured.value.provenance == "Invalid episode transition"
+
+def test_a123_i21_episode_gap_identity():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.experiment_v2.d4 import (
+        STATE_CHANGE,
+    )
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.experiment_v2.gate2_integrity import (
+        Gate2IntegrityError,
+    )
+
+    d4 = make_case([3, 3], final_invalid=True)
+
+    assert len(d4.episodes) == 2
+    assert d4.episodes[1].start_index > d4.episodes[0].end_index + 1
+    assert d4.episodes[1].left_boundary_cause == D3_INADMISSIBILITY
+
+    second = replace(
+        d4.episodes[1],
+        left_boundary_cause=STATE_CHANGE,
+    )
+    bad_d4 = replace(
+        d4,
+        episodes=(d4.episodes[0], second),
+    )
+
+    with pytest.raises(Gate2IntegrityError) as captured:
+        evaluate_episode_diagnostics(bad_d4)
+
+    assert captured.value.invariant == "I21"
+    assert captured.value.provenance == "Invalid episode gap boundary"
+
+@pytest.mark.parametrize("topology", ["gap", "adjacent"])
+def test_a123_i20_right_boundary_transition_identity(topology):
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.experiment_v2.d4 import (
+        STATE_CHANGE,
+    )
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.experiment_v2.gate2_integrity import (
+        Gate2IntegrityError,
+    )
+
+    if topology == "gap":
+        d4 = make_case([3, 3], final_invalid=True)
+        first = replace(
+            d4.episodes[0],
+            right_boundary_cause=STATE_CHANGE,
+        )
+        bad_d4 = replace(
+            d4,
+            episodes=(first, d4.episodes[1]),
+        )
+    else:
+        d4 = make_case([3], final_invalid=True)
+        first = replace(
+            d4.episodes[0],
+            right_boundary_cause=D3_INADMISSIBILITY,
+        )
+        second = replace(
+            d4.episodes[0],
+            episode_id=1,
+            state="LOW",
+            start_index=3,
+            end_index=5,
+            start_endpoint_ms=3 * STEP,
+            end_endpoint_ms=5 * STEP,
+            left_boundary_cause=STATE_CHANGE,
+            right_boundary_cause=D2_BOUNDARY,
+            left_censored=False,
+            right_censored=True,
+        )
+
+        bad_d4 = replace(
+            d4,
+            endpoint_ms=np.arange(6, dtype=np.int64) * STEP,
+            episode_id_by_endpoint=np.array(
+                [0, 0, 0, 1, 1, 1], dtype=np.int64
+            ),
+            episodes=(first, second),
+            k_high=1,
+            k_low=1,
+            k_total=2,
+            t_classified_ms=6 * STEP,
+        )
+
+    with pytest.raises(Gate2IntegrityError) as captured:
+        evaluate_episode_diagnostics(bad_d4)
+
+    assert captured.value.invariant == "I20"
+    assert captured.value.provenance == "Invalid right boundary transition"
+
+def test_a123_i21_gap_endpoint_reconciliation():
+    from L3_RESEARCH_ENGINES.market_regime_intelligence.experiment_v2.gate2_integrity import (
+        Gate2IntegrityError,
+    )
+
+    d4 = make_case([3, 3], final_invalid=True)
+
+    gap_index = d4.episodes[0].end_index + 1
+
+    assert gap_index < d4.episodes[1].start_index
+    assert d4.episode_id_by_endpoint[gap_index] == -1
+
+    ids = d4.episode_id_by_endpoint.copy()
+    ids[gap_index] = 0
+
+    bad_d4 = replace(d4, episode_id_by_endpoint=ids)
+
+    with pytest.raises(Gate2IntegrityError) as captured:
+        evaluate_episode_diagnostics(bad_d4)
+
+    assert captured.value.invariant == "I21"
+    assert captured.value.provenance == (
+        "D4 endpoint-to-episode reconciliation failure"
+    )

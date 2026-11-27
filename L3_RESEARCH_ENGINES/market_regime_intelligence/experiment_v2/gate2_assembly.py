@@ -15,6 +15,7 @@ from .contracts import (
 from .d1_d0 import D1Constructed
 from .d3 import D3Constructed
 from .d4 import D4Constructed
+from .gate2_integrity import Gate2IntegrityError
 from .gate2_numeric import (
     ObservationDiagnostics,
     evaluate_observation_diagnostics,
@@ -49,14 +50,20 @@ class Gate2AssemblyResult:
     episodes: EpisodeDiagnostics | None
 
 
-def _integrity(window: str, detail: str) -> Gate2AssemblyResult:
+
+
+def _integrity(
+    window: str,
+    detail: str,
+    invariant: str = "GATE2_D1_D3_D4_RECONCILIATION",
+) -> Gate2AssemblyResult:
     return Gate2AssemblyResult(
         window=window,
         completed=None,
         integrity=WindowIntegrityFailure(
             tag="INTEGRITY_FAILURE",
             window=window,
-            invariant="GATE2_D1_D3_D4_RECONCILIATION",
+            invariant=invariant,
             provenance=detail,
         ),
         observations=None,
@@ -87,7 +94,10 @@ def assemble_gate2(
             raise ValueError("Window identity mismatch")
 
         if not np.array_equal(d3.endpoint_ms, d4.endpoint_ms):
-            raise ValueError("D3/D4 endpoint domains differ")
+            raise Gate2IntegrityError(
+                "I19",
+                "D3/D4 endpoint domains differ",
+            )
 
         endpoints = d3.endpoint_ms
         admissible = d3.admissible
@@ -115,22 +125,28 @@ def assemble_gate2(
         ):
             if valid:
                 if state not in ("HIGH", "LOW"):
-                    raise ValueError("Admissible endpoint has invalid state")
+                    raise Gate2IntegrityError("I20", "Admissible endpoint has invalid state")
                 if episode_id < 0 or episode_id >= len(d4.episodes):
-                    raise ValueError("Admissible endpoint lacks episode")
+                    raise Gate2IntegrityError(
+                        "I20",
+                        "Admissible endpoint lacks episode",
+                    )
                 episode = d4.episodes[int(episode_id)]
                 if (
                     episode.state != state
                     or not episode.start_index <= index <= episode.end_index
                 ):
-                    raise ValueError("D3 state and D4 episode disagree")
+                    raise Gate2IntegrityError("I20", "D3 state and D4 episode disagree")
             elif episode_id != -1:
-                raise ValueError("Inadmissible endpoint has episode")
+                raise Gate2IntegrityError(
+                    "I21",
+                    "Inadmissible endpoint has episode",
+                )
 
         if d4.t_classified_ms != (
             int(np.count_nonzero(admissible)) * GRID_INTERVAL_MS
         ):
-            raise ValueError("Classified time does not reconcile")
+            raise Gate2IntegrityError("I25", "Classified time does not reconcile")
 
         observations = evaluate_observation_diagnostics(d1, d3)
         episodes = evaluate_episode_diagnostics(d4)
@@ -139,8 +155,9 @@ def assemble_gate2(
             episodes.k_total == 0
             and observations.n_eligible > 0
         ):
-            raise ValueError(
-                "Zero structural episodes with eligible observations"
+            raise Gate2IntegrityError(
+                "I27",
+                "Zero structural episodes with eligible observations",
             )
 
         reasons = set(observations.reasons | episodes.reasons)
@@ -148,7 +165,7 @@ def assemble_gate2(
         if both:
             reasons.add(CONFLICT)
         elif CONFLICT in reasons:
-            raise ValueError("Unpaired directional conflict")
+            raise Gate2IntegrityError("I30", "Unpaired directional conflict")
 
         if reasons & STRUCTURAL or both:
             disposition = "STRUCTURALLY_INSUFFICIENT"
@@ -172,7 +189,7 @@ def assemble_gate2(
         elif PERSISTENCE in reasons:
             action = "EVALUATE_1H_FALLBACK"
         else:
-            raise ValueError("Unresolved Gate-2 reason configuration")
+            raise Gate2IntegrityError("I30", "Unresolved Gate-2 reason configuration")
 
         evidence = Gate2Evidence(
             window=window,
@@ -192,5 +209,7 @@ def assemble_gate2(
             episodes=episodes,
         )
 
+    except Gate2IntegrityError as exc:
+        return _integrity(window, exc.provenance, exc.invariant)
     except (ValueError, TypeError, AttributeError, IndexError) as exc:
         return _integrity(window, str(exc))
